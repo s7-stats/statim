@@ -1,15 +1,12 @@
-# Execute a lazy test pipeline
+# Execute a lazy pipeline
 
 `conclude()` is the terminal step of the pipeline. It resolves the
-method variant, runs the implementation, and returns an `htest_spec`
+method variant, runs the implementation, and returns a `cld_exec` S7
 object.
 
 ## Usage
 
 ``` r
-conclude(.x, ...)
-
-# S3 method for class 'test_lazy'
 conclude(.x, ...)
 ```
 
@@ -17,8 +14,10 @@ conclude(.x, ...)
 
 - .x:
 
-  A `test_lazy` object produced by
+  A `test_lazy` or `model_lazy` object produced by
   [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md)
+  or
+  [`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md)
   (optionally followed by
   [`via()`](https://joshuamarie.github.io/statim/reference/via.md)).
 
@@ -28,13 +27,89 @@ conclude(.x, ...)
 
 ## Value
 
-An `htest_spec` S3 object.
+A `cld_exec` S7 object with the following slots:
+
+- `@data`:
+
+  The raw return value of the `fn` defined in
+  [`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
+  or
+  [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md).
+  Its structure depends on the implementation — see the documentation of
+  the stat function (e.g.
+  [`?TTEST`](https://joshuamarie.github.io/statim/reference/TTEST.md))
+  for what to expect.
+
+- `@cld_meta`:
+
+  A list of pipeline metadata:
+
+  `$model_id`
+
+  :   The model ID object passed to
+      [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md).
+
+  `$processed`
+
+  :   The processed model output from
+      [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md).
+      The same object received as `.proc` inside the `fn`.
+
+  `$stat_name`
+
+  :   The human-readable test or model name.
+
+  `$method`
+
+  :   The variant name used. `"default"` when no
+      [`via()`](https://joshuamarie.github.io/statim/reference/via.md)
+      was called.
+
+  `$data_name`
+
+  :   The name of the data frame, if resolvable.
+
+## Writing print functions
+
+The `print` argument of
+[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
+and
+[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
+receives a `cld_exec` object as `x`. Read your result from `x@data`:
+
+    baseline(
+        fn = function(.proc, .mu = 0) { ... },
+        print = function(x, ...) {
+            dat = x@data
+            # render dat
+            invisible(x)
+        }
+    )
+
+## Writing tidy functions
+
+Functions passed to
+[`method_tidy()`](https://joshuamarie.github.io/statim/reference/method_tidy.md)
+receive a `cld_exec` object as `.x`. Read your result from `.x@data`.
+Use `.x@cld_meta$method` if you need to branch on the variant:
+
+    making_tidy(TTEST, x_by) %<-% method_tidy(
+        default = function(.x, ...) {
+            dat = .x@data
+            # return a tibble
+        },
+        boot = function(.x, ...) {
+            dat = .x@data
+            # return a tibble
+        }
+    )
 
 ## See also
 
 [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md),
+[`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md),
 [`via()`](https://joshuamarie.github.io/statim/reference/via.md),
-[`HTEST_FN()`](https://joshuamarie.github.io/statim/reference/HTEST_FN.md)
+[`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md)
 
 ## Examples
 
@@ -97,6 +172,40 @@ sleep |>
 #>   CI     :   [-3.1605, -0.0598]
 #>   n_reps :                 2000
 #> ---------------------------------
+#> 
+#> 
+
+mtcars |>
+    define_model(rel(mpg, wt)) |>
+    prepare_model(LINEAR_REG) |>
+    conclude()
+#> 
+#> == Model ======================================================================= 
+#> 
+#> Model ID : rel 
+#> Args : mpg ; wt 
+#>     x_vars : 1 
+#>     resp_vars : 1 
+#> 
+#> == Linear Regression =========================================================== 
+#> 
+#> -- Coefficients ----------------------------------------------------------------
+#> 
+#> ──────────────┬───────────────────────────────────────────
+#>   term        │  estimate  std_error  statistic  p_value  
+#> ──────────────┼───────────────────────────────────────────
+#>   (Intercept) │   6.047      0.309     19.590    <0.001   
+#>   mpg         │   -0.141     0.015     -9.559    <0.001   
+#> ──────────────┴───────────────────────────────────────────
+#> 
+#> 
+#> -- Model Fit -------------------------------------------------------------------
+#> 
+#> ───────────────────────────────────────────────────────
+#>   r_squared  adj_r_squared  sigma  df_residual  n_obs  
+#> ───────────────────────────────────────────────────────
+#>     0.753        0.745      0.494      30        32    
+#> ───────────────────────────────────────────────────────
 #> 
 #> 
 ```

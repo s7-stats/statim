@@ -10,9 +10,6 @@ being executed with
 
 ``` r
 prepare_test(.x, .test, ...)
-
-# S3 method for class 'def_model'
-prepare_test(.x, .test, ...)
 ```
 
 ## Arguments

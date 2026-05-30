@@ -8,8 +8,8 @@
 <title>statim • Higher Level Interface for Statistical Inference • statim</title>
 <!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="katex-auto.js"></script><script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/Viaoda_Libre-0.4.10/font.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/Viaoda_Libre-0.4.10/font.css" rel="stylesheet">
 <link href="deps/Fira_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -82,14 +82,32 @@
 <p>This simply means: you declare <em>what</em> statistical inference you want to perform, then <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> immediately delivers <em>how</em>.</p>
 </div>
 <div class="section level2">
+<h2 id="why-statim">Why statim?<a class="anchor" aria-label="anchor" href="#why-statim"></a>
+</h2>
+<p>Base R’s statistical functions are imperative and scattered. H-tests like t-test through <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test()</a></code>, and a correlation test through <code><a href="https://rdrr.io/r/stats/cor.test.html" class="external-link">cor.test()</a></code>, each takes different arguments, returns a different output format, and switching from a classical procedure to a bootstrap or permutation variant means rewriting from scratch. There is no shared grammar, and no way to describe <em>what</em> you want without also specifying <em>how</em> to compute it step by step.</p>
+<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> replaces that with a declarative pipeline. You describe the model structure once with <code><a href="reference/model-define-base.html">define_model()</a></code>, attach a test, and optionally recalibrate the method with <code><a href="reference/via.html">via()</a></code>, without touching anything else:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Base R: two functions, two different interfaces, two different output formats</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span>, data <span class="op">=</span> <span class="va">sleep</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/cor.test.html" class="external-link">cor.test</a></span><span class="op">(</span><span class="va">cars</span><span class="op">$</span><span class="va">speed</span>, <span class="va">cars</span><span class="op">$</span><span class="va">dist</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># statim: same pipeline shape regardless of the test</span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">cars</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/rel.html">rel</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Switching to permutation is one word; nothing else in the pipeline moves</span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">1000L</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Any test registered with <code><a href="reference/stat-infer-definer.html">test_define()</a></code> plugs into the same pipeline, including custom implementations. Most of the API is written in S7 with the purpose to enforce flexibility and strictness to make <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> much usable and robust</p>
+</div>
+<div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>The package is yet to be submitted into CRAN.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Stable version (not yet released)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"statim"</span><span class="op">)</span></span></code></pre></div>
 <p>For the time being, you can install the current implementation on GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Development version from GitHub</span></span>
 <span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"joshuamarie/statim"</span><span class="op">)</span></span></code></pre></div>
@@ -97,77 +115,127 @@
 <div class="section level2">
 <h2 id="usages">Usages<a class="anchor" aria-label="anchor" href="#usages"></a>
 </h2>
-<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> provides a human-readable, easy-to-write syntax. <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is a much higher-level package, inherits most of strongest features in R that makes the code easy to write and understand, such as <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> / <a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a>’s use of <code>&lt;tidyselect-helpers&gt;</code>. This re-imagines the grammar of statistical inference implementation in R. It embodies almost the same paradigm as <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>, except it enforces the use of actual pipes, not <code>+</code>.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a></span><span class="op">)</span></span></code></pre></div>
-<p>Here’s an example of a quick H-test pipeline:</p>
-<ol style="list-style-type: decimal">
-<li>
-<p>tidyverse-like grammar semantics</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="t-test">T-test<a class="anchor" aria-label="anchor" href="#t-test"></a>
+</h3>
+<p>The pipeline form lets you recalibrate the method without rewriting anything else. Switching from a classical t-test to a permutation t-test is a single <code><a href="reference/via.html">via()</a></code> call:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Classical</span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;   groups   diff   t-stat  pval   </span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt;   group   -1.580  -1.861  0.079  </span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; -- Confidence Interval ---------------------------------------------------------</span></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt;   groups  lower_95  upper_95  </span></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt;   group    -3.365    0.205    </span></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; Model ID : x_by </span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; Args : extra | group </span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt;     x_vars : 1 </span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;     by_vars : 1 </span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; == T-Test ====================================================================== </span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt;   groups   diff   t-stat  pval   </span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt;   group   -1.580  -1.861  0.079  </span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; -- Confidence Interval ---------------------------------------------------------</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt;   groups  lower_95  upper_95  </span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a><span class="co">#&gt;   group    -3.365    0.205    </span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Permutation: one line added, nothing else changes</span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">500L</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">500L</span>, seed <span class="op">=</span> <span class="fl">123L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co">#&gt; ============================== T-test Permutation ==============================</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt; ───────────────────────────────</span></span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt;   Statistic  p-value  n_perms  </span></span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; ───────────────────────────────</span></span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt;    -1.580     0.082     500    </span></span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; ───────────────────────────────</span></span></code></pre></div>
-<p>The bottom part of this code is the part where the “pipeline” is re-calibrated from the classical t-test procedure, into permutation t-test.</p>
-</li>
-<li>
-<p>1-liner syntax</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; Model ID : x_by </span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; Args : extra | group </span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt;     x_vars : 1 </span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt;     by_vars : 1 </span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; == T-Test · permute ============================================================ </span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; ============================== T-test Permutation ==============================</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; ───────────────────────────────</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co">#&gt;   Statistic  p-value  n_perms  </span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; ───────────────────────────────</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="co">#&gt;    -1.580     0.072     500    </span></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#&gt; ───────────────────────────────</span></span></code></pre></div>
+<p>For a quick one-shot result, the eager form skips the pipeline entirely:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="fu"><a href="reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span>, <span class="va">sleep</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt;   groups   diff   t-stat  pval   </span></span>
-<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
-<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt;   group   -1.580  -1.861  0.079  </span></span>
-<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
-<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; -- Confidence Interval ---------------------------------------------------------</span></span>
-<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span>
-<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt;   groups  lower_95  upper_95  </span></span>
-<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span>
-<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt;   group    -3.365    0.205    </span></span>
-<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span></code></pre></div>
-</li>
-</ol>
-<!-- --><ol style="list-style-type: decimal">
-<li>is better since you can re-calibrate the declaration of the H-test you want to perform. Otherwise, (2) if you want to eagerly run the actual H-test.</li>
-</ol>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt;   groups   diff   t-stat  pval   </span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt;   group   -1.580  -1.861  0.079  </span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt; -- Confidence Interval ---------------------------------------------------------</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt;   groups  lower_95  upper_95  </span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt;   group    -3.365    0.205    </span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt; ──────────────────────────────</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="correlation-test">Correlation test<a class="anchor" aria-label="anchor" href="#correlation-test"></a>
+</h3>
+<p>The same pipeline shape works for any registered test. Here is the same structure used for a correlation test:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cars</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/rel.html">rel</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt; Model ID : rel </span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt; Args : speed ; dist </span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt;     x_vars : 1 </span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt;     resp_vars : 1 </span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt; == Correlation Test ============================================================ </span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────────────</span></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="co">#&gt;       pair      estimate  stat    pval   </span></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────────────</span></span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="co">#&gt;   dist ~ speed   0.807    9.464  &lt;0.001  </span></span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a><span class="co">#&gt; ─────────────────────────────────────────</span></span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a><span class="co">#&gt; -- Confidence Interval ---------------------------------------------------------</span></span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a><span class="co">#&gt; ────────────────────────────────────</span></span>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a><span class="co">#&gt;       pair      lower_95  upper_95  </span></span>
+<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a><span class="co">#&gt; ────────────────────────────────────</span></span>
+<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a><span class="co">#&gt;   dist ~ speed   0.682     0.886    </span></span>
+<span id="cb12-26"><a href="#cb12-26" tabindex="-1"></a><span class="co">#&gt; ────────────────────────────────────</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="core-ideas">Core Ideas<a class="anchor" aria-label="anchor" href="#core-ideas"></a>
@@ -175,13 +243,11 @@
 <p>The package is designed around three ideas:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Declarative models</strong>: describe the structure of your data with <code><a href="reference/model-define-base.html">define_model()</a></code> and model IDs like <code><a href="reference/x_by.html">x_by()</a></code>, <code><a href="reference/rel.html">rel()</a></code>, and <code><a href="reference/pairwise.html">pairwise()</a></code>
-</li>
+<strong>Declarative models</strong>: describe the structure of your data with <code><a href="reference/model-define-base.html">define_model()</a></code> and model IDs like <code><a href="reference/x_by.html">x_by()</a></code>, <code><a href="reference/rel.html">rel()</a></code>, and <code><a href="reference/pairwise.html">pairwise()</a></code>.</li>
 <li>
-<strong>Composable pipeline</strong>: build up a test specification lazily, then execute with <code><a href="reference/conclude.html">conclude()</a></code>
-</li>
+<strong>Composable pipeline</strong>: build up a test specification lazily, then execute with <code><a href="reference/conclude.html">conclude()</a></code>.</li>
 <li>
-<strong>Extensible implementations</strong>: every test is a <code><a href="reference/test_define.html">test_define()</a></code> object; bring your own engine, your own method, your own implementation</li>
+<strong>Extensible implementations</strong>: for instance, every test is a <code><a href="reference/stat-infer-definer.html">test_define()</a></code> object; bring your own engine, your own method, your own implementation.</li>
 </ol>
 </div>
 <div class="section level2">

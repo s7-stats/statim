@@ -2,4 +2,5 @@
 
 ## statim (development version)
 
-- Initial CRAN submission.
+- Initial development version.
+- Most of the API is written on S7

@@ -8,12 +8,6 @@
 
 ``` r
 define_model(.x, ...)
-
-# S3 method for class 'model_id'
-define_model(.x, data = parent.frame(), ...)
-
-# S3 method for class 'data.frame'
-define_model(.x, to_analyze, ...)
 ```
 
 ## Arguments
@@ -24,28 +18,27 @@ define_model(.x, to_analyze, ...)
   [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md),
   [`rel()`](https://joshuamarie.github.io/statim/reference/rel.md),
   [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md),
-  or a formula — **or** a data frame when using the data-first pipe
-  style.
+  or a formula. It is also dispatched for a data frame class when using
+  the data-first pipe style.
 
 - ...:
 
   Currently unused.
 
-- data:
-
-  A data frame. When called on a model-ID object this defaults to
-  [`parent.frame()`](https://rdrr.io/r/base/sys.parent.html), resolving
-  bare variable names against the calling environment. When calling on a
-  data frame, pass the model ID as `to_analyze`.
-
-- to_analyze:
-
-  A model ID or formula (only used in the `define_model.data.frame`
-  method).
-
 ## Value
 
 A `def_model` S3 object containing `model_id` and `processed`.
+
+## Details
+
+Two dispatch methods are available depending on how `.x` is supplied:
+
+- **Model-ID first**: `.x` is a model ID or formula. Accepts `data`, a
+  data frame (defaults to
+  [`parent.frame()`](https://rdrr.io/r/base/sys.parent.html)).
+
+- **Data-first**: `.x` is a data frame. Accepts `to_analyze`, a model ID
+  or formula, as the second argument.
 
 ## Examples
 

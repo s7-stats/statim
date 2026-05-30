@@ -7,24 +7,12 @@ count-based metadata are included in the result.
 ## Usage
 
 ``` r
-model_id_info(model_id, processed = NULL)
-
-# S3 method for class 'x_by'
-model_id_info(model_id, processed = NULL)
-
-# S3 method for class 'rel'
-model_id_info(model_id, processed = NULL)
-
-# S3 method for class 'pairwise'
-model_id_info(model_id, processed = NULL)
-
-# S3 method for class 'formula'
-model_id_info(model_id, processed = NULL)
+model_id_info(.model_id, processed = NULL, ...)
 ```
 
 ## Arguments
 
-- model_id:
+- .model_id:
 
   A model ID object from
   [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md),
@@ -38,6 +26,10 @@ model_id_info(model_id, processed = NULL)
   [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md),
   or `NULL`. When `NULL`, count-based fields in `other_info` and `vars`
   are omitted.
+
+- ...:
+
+  Currently unused.
 
 ## Value
 
@@ -77,7 +69,7 @@ model_id_info(x_by(extra, group))
 
 # with processed — includes vars and counts
 dm = define_model(x_by(extra, group), sleep)
-model_id_info(dm$model_id, dm$processed)
+model_id_info(dm@model_id, dm@processed)
 #> $model_type
 #> [1] "x_by"
 #> 

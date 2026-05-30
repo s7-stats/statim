@@ -1,6 +1,6 @@
-# Collect implementations for a test definition
+# Collect implementations for a statistical procedure
 
-`agendas()` is the container for all implementations of a test. It
+`agendas()` is the container for all implementations of a procedure. It
 requires exactly one
 [`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
 as its first argument, and accepts any number of named
@@ -35,4 +35,4 @@ An `agendas` S3 object.
 
 [`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md),
 [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md),
-[`test_define()`](https://joshuamarie.github.io/statim/reference/test_define.md)
+[`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md)

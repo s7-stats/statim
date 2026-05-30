@@ -1,14 +1,12 @@
-# Recalibrate the test method variant
+# Recalibrate the method variant
 
 `via()` switches a lazy pipeline to an alternative method variant and
 merges user-supplied arguments with the variant's declared defaults.
+Works for both `test_lazy` and `model_lazy` pipelines.
 
 ## Usage
 
 ``` r
-via(.x, .method, ...)
-
-# S3 method for class 'test_lazy'
 via(.x, .method, ...)
 ```
 
@@ -16,7 +14,7 @@ via(.x, .method, ...)
 
 - .x:
 
-  A `test_lazy` object.
+  A `test_lazy` or `model_lazy` object.
 
 - .method:
 
@@ -25,7 +23,7 @@ via(.x, .method, ...)
   in the
   [`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md)
   of the matched
-  [`test_define()`](https://joshuamarie.github.io/statim/reference/test_define.md).
+  [`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md).
   E.g. `"boot"`, `"permute"`, `"permute_rfast"`.
 
 - ...:
@@ -34,12 +32,12 @@ via(.x, .method, ...)
 
 ## Value
 
-The modified `test_lazy` object with `recalibrate_spec` populated.
+The modified lazy object with `recalibrate_spec` populated.
 
 ## See also
 
 [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md),
-[`test_define()`](https://joshuamarie.github.io/statim/reference/test_define.md)
+[`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md)
 
 ## Examples
 

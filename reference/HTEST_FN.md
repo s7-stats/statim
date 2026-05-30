@@ -1,7 +1,7 @@
 # Build a hypothesis test function
 
-`HTEST_FN()` is a developer-interface function, a constructor for
-user-facing test functions like
+`HTEST_FN()` is a developer-interface constructor for user-facing test
+functions like
 [`TTEST()`](https://joshuamarie.github.io/statim/reference/TTEST.md). It
 returns a function with a consistent signature that routes to the
 correct implementation based on the model ID and method variant.
@@ -20,7 +20,9 @@ HTEST_FN(cls, defs, .name)
 
 - defs:
 
-  A list of `test_define` objects declaring the implementations.
+  A list of
+  [`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md)
+  objects.
 
 - .name:
 
@@ -32,7 +34,8 @@ A function with signature `function(.model, .data, ...)`.
 
 ## See also
 
-[`test_define()`](https://joshuamarie.github.io/statim/reference/test_define.md),
+[`MODEL_FN()`](https://joshuamarie.github.io/statim/reference/MODEL_FN.md),
+[`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md),
 [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md),
 [`via()`](https://joshuamarie.github.io/statim/reference/via.md),
 [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)

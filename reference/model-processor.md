@@ -6,18 +6,6 @@ A function for development use to extract the information in model IDs.
 
 ``` r
 model_processor(x, ...)
-
-# S3 method for class 'formula'
-model_processor(x, data = NULL, ...)
-
-# S3 method for class 'x_by'
-model_processor(x, data = NULL, ...)
-
-# S3 method for class 'rel'
-model_processor(x, data = NULL, ...)
-
-# S3 method for class 'pairwise'
-model_processor(x, data = NULL, ...)
 ```
 
 ## Arguments
@@ -28,9 +16,9 @@ model_processor(x, data = NULL, ...)
 
 - ...:
 
-  Currently unused; passed through for S3 method compatibility.
+  Passed through S7 method compatibility.
 
-- data:
+## Details
 
-  The given data frame when supplied. It can be a `NULL` or a missing
-  argument
+Methods accept an optional `data` argument — a data frame, or `NULL` to
+resolve variables from the calling environment.
