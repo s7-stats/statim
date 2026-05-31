@@ -192,6 +192,8 @@ Add or replace
 [`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md)
 method for following `STAT_CONSTRUCTOR` objects
 
+- [`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+  : Automatically tidy a statistical result
 - [`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md)
   : Declare tidy methods for a stat and model type
 - [`method_tidy()`](https://joshuamarie.github.io/statim/reference/method_tidy.md)
