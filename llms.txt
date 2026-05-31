@@ -380,6 +380,13 @@ the expression and accepts multiple inline codes.
 - [`inlines()`](https://joshuamarie.github.io/statim/reference/inlines.md)
   : Inline multiple expressions in a model ID
 
+### Output renderer and saver
+
+Capture the printed output in specific formats
+
+- [`save_excel()`](https://joshuamarie.github.io/statim/reference/save_excel.md)
+  : Save statistical output to Excel
+
 ## Low-level / Developer facing API
 
 Functions for building and extending test implementations
