@@ -7,7 +7,7 @@ an Excel sheet as a formatted monospace report.
 ## Usage
 
 ``` r
-save_excel(x, ...)
+save_excel(x, file, sheet = NULL, overwrite = NULL, ...)
 ```
 
 ## Arguments
@@ -17,13 +17,25 @@ save_excel(x, ...)
   A `cld_exec` object from
   [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md).
 
-- ...:
-
-  Currently unused.
-
 - file:
 
   Path to the `.xlsx` file to write.
+
+- sheet:
+
+  Sheet name. Defaults to the test name (e.g. `"T-Test"`). Truncated to
+  31 characters (Excel limit).
+
+- overwrite:
+
+  Controls overwrite behaviour when `file` already exists. One of
+  `"none"` (default, aborts), `"sheet"` (replaces only the matching
+  sheet), or `"file"` (replaces the entire workbook). When `NULL`, the
+  user is prompted interactively.
+
+- ...:
+
+  Currently unused.
 
 ## Value
 
@@ -34,9 +46,15 @@ save_excel(x, ...)
 ``` r
 if (FALSE) { # \dontrun{
 sleep |>
-    define_model(extra ~ sleep) |>
+    define_model(extra ~ group) |>
     prepare_test(TTEST) |>
     conclude() |>
     save_excel("t-test.xlsx")
+
+iris |>
+    define_model(pairwise(1:4, direction = "all")) |>
+    prepare_test(TTEST) |>
+    conclude() |>
+    save_excel("t-test.xlsx", sheet = "t-test-pairwise")
 } # }
 ```
