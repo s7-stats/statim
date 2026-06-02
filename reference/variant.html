@@ -73,21 +73,24 @@ schema per model type.</p>
 <span>        <span class="va">group_data</span> <span class="op">=</span> <span class="va">.proc</span><span class="op">$</span><span class="va">group_data</span></span>
 <span>        <span class="co"># ...</span></span>
 <span>    <span class="op">}</span></span>
-<span><span class="op">)</span></span></code></pre><p></p></div></dd>
+<span><span class="op">)</span></span></code></pre><p></p></div>
+<p>A variant whose <code>fn</code> returns the same <a href="class_stat_infer.html">class_stat_infer</a> subclass as
+<code>baseline</code> inherits <code><a href="auto_tidy.html">auto_tidy()</a></code> and all future <code>auto_*()</code> methods
+automatically via S7's parent chain. A variant returning a subclass
+can override selectively:</p>
+<p></p><div class="sourceCode r"><pre><code><span><span class="co"># inherits `auto_tidy()` from `new_out` S7 class</span></span>
+<span><span class="fu"><a href="../reference/variant.html">variant</a></span><span class="op">(</span>fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span> <span class="fu">new_out</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># overrides auto_tidy() via subclass</span></span>
+<span><span class="fu"><a href="../reference/variant.html">variant</a></span><span class="op">(</span>fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span> <span class="fu">new_out_boot</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># intentionally plain</span></span>
+<span><span class="fu"><a href="../reference/variant.html">variant</a></span><span class="op">(</span>fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">}</span><span class="op">)</span></span></code></pre><p></p></div></dd>
 
 
 <dt id="arg-print">print<a class="anchor" aria-label="anchor" href="#arg-print"></a></dt>
-<dd><p>A function with signature <code>function(x, ...)</code> for formatting
-the result. <code>x</code> is a <code>cld_exec</code> object — read your result from <code>x@data</code>.
-<code>NULL</code> falls back to <code>print(x@data)</code>.</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/variant.html">variant</a></span><span class="op">(</span></span>
-<span>    fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span> <span class="va">...</span> <span class="op">}</span>,</span>
-<span>    print <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>        <span class="va">dat</span> <span class="op">=</span> <span class="va">x</span><span class="op">@</span><span class="va">data</span></span>
-<span>        <span class="co"># render dat</span></span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>    <span class="op">}</span></span>
-<span><span class="op">)</span></span></code></pre><p></p></div></dd>
+<dd><p>A function with signature <code>function(x, ...)</code>. <code>x</code> is a
+<code>cld_exec</code> object. <code>NULL</code> falls back to <code>print(x@data)</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -96,7 +99,8 @@ the result. <code>x</code> is a <code>cld_exec</code> object — read your resul
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="baseline.html">baseline()</a></code>, <code><a href="agendas.html">agendas()</a></code>, <code><a href="via.html">via()</a></code>, <code><a href="model-processor.html">model_processor()</a></code>, <code>cld_exec</code></p></div>
+    <div class="dont-index"><p><code><a href="baseline.html">baseline()</a></code>, <code><a href="agendas.html">agendas()</a></code>, <code><a href="via.html">via()</a></code>, <code><a href="model-processor.html">model_processor()</a></code>,
+<a href="class_stat_infer.html">class_stat_infer</a>, <code><a href="auto_tidy.html">auto_tidy()</a></code></p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

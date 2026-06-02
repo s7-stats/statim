@@ -1,8 +1,8 @@
 # statim: Higher Level Interface for Statistical Inference
 
 This is a high-level package, attempting the re-imagination of "grammar
-of statistical inference" framework in a package, mixing with 'ggplot2'
-/ 'tidyverse' paradigm.
+of statistical inference" framework in a package in S7 class, mixing
+with 'ggplot2' / 'tidyverse' paradigm.
 
 ## See also
 

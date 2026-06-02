@@ -1,8 +1,11 @@
 # Declare tidy methods for a stat result
 
-`method_tidy()` collects tidy functions for the base implementation and
-any named variants. The `default` function handles results from the base
-implementation; additional named arguments handle variant results.
+`method_tidy()` is the companion to
+[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md).
+It collects tidy functions for the base implementation and named
+variants, used only when `fn` returns a
+non-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+object.
 
 ## Usage
 
@@ -14,15 +17,21 @@ method_tidy(default = NULL, ...)
 
 - default:
 
-  A function with signature `function(.x, ...)` for the base
-  implementation. Required.
+  A function with signature `function(.x, ...)`. Required.
 
 - ...:
 
-  Named functions, one per variant (e.g. `boot =`, `contrast =`). Names
-  must match the variant names registered in
+  Named functions, one per variant. Names must match variant names
+  registered in
   [`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md).
+  Omitted variants fall back to `default` automatically.
 
 ## Value
 
 A `method_tidy` S7 object.
+
+## See also
+
+[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md),
+[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md),
+[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)

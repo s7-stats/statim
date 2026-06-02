@@ -1,9 +1,9 @@
 # Collect implementations for a statistical procedure
 
-`agendas()` is the container for all implementations of a procedure. It
-requires exactly one
+`agendas()` is the container for all implementations of a procedure.
+Requires exactly one
 [`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
-as its first argument, and accepts any number of named
+and accepts any number of named
 [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
 objects.
 

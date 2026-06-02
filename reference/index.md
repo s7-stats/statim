@@ -141,6 +141,18 @@ Declare how a test runs
 - [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
   : Declare an alternative implementation of a test or model
 
+### Base statistical inference output class
+
+Requires within the pipeline,
+e.g. [`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md)
+
+- [`class_stat_infer()`](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+  : Base class for all statistical result objects
+- [`lm_object`](https://joshuamarie.github.io/statim/reference/lm_object.md)
+  : Structured result container for linear model fits
+- [`glm_object`](https://joshuamarie.github.io/statim/reference/glm_object.md)
+  : Structured result container for GLM fits
+
 ### Test definition
 
 Register a new test implementation

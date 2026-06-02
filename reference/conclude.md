@@ -75,7 +75,7 @@ The `print` argument of
 [`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
 and
 [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
-receives a `cld_exec` object as `x`. Read your result from `x@data`:
+receives a `cld_exec` object as `x`. Read your output from `x@data`:
 
     baseline(
         fn = function(.proc, .mu = 0) { ... },
@@ -86,19 +86,29 @@ receives a `cld_exec` object as `x`. Read your result from `x@data`:
         }
     )
 
+Otherwise, when the base S7 class dispatches
+[`print()`](https://rdrr.io/r/base/print.html) elsewhere, it is
+inherited without writing `print` from
+[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
+/
+[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
+
 ## Writing tidy functions
 
-Functions passed to
-[`method_tidy()`](https://joshuamarie.github.io/statim/reference/method_tidy.md)
-receive a `cld_exec` object as `.x`. Read your result from `.x@data`.
-Use `.x@cld_meta$method` if you need to branch on the variant:
+Prefer implementing
+[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+on your result class when `fn` returns a
+[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+subclass. Use
+[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md)
+only when `fn` intentionally returns a
+non-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+object.
+
+For example:
 
     making_tidy(TTEST, x_by) %<-% method_tidy(
         default = function(.x, ...) {
-            dat = .x@data
-            # return a tibble
-        },
-        boot = function(.x, ...) {
             dat = .x@data
             # return a tibble
         }
@@ -109,7 +119,9 @@ Use `.x@cld_meta$method` if you need to branch on the variant:
 [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md),
 [`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md),
 [`via()`](https://joshuamarie.github.io/statim/reference/via.md),
-[`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md)
+[`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md),
+[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md),
+[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
 
 ## Examples
 

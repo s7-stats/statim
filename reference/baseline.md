@@ -38,27 +38,25 @@ baseline(fn, print = NULL)
   for the full `.proc` schema per model type.
 
       baseline(
-          fn = function(.proc, .mu = 0, .alt = "two.sided", .ci = 0.95) {
-              x = .proc$x_data
-              group_data = .proc$group_data
+          fn = function(.proc, .mu = 0, .ci = 0.95) {
               # ...
+              <your-own-class>(...)   # return a class_stat_infer subclass
           }
       )
+
+  When `fn` returns a
+  [class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+  subclass,
+  [`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+  and future `auto_*()` generics dispatch automatically on the result.
+  Otherwise, register a tidy method via
+  [`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md).
 
 - print:
 
   A function with signature `function(x, ...)` for formatting the
   result. `x` is a `cld_exec` object — read your result from `x@data`.
   `NULL` falls back to `print(x@data)`.
-
-      baseline(
-          fn = function(.proc, ...) { ... },
-          print = function(x, ...) {
-              dat = x@data
-              # render dat
-              invisible(x)
-          }
-      )
 
 ## Value
 
@@ -70,4 +68,5 @@ A `baseline` S7 object.
 [`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md),
 [`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md),
 [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md),
-`cld_exec`
+[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md),
+[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)

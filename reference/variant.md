@@ -45,20 +45,26 @@ variant(fn, print = NULL)
           }
       )
 
+  A variant whose `fn` returns the same
+  [class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+  subclass as `baseline` inherits
+  [`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+  and all future `auto_*()` methods automatically via S7's parent chain.
+  A variant returning a subclass can override selectively:
+
+      # inherits `auto_tidy()` from `new_out` S7 class
+      variant(fn = function(.proc, ...) { new_out(...) })
+
+      # overrides auto_tidy() via subclass
+      variant(fn = function(.proc, ...) { new_out_boot(...) })
+
+      # intentionally plain
+      variant(fn = function(.proc, ...) { list(...) })
+
 - print:
 
-  A function with signature `function(x, ...)` for formatting the
-  result. `x` is a `cld_exec` object — read your result from `x@data`.
-  `NULL` falls back to `print(x@data)`.
-
-      variant(
-          fn = function(.proc, ...) { ... },
-          print = function(x, ...) {
-              dat = x@data
-              # render dat
-              invisible(x)
-          }
-      )
+  A function with signature `function(x, ...)`. `x` is a `cld_exec`
+  object. `NULL` falls back to `print(x@data)`.
 
 ## Value
 
@@ -70,4 +76,5 @@ A `variant` S7 object.
 [`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md),
 [`via()`](https://joshuamarie.github.io/statim/reference/via.md),
 [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md),
-`cld_exec`
+[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md),
+[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)

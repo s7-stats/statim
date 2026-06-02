@@ -70,27 +70,22 @@ depend on the model ID used:</p><ul><li><p><code>x_by</code>: <code>$x_data</cod
 <p>Additional named arguments are user-supplied statistical parameters
 (e.g. <code>.mu</code>, <code>.ci</code>). See <code><a href="model-processor.html">model_processor()</a></code> for the full <code>.proc</code>
 schema per model type.</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/baseline.html">baseline</a></span><span class="op">(</span></span>
-<span>    fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">.mu</span> <span class="op">=</span> <span class="fl">0</span>, <span class="va">.alt</span> <span class="op">=</span> <span class="st">"two.sided"</span>, <span class="va">.ci</span> <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span> <span class="op">{</span></span>
-<span>        <span class="va">x</span> <span class="op">=</span> <span class="va">.proc</span><span class="op">$</span><span class="va">x_data</span></span>
-<span>        <span class="va">group_data</span> <span class="op">=</span> <span class="va">.proc</span><span class="op">$</span><span class="va">group_data</span></span>
-<span>        <span class="co"># ...</span></span>
-<span>    <span class="op">}</span></span>
-<span><span class="op">)</span></span></code></pre><p></p></div></dd>
+<p></p><div class="sourceCode r"><pre><code>baseline(
+    fn = function(.proc, .mu = 0, .ci = 0.95) {
+        # ...
+        &lt;your-own-class&gt;(...)   # return a class_stat_infer subclass
+    }
+)
+</code></pre><p></p></div>
+<p>When <code>fn</code> returns a <a href="class_stat_infer.html">class_stat_infer</a> subclass, <code><a href="auto_tidy.html">auto_tidy()</a></code> and
+future <code>auto_*()</code> generics dispatch automatically on the result.
+Otherwise, register a tidy method via <code><a href="making_tidy.html">making_tidy()</a></code>.</p></dd>
 
 
 <dt id="arg-print">print<a class="anchor" aria-label="anchor" href="#arg-print"></a></dt>
 <dd><p>A function with signature <code>function(x, ...)</code> for formatting
 the result. <code>x</code> is a <code>cld_exec</code> object — read your result from <code>x@data</code>.
-<code>NULL</code> falls back to <code>print(x@data)</code>.</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/baseline.html">baseline</a></span><span class="op">(</span></span>
-<span>    fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span> <span class="va">...</span> <span class="op">}</span>,</span>
-<span>    print <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>        <span class="va">dat</span> <span class="op">=</span> <span class="va">x</span><span class="op">@</span><span class="va">data</span></span>
-<span>        <span class="co"># render dat</span></span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>    <span class="op">}</span></span>
-<span><span class="op">)</span></span></code></pre><p></p></div></dd>
+<code>NULL</code> falls back to <code>print(x@data)</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -100,7 +95,7 @@ the result. <code>x</code> is a <code>cld_exec</code> object — read your resul
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="variant.html">variant()</a></code>, <code><a href="agendas.html">agendas()</a></code>, <code><a href="stat-infer-definer.html">stat_define()</a></code>, <code><a href="model-processor.html">model_processor()</a></code>,
-<code>cld_exec</code></p></div>
+<a href="class_stat_infer.html">class_stat_infer</a>, <code><a href="auto_tidy.html">auto_tidy()</a></code></p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

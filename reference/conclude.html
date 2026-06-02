@@ -99,7 +99,7 @@ was called.</p></dd>
 
 
 <p>The <code>print</code> argument of <code><a href="baseline.html">baseline()</a></code> and <code><a href="variant.html">variant()</a></code> receives a <code>cld_exec</code>
-object as <code>x</code>. Read your result from <code>x@data</code>:</p>
+object as <code>x</code>. Read your output from <code>x@data</code>:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/baseline.html">baseline</a></span><span class="op">(</span></span>
 <span>    fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">.mu</span> <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span> <span class="va">...</span> <span class="op">}</span>,</span>
 <span>    print <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
@@ -108,20 +108,19 @@ object as <code>x</code>. Read your result from <code>x@data</code>:</p>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span>    <span class="op">}</span></span>
 <span><span class="op">)</span></span></code></pre><p></p></div>
+<p>Otherwise, when the base S7 class dispatches <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> elsewhere, it is inherited
+without writing <code>print</code> from <code><a href="baseline.html">baseline()</a></code> / <code><a href="variant.html">variant()</a></code></p>
     </div>
     <div class="section level2">
     <h2 id="writing-tidy-functions">Writing tidy functions<a class="anchor" aria-label="anchor" href="#writing-tidy-functions"></a></h2>
 
 
-<p>Functions passed to <code><a href="method_tidy.html">method_tidy()</a></code> receive a <code>cld_exec</code> object as <code>.x</code>.
-Read your result from <code>.x@data</code>. Use <code>.x@cld_meta$method</code> if you need to
-branch on the variant:</p>
+<p>Prefer implementing <code><a href="auto_tidy.html">auto_tidy()</a></code> on your result class when <code>fn</code> returns
+a <a href="class_stat_infer.html">class_stat_infer</a> subclass. Use <code><a href="making_tidy.html">making_tidy()</a></code> only when <code>fn</code>
+intentionally returns a non-<a href="class_stat_infer.html">class_stat_infer</a> object.</p>
+<p>For example:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/making_tidy.html">making_tidy</a></span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span><span class="op">)</span> <span class="op"><a href="../reference/modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="../reference/method_tidy.html">method_tidy</a></span><span class="op">(</span></span>
 <span>    default <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.x</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
-<span>        <span class="va">dat</span> <span class="op">=</span> <span class="va">.x</span><span class="op">@</span><span class="va">data</span></span>
-<span>        <span class="co"># return a tibble</span></span>
-<span>    <span class="op">}</span>,</span>
-<span>    boot <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.x</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="va">dat</span> <span class="op">=</span> <span class="va">.x</span><span class="op">@</span><span class="va">data</span></span>
 <span>        <span class="co"># return a tibble</span></span>
 <span>    <span class="op">}</span></span>
@@ -129,7 +128,8 @@ branch on the variant:</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="prepare-test.html">prepare_test()</a></code>, <code><a href="prepare-model.html">prepare_model()</a></code>, <code><a href="via.html">via()</a></code>, <code><a href="model-processor.html">model_processor()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="prepare-test.html">prepare_test()</a></code>, <code><a href="prepare-model.html">prepare_model()</a></code>, <code><a href="via.html">via()</a></code>, <code><a href="model-processor.html">model_processor()</a></code>,
+<a href="class_stat_infer.html">class_stat_infer</a>, <code><a href="auto_tidy.html">auto_tidy()</a></code></p></div>
     </div>
 
     <div class="section level2">
