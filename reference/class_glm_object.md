@@ -44,9 +44,8 @@ Constructor arguments (populated automatically by
 # Inheriting from glm_object in a downstream package:
 my_glm = S7::new_class(
     "my_glm",
-    parent = statim::glm_object
+    parent = class_glm_object
 )
-#> Error: 'glm_object' is not an exported object from 'namespace:statim'
 
 # Populating glm_object from a fitted glm (as done internally):
 fit = glm(am ~ wt + hp, data = mtcars, family = binomial())

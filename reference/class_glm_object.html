@@ -75,9 +75,8 @@ Downstream packages can use it as a <code>parent</code> in <code><a href="https:
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Inheriting from glm_object in a downstream package:</span></span></span>
 <span class="r-in"><span><span class="va">my_glm</span> <span class="op">=</span> <span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/new_class.html" class="external-link">new_class</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="st">"my_glm"</span>,</span></span>
-<span class="r-in"><span>    parent <span class="op">=</span> <span class="fu">statim</span><span class="fu">::</span><span class="va">glm_object</span></span></span>
+<span class="r-in"><span>    parent <span class="op">=</span> <span class="va">class_glm_object</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> 'glm_object' is not an exported object from 'namespace:statim'</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Populating glm_object from a fitted glm (as done internally):</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span>, data <span class="op">=</span> <span class="va">mtcars</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
