@@ -41,18 +41,18 @@ Constructor arguments (populated automatically by
 ## Examples
 
 ``` r
-# Inheriting from glm_object in a downstream package:
+# Inheriting from class_glm_object in a downstream package:
 my_glm = S7::new_class(
     "my_glm",
     parent = class_glm_object
 )
 
-# Populating glm_object from a fitted glm (as done internally):
+# Populating class_glm_object from a fitted glm (as done internally):
 fit = glm(am ~ wt + hp, data = mtcars, family = binomial())
 s = summary(fit)
 fam = fit$family$family
 
-obj = glm_object(
+obj = class_glm_object(
     terms = fit$terms,
     df_residual = fit$df.residual,
     deviance = fit$deviance,
@@ -75,5 +75,4 @@ obj = glm_object(
         n_obs = as.integer(length(fit$residuals))
     )
 )
-#> Error in glm_object(terms = fit$terms, df_residual = fit$df.residual,     deviance = fit$deviance, dispersion = if (fam %in% c("binomial",         "poisson")) 1 else s$dispersion, family = fam, coefficients = tibble::tibble(term = rownames(coef(s)),         estimate = coef(s)[, 1], std_error = coef(s)[, 2], statistic = coef(s)[,             3], p_value = coef(s)[, 4]), fit_summary = tibble::tibble(family = fam,         link = fit$family$link, null_deviance = fit$null.deviance,         deviance = fit$deviance, df_residual = as.integer(fit$df.residual),         aic = fit$aic, n_obs = as.integer(length(fit$residuals)))): could not find function "glm_object"
 ```

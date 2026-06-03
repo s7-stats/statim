@@ -29,7 +29,7 @@ GLM(.model = NULL, .data = NULL, ...)
 
 ## Value
 
-A `cld_exec` object in a `glm_object`, or a `model_spec` when
+A `cld_exec` object in a `class_glm_object`, or a `model_spec` when
 `.model = NULL`.
 
 ## Details
