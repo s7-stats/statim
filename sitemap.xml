@@ -28,13 +28,15 @@
 <url><loc>https://joshuamarie.github.io/statim/reference/claim_contrast_coefs.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/claim_scalar_diff.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/claim_translate.html</loc></url>
+<url><loc>https://joshuamarie.github.io/statim/reference/class_glm_object.html</loc></url>
+<url><loc>https://joshuamarie.github.io/statim/reference/class_lm_object.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/class_stat_infer.html</loc></url>
+<url><loc>https://joshuamarie.github.io/statim/reference/class_ttest_pairwise.html</loc></url>
+<url><loc>https://joshuamarie.github.io/statim/reference/class_ttest_two.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/conclude.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/equal-op.html</loc></url>
-<url><loc>https://joshuamarie.github.io/statim/reference/glm_object.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/index.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/inlines.html</loc></url>
-<url><loc>https://joshuamarie.github.io/statim/reference/lm_object.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/making_tidy.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/map_claim.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/method_tidy.html</loc></url>
@@ -53,6 +55,9 @@
 <url><loc>https://joshuamarie.github.io/statim/reference/stat-infer-definer.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/statim.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/tidy.html</loc></url>
+<url><loc>https://joshuamarie.github.io/statim/reference/ttest-formula.html</loc></url>
+<url><loc>https://joshuamarie.github.io/statim/reference/ttest-pairwise.html</loc></url>
+<url><loc>https://joshuamarie.github.io/statim/reference/ttest-xby.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/update-test-lazy.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/variant.html</loc></url>
 <url><loc>https://joshuamarie.github.io/statim/reference/via.html</loc></url>

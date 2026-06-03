@@ -26,31 +26,110 @@ TTEST(.model = NULL, .data = NULL, ...)
 
 - ...:
 
-  Additional arguments passed to the implementation: `.paired`, `.mu`,
-  `.alt`, `.ci` for the classical path.
+  Additional arguments passed to the implementation. See the **Arguments
+  by model ID** section for the full list per path.
 
 ## Value
 
-An `htest_spec` object (standalone or eager), or a `test_spec` object
-(pipeline).
+A `cld_exec` object, or a `test_spec` when `.model = NULL`. The object
+stored in `cld_exec@data` depends on the model ID:
+
+- [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md) — a
+  [class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+  object
+
+- [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md)
+  — a
+  [class_ttest_pairwise](https://joshuamarie.github.io/statim/reference/class_ttest_pairwise.md)
+  object
+
+- formula — a
+  [class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+  object
 
 ## Supported model IDs
 
+Each model ID routes to a separate implementation. See the linked pages
+for full argument lists, variants, and result class details:
+
 - [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md) —
-  two-sample or paired t-test
+  two-sample or paired t-test. See
+  [ttest-xby](https://joshuamarie.github.io/statim/reference/ttest-xby.md).
 
 - [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md)
-  — pairwise t-tests across variables
+  — pairwise t-tests across variables. See
+  [ttest-pairwise](https://joshuamarie.github.io/statim/reference/ttest-pairwise.md).
 
-- formula — one-sample or two-sample t-test
+- formula — one-sample or two-sample t-test. See
+  [ttest-formula](https://joshuamarie.github.io/statim/reference/ttest-formula.md).
 
-## Method variants (via [`via()`](https://joshuamarie.github.io/statim/reference/via.md))
+## Arguments
 
-- `"boot"` — bootstrap confidence interval
+The following arguments are passed via `...` in `TTEST()` or
+[`via()`](https://joshuamarie.github.io/statim/reference/via.md):
 
-- `"permute"` — permutation test
+- `.paired`:
 
-- `"permute_rfast"` — permutation test backed by Rfast2
+  Logical. Whether to perform a paired t-test. Default `FALSE`.
+
+- `.mu`:
+
+  Numeric. Hypothesized mean difference. Default `0`.
+
+- `.alt`:
+
+  Direction: `"two.sided"`, `"greater"`, or `"less"`. Default
+  `"two.sided"`.
+
+- `.ci`:
+
+  Confidence level. Default `0.95`.
+
+## Variants
+
+- `"boot"`:
+
+  Bootstrap CI. Accepts `n` (reps) and `seed`.
+
+- `"permute"`:
+
+  Permutation test. Accepts `n` and `seed`.
+
+- `"weighted"`:
+
+  Weighted contrast. Accepts `.w`, `.mu`, `.ci`, `.op`.
+
+## Result class
+
+Returns a
+[class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+object. All variants that also return
+[class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+inherit
+[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+and [`print()`](https://rdrr.io/r/base/print.html) automatically.
+
+## Hypothesis claims
+
+Supports [`MU()`](https://joshuamarie.github.io/statim/reference/MU.md)
+via
+[`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md).
+The `weighted` variant additionally accepts contrast coefficients via
+`.w`.
+
+## See also
+
+[ttest-xby](https://joshuamarie.github.io/statim/reference/ttest-xby.md),
+[ttest-pairwise](https://joshuamarie.github.io/statim/reference/ttest-pairwise.md),
+[ttest-formula](https://joshuamarie.github.io/statim/reference/ttest-formula.md)
+for per-implementation details.
+[class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md),
+[class_ttest_pairwise](https://joshuamarie.github.io/statim/reference/class_ttest_pairwise.md)
+for result class slots.
+[`via()`](https://joshuamarie.github.io/statim/reference/via.md),
+[`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md),
+[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md),
+[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md).
 
 ## Examples
 
@@ -59,20 +138,20 @@ An `htest_spec` object (standalone or eager), or a `test_spec` object
 TTEST(x_by(extra, group), sleep)
 #> -- Summary ---------------------------------------------------------------------
 #> 
-#> ─────────────────────────────────
-#>   groups   diff   t-stat  pval   
-#> ─────────────────────────────────
-#>   group   -1.580  -1.861  0.079  
-#> ─────────────────────────────────
+#> ──────────────────────────────────────────
+#>   group  estimate  t_stat    df    p_val  
+#> ──────────────────────────────────────────
+#>   group   -1.580   -1.861  17.780  0.079  
+#> ──────────────────────────────────────────
 #> 
 #> 
 #> -- Confidence Interval ---------------------------------------------------------
 #> 
-#> ──────────────────────────────
-#>   groups  lower_95  upper_95  
-#> ──────────────────────────────
-#>   group    -3.365    0.205    
-#> ──────────────────────────────
+#> ─────────────────────────────
+#>   group  lower_95  upper_95  
+#> ─────────────────────────────
+#>   group   -3.365    0.206    
+#> ─────────────────────────────
 #> 
 #> 
 
@@ -93,20 +172,20 @@ sleep |>
 #> 
 #> -- Summary ---------------------------------------------------------------------
 #> 
-#> ─────────────────────────────────
-#>   groups   diff   t-stat  pval   
-#> ─────────────────────────────────
-#>   group   -1.580  -1.861  0.079  
-#> ─────────────────────────────────
+#> ──────────────────────────────────────────
+#>   group  estimate  t_stat    df    p_val  
+#> ──────────────────────────────────────────
+#>   group   -1.580   -1.861  17.780  0.079  
+#> ──────────────────────────────────────────
 #> 
 #> 
 #> -- Confidence Interval ---------------------------------------------------------
 #> 
-#> ──────────────────────────────
-#>   groups  lower_95  upper_95  
-#> ──────────────────────────────
-#>   group    -3.365    0.205    
-#> ──────────────────────────────
+#> ─────────────────────────────
+#>   group  lower_95  upper_95  
+#> ─────────────────────────────
+#>   group   -3.365    0.206    
+#> ─────────────────────────────
 #> 
 #> 
 
@@ -165,6 +244,121 @@ sleep |>
 #> ───────────────────────────────
 #>    -1.580     0.092    2000    
 #> ───────────────────────────────
+#> 
+#> 
+
+# weighted contrast
+sleep |>
+    define_model(x_by(extra, group)) |>
+    prepare_test(TTEST) |>
+    state_null(
+        2 * MU(extra, group == "1") <= MU(extra, group == "2")
+    ) |>
+    via("weighted") |>
+    conclude()
+#> 
+#> == Model ======================================================================= 
+#> 
+#> Model ID : x_by 
+#> Args : extra | group 
+#>     x_vars : 1 
+#>     by_vars : 1 
+#> 
+#> == T-Test · weighted =========================================================== 
+#> 
+#> -- Summary ---------------------------------------------------------------------
+#> 
+#> ──────────────────────────────────────────
+#>   group  estimate  t_stat    df    p_val  
+#> ──────────────────────────────────────────
+#>   group   -0.830   -0.640  14.130  0.266  
+#> ──────────────────────────────────────────
+#> 
+#> 
+#> -- Confidence Interval ---------------------------------------------------------
+#> 
+#> ─────────────────────────────
+#>   group  lower_95  upper_95  
+#> ─────────────────────────────
+#>   group    -Inf     2.282    
+#> ─────────────────────────────
+#> 
+#> 
+
+# pairwise
+iris |>
+    define_model(pairwise(Sepal.Length, Sepal.Width, Petal.Length)) |>
+    prepare_test(TTEST) |>
+    conclude()
+#> 
+#> == Model ======================================================================= 
+#> 
+#> Model ID : pairwise 
+#> Args : Sepal.Length, Sepal.Width, Petal.Length 
+#>     direction : lt 
+#>     n_pairs : 3 
+#> 
+#> == T-Test ====================================================================== 
+#> 
+#> 
+#> ┌───────────────────────────┐
+#> | Layout for Pairwise Matri |
+#> ├───────────────────────────┤
+#> |         < diff >          |
+#> |        < t_stat >         |
+#> |         < pval >          |
+#> └───────────────────────────┘
+#> 
+#> 
+#>                   Welch Two Sample t-test                   
+#> ────────────────────────────────────────────────────────────
+#>   Variable       Sepal.Length   Petal.Length   Sepal.Width  
+#> ────────────────────────────────────────────────────────────
+#>   Sepal.Length                                              
+#>                                                             
+#>                                                             
+#> ────────────────────────────────────────────────────────────
+#>   Petal.Length      -2.085                                  
+#>                    -13.098                                  
+#>                     <0.001                                  
+#> ────────────────────────────────────────────────────────────
+#>   Sepal.Width       2.786          0.701                    
+#>                     36.463         4.719                    
+#>                     <0.001         <0.001                   
+#> ────────────────────────────────────────────────────────────
+
+# hypothesis claim
+sleep |>
+    define_model(x_by(extra, group)) |>
+    prepare_test(TTEST) |>
+    state_null(MU(extra) == 0) |>
+    conclude()
+#> 
+#> == Model ======================================================================= 
+#> 
+#> Model ID : x_by 
+#> Args : extra | group 
+#>     x_vars : 1 
+#>     by_vars : 1 
+#> 
+#> == T-Test ====================================================================== 
+#> 
+#> -- Summary ---------------------------------------------------------------------
+#> 
+#> ──────────────────────────────────────────
+#>   group  estimate  t_stat    df    p_val  
+#> ──────────────────────────────────────────
+#>   group   -1.580   -1.861  17.780  0.079  
+#> ──────────────────────────────────────────
+#> 
+#> 
+#> -- Confidence Interval ---------------------------------------------------------
+#> 
+#> ─────────────────────────────
+#>   group  lower_95  upper_95  
+#> ─────────────────────────────
+#>   group   -3.365    0.206    
+#> ─────────────────────────────
 #> 
 #> 
 ```

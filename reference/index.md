@@ -143,14 +143,19 @@ Declare how a test runs
 
 ### Base statistical inference output class
 
-Requires within the pipeline,
-e.g. [`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md)
+With different implementation but the same class, the methods,
+e.g. [`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md),
+will be shareable
 
 - [`class_stat_infer()`](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
   : Base class for all statistical result objects
-- [`lm_object`](https://joshuamarie.github.io/statim/reference/lm_object.md)
+- [`class_ttest_pairwise`](https://joshuamarie.github.io/statim/reference/class_ttest_pairwise.md)
+  : Structured result container for pairwise t-tests
+- [`class_ttest_two`](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+  : Structured result container for two-sample t-tests
+- [`class_lm_object`](https://joshuamarie.github.io/statim/reference/class_lm_object.md)
   : Structured result container for linear model fits
-- [`glm_object`](https://joshuamarie.github.io/statim/reference/glm_object.md)
+- [`class_glm_object`](https://joshuamarie.github.io/statim/reference/class_glm_object.md)
   : Structured result container for GLM fits
 
 ### Test definition
@@ -219,12 +224,3 @@ method for following `STAT_CONSTRUCTOR` objects
   : Declare tidy methods for a stat result
 - [`` `%<-%` ``](https://joshuamarie.github.io/statim/reference/modifying-assignment.md)
   : Apply a method_tidy to a making_tidy target
-
-### Exclusive for linear models only
-
-Containerization of linear model outputs in S7 classes
-
-- [`lm_object`](https://joshuamarie.github.io/statim/reference/lm_object.md)
-  : Structured result container for linear model fits
-- [`glm_object`](https://joshuamarie.github.io/statim/reference/glm_object.md)
-  : Structured result container for GLM fits

@@ -6,7 +6,7 @@ by `fn` in
 and
 [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md).
 Concrete result classes like
-[lm_object](https://joshuamarie.github.io/statim/reference/lm_object.md)
+[class_lm_object](https://joshuamarie.github.io/statim/reference/class_lm_object.md)
 inherit from it.
 
 ## Usage
@@ -70,7 +70,7 @@ The built-in hierarchy is:
 
     class_stat_infer
         ├── anova_able
-        │       └── lm_object
+        │       └── class_lm_object
         └── <your-own-output-class>
                 └── <your-own-subclass>
 
@@ -83,4 +83,4 @@ Downstream packages can extend the hierarchy further by using any
 [`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md),
 [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md),
 [`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md),
-[lm_object](https://joshuamarie.github.io/statim/reference/lm_object.md)
+[class_lm_object](https://joshuamarie.github.io/statim/reference/class_lm_object.md)

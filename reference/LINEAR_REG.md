@@ -29,14 +29,14 @@ LINEAR_REG(.model = NULL, .data = NULL, ...)
 
 ## Value
 
-A `cld_exec` object containing an
-[lm_object](https://joshuamarie.github.io/statim/reference/lm_object.md),
+A `cld_exec` object containing a
+[class_lm_object](https://joshuamarie.github.io/statim/reference/class_lm_object.md),
 or a `model_spec` when `.model = NULL`.
 
 ## Details
 
 The result is an
-[lm_object](https://joshuamarie.github.io/statim/reference/lm_object.md),
+[class_lm_object](https://joshuamarie.github.io/statim/reference/class_lm_object.md),
 which satisfies the
 [`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
 protocol and prints coefficients and model fit universally across all
