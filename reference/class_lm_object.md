@@ -83,15 +83,15 @@ obj@coefficients
 #> 2 speed           3.93     0.416      9.46 1.49e-12
 obj@fit_summary
 #> # A tibble: 9 × 2
-#>   statistic      value
-#>   <chr>          <dbl>
-#> 1 R²             0.651
-#> 2 Adj. R²        0.644
-#> 3 Sigma         15.4  
-#> 4 df (residual) 48    
-#> 5 n             50    
-#> 6 F-statistic   89.6  
-#> 7 F df1          1    
-#> 8 F df2         48    
-#> 9 F p-value      0    
+#>   statistic         value
+#>   <chr>             <dbl>
+#> 1 R Squared      6.51e- 1
+#> 2 Adj. R Squared 6.44e- 1
+#> 3 Sigma          1.54e+ 1
+#> 4 n              5   e+ 1
+#> 5 df (residual)  4.8 e+ 1
+#> 6 F-statistic    8.96e+ 1
+#> 7 df1            1   e+ 0
+#> 8 df2            4.8 e+ 1
+#> 9 p-value        1.49e-12
 ```
