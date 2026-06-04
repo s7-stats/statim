@@ -88,9 +88,9 @@
 <p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is a new and modified approach of high-level
 statistical inference in R. It is fully built for statistical inference
 pipeline, made to be pipe-able, extensible, and exportable. This package
-is built at top of S7, making <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> flexible but strict.
-The idea is not completely new, as this inherits traditional statistical
-modelling approach in R:</p>
+is built at top of S7, making <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> flexible and strict.
+The idea is not completely new, as the said approach apparantly inherits
+traditional statistical modelling approach in R around this idea:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&lt;</span>statistical<span class="sc">-</span><span class="cf">function</span><span class="sc">&gt;</span>(<span class="sc">&lt;</span>formula<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">&gt;</span>)</span></code></pre></div>
 <p>But it comes with the flavors of tidyverse-esque grammar verbs
 composition.</p>
@@ -98,20 +98,22 @@ composition.</p>
 <div class="section level2">
 <h2 id="emulation-of-formulas-model-ids">Emulation of formulas: model IDs<a class="anchor" aria-label="anchor" href="#emulation-of-formulas-model-ids"></a>
 </h2>
-<p>The functions that emulate the <code>formula</code> (and its ideas)
-to describe the model to be written within the pipeline are called model
-IDs. Normally, they inherit the class of <code>model_id</code>, and they
-should be built with S7. Traditionally, <code>formula</code> is used to
-describe the relationship between LHS (left-hand side) and RHS
-(right-hand side), but <code>model_id</code> take it on different
-level.</p>
-<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> has built-in <code>model_id</code> objects:</p>
+<p>The functions that emulate the <code>&lt;formula&gt;</code> (and its
+idea) to describe the model to be written within the pipeline are called
+model IDs. Normally, they inherit the class of
+<code>&lt;model_id&gt;</code>, and they should be built within S7.
+Traditionally, <code>&lt;formula&gt;</code> is used to describe the
+relationship between LHS (left-hand side) and RHS (right-hand side), but
+<code>model_id</code> take it on another different level.</p>
+<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> has built-in <code>&lt;model_id&gt;</code>
+objects:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p><code><a href="../reference/x_by.html">x_by()</a></code>: It simply reads as “x by group”. It has 2
 main arguments: <code>x</code> and <code>group</code>, and it is ideal
-for pipeline which compares <code>x</code> by <code>group</code>. Also,
-you can use its infix operator version <code>%by%</code>.</p>
+for pipeline which compares <code>x</code> by <code>group</code>.
+Moreover, you can alternatively use its infix operator version
+<code>%by%</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># In a function call</span></span>
 <span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">group</span><span class="op">)</span></span>
@@ -120,7 +122,7 @@ you can use its infix operator version <code>%by%</code>.</p>
 <span><span class="co"># Using its infix operator version</span></span>
 <span><span class="va">x</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span></span>
 <span><span class="va">x</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span><span class="op">)</span></span></code></pre></div>
-<p>Both <code>x</code> and <code>group</code> can accept
+<p>Both <code>x</code> and <code>group</code> accept
 <code>&lt;tidyselect&gt;</code> helpers, such as
 <code>starts_with()</code>. Only when a data frame is used.</p>
 </li>
@@ -131,7 +133,7 @@ and it is ideal for pipeline which describes the relationship of
 <code>x</code> to <code>resp</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
-<p>Both <code>x</code> and <code>resp</code> can accept
+<p>Both <code>x</code> and <code>resp</code> accept
 <code>&lt;tidyselect&gt;</code> helpers, such as
 <code>starts_with()</code>. Only when a data frame is used.</p>
 </li>
@@ -150,11 +152,13 @@ Also, it can accept <code>&lt;tidyselect&gt;</code> helpers if data
 frame is given.</p>
 </li>
 </ol>
-<p>They also emulate <code>aes()</code> from <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>,
-which it captures the expression internally, instead of evaluating them.
-Take note that every <code>model_id</code> must be a captured
-expression, generally in <code>language</code> data structure, just like
-formula objects in R.</p>
+<p>And if you notice, they also emulate <code>aes()</code> mapper from
+<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>, which it captures the expression internally,
+instead of evaluating them — indeed they are mappers, just like
+<code>&lt;formula&gt;</code> objects. Take note that every
+<code>&lt;model_id&gt;</code> must be a captured expression, generally
+in <code>&lt;language&gt;</code> data structure, just like formula
+objects in R.</p>
 </div>
 <div class="section level2">
 <h2 id="general-workflow">General Workflow<a class="anchor" aria-label="anchor" href="#general-workflow"></a>
@@ -164,11 +168,12 @@ formula objects in R.</p>
 stages:</p>
 <ol style="list-style-type: lower-roman">
 <li><p><em>Model processor and definition:</em> The stage that explains
-the model of the statistical inference. You’ll use define_model()
-(always at the beginning), and then some functions I still have to think
-about (like transformations and updating the model)</p></li>
+the model of the statistical inference. You’ll use
+<code><a href="../reference/model-define-base.html">define_model()</a></code> (always at the beginning), and then some
+functions to be added in the future (like transformations and updating
+the model).</p></li>
 <li><p><em>Parameterization:</em> This stage is where you’ll define the
-statistical inference. It can be a model-based inference (e.g. linear
+statistical inference. It is either a model-based inference (e.g. linear
 regression) or H-test inference (e.g. t-test). They are lazy-loaded, and
 you should be able to do anything.</p></li>
 <li><p><em>Output processing and retrieval:</em> You’ll execute the

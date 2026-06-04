@@ -6,9 +6,9 @@
 approach of high-level statistical inference in R. It is fully built for
 statistical inference pipeline, made to be pipe-able, extensible, and
 exportable. This package is built at top of S7, making
-[statim](https://github.com/joshuamarie/statim) flexible but strict. The
-idea is not completely new, as this inherits traditional statistical
-modelling approach in R:
+[statim](https://github.com/joshuamarie/statim) flexible and strict. The
+idea is not completely new, as the said approach apparantly inherits
+traditional statistical modelling approach in R around this idea:
 
 ``` r
 <statistical-function>(<formula>, <data>)
@@ -19,20 +19,21 @@ composition.
 
 ## Emulation of formulas: model IDs
 
-The functions that emulate the `formula` (and its ideas) to describe the
-model to be written within the pipeline are called model IDs. Normally,
-they inherit the class of `model_id`, and they should be built with S7.
-Traditionally, `formula` is used to describe the relationship between
-LHS (left-hand side) and RHS (right-hand side), but `model_id` take it
-on different level.
+The functions that emulate the `<formula>` (and its idea) to describe
+the model to be written within the pipeline are called model IDs.
+Normally, they inherit the class of `<model_id>`, and they should be
+built within S7. Traditionally, `<formula>` is used to describe the
+relationship between LHS (left-hand side) and RHS (right-hand side), but
+`model_id` take it on another different level.
 
-[statim](https://github.com/joshuamarie/statim) has built-in `model_id`
-objects:
+[statim](https://github.com/joshuamarie/statim) has built-in
+`<model_id>` objects:
 
 1.  [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md):
     It simply reads as “x by group”. It has 2 main arguments: `x` and
     `group`, and it is ideal for pipeline which compares `x` by `group`.
-    Also, you can use its infix operator version `%by%`.
+    Moreover, you can alternatively use its infix operator version
+    `%by%`.
 
     ``` r
 
@@ -45,7 +46,7 @@ objects:
     x %by% c(g1, g2)
     ```
 
-    Both `x` and `group` can accept `<tidyselect>` helpers, such as
+    Both `x` and `group` accept `<tidyselect>` helpers, such as
     `starts_with()`. Only when a data frame is used.
 
 2.  [`rel()`](https://joshuamarie.github.io/statim/reference/rel.md): It
@@ -58,7 +59,7 @@ objects:
     rel(x, y)
     ```
 
-    Both `x` and `resp` can accept `<tidyselect>` helpers, such as
+    Both `x` and `resp` accept `<tidyselect>` helpers, such as
     `starts_with()`. Only when a data frame is used.
 
 3.  [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md):
@@ -77,10 +78,12 @@ objects:
     alphabetically”. Also, it can accept `<tidyselect>` helpers if data
     frame is given.
 
-They also emulate `aes()` from [ggplot2](https://ggplot2.tidyverse.org),
-which it captures the expression internally, instead of evaluating them.
-Take note that every `model_id` must be a captured expression, generally
-in `language` data structure, just like formula objects in R.
+And if you notice, they also emulate `aes()` mapper from
+[ggplot2](https://ggplot2.tidyverse.org), which it captures the
+expression internally, instead of evaluating them — indeed they are
+mappers, just like `<formula>` objects. Take note that every
+`<model_id>` must be a captured expression, generally in `<language>`
+data structure, just like formula objects in R.
 
 ## General Workflow
 
@@ -91,12 +94,13 @@ Usual workflow of writing
 stages:
 
 1.  *Model processor and definition:* The stage that explains the model
-    of the statistical inference. You’ll use define_model() (always at
-    the beginning), and then some functions I still have to think about
-    (like transformations and updating the model)
+    of the statistical inference. You’ll use
+    [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)
+    (always at the beginning), and then some functions to be added in
+    the future (like transformations and updating the model).
 
 2.  *Parameterization:* This stage is where you’ll define the
-    statistical inference. It can be a model-based inference
+    statistical inference. It is either a model-based inference
     (e.g. linear regression) or H-test inference (e.g. t-test). They are
     lazy-loaded, and you should be able to do anything.
 
