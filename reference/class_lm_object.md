@@ -21,26 +21,50 @@ Constructor arguments (populated automatically by
 
 - `df_residual`: residual degrees of freedom.
 
-- `deviance`: scalar deviance.
+- `deviance`: residual sum of squares (RSS).
 
-- `dispersion`: scalar dispersion parameter.
+- `dispersion`: mean squared error (MSE), i.e. `rss / df_residual`.
 
 - `family`: always `"gaussian"` for OLS.
 
+- `fitted`: numeric vector of fitted values.
+
 - `residuals`: numeric vector of model residuals.
 
-- `coefficients`: data frame with columns `term`, `estimate`,
-  `std_error`, `statistic`, `p_value`.
+- `beta`: named numeric vector of coefficient estimates.
 
-- `fit_summary`: data frame with columns `r_squared`, `adj_r_squared`,
-  `sigma`, `df_residual`, `n_obs`.
+- `std_beta`: named numeric vector of coefficient standard errors.
+
+- `x_mat`: model matrix stored as a flat numeric vector via
+  `as.numeric(stats::model.matrix(fit))`. Required for single-model
+  [`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md);
+  omit only if Type I ANOVA is not needed.
+
+The following are computed automatically and do not need to be supplied:
+
+- `statistic`: per-coefficient t-statistics (`beta / std_beta`).
+
+- `p_value`: per-coefficient two-sided p-values.
+
+- `coefficients`: tibble with columns `term`, `estimate`, `std_error`,
+  `statistic`, `p_value`.
+
+- `fit_summary`: two-column tibble (`statistic`, `value`) with
+  R-squared, adjusted R-squared, sigma, n, residual df, F-statistic,
+  df1, df2, and F p-value.
 
 ## anova() protocol
 
-`class_lm_object` participates in
+`class_lm_object` supports two
 [`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
-directly. The comparison is computed from `@residuals`, `@df_residual`,
-and `@terms`.
+modes:
+
+- **Single model** — Type I (sequential) ANOVA. Each term is tested
+  against the model containing all preceding terms. Requires `x_mat` to
+  be populated.
+
+- **Multiple models** — incremental F-test or LRT across nested models.
+  Uses `@deviance` and `@df_residual` only; `x_mat` is not needed.
 
 ## See also
 
@@ -71,10 +95,10 @@ obj = class_lm_object(
     df_residual = df_res,
     deviance = rss,
     dispersion = rss / df_res,
-    family = "gaussian"
+    family = "gaussian",
+    x_mat = as.numeric(stats::model.matrix(fit))
 )
 
-# coefficients and fit_summary are computed automatically:
 obj@coefficients
 #> # A tibble: 2 × 5
 #>   term        estimate std_error statistic  p_value
