@@ -11,7 +11,7 @@ idea is not completely new, as the said approach apparantly inherits
 traditional statistical modelling approach in R around this idea:
 
 ``` r
-<statistical-function>(<formula>, <data>)
+<<statistical-function>>(<formula>, <data>)
 ```
 
 But it comes with the flavors of tidyverse-esque grammar verbs
@@ -21,19 +21,19 @@ composition.
 
 The functions that emulate the `<formula>` (and its idea) to describe
 the model to be written within the pipeline are called model IDs.
-Normally, they inherit the class of `<model_id>`, and they should be
-built within S7. Traditionally, `<formula>` is used to describe the
-relationship between LHS (left-hand side) and RHS (right-hand side), but
-`model_id` take it on another different level.
+Normally, they inherit the parent S7 class of `<model_id>`, and they
+should be built within S7. Traditionally, `<formula>` is used to
+describe the relationship between LHS (left-hand side) and RHS
+(right-hand side), but `<model_id>` take it on another different level.
 
 [statim](https://github.com/joshuamarie/statim) has built-in
 `<model_id>` objects:
 
 1.  [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md):
-    It simply reads as “x by group”. It has 2 main arguments: `x` and
-    `group`, and it is ideal for pipeline which compares `x` by `group`.
-    Moreover, you can alternatively use its infix operator version
-    `%by%`.
+    When used, it is simply translated as “compare x by group”. It
+    requires 2 main arguments: `x` and `group`, and it is ideal for
+    pipelines which compares `x` by `group`. Moreover, you can
+    alternatively use its infix operator version `%by%`.
 
     ``` r
 
@@ -47,12 +47,12 @@ relationship between LHS (left-hand side) and RHS (right-hand side), but
     ```
 
     Both `x` and `group` accept `<tidyselect>` helpers, such as
-    `starts_with()`. Only when a data frame is used.
+    `starts_with()`. Only when a data frame is supplied.
 
 2.  [`rel()`](https://joshuamarie.github.io/statim/reference/rel.md): It
-    simply reads as “relationship between x and y”. It has 2 main
-    arguments: `x` and `resp`, and it is ideal for pipeline which
-    describes the relationship of `x` to `resp`.
+    simply reads the expression once used as “relationship between x and
+    y”. It requires 2 main arguments: `x` and `resp`, and it is ideal
+    for pipelines which describes the relationship of `x` to `resp`.
 
     ``` r
 
@@ -60,7 +60,7 @@ relationship between LHS (left-hand side) and RHS (right-hand side), but
     ```
 
     Both `x` and `resp` accept `<tidyselect>` helpers, such as
-    `starts_with()`. Only when a data frame is used.
+    `starts_with()`. Only when a data frame is supplied.
 
 3.  [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md):
     With this function, all variables being selected by it will produce
@@ -153,8 +153,8 @@ tidy(out)
 #> 1 group    -1.58  -1.86  17.8 0.0794    -3.05   -0.107
 ```
 
-Since it is pipe-able, you can write down the following example above
-as:
+Since it is pipe-able, you can write down at once the following example
+above as:
 
 ``` r
 
@@ -169,3 +169,10 @@ sleep |>
 #>   <chr>    <dbl>  <dbl> <dbl>  <dbl>    <dbl>    <dbl>
 #> 1 group    -1.58  -1.86  17.8 0.0794    -3.05   -0.107
 ```
+
+## Hypothesis expressioms
+
+One of the most unique features of
+[statim](https://github.com/joshuamarie/statim) is the ability to write
+down the expression of null hypothesis during the test in a mathematical
+form, not in a declarative manner like `alternative = "less"` gimmicks.

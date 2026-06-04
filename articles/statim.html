@@ -91,7 +91,7 @@ pipeline, made to be pipe-able, extensible, and exportable. This package
 is built at top of S7, making <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> flexible and strict.
 The idea is not completely new, as the said approach apparantly inherits
 traditional statistical modelling approach in R around this idea:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&lt;</span>statistical<span class="sc">-</span><span class="cf">function</span><span class="sc">&gt;</span>(<span class="sc">&lt;</span>formula<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">&gt;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;</span>statistical<span class="sc">-</span><span class="cf">function</span><span class="sc">&gt;</span><span class="er">&gt;</span>(<span class="sc">&lt;</span>formula<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">&gt;</span>)</span></code></pre></div>
 <p>But it comes with the flavors of tidyverse-esque grammar verbs
 composition.</p>
 </div>
@@ -100,20 +100,20 @@ composition.</p>
 </h2>
 <p>The functions that emulate the <code>&lt;formula&gt;</code> (and its
 idea) to describe the model to be written within the pipeline are called
-model IDs. Normally, they inherit the class of
+model IDs. Normally, they inherit the parent S7 class of
 <code>&lt;model_id&gt;</code>, and they should be built within S7.
 Traditionally, <code>&lt;formula&gt;</code> is used to describe the
 relationship between LHS (left-hand side) and RHS (right-hand side), but
-<code>model_id</code> take it on another different level.</p>
+<code>&lt;model_id&gt;</code> take it on another different level.</p>
 <p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> has built-in <code>&lt;model_id&gt;</code>
 objects:</p>
 <ol style="list-style-type: decimal">
 <li>
-<p><code><a href="../reference/x_by.html">x_by()</a></code>: It simply reads as “x by group”. It has 2
-main arguments: <code>x</code> and <code>group</code>, and it is ideal
-for pipeline which compares <code>x</code> by <code>group</code>.
-Moreover, you can alternatively use its infix operator version
-<code>%by%</code>.</p>
+<p><code><a href="../reference/x_by.html">x_by()</a></code>: When used, it is simply translated as
+“compare x by group”. It requires 2 main arguments: <code>x</code> and
+<code>group</code>, and it is ideal for pipelines which compares
+<code>x</code> by <code>group</code>. Moreover, you can alternatively
+use its infix operator version <code>%by%</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># In a function call</span></span>
 <span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">group</span><span class="op">)</span></span>
@@ -124,18 +124,19 @@ Moreover, you can alternatively use its infix operator version
 <span><span class="va">x</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span><span class="op">)</span></span></code></pre></div>
 <p>Both <code>x</code> and <code>group</code> accept
 <code>&lt;tidyselect&gt;</code> helpers, such as
-<code>starts_with()</code>. Only when a data frame is used.</p>
+<code>starts_with()</code>. Only when a data frame is supplied.</p>
 </li>
 <li>
-<p><code><a href="../reference/rel.html">rel()</a></code>: It simply reads as “relationship between x
-and y”. It has 2 main arguments: <code>x</code> and <code>resp</code>,
-and it is ideal for pipeline which describes the relationship of
-<code>x</code> to <code>resp</code>.</p>
+<p><code><a href="../reference/rel.html">rel()</a></code>: It simply reads the expression once used as
+“relationship between x and y”. It requires 2 main arguments:
+<code>x</code> and <code>resp</code>, and it is ideal for pipelines
+which describes the relationship of <code>x</code> to
+<code>resp</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
 <p>Both <code>x</code> and <code>resp</code> accept
 <code>&lt;tidyselect&gt;</code> helpers, such as
-<code>starts_with()</code>. Only when a data frame is used.</p>
+<code>starts_with()</code>. Only when a data frame is supplied.</p>
 </li>
 <li>
 <p><code><a href="../reference/pairwise.html">pairwise()</a></code>: With this function, all variables being
@@ -221,8 +222,8 @@ parameterization pipeline, and retrieve the output.</p></li>
 <span><span class="co">#&gt;   group estimate t_stat    df  p_val lower_90 upper_90</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> group    -<span style="color: #BB0000;">1.58</span>  -<span style="color: #BB0000;">1.86</span>  17.8 0.079<span style="text-decoration: underline;">4</span>    -<span style="color: #BB0000;">3.05</span>   -<span style="color: #BB0000;">0.107</span></span></span></code></pre></div>
-<p>Since it is pipe-able, you can write down the following example above
-as:</p>
+<p>Since it is pipe-able, you can write down at once the following
+example above as:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -234,6 +235,14 @@ as:</p>
 <span><span class="co">#&gt;   group estimate t_stat    df  p_val lower_90 upper_90</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> group    -<span style="color: #BB0000;">1.58</span>  -<span style="color: #BB0000;">1.86</span>  17.8 0.079<span style="text-decoration: underline;">4</span>    -<span style="color: #BB0000;">3.05</span>   -<span style="color: #BB0000;">0.107</span></span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="hypothesis-expressioms">Hypothesis expressioms<a class="anchor" aria-label="anchor" href="#hypothesis-expressioms"></a>
+</h2>
+<p>One of the most unique features of <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is the
+ability to write down the expression of null hypothesis during the test
+in a mathematical form, not in a declarative manner like
+<code>alternative = "less"</code> gimmicks.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
