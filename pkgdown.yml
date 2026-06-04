@@ -2,9 +2,9 @@ pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
-  extend/extensibility: extend/extensibility.html
+  extend/extensibility1: extend/extensibility1.html
   statim: statim.html
-last_built: 2026-06-04T11:39Z
+last_built: 2026-06-04T11:52Z
 urls:
   reference: https://joshuamarie.github.io/statim/reference
   article: https://joshuamarie.github.io/statim/articles
