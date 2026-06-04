@@ -531,3 +531,11 @@ method for following `STAT_CONSTRUCTOR` objects
 - [`` `%<-%` ``](https://joshuamarie.github.io/statim/reference/modifying-assignment.md)
   : Apply a method_tidy to a making_tidy target
 
+# Articles
+
+### Writing statim extensions
+
+- [The art of
+  extensibility](https://joshuamarie.github.io/statim/articles/extend/extensibility.md):
+
+  Writing statim extensions
