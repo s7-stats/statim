@@ -119,7 +119,7 @@ use its infix operator version <code>%by%</code>.</p>
 <span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">group</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Using its infix operator version</span></span>
+<span><span class="co"># infix form</span></span>
 <span><span class="va">x</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span></span>
 <span><span class="va">x</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span><span class="op">)</span></span></code></pre></div>
 <p>Both <code>x</code> and <code>group</code> accept
@@ -140,14 +140,14 @@ which describes the relationship of <code>x</code> to
 </li>
 <li>
 <p><code><a href="../reference/pairwise.html">pairwise()</a></code>: With this function, all variables being
-selected by it will produce pairs one-by-one. Use <code>direction</code>
-to regulate which pairs are kept, and it’s <code>"lt"</code> (less than)
-by default.</p>
+selected by it will generate all pairwise combinations. Use
+<code>direction</code> to regulate which pairs are kept, and it’s
+<code>"lt"</code> (less than) by default.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pairwise.html">pairwise</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span></code></pre></div>
 <p>Note: When using <code>direction</code>, the filtration is based on
 lexicographic (alphabetical) ordering. Basically,
-<code>direction = "lt"</code> currently means “keep pairs where
+<code>direction = "lt"</code> means “keep pairs where
 <code>name_a</code> comes before <code>name_b</code> alphabetically”.
 Also, it can accept <code>&lt;tidyselect&gt;</code> helpers if data
 frame is given.</p>
@@ -160,6 +160,21 @@ instead of evaluating them — indeed they are mappers, just like
 <code>&lt;model_id&gt;</code> must be a captured expression, generally
 in <code>&lt;language&gt;</code> data structure, just like formula
 objects in R.</p>
+<p>If you don’t have the given data frame, internally it tries to look
+up the variables you passed on <code>&lt;model_id&gt;</code> objects at
+the current environment (global environment by default). If you don’t
+want to write intermediate variables by assigning the data you created
+in a variable, use inline data with <code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code> or multiple inlines
+with <code><a href="../reference/inlines.html">inlines()</a></code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># `x_by()`</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># `rel()`</span></span>
+<span><span class="fu"><a href="../reference/rel.html">rel</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># `pairwise()`</span></span>
+<span><span class="fu"><a href="../reference/pairwise.html">pairwise</a></span><span class="op">(</span><span class="fu"><a href="../reference/inlines.html">inlines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="general-workflow">General Workflow<a class="anchor" aria-label="anchor" href="#general-workflow"></a>
@@ -168,20 +183,27 @@ objects in R.</p>
 <p>Usual workflow of writing <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> comes with three (3)
 stages:</p>
 <ol style="list-style-type: lower-roman">
-<li><p><em>Model processor and definition:</em> The stage that explains
-the model of the statistical inference. You’ll use
-<code><a href="../reference/model-define-base.html">define_model()</a></code> (always at the beginning), and then some
-functions to be added in the future (like transformations and updating
-the model).</p></li>
-<li><p><em>Parameterization:</em> This stage is where you’ll define the
-statistical inference. It is either a model-based inference (e.g. linear
-regression) or H-test inference (e.g. t-test). They are lazy-loaded, and
-you should be able to do anything.</p></li>
-<li><p><em>Output processing and retrieval:</em> You’ll execute the
-parameterization pipeline, and retrieve the output.</p></li>
+<li><p><em>Model processor and definition:</em> The stage which explains
+the model to be analyzed throughout the <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a>’s
+statistical inference pipeline. This stage is where you supplied either
+data frame (it could be any data structure, as long as they’re
+dispatched into <code><a href="../reference/model-processor.html">model_processor()</a></code>) or a
+<code>&lt;model_id&gt;</code> (formula objects are special ones) into
+<code><a href="../reference/model-define-base.html">define_model()</a></code>, and then some functions to be added in the
+future (like transformations and updating the model).</p></li>
+<li><p><em>Parameterization:</em> This stage is always AFTER defining
+the model to be analyzed within the statistical inference pipeline, a
+stage which defines the estimation process of the statistical inference.
+It is either a model-based inference (e.g. linear regression) or H-test
+inference (e.g. t-test). They are lazy-loaded, and you should be able to
+do anything. Later updates may include other processes, such as
+sensitivity analysis.</p></li>
+<li><p><em>Execution and retrieval:</em> You’ll execute the first-two
+stages, especially the parameterization stage, and then retrieve the
+output.</p></li>
 </ol>
 <p>Example:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># i. Model processor and definition</span></span>
 <span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
 <span></span>
@@ -224,7 +246,7 @@ parameterization pipeline, and retrieve the output.</p></li>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> group    -<span style="color: #BB0000;">1.58</span>  -<span style="color: #BB0000;">1.86</span>  17.8 0.079<span style="text-decoration: underline;">4</span>    -<span style="color: #BB0000;">3.05</span>   -<span style="color: #BB0000;">0.107</span></span></span></code></pre></div>
 <p>Since it is pipe-able, you can write down at once the following
 example above as:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -235,14 +257,229 @@ example above as:</p>
 <span><span class="co">#&gt;   group estimate t_stat    df  p_val lower_90 upper_90</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> group    -<span style="color: #BB0000;">1.58</span>  -<span style="color: #BB0000;">1.86</span>  17.8 0.079<span style="text-decoration: underline;">4</span>    -<span style="color: #BB0000;">3.05</span>   -<span style="color: #BB0000;">0.107</span></span></span></code></pre></div>
+<div class="section level3">
+<h3 id="eager-form">Eager Form<a class="anchor" aria-label="anchor" href="#eager-form"></a>
+</h3>
+<p>There are times where you do not need the full pipeline, a quick
+eager form can do that. For a quick one-shot result, every test exposes
+an eager form that skips <code><a href="../reference/model-define-base.html">define_model()</a></code> and
+<code><a href="../reference/prepare-test.html">prepare_test()</a></code> entirely:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span>, <span class="va">sleep</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
+<span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   group  estimate  t_stat    df    p_val  </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   group   -1.580   -1.861  17.780  <span style="font-style: italic;">0.079</span>  </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Confidence Interval ---------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span>
+<span><span class="co">#&gt;   group  lower_90  upper_90  </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span>
+<span><span class="co">#&gt;   group   -3.053    -0.107   </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span></code></pre></div>
+<p>The eager form accepts the same model ID and data arguments, pass the
+rest of arguments, and returns the same printed output. The only
+constraints the “eager form” compensates is you can’t use the rest of
+the API, such as <code><a href="../reference/via.html">via()</a></code> and <code><a href="../reference/tidy.html">tidy()</a></code>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="recalibrating-the-estimation-method">Recalibrating the estimation method<a class="anchor" aria-label="anchor" href="#recalibrating-the-estimation-method"></a>
+</h2>
+<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> has a way to recalibrate the method of
+estimation in the statistical inference pipeline. Use <code><a href="../reference/via.html">via()</a></code>
+to switch a lazy pipeline to an alternative estimation method. It does
+not re-run anything — it updates the specification before
+<code><a href="../reference/conclude.html">conclude()</a></code> executes it. Any named arguments after
+<code>.method</code> are forwarded to that variant.</p>
+<p>For example, switching from a classical t-test to a permutation test
+is a single added line, with nothing else changing:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Classical</span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model ID : x_by </span></span>
+<span><span class="co">#&gt; Args : extra | group </span></span>
+<span><span class="co">#&gt;     x_vars : 1 </span></span>
+<span><span class="co">#&gt;     by_vars : 1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == T-Test ====================================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   group  estimate  t_stat    df    p_val  </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   group   -1.580   -1.861  17.780  <span style="font-style: italic;">0.079</span>  </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Confidence Interval ---------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span>
+<span><span class="co">#&gt;   group  lower_95  upper_95  </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span>
+<span><span class="co">#&gt;   group   -3.365    0.206    </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span>
+<span></span>
+<span><span class="co"># Permutation: one line added</span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model ID : x_by </span></span>
+<span><span class="co">#&gt; Args : extra | group </span></span>
+<span><span class="co">#&gt;     x_vars : 1 </span></span>
+<span><span class="co">#&gt;     by_vars : 1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == T-Test · permute ============================================================ </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ============================== T-test Permutation ==============================</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ───────────────────────────────</span></span>
+<span><span class="co">#&gt;   Statistic  p-value  n_perms  </span></span>
+<span><span class="co">#&gt; ───────────────────────────────</span></span>
+<span><span class="co">#&gt;    -1.580    <span style="font-style: italic;"> 0.102</span>     999    </span></span>
+<span><span class="co">#&gt; ───────────────────────────────</span></span>
+<span></span>
+<span><span class="co"># Bootstrap</span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/via.html">via</a></span><span class="op">(</span><span class="st">"boot"</span>, n <span class="op">=</span> <span class="fl">2000L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model ID : x_by </span></span>
+<span><span class="co">#&gt; Args : extra | group </span></span>
+<span><span class="co">#&gt;     x_vars : 1 </span></span>
+<span><span class="co">#&gt;     by_vars : 1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == T-Test · boot =============================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ============================== Bootstrapped T-test =============================</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Warning in system("tput cols", intern = TRUE): running command 'tput cols' had</span></span>
+<span><span class="co">#&gt; status 2</span></span>
+<span><span class="co">#&gt; ------------------------------</span></span>
+<span><span class="co">#&gt;   CI     :   [-3.1, -0.0198]</span></span>
+<span><span class="co">#&gt;   n_reps :              2000</span></span>
+<span><span class="co">#&gt; ------------------------------</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="hypothesis-expressioms">Hypothesis expressioms<a class="anchor" aria-label="anchor" href="#hypothesis-expressioms"></a>
 </h2>
-<p>One of the most unique features of <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is the
-ability to write down the expression of null hypothesis during the test
-in a mathematical form, not in a declarative manner like
-<code>alternative = "less"</code> gimmicks.</p>
+<p>One of the distinguishing features of <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is the
+ability to state the null hypothesis as a mathematical expression. The
+conventional approach in base R uses declarative strings like
+<code>alternative = "less"</code>, which are opaque: they encode a
+direction without naming the parameter being constrained or the value it
+is being tested against. You cannot read
+<code>alternative = "greater"</code> and know whether the claim is about
+a population mean, a population proportion, or a population correlation
+without reading the surrounding context. After all, hypothesis testing
+is about testing the null hypothesis of whether you have an evidence to
+support the claim, and parametric tests are about testing the population
+population.</p>
+<p>While <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> still supports this,
+<a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> made some redirection with explicit hypothesis
+expressions built from parameter objects, in
+<code>&lt;param_obj&gt;</code> class, and standard R comparison
+operators. The expression names the population parameter, the relational
+operator, and the hypothesized scalar — the same three components that
+appear in any textbook null hypothesis statement. Internally,
+<code><a href="../reference/null-hyp.html">state_null()</a></code> parses the expression, extracts those
+components, and passes them into the test implementation. Any linear
+combination of parameters is accepted on either side.</p>
+<p>The supported operators are <code>==</code>, <code>!=</code>,
+<code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>,
+<code>&gt;=</code>, and <code>%=%</code> (simultaneous equality across
+multiple parameters). Here are the built-in
+<code>&lt;param_obj&gt;</code> objects:</p>
+<ul>
+<li>
+<p><code><a href="../reference/MU.html">MU()</a></code>: refers to the population mean <span class="math inline">\mu</span>. It has following usages:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>MU(x)</code> which means the assumed population mean of the
+variable <code>x</code>.</p></li>
+<li><p><code>MU(x, group == "1")</code> which means the assumed
+population mean of the variable <code>x</code> given the
+<code>group</code> equal <code>"1"</code>.</p></li>
+</ol>
+</li>
+<li><p><code><a href="../reference/RHO.html">RHO()</a></code>: or <span class="math inline">\rho</span>
+which refers to the population correlation between 2 variables —
+<code>RHO(x, y) == 0</code> simply means the population correlation
+between <code>x</code> and <code>y</code> is 0 or <span class="math inline">\rho_{x, y} = 0</span>.</p></li>
+</ul>
+<p>Here’s a simple example of a t-test that tests the following null
+hypothesis:</p>
+<p><span class="math display">\mu_{x|\text{group}=1} \leq
+\mu_{x|\text{group}=2}</span></p>
+<p>or sometimes this null hypothesis can be written as:</p>
+<p><span class="math display">\mu_1 \leq \mu_2</span></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model ID : x_by </span></span>
+<span><span class="co">#&gt; Args : extra | group </span></span>
+<span><span class="co">#&gt;     x_vars : 1 </span></span>
+<span><span class="co">#&gt;     by_vars : 1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == T-Test ====================================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   group  estimate  t_stat    df    p_val  </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   group   -1.580   -1.861  17.780  <span style="color: #BB0000;">0.040</span>  </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Confidence Interval ---------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span>
+<span><span class="co">#&gt;   group  lower_95  upper_95  </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span>
+<span><span class="co">#&gt;   group    -Inf     -0.107   </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="generalization">Generalization<a class="anchor" aria-label="anchor" href="#generalization"></a>
+</h2>
+<p>If you have an inferential statistics tasks, give this package a shot
+— it’s updated and more modernized. Besides, it’s written in S7, so type
+annotation is the least of your worries. And that’s pretty much all you
+need to know when you started working with this package.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -12,8 +12,8 @@ What does [statim](https://github.com/joshuamarie/statim) mean?
 “immediately, at once”. The name carries a double meaning:
 
 - *stat*: as in statistics, the domain this package lives in
-- *im* (*statim*): as in immediate, signalling that inference should be
-  expressible as a direct declaration, not somewhat a sequence of
+- *im* (*statim*): as in “immediate”, signalling that inference should
+  be expressible as a direct declaration, not somewhat a sequence of
   mechanical steps
 
 This simply means: you declare *what* statistical inference you want to
@@ -22,12 +22,14 @@ immediately delivers *how*.
 
 ## Why statim?
 
-R has a rich statistical ecosystem, but inferential procedures are
-fragmented by design: each function has its own interface, its own way
-of specifying data, and its own output format. There is no shared
-grammar for statistical inference: no way to say *what* you want to
-infer without also committing to *how* every individual step is carried
-out.
+R has a rich statistical ecosystem, but hypothesis testing is served by
+an assortment of disconnected functions. R gained a grammar for graphics
+([ggplot2](https://ggplot2.tidyverse.org)) and one for data manipulation
+([dplyr](https://dplyr.tidyverse.org)), but statistical inference has no
+equivalent: each testing function ships with its own interface, its own
+way of specifying data, and its own output format. There is no shared
+grammar for inference: no way to say *what* you want to test without
+simultaneously committing to *how* the procedure carries it out.
 
 [statim](https://github.com/joshuamarie/statim) is an attempt to
 re-imagine this from the ground up, the same way
@@ -84,186 +86,52 @@ GitHub:
 pak::pak("joshuamarie/statim")
 ```
 
-## Usages
+## General Usage
+
+Loading a library comes with preference. In this example,
+[`library()`](https://rdrr.io/r/base/library.html) is used for a simple
+demonstration:
 
 ``` r
 
 library(statim)
 ```
 
-### T-test
-
-The pipeline form lets you recalibrate the method without rewriting
-anything else. Switching from a classical t-test to a permutation t-test
-is a single
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md) call:
+All you need to know is that the usual workflow of
+[statim](https://github.com/joshuamarie/statim) has three usual steps:
 
 ``` r
 
-# Classical
-sleep |>
-    define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
-    conclude()
+sleep |>                                # 1
+    define_model(extra %by% group) |>   # 1              
+    prepare_test(TTEST) |>              # 2         
+    update(.ci = 0.9) |>                # 2      
+    conclude() |>                       # 3           
+    tidy()                              # 3          
 ```
 
-``` R
-#> 
-#> == Model ======================================================================= 
-#> 
-#> Model ID : x_by 
-#> Args : extra | group 
-#>     x_vars : 1 
-#>     by_vars : 1 
-#> 
-#> == T-Test ====================================================================== 
-#> 
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ─────────────────────────────────
-#>   groups   diff   t-stat  pval   
-#> ─────────────────────────────────
-#>   group   -1.580  -1.861  0.079  
-#> ─────────────────────────────────
-#> 
-#> 
-#> -- Confidence Interval ---------------------------------------------------------
-#> 
-#> ──────────────────────────────
-#>   groups  lower_95  upper_95  
-#> ──────────────────────────────
-#>   group    -3.365    0.205    
-#> ──────────────────────────────
-```
+1.  *Model processor and definition*, where defining the model *to be
+    analyzed* happens at the beginning during statistical inference.
+    Typically, this step where supplying either a data frame or a
+    `<model_id>` objects into
+    [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)
+    occurs, and then some functions to be appended in the future
+    updates.
 
-``` r
+2.  *Parameterization* and proceed to writing the estimation process of
+    the statistical inference pipeline. It is either a model-based
+    inference (e.g. linear regression) or H-test inference
+    (e.g. t-test). They are lazy-loaded, and you should be able to do
+    anything.
 
-# Permutation: one line added, nothing else changes
-sleep |>
-    define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
-    via("permute", n = 500L, seed = 123L) |>
-    conclude()
-```
+3.  *Execution and retrieval* then (re-)executes the first 2 steps and
+    retrieves the output.
 
-``` R
-#> 
-#> == Model ======================================================================= 
-#> 
-#> Model ID : x_by 
-#> Args : extra | group 
-#>     x_vars : 1 
-#>     by_vars : 1 
-#> 
-#> == T-Test · permute ============================================================ 
-#> 
-#> ============================== T-test Permutation ==============================
-#> 
-#> 
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ───────────────────────────────
-#>   Statistic  p-value  n_perms  
-#> ───────────────────────────────
-#>    -1.580     0.072     500    
-#> ───────────────────────────────
-```
+See through
+[`vignette("statim")`](https://joshuamarie.github.io/statim/articles/statim.md),
+and learn more about the API design as a starter.
 
-For a quick one-shot result, the eager form skips the pipeline entirely:
-
-``` r
-
-TTEST(x_by(extra, group), sleep)
-```
-
-``` R
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ─────────────────────────────────
-#>   groups   diff   t-stat  pval   
-#> ─────────────────────────────────
-#>   group   -1.580  -1.861  0.079  
-#> ─────────────────────────────────
-#> 
-#> 
-#> -- Confidence Interval ---------------------------------------------------------
-#> 
-#> ──────────────────────────────
-#>   groups  lower_95  upper_95  
-#> ──────────────────────────────
-#>   group    -3.365    0.205    
-#> ──────────────────────────────
-```
-
-### Correlation test
-
-The same pipeline shape works for any registered test. Here is the same
-structure used for a correlation test:
-
-``` r
-
-cars |>
-    define_model(rel(speed, dist)) |>
-    prepare_test(CORTEST) |>
-    conclude()
-```
-
-``` R
-#> 
-#> == Model ======================================================================= 
-#> 
-#> Model ID : rel 
-#> Args : speed ; dist 
-#>     x_vars : 1 
-#>     resp_vars : 1 
-#> 
-#> == Correlation Test ============================================================ 
-#> 
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ─────────────────────────────────────────
-#>       pair      estimate  stat    pval   
-#> ─────────────────────────────────────────
-#>   dist ~ speed   0.807    9.464  <0.001  
-#> ─────────────────────────────────────────
-#> 
-#> 
-#> -- Confidence Interval ---------------------------------------------------------
-#> 
-#> ────────────────────────────────────
-#>       pair      lower_95  upper_95  
-#> ────────────────────────────────────
-#>   dist ~ speed   0.682     0.886    
-#> ────────────────────────────────────
-```
-
-For a quick one-shot result, the eager form works here too:
-
-``` r
-
-CORTEST(rel(speed, dist), cars)
-```
-
-``` R
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ─────────────────────────────────────────
-#>       pair      estimate  stat    pval   
-#> ─────────────────────────────────────────
-#>   dist ~ speed   0.807    9.464  <0.001  
-#> ─────────────────────────────────────────
-#> 
-#> 
-#> -- Confidence Interval ---------------------------------------------------------
-#> 
-#> ────────────────────────────────────
-#>       pair      lower_95  upper_95  
-#> ────────────────────────────────────
-#>   dist ~ speed   0.682     0.886    
-#> ────────────────────────────────────
-```
-
-## Core Ideas
+## Core Semantics
 
 The package is designed around three ideas:
 
@@ -272,19 +140,25 @@ The package is designed around three ideas:
     [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md),
     [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md),
     [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)
-    – regardless of which test is used. Eager forms
+    – regardless of which test or model ID is used. The model ID objects
+    (e.g. `x_by`, `rel`, `pairwise`) determines what the test does; the
+    grammar stays the same. Eager forms
     ([`TTEST()`](https://joshuamarie.github.io/statim/reference/TTEST.md),
     [`CORTEST()`](https://joshuamarie.github.io/statim/reference/CORTEST.md),
     …) provide a shortcut when the full pipeline is not needed.
+
 2.  **Composable pipelines**: build up a test specification lazily,
     recalibrate the estimation method with a single
     [`via()`](https://joshuamarie.github.io/statim/reference/via.md)
     call, and execute with
     [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md).
+
 3.  **Extensible by design**: every test is a
-    [`test_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md)
+    [`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md)
     object; bring your own engine, your own method, your own
-    implementation.
+    implementation. Auto dispatch handles
+    [`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md)
+    for your method without requiring you to write it.
 
 ## License
 
