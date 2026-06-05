@@ -23,7 +23,7 @@ tidy(.x, ...)
 
 ## Value
 
-Any type, typically in a `tibble` data frame format.
+The statistical output in a `tibble` data frame format.
 
 ## Dispatch
 
