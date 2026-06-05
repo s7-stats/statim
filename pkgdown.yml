@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   extend/extensibility1: extend/extensibility1.html
   statim: statim.html
-last_built: 2026-06-05T12:36Z
+last_built: 2026-06-05T15:30Z
 urls:
   reference: https://joshuamarie.github.io/statim/reference
   article: https://joshuamarie.github.io/statim/articles
