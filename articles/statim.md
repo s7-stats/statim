@@ -242,8 +242,8 @@ the API, such as
 [statim](https://github.com/joshuamarie/statim) has a way to recalibrate
 the method of estimation in the statistical inference pipeline. Use
 [`via()`](https://joshuamarie.github.io/statim/reference/via.md) to
-switch a lazy pipeline to an alternative estimation method. It does not
-re-run anything — it updates the specification before
+switch a lazy pipeline to an alternative estimation method. It updates
+the specification while the whole pipeline is defused before
 [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)
 executes it. Any named arguments after `.method` are forwarded to that
 variant.

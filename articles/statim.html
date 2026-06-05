@@ -293,8 +293,8 @@ the API, such as <code><a href="../reference/via.html">via()</a></code> and <cod
 </h2>
 <p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> has a way to recalibrate the method of
 estimation in the statistical inference pipeline. Use <code><a href="../reference/via.html">via()</a></code>
-to switch a lazy pipeline to an alternative estimation method. It does
-not re-run anything — it updates the specification before
+to switch a lazy pipeline to an alternative estimation method. It
+updates the specification while the whole pipeline is defused before
 <code><a href="../reference/conclude.html">conclude()</a></code> executes it. Any named arguments after
 <code>.method</code> are forwarded to that variant.</p>
 <p>For example, switching from a classical t-test to a permutation test
