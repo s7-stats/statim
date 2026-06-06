@@ -75,7 +75,7 @@ describe the relationship between LHS (left-hand side) and RHS
     Note: When using `direction`, the filtration is based on
     lexicographic (alphabetical) ordering. Basically, `direction = "lt"`
     means “keep pairs where `name_a` comes before `name_b`
-    alphabetically”. Also, it can accept `<tidyselect>` helpers if data
+    alphabetically”. Also, it accepts `<tidyselect>` helpers if a data
     frame is given.
 
 4.  [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md):
@@ -103,9 +103,9 @@ describe the relationship between LHS (left-hand side) and RHS
 And if you notice, they also emulate `aes()` mapper from
 [ggplot2](https://ggplot2.tidyverse.org), which it captures the
 expression internally, instead of evaluating them — indeed they are
-mappers, just like `<formula>` objects. Take note that every
-`<model_id>` must be a captured expression, generally in `<language>`
-data structure, just like formula objects in R.
+mappers, just like `<formula>` objects. Take note that `model_id`
+abstract S7 class must be carried as you create another `<model_id>`
+object (see more details).
 
 If you don’t have the given data frame, internally it tries to look up
 the variables you passed on `<model_id>` objects at the current
@@ -367,30 +367,33 @@ sleep |>
 One of the distinguishing features of
 [statim](https://github.com/joshuamarie/statim) is the ability to state
 the null hypothesis as a mathematical expression. The conventional
-approach in base R uses declarative strings like `alternative = "less"`,
-which are opaque: they encode a direction without naming the parameter
-being constrained or the value it is being tested against. You cannot
-read `alternative = "greater"` and know whether the claim is about a
-population mean, a population proportion, or a population correlation
-without reading the surrounding context. After all, hypothesis testing
-is about testing the null hypothesis of whether you have an evidence to
-support the claim, and parametric tests are about testing the population
-population.
+approach in base R uses declarative strings gotchas like
+`alternative = "less"`. While it is a shortcase, they encode a direction
+without naming the parameter being constrained or the value it is being
+tested against. You cannot read `alternative = "greater"` and know
+whether the claim is about a population mean, a population proportion,
+or a population correlation without reading the surrounding context.
+After all, hypothesis testing is about testing the null hypothesis of
+whether you have an evidence to support the claim, and parametric tests
+are about testing the population population.
 
 While [statim](https://github.com/joshuamarie/statim) still supports
 this, [statim](https://github.com/joshuamarie/statim) made some
-redirection with explicit hypothesis expressions built from parameter
+redirection with explicit hypothesis declaration built from parameter
 objects, in `<param_obj>` class, and standard R comparison operators.
 The expression names the population parameter, the relational operator,
 and the hypothesized scalar — the same three components that appear in
 any textbook null hypothesis statement. Internally,
 [`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md)
-parses the expression, extracts those components, and passes them into
-the test implementation. Any linear combination of parameters is
-accepted on either side.
+parses the expression, extracts the important components, and passes
+them into the `fn` implementation from
+[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
+/
+[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md).
+Any linear combination of parameters is accepted on either side.
 
 The supported operators are `==`, `!=`, `<`, `>`, `<=`, `>=`, and `%=%`
-(simultaneous equality across multiple parameters). Here are the
+(simultaneous equality across multiple parameters). Here are the current
 built-in `<param_obj>` objects:
 
 - [`MU()`](https://joshuamarie.github.io/statim/reference/MU.md): refers

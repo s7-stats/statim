@@ -149,8 +149,8 @@ selected by it will generate all pairwise combinations. Use
 lexicographic (alphabetical) ordering. Basically,
 <code>direction = "lt"</code> means “keep pairs where
 <code>name_a</code> comes before <code>name_b</code> alphabetically”.
-Also, it can accept <code>&lt;tidyselect&gt;</code> helpers if data
-frame is given.</p>
+Also, it accepts <code>&lt;tidyselect&gt;</code> helpers if a data frame
+is given.</p>
 </li>
 <li>
 <p><code><a href="../reference/prop.html">prop()</a></code>: Use this when the data is just a single
@@ -169,10 +169,9 @@ involved.</p>
 <p>And if you notice, they also emulate <code>aes()</code> mapper from
 <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>, which it captures the expression internally,
 instead of evaluating them — indeed they are mappers, just like
-<code>&lt;formula&gt;</code> objects. Take note that every
-<code>&lt;model_id&gt;</code> must be a captured expression, generally
-in <code>&lt;language&gt;</code> data structure, just like formula
-objects in R.</p>
+<code>&lt;formula&gt;</code> objects. Take note that
+<code>model_id</code> abstract S7 class must be carried as you create
+another <code>&lt;model_id&gt;</code> object (see more details).</p>
 <p>If you don’t have the given data frame, internally it tries to look
 up the variables you passed on <code>&lt;model_id&gt;</code> objects at
 the current environment (global environment by default). If you don’t
@@ -404,10 +403,10 @@ is a single added line, with nothing else changing:</p>
 </h2>
 <p>One of the distinguishing features of <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is the
 ability to state the null hypothesis as a mathematical expression. The
-conventional approach in base R uses declarative strings like
-<code>alternative = "less"</code>, which are opaque: they encode a
-direction without naming the parameter being constrained or the value it
-is being tested against. You cannot read
+conventional approach in base R uses declarative strings gotchas like
+<code>alternative = "less"</code>. While it is a shortcase, they encode
+a direction without naming the parameter being constrained or the value
+it is being tested against. You cannot read
 <code>alternative = "greater"</code> and know whether the claim is about
 a population mean, a population proportion, or a population correlation
 without reading the surrounding context. After all, hypothesis testing
@@ -416,18 +415,19 @@ support the claim, and parametric tests are about testing the population
 population.</p>
 <p>While <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> still supports this,
 <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> made some redirection with explicit hypothesis
-expressions built from parameter objects, in
+declaration built from parameter objects, in
 <code>&lt;param_obj&gt;</code> class, and standard R comparison
 operators. The expression names the population parameter, the relational
 operator, and the hypothesized scalar — the same three components that
 appear in any textbook null hypothesis statement. Internally,
-<code><a href="../reference/null-hyp.html">state_null()</a></code> parses the expression, extracts those
-components, and passes them into the test implementation. Any linear
-combination of parameters is accepted on either side.</p>
+<code><a href="../reference/null-hyp.html">state_null()</a></code> parses the expression, extracts the important
+components, and passes them into the <code>fn</code> implementation from
+<code><a href="../reference/baseline.html">baseline()</a></code> / <code><a href="../reference/variant.html">variant()</a></code>. Any linear combination
+of parameters is accepted on either side.</p>
 <p>The supported operators are <code>==</code>, <code>!=</code>,
 <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>,
 <code>&gt;=</code>, and <code>%=%</code> (simultaneous equality across
-multiple parameters). Here are the built-in
+multiple parameters). Here are the current built-in
 <code>&lt;param_obj&gt;</code> objects:</p>
 <ul>
 <li>
