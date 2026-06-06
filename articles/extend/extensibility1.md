@@ -1,4 +1,4 @@
-# The art of extensibility 1
+# Writing new \`tidy()\` method
 
 ## Rationale
 
@@ -84,8 +84,7 @@ making_tidy(TTEST, x_by) %<-% method_tidy(
     }
 )
 
-another_boot_tt |> 
-    tidy()
+another_boot_tt |> tidy()
 #> # A tibble: 1 × 2
 #>       R    t0
 #>   <int> <dbl>
