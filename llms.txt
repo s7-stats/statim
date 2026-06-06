@@ -2,7 +2,7 @@
 
 > This package is under active development. APIs may change.
 
-**Higher Level Interface for Statistical Inference**
+**A Declarative Interface for Statistical Inference**
 
 ## Package Overview
 
@@ -22,28 +22,21 @@ immediately delivers *how*.
 
 ## Why statim?
 
-R has a rich statistical ecosystem, but hypothesis testing is served by
-an assortment of disconnected functions. R gained a grammar for graphics
-([ggplot2](https://ggplot2.tidyverse.org)) and one for data manipulation
-([dplyr](https://dplyr.tidyverse.org)), but statistical inference has no
-equivalent: each testing function ships with its own interface, its own
-way of specifying data, and its own output format. There is no shared
-grammar for inference: no way to say *what* you want to test without
-simultaneously committing to *how* the procedure carries it out.
+R has a rich statistical ecosystem, but statistical inference in general
+is served by an assortment of disconnected functions. R gained a grammar
+for graphics ([ggplot2](https://ggplot2.tidyverse.org)) and one for data
+manipulation ([dplyr](https://dplyr.tidyverse.org)), but statistical
+inference has no equivalent: each testing function ships with its own
+interface, its own way of specifying data, and its own output format.
+There is no shared grammar for inference: no way to say *what* you want
+to test without simultaneously committing to *how* the procedure carries
+it out.
 
 [statim](https://github.com/joshuamarie/statim) is an attempt to
 re-imagine this from the ground up, the same way
 [ggplot2](https://ggplot2.tidyverse.org) introduced a grammar for
 graphics without replacing base plotting functions. The core idea is
-that any inferential procedure can be described in three steps: define
-the structure of the data
-([`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)),
-declare what you want to infer
-([`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md)),
-and optionally recalibrate the estimation method
-([`via()`](https://joshuamarie.github.io/statim/reference/via.md)). The
-procedure executes only when you call
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md).
+that any inferential procedure can be described in [three steps](#wf).
 
 This separation matters because it makes statistical workflows
 *composable*. Switching from a classical to a permutation procedure does
@@ -88,9 +81,10 @@ pak::pak("joshuamarie/statim")
 
 ## General Usage
 
-Loading a library comes with preference. In this example,
-[`library()`](https://rdrr.io/r/base/library.html) is used for a simple
-demonstration:
+Loading a library comes with [a lot of
+preferences](https://joshuamarie.com/posts/06-load-pkg/). In this
+example, [`library()`](https://rdrr.io/r/base/library.html) is used for
+a simple demonstration:
 
 ``` r
 
@@ -98,7 +92,8 @@ library(statim)
 ```
 
 All you need to know is that the usual workflow of
-[statim](https://github.com/joshuamarie/statim) has three usual steps:
+[statim](https://github.com/joshuamarie/statim) comes with three usual
+steps:
 
 ``` r
 
@@ -118,14 +113,21 @@ sleep |>                                # 1
     occurs, and then some functions to be appended in the future
     updates.
 
-2.  *Parameterization* and proceed to writing the estimation process of
-    the statistical inference pipeline. It is either a model-based
-    inference (e.g. linear regression) or H-test inference
-    (e.g. t-test). They are lazy-loaded, and you should be able to do
-    anything.
+2.  *Parameterization*, and then proceed to writing the estimation
+    process of the statistical inference pipeline. At the normal level,
+    the statistical inference can be either a model-based inference
+    (e.g. linear regression through
+    [`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md))
+    or H-test inference (e.g. t-test through
+    [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md)).
+    They are lazy-loaded, and only executed if needed.
 
 3.  *Execution and retrieval* then (re-)executes the first 2 steps and
-    retrieves the output.
+    retrieves the output. There are several techniques to retrieve the
+    output — e.g. through
+    [`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md).
+    Functions like these will worked if there are available method is
+    registered, automatically or from a manual step.
 
 See through
 [`vignette("statim")`](https://joshuamarie.github.io/statim/articles/statim.md),
