@@ -1,7 +1,7 @@
 # Base class for all statistical result objects
 
-`class_stat_infer` is the base S7 class for all result objects returned
-by `fn` in
+`class_stat_infer` is the base abstract S7 class for all result objects
+returned by `fn` in
 [`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
 and
 [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md).

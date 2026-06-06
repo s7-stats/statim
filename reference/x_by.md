@@ -1,6 +1,8 @@
-# 'Variable compared by groups' model mapping
+# Compare a variable by group
 
-Use this when you want to compare `x` by `group`.
+`x_by()` (and its infix alias `%by%`) creates an `x_by` model ID that
+reads as "compare `x` by `group`". Expressions are captured unevaluated,
+similar to how `ggplot2::aes()` captures aesthetics.
 
 ## Usage
 
@@ -14,9 +16,11 @@ x %by% group
 
 - x:
 
-  The response variable. A bare name,
+  The response variable. Accepts a bare name, a
   [`c()`](https://rdrr.io/r/base/c.html) of bare names, a tidyselect
-  helper (requires `data`), or `I(expr)` for inline data.
+  helper (requires `data` in
+  [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)),
+  or `I(expr)` for inline data.
 
 - group:
 
@@ -24,26 +28,33 @@ x %by% group
 
 ## Value
 
-An `x_by` / `model_id` S3 object.
+An `x_by` / `model_id` S7 object.
 
 ## Examples
 
 ``` r
-# bare names (resolved from environment or data)
+# Bare names — resolved later from the data or environment
 x_by(extra, group)
 #> -- Model Definition ------------------------------------------------------------ 
 #> 
 #> Model ID : x_by 
 #> Args : extra | group 
 
-# inline data
+# Infix alias: identical to x_by(extra, group)
+extra %by% group
+#> -- Model Definition ------------------------------------------------------------ 
+#> 
+#> Model ID : x_by 
+#> Args : extra | group 
+
+# Inline data via I()
 x_by(I(rnorm(30)), I(rep(c("a", "b"), each = 15)))
 #> -- Model Definition ------------------------------------------------------------ 
 #> 
 #> Model ID : x_by 
 #> Args : <inline> | <inline> 
 
-# named inline
+# Named inline data
 x_by(I(score = rnorm(30)), I(grp = rep(c("a", "b"), each = 15)))
 #> -- Model Definition ------------------------------------------------------------ 
 #> 

@@ -1,6 +1,8 @@
-# 'Relationship between two variables' model mapping
+# Describe the relationship between two variables
 
-Use this when you want to define the relationship between two variables.
+`rel()` creates a `rel` model ID that reads as "relationship between `x`
+and `resp`". Expressions are captured unevaluated, similar to how
+`ggplot2::aes()` captures aesthetics.
 
 ## Usage
 
@@ -12,9 +14,11 @@ rel(x, resp)
 
 - x:
 
-  The predictor variable. A bare name,
+  The predictor variable. Accepts a bare name, a
   [`c()`](https://rdrr.io/r/base/c.html) of bare names, a tidyselect
-  helper (requires `data`), or `I(expr)` for inline data.
+  helper (requires `data` in
+  [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)),
+  or `I(expr)` for inline data.
 
 - resp:
 
@@ -22,7 +26,7 @@ rel(x, resp)
 
 ## Value
 
-A `rel` / `model_id` S3 object.
+A `rel` / `model_id` S7 object.
 
 ## Examples
 

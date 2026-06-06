@@ -226,11 +226,11 @@ Formula also allowed.
 
 - [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md)
   [`` `%by%` ``](https://joshuamarie.github.io/statim/reference/x_by.md)
-  : 'Variable compared by groups' model mapping
+  : Compare a variable by group
 - [`rel()`](https://joshuamarie.github.io/statim/reference/rel.md) :
-  'Relationship between two variables' model mapping
+  Describe the relationship between two variables
 - [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md)
-  : 'Pairs between variables' model mapping
+  : Define all pairwise variable combinations
 
 ### Statistical Inference Parameterization
 
@@ -329,8 +329,8 @@ Functions for building and extending test implementations
 
 Classes and internal functions
 
-- [`model_id()`](https://joshuamarie.github.io/statim/reference/model_id.md)
-  : Attach a model-ID class to an object
+- [`model_id`](https://joshuamarie.github.io/statim/reference/model_id.md)
+  : Base class for model ID objects
 - [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md)
   : Model evaluator
 - [`model_id_info()`](https://joshuamarie.github.io/statim/reference/model_id_info.md)

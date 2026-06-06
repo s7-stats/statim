@@ -1,13 +1,20 @@
-# Attach a model-ID class to an object
+# Base class for model ID objects
 
-Attach a model-ID class to an object
+`model_id` is the abstract parent class for all model ID objects in
+`{statim}`. Model IDs emulate R's formula interface, as they capture
+variable expressions without evaluating them, describing the structure
+of a statistical model to be passed into a pipeline.
 
-## Usage
+## Details
 
-``` r
-model_id()
-```
+Concrete subclasses include
+[`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md),
+[`rel()`](https://joshuamarie.github.io/statim/reference/rel.md), and
+[`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md).
+You cannot instantiate `model_id` directly; use one of its subclasses.
 
-## Value
+## See also
 
-`model_id` S7/S3 class.
+[`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md),
+[`rel()`](https://joshuamarie.github.io/statim/reference/rel.md),
+[`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md)
