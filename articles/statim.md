@@ -78,6 +78,28 @@ describe the relationship between LHS (left-hand side) and RHS
     alphabetically”. Also, it can accept `<tidyselect>` helpers if data
     frame is given.
 
+4.  [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md):
+    Use this when the data is just a single observed count, namely the
+    number of successes `x` out of `n` trials. Unlike the other model
+    IDs,
+    [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md)
+    takes scalar constants directly; no variable names or data frame is
+    involved.
+
+    ``` r
+
+    prop(45, 100)   # 45 successes out of 100 trials
+    ```
+
+    Because the data is embedded in the model ID itself,
+    [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)
+    does not require a data frame:
+
+    ``` r
+
+    define_model(prop(45, 100))
+    ```
+
 And if you notice, they also emulate `aes()` mapper from
 [ggplot2](https://ggplot2.tidyverse.org), which it captures the
 expression internally, instead of evaluating them — indeed they are
@@ -384,6 +406,21 @@ built-in `<param_obj>` objects:
   \rho which refers to the population correlation between 2 variables —
   `RHO(x, y) == 0` simply means the population correlation between `x`
   and `y` is 0 or \rho\_{x, y} = 0.
+
+- [`PI()`](https://joshuamarie.github.io/statim/reference/PI.md): refers
+  to the population proportion \pi. Used with
+  [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md)
+  pipelines. It accepts zero or one argument:
+
+  1.  [`PI()`](https://joshuamarie.github.io/statim/reference/PI.md) —
+      the population proportion of the modelled count, when the variable
+      name is already encoded in the model ID via
+      [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md)
+      (see
+      [`?P_TEST`](https://joshuamarie.github.io/statim/reference/P_TEST.md)).
+
+  2.  `PI(x)` — the population proportion of a named variable `x`, for
+      future two-sample proportion tests.
 
 Here’s a simple example of a t-test that tests the following null
 hypothesis:

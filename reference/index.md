@@ -25,6 +25,8 @@ Formula also allowed.
   Describe the relationship between two variables
 - [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md)
   : Define all pairwise variable combinations
+- [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md) :
+  Define a proportion test model
 
 ### Statistical Inference Parameterization
 
@@ -89,6 +91,8 @@ Container and an eager executioner of a prepared H-test function
   : Correlation Test
 - [`ANOVA()`](https://joshuamarie.github.io/statim/reference/anova.md) :
   ANOVA
+- [`P_TEST()`](https://joshuamarie.github.io/statim/reference/P_TEST.md)
+  : Proportion Test
 
 ### Model-based inference container and executioner
 
@@ -153,6 +157,8 @@ will be shareable
   : Structured result container for pairwise t-tests
 - [`class_ttest_two`](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
   : Structured result container for two-sample t-tests
+- [`class_p_test`](https://joshuamarie.github.io/statim/reference/class_p_test.md)
+  : Structured result container for proportion tests
 - [`class_lm_object`](https://joshuamarie.github.io/statim/reference/class_lm_object.md)
   : Structured result container for linear model fits
 - [`class_glm_object`](https://joshuamarie.github.io/statim/reference/class_glm_object.md)

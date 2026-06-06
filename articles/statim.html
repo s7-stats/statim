@@ -152,6 +152,19 @@ lexicographic (alphabetical) ordering. Basically,
 Also, it can accept <code>&lt;tidyselect&gt;</code> helpers if data
 frame is given.</p>
 </li>
+<li>
+<p><code><a href="../reference/prop.html">prop()</a></code>: Use this when the data is just a single
+observed count, namely the number of successes <code>x</code> out of
+<code>n</code> trials. Unlike the other model IDs, <code><a href="../reference/prop.html">prop()</a></code>
+takes scalar constants directly; no variable names or data frame is
+involved.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span>   <span class="co"># 45 successes out of 100 trials</span></span></code></pre></div>
+<p>Because the data is embedded in the model ID itself,
+<code><a href="../reference/model-define-base.html">define_model()</a></code> does not require a data frame:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</li>
 </ol>
 <p>And if you notice, they also emulate <code>aes()</code> mapper from
 <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>, which it captures the expression internally,
@@ -166,7 +179,7 @@ the current environment (global environment by default). If you don’t
 want to write intermediate variables by assigning the data you created
 in a variable, use inline data with <code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code> or multiple inlines
 with <code><a href="../reference/inlines.html">inlines()</a></code>:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># `x_by()`</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -203,7 +216,7 @@ stages, especially the parameterization stage, and then retrieve the
 output.</p></li>
 </ol>
 <p>Example:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># i. Model processor and definition</span></span>
 <span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
 <span></span>
@@ -246,7 +259,7 @@ output.</p></li>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> group    -<span style="color: #BB0000;">1.58</span>  -<span style="color: #BB0000;">1.86</span>  17.8 0.079<span style="text-decoration: underline;">4</span>    -<span style="color: #BB0000;">3.05</span>   -<span style="color: #BB0000;">0.107</span></span></span></code></pre></div>
 <p>Since it is pipe-able, you can write down at once the following
 example above as:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -264,7 +277,7 @@ example above as:</p>
 eager form can do that. For a quick one-shot result, every test exposes
 an eager form that skips <code><a href="../reference/model-define-base.html">define_model()</a></code> and
 <code><a href="../reference/prepare-test.html">prepare_test()</a></code> entirely:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span>, <span class="va">sleep</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
 <span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -299,7 +312,7 @@ updates the specification while the whole pipeline is defused before
 <code>.method</code> are forwarded to that variant.</p>
 <p>For example, switching from a classical t-test to a permutation test
 is a single added line, with nothing else changing:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Classical</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -431,6 +444,18 @@ population mean of the variable <code>x</code> given the
 which refers to the population correlation between 2 variables —
 <code>RHO(x, y) == 0</code> simply means the population correlation
 between <code>x</code> and <code>y</code> is 0 or <span class="math inline">\rho_{x, y} = 0</span>.</p></li>
+<li>
+<p><code><a href="../reference/PI.html">PI()</a></code>: refers to the population proportion <span class="math inline">\pi</span>. Used with <code><a href="../reference/prop.html">prop()</a></code> pipelines.
+It accepts zero or one argument:</p>
+<ol style="list-style-type: decimal">
+<li><p><code><a href="../reference/PI.html">PI()</a></code> — the population proportion of the modelled
+count, when the variable name is already encoded in the model ID via
+<code><a href="../reference/prop.html">prop()</a></code> (see <code><a href="../reference/P_TEST.html">?P_TEST</a></code>).</p></li>
+<li><p><code>PI(x)</code> — the population proportion of a named
+variable <code>x</code>, for future two-sample proportion
+tests.</p></li>
+</ol>
+</li>
 </ul>
 <p>Here’s a simple example of a t-test that tests the following null
 hypothesis:</p>
@@ -438,7 +463,7 @@ hypothesis:</p>
 \mu_{x|\text{group}=2}</span></p>
 <p>or sometimes this null hypothesis can be written as:</p>
 <p><span class="math display">\mu_1 \leq \mu_2</span></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>

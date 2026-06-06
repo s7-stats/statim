@@ -12,7 +12,7 @@ PI(x, given = NULL)
 
 - x:
 
-  A bare variable name.
+  An empty or a bare variable name.
 
 - given:
 
