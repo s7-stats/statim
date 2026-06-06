@@ -95,19 +95,31 @@
 <h2 id="why-statim">Why statim?<a class="anchor" aria-label="anchor" href="#why-statim"></a>
 </h2>
 <p>R has a rich statistical ecosystem, but statistical inference in general is served by an assortment of disconnected functions. R gained a grammar for graphics (<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>) and one for data manipulation (<a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>), but statistical inference has no equivalent: each testing function ships with its own interface, its own way of specifying data, and its own output format. There is no shared grammar for inference: no way to say <em>what</em> you want to test without simultaneously committing to <em>how</em> the procedure carries it out.</p>
-<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is an attempt to re-imagine this from the ground up, the same way <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> introduced a grammar for graphics without replacing base plotting functions. The core idea is that any inferential procedure can be described in <a href="#wf">three steps</a>.</p>
-<p>This separation matters because it makes statistical workflows <em>composable</em>. Switching from a classical to a permutation procedure does not require rewriting your code; it is a single addition to the pipeline:</p>
+<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is an attempt to re-imagine this from the ground up, the same way <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> introduced a grammar for graphics without replacing base plotting functions. The core idea is that any inferential procedure can be described in <a href="#general-usage">three steps</a>.</p>
+<p>This separation matters because it makes statistical workflows <em>composable</em>. For example, in t-test you just want to switch from classical to permutation. <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> won’t need you to do a lot of work (which sometimes require rewriting your code) to switch from a classical to a permutation procedure does not require rewriting your code, just a single addition to the syntax.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Classical t-test</span></span>
-<span><span class="va">sleep</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Permutation t-test: one line added, nothing else changes</span></span>
-<span><span class="va">sleep</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">1000L</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># The same pipeline shape works for any registered test</span></span>
-<span><span class="va">cars</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/rel.html">rel</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># For a quick result, the eager form skips the pipeline entirely</span></span>
+<span><span class="co"># Permutation t-test</span></span>
+<span><span class="va">sleep</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">1000L</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Here, one line added, nothing else changes</span></span>
+<span>    <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>The same syntax works for any registered tests, e.g. correlation test:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cars</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="reference/rel.html">rel</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    </span></code></pre></div>
+<p>For a quick result, the eager form skips the piped syntax entirely:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Only works for `stat_fn` function</span></span>
 <span><span class="fu"><a href="reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="fu"><a href="reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span>, <span class="va">sleep</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/CORTEST.html">CORTEST</a></span><span class="op">(</span><span class="fu"><a href="reference/rel.html">rel</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span>, <span class="va">cars</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -115,11 +127,11 @@
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>The package is yet to be submitted into CRAN.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Stable version (not yet released)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"statim"</span><span class="op">)</span></span></code></pre></div>
 <p>For the time being, you can install the current implementation on GitHub:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Development version from GitHub</span></span>
 <span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"joshuamarie/statim"</span><span class="op">)</span></span></code></pre></div>
@@ -128,10 +140,10 @@
 <h2 id="general-usage">General Usage<a class="anchor" aria-label="anchor" href="#general-usage"></a>
 </h2>
 <p>Loading a library comes with <a href="https://joshuamarie.com/posts/06-load-pkg/" class="external-link">a lot of preferences</a>. In this example, <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> is used for a simple demonstration:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a></span><span class="op">)</span></span></code></pre></div>
 <p>All you need to know is that the usual workflow of <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> comes with three usual steps:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span>                                <span class="co"># 1</span></span>
 <span>    <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span>   <span class="co"># 1              </span></span>
 <span>    <span class="fu"><a href="reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span>              <span class="co"># 2         </span></span>
