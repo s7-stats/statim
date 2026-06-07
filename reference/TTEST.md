@@ -31,20 +31,19 @@ TTEST(.model = NULL, .data = NULL, ...)
 
 ## Value
 
-A `cld_exec` object, or a `test_spec` when `.model = NULL`. The object
-stored in `cld_exec@data` depends on the model ID:
+A `cld_exec` object (in
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)),
+a `stat_infer_spec` object, or a `test_spec` when `.model = NULL`.
+Depending on the implementation you wrote, it returns any class.
+However, by default, some implementations use base `{statim}` S7
+classes. For instance:
 
-- [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) — a
+- `ttest_x_by`, by default, returns a
   [class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
   object
 
-- [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md)
-  — a
+- `ttest_pairwise`, by default, returns a
   [class_ttest_pairwise](https://s7-stats.github.io/statim/reference/class_ttest_pairwise.md)
-  object
-
-- formula — a
-  [class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
   object
 
 ## Supported model IDs
@@ -52,15 +51,15 @@ stored in `cld_exec@data` depends on the model ID:
 Each model ID routes to a separate implementation. See the linked pages
 for full argument lists, variants, and result class details:
 
-- [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) —
+- [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md):
   two-sample or paired t-test. See
   [ttest-xby](https://s7-stats.github.io/statim/reference/ttest-xby.md).
 
-- [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md)
-  — pairwise t-tests across variables. See
+- [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md):
+  pairwise t-tests across variables. See
   [ttest-pairwise](https://s7-stats.github.io/statim/reference/ttest-pairwise.md).
 
-- formula — one-sample or two-sample t-test. See
+- `<formula>`: one-sample and/or two-sample t-test. See
   [ttest-formula](https://s7-stats.github.io/statim/reference/ttest-formula.md).
 
 ## Arguments
@@ -270,7 +269,7 @@ sleep |>
 #> ──────────────────────────────────────────
 #>   group  estimate  t_stat    df    p_val  
 #> ──────────────────────────────────────────
-#>   group   -0.830   -0.640  14.130  0.266  
+#>   group   -0.830   -0.640  14.130  0.734  
 #> ──────────────────────────────────────────
 #> 
 #> 
@@ -279,7 +278,7 @@ sleep |>
 #> ─────────────────────────────
 #>   group  lower_95  upper_95  
 #> ─────────────────────────────
-#>   group    -Inf     2.282    
+#>   group   -2.282     Inf     
 #> ─────────────────────────────
 #> 
 #> 

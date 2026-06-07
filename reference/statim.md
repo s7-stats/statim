@@ -11,9 +11,9 @@ variant system for registering custom estimation methods.
 
 Useful links:
 
-- <https://github.com/joshuamarie/statim>
+- <https://github.com/s7-stats/statim>
 
-- Report bugs at <https://github.com/joshuamarie/statim/issues>
+- Report bugs at <https://github.com/s7-stats/statim/issues>
 
 ## Author
 

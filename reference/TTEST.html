@@ -82,19 +82,20 @@ returns a <code>test_spec</code> for use in the pipeline via <code><a href="prep
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>cld_exec</code> object, or a <code>test_spec</code> when <code>.model = NULL</code>.
-The object stored in <code>cld_exec@data</code> depends on the model ID:</p><ul><li><p><code><a href="x_by.html">x_by()</a></code> — a <a href="class_ttest_two.html">class_ttest_two</a> object</p></li>
-<li><p><code><a href="pairwise.html">pairwise()</a></code> — a <a href="class_ttest_pairwise.html">class_ttest_pairwise</a> object</p></li>
-<li><p>formula — a <a href="class_ttest_two.html">class_ttest_two</a> object</p></li>
+    <p>A <code>cld_exec</code> object (in <code><a href="conclude.html">conclude()</a></code>), a <code>stat_infer_spec</code> object, or a
+<code>test_spec</code> when <code>.model = NULL</code>. Depending on the implementation you wrote, it returns
+any class. However, by default, some implementations use base <code>{statim}</code> S7 classes.
+For instance:</p><ul><li><p><code>ttest_x_by</code>, by default, returns a <a href="class_ttest_two.html">class_ttest_two</a> object</p></li>
+<li><p><code>ttest_pairwise</code>, by default, returns a <a href="class_ttest_pairwise.html">class_ttest_pairwise</a> object</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="supported-model-ids">Supported model IDs<a class="anchor" aria-label="anchor" href="#supported-model-ids"></a></h2>
 
 
 <p>Each model ID routes to a separate implementation. See the linked pages
-for full argument lists, variants, and result class details:</p><ul><li><p><code><a href="x_by.html">x_by()</a></code> — two-sample or paired t-test. See <a href="ttest-xby.html">ttest-xby</a>.</p></li>
-<li><p><code><a href="pairwise.html">pairwise()</a></code> — pairwise t-tests across variables. See <a href="ttest-pairwise.html">ttest-pairwise</a>.</p></li>
-<li><p>formula — one-sample or two-sample t-test. See <a href="ttest-formula.html">ttest-formula</a>.</p></li>
+for full argument lists, variants, and result class details:</p><ul><li><p><code><a href="x_by.html">x_by()</a></code>: two-sample or paired t-test. See <a href="ttest-xby.html">ttest-xby</a>.</p></li>
+<li><p><code><a href="pairwise.html">pairwise()</a></code>: pairwise t-tests across variables. See <a href="ttest-pairwise.html">ttest-pairwise</a>.</p></li>
+<li><p><code>&lt;formula&gt;</code>: one-sample and/or two-sample t-test. See <a href="ttest-formula.html">ttest-formula</a>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h2>
@@ -290,7 +291,7 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   group  estimate  t_stat    df    p_val  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   group   -0.830   -0.640  14.130  <span style="font-style: italic;">0.266</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   group   -0.830   -0.640  14.130  <span style="font-style: italic;">0.734</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -299,7 +300,7 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   group  lower_95  upper_95  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   group    -Inf     2.282    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   group   -2.282     Inf     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

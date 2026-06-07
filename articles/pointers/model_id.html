@@ -93,8 +93,9 @@ rather than relying on the existing <code>&lt;formula&gt;</code>
 (<code>~</code>) interface? Why need to write another? Not all types of
 inference in R cannot fully manifest <code>&lt;formula&gt;</code>
 objects. In fact, <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> doesn’t fully manifest
-<code>&lt;formula&gt;</code> objects to specify the variables you want
-to visualize. The existing <code>&lt;model_id&gt;</code> objects from
+<code>&lt;formula&gt;</code> objects to describe the shape of the model
+you want to visualize within <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> pipelines. The
+existing <code>&lt;model_id&gt;</code> objects from
 <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> shapes the model to be analyzed in the statistical
 inference pipelines, which acts like mappers, just like
 <code>ggplot2::aes()</code>.</p>
@@ -102,13 +103,37 @@ inference pipelines, which acts like mappers, just like
 to describe the relationship between variables. Depending on the
 implementation, if you have <code>y ~ x</code>, this tells you to
 describe the relationship of <code>x</code> to <code>y</code>. In case
-you didn’t know yet, <code>~</code> are also function that captures the
+you didn’t know yet, <code>~</code> is also a function that captures the
 code to retrieve and parse its abstract syntax tree (AST).</p>
 <p>The current <code>&lt;model_id&gt;</code> objects from
 <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> are already evaluated, unlike
 <code>&lt;formula&gt;</code>, and that’s because of
 <code><a href="../../reference/model-processor.html">model_processor()</a></code> generics which resolves the data you
 mapped in <code>&lt;model_id&gt;</code> objects.</p>
+</div>
+<div class="section level2">
+<h2 id="what-are-model-ids">What are model IDs<a class="anchor" aria-label="anchor" href="#what-are-model-ids"></a>
+</h2>
+<p>The <code>&lt;model_id&gt;</code> objects are built at top of S7,
+serves as “mappers”, similar to how <code>ggplot2::aes()</code> (or
+aesthetic mappings) works</p>
+</div>
+<div class="section level2">
+<h2 id="existing-objects">Existing objects<a class="anchor" aria-label="anchor" href="#existing-objects"></a>
+</h2>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> has built-in <code>&lt;model_id&gt;</code>
+objects you can use to describe the shape of the model you want to
+analyze during statistical inference.</p>
+</div>
+<div class="section level2">
+<h2 id="writing-new-model-ids">Writing new model IDs<a class="anchor" aria-label="anchor" href="#writing-new-model-ids"></a>
+</h2>
+<p>Writing another <code>&lt;model_id&gt;</code> objects is easy but
+strict — requires <code><a href="../../reference/model-processor.html">model_processor()</a></code> and
+<code><a href="../../reference/model_id_info.html">model_id_info()</a></code> to be dispatched. The <code>model_id</code>
+is an abstract S7 class used as a parent class for
+<code>&lt;model_id&gt;</code> object. Without complying these,
+<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> will complain.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

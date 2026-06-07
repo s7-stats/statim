@@ -127,4 +127,44 @@ sleep |>
 #> -------------------------------
 #> 
 #> 
+
+# Weighted t-test, which allows `state_null()` to have weights
+# Around population parameter function `MU()` notation
+# Also `%by%` is just the infixed form of `x_by()`
+sleep |>
+    define_model(extra %by% group) |>
+    prepare_test(TTEST) |>
+    state_null(
+        2 * MU(extra, group == "1") - MU(extra, group == "2") <= 0
+    ) |>
+    via("weighted") |>
+    conclude()
+#> 
+#> == Model ======================================================================= 
+#> 
+#> Model ID : x_by 
+#> Args : extra | group 
+#>     x_vars : 1 
+#>     by_vars : 1 
+#> 
+#> == T-Test · weighted =========================================================== 
+#> 
+#> -- Summary ---------------------------------------------------------------------
+#> 
+#> ──────────────────────────────────────────
+#>   group  estimate  t_stat    df    p_val  
+#> ──────────────────────────────────────────
+#>   group   -0.830   -0.640  14.130  0.734  
+#> ──────────────────────────────────────────
+#> 
+#> 
+#> -- Confidence Interval ---------------------------------------------------------
+#> 
+#> ─────────────────────────────
+#>   group  lower_95  upper_95  
+#> ─────────────────────────────
+#>   group   -2.282     Inf     
+#> ─────────────────────────────
+#> 
+#> 
 ```
