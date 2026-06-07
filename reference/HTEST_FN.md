@@ -2,7 +2,7 @@
 
 `HTEST_FN()` is a developer-interface constructor for user-facing test
 functions like
-[`TTEST()`](https://joshuamarie.github.io/statim/reference/TTEST.md). It
+[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md). It
 returns a function with a consistent signature that routes to the
 correct implementation based on the model ID and method variant.
 
@@ -21,7 +21,7 @@ HTEST_FN(cls, defs, .name)
 - defs:
 
   A list of
-  [`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md)
+  [`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md)
   objects.
 
 - .name:
@@ -34,8 +34,8 @@ A function with signature `function(.model, .data, ...)`.
 
 ## See also
 
-[`MODEL_FN()`](https://joshuamarie.github.io/statim/reference/MODEL_FN.md),
-[`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md),
-[`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md),
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md),
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)
+[`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md),
+[`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md),
+[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md),
+[`via()`](https://s7-stats.github.io/statim/reference/via.md),
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)

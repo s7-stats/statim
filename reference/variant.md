@@ -1,8 +1,8 @@
 # Declare an alternative implementation of a test or model
 
 `variant()` declares a named alternative implementation reachable only
-via [`via()`](https://joshuamarie.github.io/statim/reference/via.md).
-Never runs on the eager path.
+via [`via()`](https://s7-stats.github.io/statim/reference/via.md). Never
+runs on the eager path.
 
 ## Usage
 
@@ -16,7 +16,7 @@ variant(fn, print = NULL)
 
   A function whose first argument must be `.proc`, the processed model
   output from
-  [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md).
+  [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md).
   The keys available on `.proc` depend on the model ID used:
 
   - `x_by`: `$x_data`, `$group_data`
@@ -34,7 +34,7 @@ variant(fn, print = NULL)
 
   Additional named arguments are user-supplied statistical parameters
   (e.g. `.mu`, `.ci`). See
-  [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md)
+  [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md)
   for the full `.proc` schema per model type.
 
       variant(
@@ -46,9 +46,9 @@ variant(fn, print = NULL)
       )
 
   A variant whose `fn` returns the same
-  [class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+  [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
   subclass as `baseline` inherits
-  [`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+  [`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
   and all future `auto_*()` methods automatically via S7's parent chain.
   A variant returning a subclass can override selectively:
 
@@ -72,9 +72,9 @@ A `variant` S7 object.
 
 ## See also
 
-[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md),
-[`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md),
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md),
-[`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md),
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md),
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md),
+[`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md),
+[`via()`](https://s7-stats.github.io/statim/reference/via.md),
+[`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md),
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md),
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)

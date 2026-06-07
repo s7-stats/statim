@@ -16,7 +16,7 @@ baseline(fn, print = NULL)
 
   A function whose first argument must be `.proc`, the processed model
   output from
-  [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md).
+  [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md).
   The keys available on `.proc` depend on the model ID used:
 
   - `x_by`: `$x_data`, `$group_data`
@@ -34,7 +34,7 @@ baseline(fn, print = NULL)
 
   Additional named arguments are user-supplied statistical parameters
   (e.g. `.mu`, `.ci`). See
-  [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md)
+  [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md)
   for the full `.proc` schema per model type.
 
       baseline(
@@ -45,12 +45,12 @@ baseline(fn, print = NULL)
       )
 
   When `fn` returns a
-  [class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+  [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
   subclass,
-  [`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+  [`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
   and future `auto_*()` generics dispatch automatically on the result.
   Otherwise, register a tidy method via
-  [`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md).
+  [`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md).
 
 - print:
 
@@ -64,9 +64,9 @@ A `baseline` S7 object.
 
 ## See also
 
-[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md),
-[`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md),
-[`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md),
-[`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md),
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md),
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md),
+[`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md),
+[`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md),
+[`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md),
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md),
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)

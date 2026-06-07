@@ -15,7 +15,7 @@ save_excel(x, file, sheet = NULL, overwrite = NULL, ...)
 - x:
 
   A `cld_exec` object from
-  [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md).
+  [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
 
 - file:
 

@@ -17,7 +17,7 @@ rel(x, resp)
   The predictor variable. Accepts a bare name, a
   [`c()`](https://rdrr.io/r/base/c.html) of bare names, a tidyselect
   helper (requires `data` in
-  [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)),
+  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)),
   or `I(expr)` for inline data.
 
 - resp:

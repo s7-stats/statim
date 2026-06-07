@@ -2,11 +2,11 @@
 
 `class_stat_infer` is the base abstract S7 class for all result objects
 returned by `fn` in
-[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
 and
-[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md).
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md).
 Concrete result classes like
-[class_lm_object](https://joshuamarie.github.io/statim/reference/class_lm_object.md)
+[class_lm_object](https://s7-stats.github.io/statim/reference/class_lm_object.md)
 inherit from it.
 
 ## Usage
@@ -19,27 +19,26 @@ class_stat_infer()
 
 Inheriting from `class_stat_infer` is the contract that enables
 automatic dispatch for
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md),
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md),
 and future `auto_plot()` and `auto_export()` generics, without any
 manual registration via
-[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md).
+[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md).
 
 ## Protocol
 
 Inheriting from `class_stat_infer` is the contract that enables
 automatic dispatch for
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md),
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md),
 and future `auto_plot()` and `auto_export()` generics, without any
 manual registration via
-[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md).
+[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md).
 
 When `fn` in
-[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
-or
-[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+or [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
 returns a `class_stat_infer` subclass,
-[`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md) calls
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) calls
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 on it automatically. Register a method on your result class to
 participate:
 
@@ -80,7 +79,7 @@ Downstream packages can extend the hierarchy further by using any
 
 ## See also
 
-[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md),
-[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md),
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md),
-[class_lm_object](https://joshuamarie.github.io/statim/reference/class_lm_object.md)
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md),
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md),
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md),
+[class_lm_object](https://s7-stats.github.io/statim/reference/class_lm_object.md)

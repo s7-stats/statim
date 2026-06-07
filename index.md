@@ -6,9 +6,9 @@
 
 ## Package Overview
 
-What does [statim](https://github.com/joshuamarie/statim) mean?
+What does [statim](https://github.com/s7-stats/statim) mean?
 
-[statim](https://github.com/joshuamarie/statim) is a Latin word for
+[statim](https://github.com/s7-stats/statim) is a Latin word for
 “immediately, at once”. The name carries a double meaning:
 
 - *stat*: as in statistics, the domain this package lives in
@@ -17,8 +17,8 @@ What does [statim](https://github.com/joshuamarie/statim) mean?
   mechanical steps
 
 This simply means: you declare *what* statistical inference you want to
-perform, then [statim](https://github.com/joshuamarie/statim)
-immediately delivers *how*.
+perform, then [statim](https://github.com/s7-stats/statim) immediately
+delivers *how*.
 
 ## Why statim?
 
@@ -32,8 +32,8 @@ There is no shared grammar for inference: no way to say *what* you want
 to test without simultaneously committing to *how* the procedure carries
 it out.
 
-[statim](https://github.com/joshuamarie/statim) is an attempt to
-re-imagine this from the ground up, the same way
+[statim](https://github.com/s7-stats/statim) is an attempt to re-imagine
+this from the ground up, the same way
 [ggplot2](https://ggplot2.tidyverse.org) introduced a grammar for
 graphics without replacing base plotting functions. The core idea is
 that any inferential procedure can be described in [three
@@ -41,11 +41,10 @@ steps](#general-usage).
 
 This separation matters because it makes statistical workflows
 *composable*. For example, in t-test you just want to switch from
-classical to permutation.
-[statim](https://github.com/joshuamarie/statim) won’t need you to do a
-lot of work (which sometimes require rewriting your code) to switch from
-a classical to a permutation procedure does not require rewriting your
-code, just a single addition to the syntax.
+classical to permutation. [statim](https://github.com/s7-stats/statim)
+won’t need you to do a lot of work (which sometimes require rewriting
+your code) to switch from a classical to a permutation procedure does
+not require rewriting your code, just a single addition to the syntax.
 
 ``` r
 
@@ -116,7 +115,7 @@ library(statim)
 ```
 
 All you need to know is that the usual workflow of
-[statim](https://github.com/joshuamarie/statim) comes with three usual
+[statim](https://github.com/s7-stats/statim) comes with three usual
 steps:
 
 ``` r
@@ -133,7 +132,7 @@ sleep |>                                # 1
     analyzed* happens at the beginning during statistical inference.
     Typically, this step where supplying either a data frame or a
     `<model_id>` objects into
-    [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)
+    [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
     occurs, and then some functions to be appended in the future
     updates.
 
@@ -141,20 +140,20 @@ sleep |>                                # 1
     process of the statistical inference pipeline. At the normal level,
     the statistical inference can be either a model-based inference
     (e.g. linear regression through
-    [`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md))
+    [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md))
     or H-test inference (e.g. t-test through
-    [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md)).
+    [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)).
     They are lazy-loaded, and only executed if needed.
 
 3.  *Execution and retrieval* then (re-)executes the first 2 steps and
     retrieves the output. There are several techniques to retrieve the
     output — e.g. through
-    [`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md).
+    [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md).
     Functions like these will worked if there are available method is
     registered, automatically or from a manual step.
 
 See through
-[`vignette("statim")`](https://joshuamarie.github.io/statim/articles/statim.md),
+[`vignette("statim")`](https://s7-stats.github.io/statim/articles/statim.md),
 and learn more about the API design as a starter.
 
 ## Core Semantics
@@ -163,28 +162,28 @@ The package is designed around three ideas:
 
 1.  **A shared grammar**: every inferential procedure follows the same
     shape –
-    [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md),
-    [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md),
-    [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)
+    [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
+    [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md),
+    [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
     – regardless of which test or model ID is used. The model ID objects
     (e.g. `x_by`, `rel`, `pairwise`) determines what the test does; the
     grammar stays the same. Eager forms
-    ([`TTEST()`](https://joshuamarie.github.io/statim/reference/TTEST.md),
-    [`CORTEST()`](https://joshuamarie.github.io/statim/reference/CORTEST.md),
+    ([`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md),
+    [`CORTEST()`](https://s7-stats.github.io/statim/reference/CORTEST.md),
     …) provide a shortcut when the full pipeline is not needed.
 
 2.  **Composable pipelines**: build up a test specification lazily,
     recalibrate the estimation method with a single
-    [`via()`](https://joshuamarie.github.io/statim/reference/via.md)
-    call, and execute with
-    [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md).
+    [`via()`](https://s7-stats.github.io/statim/reference/via.md) call,
+    and execute with
+    [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
 
 3.  **Extensible by design**: every test is a
-    [`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md)
+    [`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md)
     object; bring your own engine, your own method, your own
     implementation. Auto dispatch handles
-    [`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md)
-    for your method without requiring you to write it.
+    [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) for
+    your method without requiring you to write it.
 
 ## License
 
@@ -194,8 +193,8 @@ MIT © Joshua Marie
 
 We are sincerely grateful for contributions; they are beneficial for the
 project and for us as maintainers. Please read
-[CONTRIBUTING.md](https://joshuamarie.github.io/statim/CONTRIBUTING.md)
-for development setup, pull request guidelines, and workflow notes.
+[CONTRIBUTING.md](https://s7-stats.github.io/statim/CONTRIBUTING.md) for
+development setup, pull request guidelines, and workflow notes.
 
 ## Code of Conduct
 

@@ -36,16 +36,16 @@ A `cld_anova` object, invisibly.
 - An `anova_lazy` from `write_models() |> prepare_model()`.
 
 - One or more `model_lazy` objects from
-  [`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md).
+  [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md).
 
 - One or more `cld_exec` objects from
-  [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md).
+  [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
 
 ## See also
 
-[`write_models()`](https://joshuamarie.github.io/statim/reference/write_models.md),
-[`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md),
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md),
+[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md),
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 
 ## Examples
 

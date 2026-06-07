@@ -8,13 +8,13 @@ of a statistical model to be passed into a pipeline.
 ## Details
 
 Concrete subclasses include
-[`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md),
-[`rel()`](https://joshuamarie.github.io/statim/reference/rel.md), and
-[`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md).
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
+[`rel()`](https://s7-stats.github.io/statim/reference/rel.md), and
+[`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md).
 You cannot instantiate `model_id` directly; use one of its subclasses.
 
 ## See also
 
-[`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md),
-[`rel()`](https://joshuamarie.github.io/statim/reference/rel.md),
-[`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md)
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
+[`rel()`](https://s7-stats.github.io/statim/reference/rel.md),
+[`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md)

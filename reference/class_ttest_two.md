@@ -1,15 +1,14 @@
 # Structured result container for two-sample t-tests
 
 An S7 class produced by
-[TTEST](https://joshuamarie.github.io/statim/reference/TTEST.md)
-pipelines using
-[`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md) as
+[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md) pipelines
+using [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) as
 the model ID. Not constructed manually — use the pipeline instead.
 
 Inherits from
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md),
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md),
 so
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 dispatches on it automatically. Downstream packages can use it as a
 `parent` in
 [`S7::new_class()`](https://rconsortium.github.io/S7/reference/new_class.html).
@@ -17,7 +16,7 @@ dispatches on it automatically. Downstream packages can use it as a
 ## Details
 
 Slots (populated automatically by
-[TTEST](https://joshuamarie.github.io/statim/reference/TTEST.md)):
+[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md)):
 
 - `group`: name of the grouping variable.
 
@@ -38,12 +37,12 @@ Slots (populated automatically by
 ## Shared by variants
 
 Both `default` and `weighted` return a `class_ttest_two`, so
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 and [`print()`](https://rdrr.io/r/base/print.html) are inherited by
 `weighted` for free.
 
 ## See also
 
-[TTEST](https://joshuamarie.github.io/statim/reference/TTEST.md),
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md),
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md),
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md),
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)

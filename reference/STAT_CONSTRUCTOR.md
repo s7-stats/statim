@@ -2,7 +2,7 @@
 
 This function is a developer-interface function, a constructor for
 user-facing test functions like
-[`HTEST_FN()`](https://joshuamarie.github.io/statim/reference/HTEST_FN.md).
+[`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md).
 It returns a function with a consistent signature that routes to the
 correct implementation based on the model ID and method variant.
 
@@ -36,7 +36,7 @@ A function with signature `function(.model, .data, ...)`.
 
 ## See also
 
-[`test_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md),
-[`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md),
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md),
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)
+[`test_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md),
+[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md),
+[`via()`](https://s7-stats.github.io/statim/reference/via.md),
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)

@@ -2,7 +2,7 @@
 
 `tidy()` extracts a tibble of primary results from a `cld_exec` object
 produced by
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md).
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
 
 ## Usage
 
@@ -15,7 +15,7 @@ tidy(.x, ...)
 - .x:
 
   A `cld_exec` object produced by
-  [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md).
+  [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
 
 - ...:
 
@@ -30,32 +30,32 @@ The statistical output in a `tibble` data frame format.
 Two paths are tried in order:
 
 **Path 1:
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 (preferred).** When `cld_exec@data` is a
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
 subclass,
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 is called directly on it. You need no registry, and S7 automatically
 dispatches on the particular output class, and variants that return the
 same class inherit the method automatically via the parent chain.
 
 **Path 2:
-[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md)
+[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
 registry (escape hatch).** When `cld_exec@data` is not a
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
 subclass, for example, when a variant intentionally returns any data
 structure e.g. just a plain list, S3, S4, or R6 object
 (`check_sic_s7 = FALSE`), `tidy()` falls back to the registry populated
 by
-[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md).
+[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md).
 If no entry exists there either, an informative error is raised.
 
 ## See also
 
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md),
-[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md),
-[`method_tidy()`](https://joshuamarie.github.io/statim/reference/method_tidy.md),
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md),
+[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md),
+[`method_tidy()`](https://s7-stats.github.io/statim/reference/method_tidy.md),
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
 
 ## Examples
 

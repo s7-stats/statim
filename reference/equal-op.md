@@ -2,7 +2,7 @@
 
 `%=%` declares that all chained population parameters are hypothesized
 to be equal. Used inside
-[`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md)
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
 only — it is a syntactic macro and will error if called outside that
 context.
 
@@ -25,7 +25,7 @@ lhs %=% rhs
 ## Value
 
 Does not return. Always throws an error when called outside
-[`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md).
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
 
 ## Examples
 

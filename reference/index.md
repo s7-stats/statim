@@ -8,9 +8,9 @@ Main functions for interactive use
 
 Verbs that describe the model you want to analyze
 
-- [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)
+- [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
   : Model define constructor
-- [`write_models()`](https://joshuamarie.github.io/statim/reference/write_models.md)
+- [`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
   : Write multiple model definitions from a data frame
 
 ### Model IDs
@@ -18,14 +18,14 @@ Verbs that describe the model you want to analyze
 Mappers similar to formula in R to shape the model you want to describe.
 Formula also allowed.
 
-- [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md)
-  [`` `%by%` ``](https://joshuamarie.github.io/statim/reference/x_by.md)
-  : Compare a variable by group
-- [`rel()`](https://joshuamarie.github.io/statim/reference/rel.md) :
+- [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
+  [`` `%by%` ``](https://s7-stats.github.io/statim/reference/x_by.md) :
+  Compare a variable by group
+- [`rel()`](https://s7-stats.github.io/statim/reference/rel.md) :
   Describe the relationship between two variables
-- [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md)
+- [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md)
   : Define all pairwise variable combinations
-- [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md) :
+- [`prop()`](https://s7-stats.github.io/statim/reference/prop.md) :
   Define a proportion test model
 
 ### Statistical Inference Parameterization
@@ -33,18 +33,18 @@ Formula also allowed.
 Verbs used for preparing and parameterize the equation of statistical
 inference
 
-- [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)
+- [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
   : Model define constructor
-- [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md)
+- [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
   : Lazily prepare a single test
-- [`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md)
+- [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
   : Lazily prepare a model inference
-- [`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md)
-  [`more_h0()`](https://joshuamarie.github.io/statim/reference/null-hyp.md)
+- [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+  [`more_h0()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
   : State a null hypothesis in the pipeline
-- [`via()`](https://joshuamarie.github.io/statim/reference/via.md) :
+- [`via()`](https://s7-stats.github.io/statim/reference/via.md) :
   Recalibrate the method variant
-- [`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)
+- [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
   : Execute a lazy pipeline
 
 ### "Population parameter" definer
@@ -52,56 +52,56 @@ inference
 Functions that emulate the population parameter, close to textbook
 notations
 
-- [`` `%=%` ``](https://joshuamarie.github.io/statim/reference/equal-op.md)
+- [`` `%=%` ``](https://s7-stats.github.io/statim/reference/equal-op.md)
   : Chained equality operator for null hypotheses
-- [`MU()`](https://joshuamarie.github.io/statim/reference/MU.md) : Mean
-  of a variable, optionally conditioned on a subgroup
-- [`PI()`](https://joshuamarie.github.io/statim/reference/PI.md) :
+- [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) : Mean of
+  a variable, optionally conditioned on a subgroup
+- [`PI()`](https://s7-stats.github.io/statim/reference/PI.md) :
   Proportion of a variable, optionally conditioned on a subgroup
-- [`SIGMA()`](https://joshuamarie.github.io/statim/reference/SIGMA.md) :
+- [`SIGMA()`](https://s7-stats.github.io/statim/reference/SIGMA.md) :
   Variance of a variable, optionally conditioned on a subgroup
-- [`RHO()`](https://joshuamarie.github.io/statim/reference/RHO.md) :
+- [`RHO()`](https://s7-stats.github.io/statim/reference/RHO.md) :
   Population correlation between two variables
 
 ### ANOVA for Linear Models
 
 Verbs used to perform ANOVA for linear models
 
-- [`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
+- [`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
   : ANOVA table for linear model comparisons
-- [`write_models()`](https://joshuamarie.github.io/statim/reference/write_models.md)
+- [`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
   : Write multiple model definitions from a data frame
-- [`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md)
+- [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
   : Lazily prepare a model inference
 
 ### Result retrieval
 
 Verbs used to retrieve outputs in standard R’s data structure
 
-- [`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md) :
-  Tidy a concluded statistical result
+- [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) : Tidy
+  a concluded statistical result
 
 ### H-test container and executioner
 
 Container and an eager executioner of a prepared H-test function
 
-- [`TTEST()`](https://joshuamarie.github.io/statim/reference/TTEST.md) :
+- [`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) :
   T-Test
-- [`CORTEST()`](https://joshuamarie.github.io/statim/reference/CORTEST.md)
+- [`CORTEST()`](https://s7-stats.github.io/statim/reference/CORTEST.md)
   : Correlation Test
-- [`ANOVA()`](https://joshuamarie.github.io/statim/reference/anova.md) :
+- [`ANOVA()`](https://s7-stats.github.io/statim/reference/anova.md) :
   ANOVA
-- [`P_TEST()`](https://joshuamarie.github.io/statim/reference/P_TEST.md)
-  : Proportion Test
+- [`P_TEST()`](https://s7-stats.github.io/statim/reference/P_TEST.md) :
+  Proportion Test
 
 ### Model-based inference container and executioner
 
 Container and an eager executioner of a prepared model-based inference
 function
 
-- [`LINEAR_REG()`](https://joshuamarie.github.io/statim/reference/LINEAR_REG.md)
+- [`LINEAR_REG()`](https://s7-stats.github.io/statim/reference/LINEAR_REG.md)
   : Linear regression
-- [`GLM()`](https://joshuamarie.github.io/statim/reference/GLM.md) :
+- [`GLM()`](https://s7-stats.github.io/statim/reference/GLM.md) :
   Generalized linear model
 
 ### Multiple Inline Codes
@@ -109,14 +109,14 @@ function
 Analogue to [`I()`](https://rdrr.io/r/base/AsIs.html), but only captures
 the expression and accepts multiple inline codes.
 
-- [`inlines()`](https://joshuamarie.github.io/statim/reference/inlines.md)
+- [`inlines()`](https://s7-stats.github.io/statim/reference/inlines.md)
   : Inline multiple expressions in a model ID
 
 ### Output renderer and saver
 
 Capture the printed output in specific formats
 
-- [`save_excel()`](https://joshuamarie.github.io/statim/reference/save_excel.md)
+- [`save_excel()`](https://s7-stats.github.io/statim/reference/save_excel.md)
   : Save statistical output to Excel
 
 ## Low-level / Developer facing API
@@ -127,83 +127,83 @@ Functions for building and extending test implementations
 
 Classes and internal functions
 
-- [`model_id`](https://joshuamarie.github.io/statim/reference/model_id.md)
+- [`model_id`](https://s7-stats.github.io/statim/reference/model_id.md)
   : Base class for model ID objects
-- [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md)
+- [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md)
   : Model evaluator
-- [`model_id_info()`](https://joshuamarie.github.io/statim/reference/model_id_info.md)
+- [`model_id_info()`](https://s7-stats.github.io/statim/reference/model_id_info.md)
   : Extract metadata from a model ID
 
 ### Implementation containers
 
 Declare how a test runs
 
-- [`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md)
+- [`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md)
   : Collect implementations for a statistical procedure
-- [`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
+- [`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
   : Declare the canonical implementation of a test or model
-- [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
+- [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
   : Declare an alternative implementation of a test or model
 
 ### Base statistical inference output class
 
 With different implementation but the same class, the methods,
-e.g. [`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md),
+e.g. [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md),
 will be shareable
 
-- [`class_stat_infer()`](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+- [`class_stat_infer()`](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
   : Base class for all statistical result objects
-- [`class_ttest_pairwise`](https://joshuamarie.github.io/statim/reference/class_ttest_pairwise.md)
+- [`class_ttest_pairwise`](https://s7-stats.github.io/statim/reference/class_ttest_pairwise.md)
   : Structured result container for pairwise t-tests
-- [`class_ttest_two`](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+- [`class_ttest_two`](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
   : Structured result container for two-sample t-tests
-- [`class_p_test`](https://joshuamarie.github.io/statim/reference/class_p_test.md)
+- [`class_p_test`](https://s7-stats.github.io/statim/reference/class_p_test.md)
   : Structured result container for proportion tests
-- [`class_lm_object`](https://joshuamarie.github.io/statim/reference/class_lm_object.md)
+- [`class_lm_object`](https://s7-stats.github.io/statim/reference/class_lm_object.md)
   : Structured result container for linear model fits
-- [`class_glm_object`](https://joshuamarie.github.io/statim/reference/class_glm_object.md)
+- [`class_glm_object`](https://s7-stats.github.io/statim/reference/class_glm_object.md)
   : Structured result container for GLM fits
 
 ### Test definition
 
 Register a new test implementation
 
-- [`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md)
-  [`test_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md)
-  [`model_infer_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md)
+- [`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md)
+  [`test_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md)
+  [`model_infer_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md)
   : Define a statistical procedure implementation
-- [`STAT_CONSTRUCTOR()`](https://joshuamarie.github.io/statim/reference/STAT_CONSTRUCTOR.md)
+- [`STAT_CONSTRUCTOR()`](https://s7-stats.github.io/statim/reference/STAT_CONSTRUCTOR.md)
   : Main foundation for inferential statistics
-- [`HTEST_FN()`](https://joshuamarie.github.io/statim/reference/HTEST_FN.md)
+- [`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md)
   : Build a hypothesis test function
-- [`MODEL_FN()`](https://joshuamarie.github.io/statim/reference/MODEL_FN.md)
+- [`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)
   : Build a model inference function
 
 ### Session-scoped variant management
 
 Add or replace variants on existing test functions
 
-- [`add_variant()`](https://joshuamarie.github.io/statim/reference/add-variant.md)
-  [`remove_variant()`](https://joshuamarie.github.io/statim/reference/add-variant.md)
+- [`add_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md)
+  [`remove_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md)
   : Add or remove variant implementations on a test or model function
-- [`` `%<-%` ``](https://joshuamarie.github.io/statim/reference/modifying-assignment.md)
+- [`` `%<-%` ``](https://s7-stats.github.io/statim/reference/modifying-assignment.md)
   : Apply a method_tidy to a making_tidy target
 
 ### Modelled hypothesis "population parameter" definer
 
 Core class of "population parameter" definer
 
-- [`param_obj()`](https://joshuamarie.github.io/statim/reference/param_obj.md)
+- [`param_obj()`](https://s7-stats.github.io/statim/reference/param_obj.md)
   : Base class for population parameters
 
 ### Modelled hypothesis management
 
 Core helpers to parse the modelled hypotheses, objects from
-[`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md)
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
 
-- [`claim_scalar_diff()`](https://joshuamarie.github.io/statim/reference/claim_scalar_diff.md)
+- [`claim_scalar_diff()`](https://s7-stats.github.io/statim/reference/claim_scalar_diff.md)
   : Extract the hypothesized scalar value from a null claim
-- [`claim_contrast_coefs()`](https://joshuamarie.github.io/statim/reference/claim_contrast_coefs.md)
+- [`claim_contrast_coefs()`](https://s7-stats.github.io/statim/reference/claim_contrast_coefs.md)
   : Extract contrast coefficients from a null claim
 
 ### Modelled hypothesis translator and container
@@ -211,22 +211,22 @@ Core helpers to parse the modelled hypotheses, objects from
 Core function to contain the implementation to translate modelled
 hypothesis, placed under `claim_translator` from `stat_define`
 
-- [`claim_translate()`](https://joshuamarie.github.io/statim/reference/claim_translate.md)
+- [`claim_translate()`](https://s7-stats.github.io/statim/reference/claim_translate.md)
   : Declare per-variant claim translators
-- [`map_claim()`](https://joshuamarie.github.io/statim/reference/map_claim.md)
+- [`map_claim()`](https://s7-stats.github.io/statim/reference/map_claim.md)
   : Build a claim translator from named resolver functions
 
 ### Tidy implementation container
 
 Add or replace
-[`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md)
-method for following `STAT_CONSTRUCTOR` objects
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) method
+for following `STAT_CONSTRUCTOR` objects
 
-- [`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+- [`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
   : Automatically tidy a statistical result
-- [`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md)
+- [`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
   : Declare tidy methods for a stat and model type
-- [`method_tidy()`](https://joshuamarie.github.io/statim/reference/method_tidy.md)
+- [`method_tidy()`](https://s7-stats.github.io/statim/reference/method_tidy.md)
   : Declare tidy methods for a stat result
-- [`` `%<-%` ``](https://joshuamarie.github.io/statim/reference/modifying-assignment.md)
+- [`` `%<-%` ``](https://s7-stats.github.io/statim/reference/modifying-assignment.md)
   : Apply a method_tidy to a making_tidy target

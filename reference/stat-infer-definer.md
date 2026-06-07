@@ -3,9 +3,9 @@
 `stat_define()` declares a single implementation of a statistical
 procedure for a given model type. Multiple `stat_define` objects are
 passed to
-[`HTEST_FN()`](https://joshuamarie.github.io/statim/reference/HTEST_FN.md)
+[`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md)
 or
-[`MODEL_FN()`](https://joshuamarie.github.io/statim/reference/MODEL_FN.md)
+[`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)
 via `defs`. This is the main extension point for adding new tests or
 models.
 
@@ -44,15 +44,15 @@ model_infer_define(
 - impl:
 
   An
-  [`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md)
+  [`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md)
   object collecting all implementations. The `fn` of each
-  [`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
+  [`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
   and
-  [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
+  [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
   inside receives `.proc` as its first argument. See
-  [`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
+  [`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
   for the expected signature and
-  [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md)
+  [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md)
   for the keys available on `.proc` per model type.
 
 - compatible_params:
@@ -74,9 +74,9 @@ A `stat_define` S7 object.
 
 ## See also
 
-[`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md),
-[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md),
-[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md),
-[`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md),
-[`HTEST_FN()`](https://joshuamarie.github.io/statim/reference/HTEST_FN.md),
-[`MODEL_FN()`](https://joshuamarie.github.io/statim/reference/MODEL_FN.md)
+[`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md),
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md),
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md),
+[`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md),
+[`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md),
+[`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)

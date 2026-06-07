@@ -2,9 +2,9 @@
 
 `prepare_test()` attaches a test specification to a `def_model` object,
 producing a `test_lazy` ready for optional recalibration with
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md) before
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) before
 being executed with
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md).
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
 
 ## Usage
 
@@ -17,12 +17,12 @@ prepare_test(.x, .test, ...)
 - .x:
 
   A `def_model` object from
-  [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md).
+  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md).
 
 - .test:
 
   A test function such as
-  [TTEST](https://joshuamarie.github.io/statim/reference/TTEST.md), or a
+  [TTEST](https://s7-stats.github.io/statim/reference/TTEST.md), or a
   `test_spec` object returned by calling such a function with no
   arguments.
 
@@ -36,9 +36,9 @@ A `test_lazy` S3 object.
 
 ## See also
 
-[`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md),
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md),
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)
+[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
+[`via()`](https://s7-stats.github.io/statim/reference/via.md),
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 
 ## Examples
 

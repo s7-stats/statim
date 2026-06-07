@@ -5,7 +5,7 @@ extending the `statim` framework with new method variants.
 
 `add_variant()` is used as the left-hand side of the `%<-%` operator to
 register a
-[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
 for a stat function and model type. `"default"` is frozen and cannot be
 added.
 
@@ -27,9 +27,9 @@ remove_variant(obj, model_type, name)
 - obj:
 
   A test or model function built with
-  [`HTEST_FN()`](https://joshuamarie.github.io/statim/reference/HTEST_FN.md)
+  [`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md)
   or
-  [`MODEL_FN()`](https://joshuamarie.github.io/statim/reference/MODEL_FN.md)
+  [`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)
   (e.g. `TTEST`). Used to scope the registry key.
 
 - model_type:
@@ -52,10 +52,10 @@ An `add_variant_call` object, consumed by `%<-%`.
 
 ## See also
 
-[`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md),
-[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md),
-[`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md),
-[`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md)
+[`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md),
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md),
+[`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md),
+[`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md)
 
 ## Examples
 

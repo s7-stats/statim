@@ -15,15 +15,15 @@ model_id_info(.model_id, processed = NULL, ...)
 - .model_id:
 
   A model ID object from
-  [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md),
-  [`rel()`](https://joshuamarie.github.io/statim/reference/rel.md),
-  [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md),
+  [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
+  [`rel()`](https://s7-stats.github.io/statim/reference/rel.md),
+  [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md),
   or a formula.
 
 - processed:
 
   A named list returned by
-  [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md),
+  [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md),
   or `NULL`. When `NULL`, count-based fields in `other_info` and `vars`
   are omitted.
 

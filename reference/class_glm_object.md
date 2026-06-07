@@ -1,21 +1,21 @@
 # Structured result container for GLM fits
 
 An S7 class produced by
-[GLM](https://joshuamarie.github.io/statim/reference/GLM.md) pipelines.
-Not constructed manually — use
+[GLM](https://s7-stats.github.io/statim/reference/GLM.md) pipelines. Not
+constructed manually — use
 `define_model() |> prepare_model(GLM) |> conclude()` instead.
 
 Inherits from
-[anova_able](https://joshuamarie.github.io/statim/reference/anova_able.md),
+[anova_able](https://s7-stats.github.io/statim/reference/anova_able.md),
 so it participates in
-[`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
+[`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
 directly. Downstream packages can use it as a `parent` in
 [`S7::new_class()`](https://rconsortium.github.io/S7/reference/new_class.html).
 
 ## Details
 
 Constructor arguments (populated automatically by
-[GLM](https://joshuamarie.github.io/statim/reference/GLM.md)):
+[GLM](https://s7-stats.github.io/statim/reference/GLM.md)):
 
 - `terms`: model terms object.
 
@@ -35,8 +35,8 @@ Constructor arguments (populated automatically by
 
 ## See also
 
-[anova_able](https://joshuamarie.github.io/statim/reference/anova_able.md),
-[GLM](https://joshuamarie.github.io/statim/reference/GLM.md)
+[anova_able](https://s7-stats.github.io/statim/reference/anova_able.md),
+[GLM](https://s7-stats.github.io/statim/reference/GLM.md)
 
 ## Examples
 

@@ -14,9 +14,9 @@ GLM(.model = NULL, .data = NULL, ...)
 - .model:
 
   A model ID from
-  [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md),
+  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
   or `NULL` to return a `model_spec` for use in
-  [`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md).
+  [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md).
 
 - .data:
 

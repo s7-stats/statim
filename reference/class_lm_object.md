@@ -1,21 +1,21 @@
 # Structured result container for linear model fits
 
 An S7 class produced by
-[LINEAR_REG](https://joshuamarie.github.io/statim/reference/LINEAR_REG.md)
+[LINEAR_REG](https://s7-stats.github.io/statim/reference/LINEAR_REG.md)
 pipelines. Not constructed manually — use
 `define_model() |> prepare_model(LINEAR_REG) |> conclude()` instead.
 
 Inherits from
-[anova_able](https://joshuamarie.github.io/statim/reference/anova_able.md),
+[anova_able](https://s7-stats.github.io/statim/reference/anova_able.md),
 so it participates in
-[`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
+[`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
 directly. Downstream packages can use it as a `parent` in
 [`S7::new_class()`](https://rconsortium.github.io/S7/reference/new_class.html).
 
 ## Details
 
 Constructor arguments (populated automatically by
-[LINEAR_REG](https://joshuamarie.github.io/statim/reference/LINEAR_REG.md)):
+[LINEAR_REG](https://s7-stats.github.io/statim/reference/LINEAR_REG.md)):
 
 - `terms`: model terms object.
 
@@ -37,7 +37,7 @@ Constructor arguments (populated automatically by
 
 - `x_mat`: model matrix stored as a flat numeric vector via
   `as.numeric(stats::model.matrix(fit))`. Required for single-model
-  [`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md);
+  [`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md);
   omit only if Type I ANOVA is not needed.
 
 The following are computed automatically and do not need to be supplied:
@@ -56,7 +56,7 @@ The following are computed automatically and do not need to be supplied:
 ## anova() protocol
 
 `class_lm_object` supports two
-[`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
+[`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
 modes:
 
 - **Single model** — Type I (sequential) ANOVA. Each term is tested
@@ -68,8 +68,8 @@ modes:
 
 ## See also
 
-[`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md),
-[LINEAR_REG](https://joshuamarie.github.io/statim/reference/LINEAR_REG.md)
+[`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md),
+[LINEAR_REG](https://s7-stats.github.io/statim/reference/LINEAR_REG.md)
 
 ## Examples
 

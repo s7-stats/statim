@@ -21,16 +21,15 @@ inlines(...)
   variable name in the processed output. Unnamed elements are auto-named
   by their role and position: `xv1`, `xv2`, ... under role `"x"`;
   `grpv1`, `grpv2`, ... under role `"group"`; `pv1`, `pv2`, ... inside
-  [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md).
+  [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md).
   Names can be mixed freely — unnamed elements take an auto-name based
   on their position regardless of whether other elements are named.
 
 ## Value
 
 A named list of quosures. Intended for use inside model ID functions
-such as
-[`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md) and
-[`rel()`](https://joshuamarie.github.io/statim/reference/rel.md); not
+such as [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
+and [`rel()`](https://s7-stats.github.io/statim/reference/rel.md); not
 typically called on its own.
 
 ## Details
@@ -44,9 +43,9 @@ only a naked and unevaluated expression.
 
 [`I()`](https://rdrr.io/r/base/AsIs.html) for a single inline
 expression,
-[`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md),
-[`rel()`](https://joshuamarie.github.io/statim/reference/rel.md),
-[`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md)
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
+[`rel()`](https://s7-stats.github.io/statim/reference/rel.md),
+[`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md)
 
 ## Examples
 

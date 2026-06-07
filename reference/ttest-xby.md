@@ -2,13 +2,13 @@
 
 The `x_by` implementation performs an independent or paired two-sample
 t-test. It accepts one or more grouping variables via
-[`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md).
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md).
 
 ## Arguments
 
 The following arguments are passed via `...` in
-[`TTEST()`](https://joshuamarie.github.io/statim/reference/TTEST.md) or
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md):
+[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) or
+[`via()`](https://s7-stats.github.io/statim/reference/via.md):
 
 - `.paired`:
 
@@ -44,26 +44,25 @@ The following arguments are passed via `...` in
 ## Result class
 
 Returns a
-[class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+[class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
 object. All variants that also return
-[class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+[class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
 inherit
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 and [`print()`](https://rdrr.io/r/base/print.html) automatically.
 
 ## Hypothesis claims
 
-Supports [`MU()`](https://joshuamarie.github.io/statim/reference/MU.md)
-via
-[`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md).
+Supports [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) via
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
 The `weighted` variant additionally accepts contrast coefficients via
 `.w`.
 
 ## See also
 
 Other ttest-implementations:
-[`ttest-formula`](https://joshuamarie.github.io/statim/reference/ttest-formula.md),
-[`ttest-pairwise`](https://joshuamarie.github.io/statim/reference/ttest-pairwise.md)
+[`ttest-formula`](https://s7-stats.github.io/statim/reference/ttest-formula.md),
+[`ttest-pairwise`](https://s7-stats.github.io/statim/reference/ttest-pairwise.md)
 
 ## Examples
 

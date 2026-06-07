@@ -2,12 +2,12 @@
 
 ## Rationale
 
-[statim](https://github.com/joshuamarie/statim) is so extendable, you
-can extend the existing methods or write your own and make it extensive.
+[statim](https://github.com/s7-stats/statim) is so extendable, you can
+extend the existing methods or write your own and make it extensive.
 
 Here, I plan to extend
-[`TTEST()`](https://joshuamarie.github.io/statim/reference/TTEST.md)
-with another bootstrapping by simply adding another variation:
+[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) with
+another bootstrapping by simply adding another variation:
 
 ``` r
 
@@ -56,18 +56,18 @@ another_boot_tt
 #> Calculations and Intervals on Original Scale
 ```
 
-[statim](https://github.com/joshuamarie/statim) has built-in output [S7
+[statim](https://github.com/s7-stats/statim) has built-in output [S7
 classes](https://joshuamarie.com/statim/reference/index.html#base-statistical-inference-output-class)
 support, which you can use them to register your own method into that
 specific class in order to be automatically processed into
-[statim](https://github.com/joshuamarie/statim) internals, like
-extracting your output in tibble format with
-[`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md).
+[statim](https://github.com/s7-stats/statim) internals, like extracting
+your output in tibble format with
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md).
 Otherwise, you must register them by your own.
 
 An example above doesn’t register with one of built-in output S7
 classes, so
-[`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md) will
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) will
 fail. Fortunately, you can bring it down by using
 `making_tidy(<stat_fn>, <model_id / S7::class_formula>) %<-% method_tidy(...)`type
 of registry:
@@ -92,9 +92,9 @@ another_boot_tt |> tidy()
 ```
 
 You can clean the
-[`TTEST()`](https://joshuamarie.github.io/statim/reference/TTEST.md) in
+[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) in
 `x_by` model pipeline slate by simply using
-[`remove_variant()`](https://joshuamarie.github.io/statim/reference/add-variant.md).
+[`remove_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md).
 
 ``` r
 

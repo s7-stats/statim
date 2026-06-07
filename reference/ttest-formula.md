@@ -15,7 +15,7 @@ Use a formula directly as the model ID to select this implementation.
 ## Arguments
 
 The following arguments are passed via `...` in
-[`TTEST()`](https://joshuamarie.github.io/statim/reference/TTEST.md):
+[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md):
 
 - `.mu`:
 
@@ -33,7 +33,7 @@ The following arguments are passed via `...` in
 ## Variants
 
 No variants are currently registered for the formula path. Use
-[`add_variant()`](https://joshuamarie.github.io/statim/reference/add-variant.md)
+[`add_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md)
 to register custom variants at the user or package level.
 
 ## Result class
@@ -41,16 +41,16 @@ to register custom variants at the user or package level.
 Returns a tibble with columns `type`, `group`, and `ttest` (a
 list-column of [`stats::t.test()`](https://rdrr.io/r/stats/t.test.html)
 results). This path does not currently return a
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
 subclass — use
-[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md)
+[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
 to register a tidy method if needed.
 
 ## See also
 
 Other ttest-implementations:
-[`ttest-pairwise`](https://joshuamarie.github.io/statim/reference/ttest-pairwise.md),
-[`ttest-xby`](https://joshuamarie.github.io/statim/reference/ttest-xby.md)
+[`ttest-pairwise`](https://s7-stats.github.io/statim/reference/ttest-pairwise.md),
+[`ttest-xby`](https://s7-stats.github.io/statim/reference/ttest-xby.md)
 
 ## Examples
 

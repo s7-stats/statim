@@ -19,11 +19,11 @@ via(.x, .method, ...)
 - .method:
 
   A string naming the method variant. Must match a named
-  [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
+  [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
   in the
-  [`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md)
+  [`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md)
   of the matched
-  [`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md).
+  [`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md).
   E.g. `"boot"`, `"permute"`, `"permute_rfast"`.
 
 - ...:
@@ -36,8 +36,8 @@ The modified lazy object with `recalibrate_spec` populated.
 
 ## See also
 
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md),
-[`stat_define()`](https://joshuamarie.github.io/statim/reference/stat-infer-definer.md)
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md),
+[`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md)
 
 ## Examples
 

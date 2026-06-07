@@ -1,7 +1,7 @@
 # Protocol class for ANOVA participation
 
 Any model result container that should participate in
-[`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
+[`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
 must inherit from `anova_able`. Subclasses fill the four required slots;
 `build_anova()` reads only those slots and dispatches the test statistic
 computation on `@family`.
@@ -47,9 +47,9 @@ anova_able(
   `"binomial"`, `"poisson"`. Used by `build_anova()` to select the
   correct test statistic. Must be consistent across all models passed to
   a single
-  [`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
+  [`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
   call.
 
 ## See also
 
-[`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
+[`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)

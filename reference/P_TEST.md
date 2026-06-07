@@ -13,10 +13,10 @@ P_TEST(.model = NULL, .data = NULL, ...)
 
 - .model:
 
-  A [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md)
+  A [`prop()`](https://s7-stats.github.io/statim/reference/prop.md)
   model ID. When supplied, the test executes immediately. When `NULL`
   (default), returns a `test_spec` for use in the pipeline via
-  [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md).
+  [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md).
 
 - .data:
 
@@ -31,13 +31,13 @@ P_TEST(.model = NULL, .data = NULL, ...)
 
 A `cld_exec` object, or a `test_spec` when `.model = NULL`. The object
 stored in `cld_exec@data` is a
-[class_p_test](https://joshuamarie.github.io/statim/reference/class_p_test.md)
+[class_p_test](https://s7-stats.github.io/statim/reference/class_p_test.md)
 object.
 
 ## Arguments
 
 The following arguments are passed via `...` in `P_TEST()` or
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md):
+[`via()`](https://s7-stats.github.io/statim/reference/via.md):
 
 - `.p`:
 
@@ -64,9 +64,8 @@ The following arguments are passed via `...` in `P_TEST()` or
 
 ## Hypothesis claims
 
-Supports [`PI()`](https://joshuamarie.github.io/statim/reference/PI.md)
-via
-[`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md):
+Supports [`PI()`](https://s7-stats.github.io/statim/reference/PI.md) via
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md):
 
     define_model(prop(45, 100)) |>
         prepare_test(P_TEST) |>
@@ -75,12 +74,12 @@ via
 
 ## See also
 
-[`prop()`](https://joshuamarie.github.io/statim/reference/prop.md),
-[class_p_test](https://joshuamarie.github.io/statim/reference/class_p_test.md),
-[`PI()`](https://joshuamarie.github.io/statim/reference/PI.md),
-[`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md),
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md),
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)
+[`prop()`](https://s7-stats.github.io/statim/reference/prop.md),
+[class_p_test](https://s7-stats.github.io/statim/reference/class_p_test.md),
+[`PI()`](https://s7-stats.github.io/statim/reference/PI.md),
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md),
+[`via()`](https://s7-stats.github.io/statim/reference/via.md),
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 
 ## Examples
 

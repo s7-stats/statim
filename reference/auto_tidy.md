@@ -2,13 +2,13 @@
 
 `auto_tidy()` is the protocol generic for tidying result objects
 produced by `fn` in
-[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
 and
-[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md).
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md).
 It is called automatically by
-[`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md) when
-the result stored in `cld_exec@data` is a
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) when the
+result stored in `cld_exec@data` is a
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
 subclass.
 
 ## Usage
@@ -22,7 +22,7 @@ auto_tidy(x, ...)
 - x:
 
   A
-  [class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+  [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
   subclass object, typically `cld_exec@data`.
 
 - ...:
@@ -56,14 +56,14 @@ returns a subclass, it can override selectively:
     }
 
 If no `auto_tidy()` method is found and no
-[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md)
+[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
 entry exists,
-[`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md) falls
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) falls
 back to an informative error.
 
 ## See also
 
-[`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md),
-[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md),
-[`method_tidy()`](https://joshuamarie.github.io/statim/reference/method_tidy.md),
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md),
+[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md),
+[`method_tidy()`](https://s7-stats.github.io/statim/reference/method_tidy.md),
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)

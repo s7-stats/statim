@@ -1,7 +1,7 @@
 # Linear regression
 
 Fits an ordinary least squares linear regression model. Accepts
-[`rel()`](https://joshuamarie.github.io/statim/reference/rel.md) or a
+[`rel()`](https://s7-stats.github.io/statim/reference/rel.md) or a
 formula as the model ID.
 
 ## Usage
@@ -15,9 +15,9 @@ LINEAR_REG(.model = NULL, .data = NULL, ...)
 - .model:
 
   A model ID from
-  [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md),
+  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
   or `NULL` to return a `model_spec` for use in
-  [`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md).
+  [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md).
 
 - .data:
 
@@ -30,15 +30,15 @@ LINEAR_REG(.model = NULL, .data = NULL, ...)
 ## Value
 
 A `cld_exec` object containing a
-[class_lm_object](https://joshuamarie.github.io/statim/reference/class_lm_object.md),
+[class_lm_object](https://s7-stats.github.io/statim/reference/class_lm_object.md),
 or a `model_spec` when `.model = NULL`.
 
 ## Details
 
 The result is an
-[class_lm_object](https://joshuamarie.github.io/statim/reference/class_lm_object.md),
+[class_lm_object](https://s7-stats.github.io/statim/reference/class_lm_object.md),
 which satisfies the
-[`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
+[`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
 protocol and prints coefficients and model fit universally across all
 engines and variants.
 

@@ -14,11 +14,11 @@ TTEST(.model = NULL, .data = NULL, ...)
 - .model:
 
   A model ID from
-  [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md),
-  [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md),
+  [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
+  [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md),
   or a formula. When supplied, the test executes immediately. When
   `NULL` (default), returns a `test_spec` for use in the pipeline via
-  [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md).
+  [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md).
 
 - .data:
 
@@ -34,17 +34,17 @@ TTEST(.model = NULL, .data = NULL, ...)
 A `cld_exec` object, or a `test_spec` when `.model = NULL`. The object
 stored in `cld_exec@data` depends on the model ID:
 
-- [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md) — a
-  [class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+- [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) — a
+  [class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
   object
 
-- [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md)
+- [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md)
   — a
-  [class_ttest_pairwise](https://joshuamarie.github.io/statim/reference/class_ttest_pairwise.md)
+  [class_ttest_pairwise](https://s7-stats.github.io/statim/reference/class_ttest_pairwise.md)
   object
 
 - formula — a
-  [class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+  [class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
   object
 
 ## Supported model IDs
@@ -52,21 +52,21 @@ stored in `cld_exec@data` depends on the model ID:
 Each model ID routes to a separate implementation. See the linked pages
 for full argument lists, variants, and result class details:
 
-- [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md) —
+- [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) —
   two-sample or paired t-test. See
-  [ttest-xby](https://joshuamarie.github.io/statim/reference/ttest-xby.md).
+  [ttest-xby](https://s7-stats.github.io/statim/reference/ttest-xby.md).
 
-- [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md)
+- [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md)
   — pairwise t-tests across variables. See
-  [ttest-pairwise](https://joshuamarie.github.io/statim/reference/ttest-pairwise.md).
+  [ttest-pairwise](https://s7-stats.github.io/statim/reference/ttest-pairwise.md).
 
 - formula — one-sample or two-sample t-test. See
-  [ttest-formula](https://joshuamarie.github.io/statim/reference/ttest-formula.md).
+  [ttest-formula](https://s7-stats.github.io/statim/reference/ttest-formula.md).
 
 ## Arguments
 
 The following arguments are passed via `...` in `TTEST()` or
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md):
+[`via()`](https://s7-stats.github.io/statim/reference/via.md):
 
 - `.paired`:
 
@@ -102,34 +102,33 @@ The following arguments are passed via `...` in `TTEST()` or
 ## Result class
 
 Returns a
-[class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+[class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
 object. All variants that also return
-[class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md)
+[class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
 inherit
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 and [`print()`](https://rdrr.io/r/base/print.html) automatically.
 
 ## Hypothesis claims
 
-Supports [`MU()`](https://joshuamarie.github.io/statim/reference/MU.md)
-via
-[`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md).
+Supports [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) via
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
 The `weighted` variant additionally accepts contrast coefficients via
 `.w`.
 
 ## See also
 
-[ttest-xby](https://joshuamarie.github.io/statim/reference/ttest-xby.md),
-[ttest-pairwise](https://joshuamarie.github.io/statim/reference/ttest-pairwise.md),
-[ttest-formula](https://joshuamarie.github.io/statim/reference/ttest-formula.md)
+[ttest-xby](https://s7-stats.github.io/statim/reference/ttest-xby.md),
+[ttest-pairwise](https://s7-stats.github.io/statim/reference/ttest-pairwise.md),
+[ttest-formula](https://s7-stats.github.io/statim/reference/ttest-formula.md)
 for per-implementation details.
-[class_ttest_two](https://joshuamarie.github.io/statim/reference/class_ttest_two.md),
-[class_ttest_pairwise](https://joshuamarie.github.io/statim/reference/class_ttest_pairwise.md)
+[class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md),
+[class_ttest_pairwise](https://s7-stats.github.io/statim/reference/class_ttest_pairwise.md)
 for result class slots.
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md),
-[`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md),
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md),
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md).
+[`via()`](https://s7-stats.github.io/statim/reference/via.md),
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md),
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md),
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md).
 
 ## Examples
 

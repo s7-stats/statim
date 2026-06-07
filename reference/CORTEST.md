@@ -14,10 +14,10 @@ CORTEST(.model = NULL, .data = NULL, ...)
 - .model:
 
   A model ID from
-  [`rel()`](https://joshuamarie.github.io/statim/reference/rel.md). When
+  [`rel()`](https://s7-stats.github.io/statim/reference/rel.md). When
   supplied, the test executes immediately. When `NULL` (default),
   returns a `test_spec` for use in the pipeline via
-  [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md).
+  [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md).
 
 - .data:
 
@@ -35,7 +35,7 @@ An `htest_spec` object (standalone or eager), or a `test_spec` object
 
 ## Supported model IDs
 
-- [`rel()`](https://joshuamarie.github.io/statim/reference/rel.md) —
+- [`rel()`](https://s7-stats.github.io/statim/reference/rel.md) —
   many-to-one correlation test
 
 ## Examples

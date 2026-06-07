@@ -16,23 +16,28 @@ pairwise(..., direction = "lt")
 - ...:
 
   Bare variable names, tidyselect helpers (requires `data` in
-  [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)),
+  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)),
   or `I(expr)` for inline data.
 
 - direction:
 
-  A string controlling which pairs are kept. One of:
+  A string controlling which pairs are kept:
 
-  - `"lt"` (default): keep pairs where `name_a` comes before `name_b`
-    alphabetically (i.e. unique unordered pairs).
+  - `"lt"` (default): strict lower triangle, i.e. pairs where index(x)
+    \< index(y)
 
-  - `"lteq"`, `"gt"`, `"gteq"`: ordered variants.
+  - `"lteq"`: lower triangle including the diagonal (x \<= y)
 
-  - `"eq"`: keep only self-pairs.
+  - `"gt"`: strict upper triangle (x \> y)
 
-  - `"neq"`: drop self-pairs, keep all others.
+  - `"gteq"`: upper triangle including the diagonal (x \>= y)
 
-  - `"all"`: keep every combination.
+  - `"eq"`: diagonal only (x == y), i.e. each variable paired with
+    itself
+
+  - `"neq"`: all pairs except the diagonal (x != y)
+
+  - `"all"`: all combinations including both directions and the diagonal
 
 ## Value
 

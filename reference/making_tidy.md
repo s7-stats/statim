@@ -2,11 +2,11 @@
 
 `making_tidy()` is the escape hatch for registering tidy methods when a
 variant's `fn` intentionally returns a
-non-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+non-[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
 object (plain list, S3, S4, or R6). When `fn` returns a
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
 subclass, implement
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 on the result class instead — no registration needed.
 
 ## Usage
@@ -20,9 +20,9 @@ making_tidy(obj, model_type)
 - obj:
 
   A stat function built with
-  [`HTEST_FN()`](https://joshuamarie.github.io/statim/reference/HTEST_FN.md)
+  [`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md)
   or
-  [`MODEL_FN()`](https://joshuamarie.github.io/statim/reference/MODEL_FN.md)
+  [`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)
   (e.g. `TTEST`).
 
 - model_type:
@@ -36,9 +36,9 @@ A `making_tidy_call` object, consumed by `%<-%`.
 
 ## See also
 
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md),
-[`method_tidy()`](https://joshuamarie.github.io/statim/reference/method_tidy.md),
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md),
+[`method_tidy()`](https://s7-stats.github.io/statim/reference/method_tidy.md),
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
 
 ## Examples
 

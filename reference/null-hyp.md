@@ -17,7 +17,7 @@ more_h0(...)
 - .x:
 
   A `test_lazy` object from
-  [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md).
+  [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md).
 
 - ...:
 

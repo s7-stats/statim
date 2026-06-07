@@ -7,7 +7,7 @@ better and directly help us as maintainers.
 ## Code of Conduct
 
 By participating in this project, you agree to follow the rules in
-[CODE_OF_CONDUCT.md](https://joshuamarie.github.io/statim/CODE_OF_CONDUCT.md).
+[CODE_OF_CONDUCT.md](https://s7-stats.github.io/statim/CODE_OF_CONDUCT.md).
 
 ## Ways to Contribute
 

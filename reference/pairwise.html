@@ -35,14 +35,13 @@ ordering of variable names."></head><body>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/joshuamarie/statim" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/s7-stats/statim" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch"><li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
     <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
     <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
   </ul></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://joshuamarie.com"><span class="fa fa-blog"></span> Blog</a></li>
       </ul></div>
 
 
@@ -52,7 +51,7 @@ ordering of variable names."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Define all pairwise variable combinations</h1>
-      <small class="dont-index">Source: <a href="https://github.com/joshuamarie/statim/blob/master/R/define-model-ids.R" class="external-link"><code>R/define-model-ids.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/s7-stats/statim/blob/master/R/define-model-ids.R" class="external-link"><code>R/define-model-ids.R</code></a></small>
       <div class="d-none name"><code>pairwise.Rd</code></div>
     </div>
 
@@ -78,12 +77,13 @@ ordering of variable names.</p>
 
 
 <dt id="arg-direction">direction<a class="anchor" aria-label="anchor" href="#arg-direction"></a></dt>
-<dd><p>A string controlling which pairs are kept. One of:</p><ul><li><p><code>"lt"</code> (default): keep pairs where <code>name_a</code> comes before <code>name_b</code>
-alphabetically (i.e. unique unordered pairs).</p></li>
-<li><p><code>"lteq"</code>, <code>"gt"</code>, <code>"gteq"</code>: ordered variants.</p></li>
-<li><p><code>"eq"</code>: keep only self-pairs.</p></li>
-<li><p><code>"neq"</code>: drop self-pairs, keep all others.</p></li>
-<li><p><code>"all"</code>: keep every combination.</p></li>
+<dd><p>A string controlling which pairs are kept:</p><ul><li><p><code>"lt"</code> (default): strict lower triangle, i.e. pairs where index(x) &lt; index(y)</p></li>
+<li><p><code>"lteq"</code>: lower triangle including the diagonal (x &lt;= y)</p></li>
+<li><p><code>"gt"</code>: strict upper triangle (x &gt; y)</p></li>
+<li><p><code>"gteq"</code>: upper triangle including the diagonal (x &gt;= y)</p></li>
+<li><p><code>"eq"</code>: diagonal only (x == y), i.e. each variable paired with itself</p></li>
+<li><p><code>"neq"</code>: all pairs except the diagonal (x != y)</p></li>
+<li><p><code>"all"</code>: all combinations including both directions and the diagonal</p></li>
 </ul></dd>
 
 </dl></div>
@@ -125,7 +125,7 @@ alphabetically (i.e. unique unordered pairs).</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>. Visit my <a href="https://joshuamarie.com" class="external-link">blog</a> for more content.</p>
+  <p>Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>. Visit my <a href="https://s7-stats.com" class="external-link">blog</a> for more content.</p>
 </div>
 
     </footer></div>

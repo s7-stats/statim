@@ -53,7 +53,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/joshuamarie/statim" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/s7-stats/statim" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
@@ -62,7 +62,6 @@
     <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
   </ul>
 </li>
-<li class="nav-item"><a class="external-link nav-link" href="https://joshuamarie.com"><span class="fa fa-blog"></span> Blog</a></li>
       </ul>
 </div>
 
@@ -79,7 +78,7 @@
       <h1>Getting started with statim</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/joshuamarie/statim/blob/master/vignettes/statim.Rmd" class="external-link"><code>vignettes/statim.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/s7-stats/statim/blob/master/vignettes/statim.Rmd" class="external-link"><code>vignettes/statim.Rmd</code></a></small>
       <div class="d-none name"><code>statim.Rmd</code></div>
     </div>
 
@@ -88,10 +87,10 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is a new and modified approach of high-level
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is a new and modified approach of high-level
 statistical inference in R. It is fully built for statistical inference
 pipeline, made to be pipe-able, extensible, and exportable. This package
-is built at top of S7, making <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> flexible and strict.
+is built at top of S7, making <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> flexible and strict.
 The idea is not completely new, as the said approach apparantly inherits
 traditional statistical modelling approach in R around this idea:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;</span>statistical<span class="sc">-</span><span class="cf">function</span><span class="sc">&gt;</span><span class="er">&gt;</span>(<span class="sc">&lt;</span>formula<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">&gt;</span>)</span></code></pre></div>
@@ -108,7 +107,7 @@ model IDs. Normally, they inherit the parent S7 class of
 Traditionally, <code>&lt;formula&gt;</code> is used to describe the
 relationship between LHS (left-hand side) and RHS (right-hand side), but
 <code>&lt;model_id&gt;</code> take it on another different level.</p>
-<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> has built-in <code>&lt;model_id&gt;</code>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> has built-in <code>&lt;model_id&gt;</code>
 objects:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -195,11 +194,11 @@ with <code><a href="../reference/inlines.html">inlines()</a></code>:</p>
 <h2 id="general-workflow">General Workflow<a class="anchor" aria-label="anchor" href="#general-workflow"></a>
 </h2>
 <p><img src="workflow.jpg"></p>
-<p>Usual workflow of writing <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> comes with three (3)
+<p>Usual workflow of writing <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> comes with three (3)
 stages:</p>
 <ol style="list-style-type: lower-roman">
 <li><p><em>Model processor and definition:</em> The stage which explains
-the model to be analyzed throughout the <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a>’s
+the model to be analyzed throughout the <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s
 statistical inference pipeline. This stage is where you supplied either
 data frame (it could be any data structure, as long as they’re
 dispatched into <code><a href="../reference/model-processor.html">model_processor()</a></code>) or a
@@ -306,7 +305,7 @@ the API, such as <code><a href="../reference/via.html">via()</a></code> and <cod
 <div class="section level2">
 <h2 id="recalibrating-the-estimation-method">Recalibrating the estimation method<a class="anchor" aria-label="anchor" href="#recalibrating-the-estimation-method"></a>
 </h2>
-<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> has a way to recalibrate the method of
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> has a way to recalibrate the method of
 estimation in the statistical inference pipeline. Use <code><a href="../reference/via.html">via()</a></code>
 to switch a lazy pipeline to an alternative estimation method. It
 updates the specification while the whole pipeline is defused before
@@ -404,7 +403,7 @@ is a single added line, with nothing else changing:</p>
 <div class="section level2">
 <h2 id="hypothesis-expressioms">Hypothesis expressioms<a class="anchor" aria-label="anchor" href="#hypothesis-expressioms"></a>
 </h2>
-<p>One of the distinguishing features of <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is the
+<p>One of the distinguishing features of <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is the
 ability to state the null hypothesis as a mathematical expression. The
 conventional approach in base R uses declarative strings gotchas like
 <code>alternative = "less"</code>. While it is a shortcase, they encode
@@ -416,8 +415,8 @@ without reading the surrounding context. After all, hypothesis testing
 is about testing the null hypothesis of whether you have an evidence to
 support the claim, and parametric tests are about testing the population
 population.</p>
-<p>While <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> still supports this,
-<a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> made some redirection with explicit hypothesis
+<p>While <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> still supports this,
+<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> made some redirection with explicit hypothesis
 declaration built from parameter objects, in
 <code>&lt;param_obj&gt;</code> class, and standard R comparison
 operators. The expression names the population parameter, the relational
@@ -520,7 +519,7 @@ need to know when you started working with this package.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>. Visit my <a href="https://joshuamarie.com" class="external-link">blog</a> for more content.</p>
+  <p>Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>. Visit my <a href="https://s7-stats.com" class="external-link">blog</a> for more content.</p>
 </div>
 
     </footer>

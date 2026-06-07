@@ -2,9 +2,9 @@
 
 `prepare_model()` attaches a model specification to a `def_model`
 object, producing a `model_lazy` ready for optional recalibration with
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md) before
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) before
 being executed with
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md).
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
 
 ## Usage
 
@@ -17,12 +17,12 @@ prepare_model(.x, .model_fn, ...)
 - .x:
 
   A `def_model` object from
-  [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md).
+  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md).
 
 - .model_fn:
 
   A model function such as
-  [`LINEAR_REG()`](https://joshuamarie.github.io/statim/reference/LINEAR_REG.md).
+  [`LINEAR_REG()`](https://s7-stats.github.io/statim/reference/LINEAR_REG.md).
 
 - ...:
 
@@ -34,10 +34,10 @@ A `model_lazy` S3 object.
 
 ## See also
 
-[`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md),
-[`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md),
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md),
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)
+[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md),
+[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
+[`via()`](https://s7-stats.github.io/statim/reference/via.md),
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 
 ## Examples
 

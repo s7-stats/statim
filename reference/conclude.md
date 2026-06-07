@@ -15,11 +15,11 @@ conclude(.x, ...)
 - .x:
 
   A `test_lazy` or `model_lazy` object produced by
-  [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md)
+  [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
   or
-  [`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md)
+  [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
   (optionally followed by
-  [`via()`](https://joshuamarie.github.io/statim/reference/via.md)).
+  [`via()`](https://s7-stats.github.io/statim/reference/via.md)).
 
 - ...:
 
@@ -32,13 +32,13 @@ A `cld_exec` S7 object with the following slots:
 - `@data`:
 
   The raw return value of the `fn` defined in
-  [`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
+  [`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
   or
-  [`variant()`](https://joshuamarie.github.io/statim/reference/variant.md).
+  [`variant()`](https://s7-stats.github.io/statim/reference/variant.md).
   Its structure depends on the implementation — see the documentation of
   the stat function (e.g.
-  [`?TTEST`](https://joshuamarie.github.io/statim/reference/TTEST.md))
-  for what to expect.
+  [`?TTEST`](https://s7-stats.github.io/statim/reference/TTEST.md)) for
+  what to expect.
 
 - `@cld_meta`:
 
@@ -47,12 +47,12 @@ A `cld_exec` S7 object with the following slots:
   `$model_id`
 
   :   The model ID object passed to
-      [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md).
+      [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md).
 
   `$processed`
 
   :   The processed model output from
-      [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md).
+      [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md).
       The same object received as `.proc` inside the `fn`.
 
   `$stat_name`
@@ -62,8 +62,8 @@ A `cld_exec` S7 object with the following slots:
   `$method`
 
   :   The variant name used. `"default"` when no
-      [`via()`](https://joshuamarie.github.io/statim/reference/via.md)
-      was called.
+      [`via()`](https://s7-stats.github.io/statim/reference/via.md) was
+      called.
 
   `$data_name`
 
@@ -72,9 +72,9 @@ A `cld_exec` S7 object with the following slots:
 ## Writing print functions
 
 The `print` argument of
-[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
 and
-[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
 receives a `cld_exec` object as `x`. Read your output from `x@data`:
 
     baseline(
@@ -89,20 +89,19 @@ receives a `cld_exec` object as `x`. Read your output from `x@data`:
 Otherwise, when the base S7 class dispatches
 [`print()`](https://rdrr.io/r/base/print.html) elsewhere, it is
 inherited without writing `print` from
-[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
-/
-[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md)
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+/ [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
 
 ## Writing tidy functions
 
 Prefer implementing
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 on your result class when `fn` returns a
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
 subclass. Use
-[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md)
+[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
 only when `fn` intentionally returns a
-non-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+non-[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
 object.
 
 For example:
@@ -116,12 +115,12 @@ For example:
 
 ## See also
 
-[`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md),
-[`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md),
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md),
-[`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md),
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md),
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md)
+[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md),
+[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md),
+[`via()`](https://s7-stats.github.io/statim/reference/via.md),
+[`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md),
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md),
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 
 ## Examples
 

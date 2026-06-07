@@ -1,10 +1,10 @@
 # Declare tidy methods for a stat result
 
 `method_tidy()` is the companion to
-[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md).
+[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md).
 It collects tidy functions for the base implementation and named
 variants, used only when `fn` returns a
-non-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+non-[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
 object.
 
 ## Usage
@@ -23,7 +23,7 @@ method_tidy(default = NULL, ...)
 
   Named functions, one per variant. Names must match variant names
   registered in
-  [`agendas()`](https://joshuamarie.github.io/statim/reference/agendas.md).
+  [`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md).
   Omitted variants fall back to `default` automatically.
 
 ## Value
@@ -32,6 +32,6 @@ A `method_tidy` S7 object.
 
 ## See also
 
-[`making_tidy()`](https://joshuamarie.github.io/statim/reference/making_tidy.md),
-[`auto_tidy()`](https://joshuamarie.github.io/statim/reference/auto_tidy.md),
-[class_stat_infer](https://joshuamarie.github.io/statim/reference/class_stat_infer.md)
+[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md),
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md),
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)

@@ -4,9 +4,9 @@
 `.data`, so each name is available to subsequent expressions via
 [`stats::update()`](https://rdrr.io/r/stats/update.html). Accepts any
 valid model ID: formulas,
-[`rel()`](https://joshuamarie.github.io/statim/reference/rel.md),
-[`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md), or
-any registered `model_id` type.
+[`rel()`](https://s7-stats.github.io/statim/reference/rel.md),
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md), or any
+registered `model_id` type.
 
 ## Usage
 
@@ -24,7 +24,7 @@ write_models(.data, ...)
 
   Named model expressions. Each must evaluate to a formula or a
   `model_id` object. Names are used as row labels in
-  [`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
+  [`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
   output.
 
 ## Value
@@ -34,15 +34,15 @@ An `expanded_model` object.
 ## Details
 
 Sits between a data frame and
-[`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md)
+[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
 or
-[`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md)
+[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
 in the pipeline.
 
 ## See also
 
-[`prepare_model()`](https://joshuamarie.github.io/statim/reference/prepare-model.md),
-[`anova()`](https://joshuamarie.github.io/statim/reference/anova-mod.md)
+[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md),
+[`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
 
 ## Examples
 

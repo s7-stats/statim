@@ -14,10 +14,10 @@ ANOVA(.model = NULL, .data = NULL, ...)
 - .model:
 
   A model ID from
-  [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md) or
-  a formula. When supplied, the test executes immediately. When `NULL`
+  [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) or a
+  formula. When supplied, the test executes immediately. When `NULL`
   (default), returns a `test_spec` for use in the pipeline via
-  [`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md).
+  [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md).
 
 - .data:
 
@@ -33,7 +33,7 @@ A `cld_exec` object (pipeline), or a `test_spec` object.
 
 ## Supported model IDs
 
-- [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md):
+- [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md):
   one-way or two-way ANOVA
 
 - formula: standard [`aov()`](https://rdrr.io/r/stats/aov.html) formula

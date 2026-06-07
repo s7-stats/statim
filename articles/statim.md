@@ -2,11 +2,11 @@
 
 ## Introduction
 
-[statim](https://github.com/joshuamarie/statim) is a new and modified
+[statim](https://github.com/s7-stats/statim) is a new and modified
 approach of high-level statistical inference in R. It is fully built for
 statistical inference pipeline, made to be pipe-able, extensible, and
 exportable. This package is built at top of S7, making
-[statim](https://github.com/joshuamarie/statim) flexible and strict. The
+[statim](https://github.com/s7-stats/statim) flexible and strict. The
 idea is not completely new, as the said approach apparantly inherits
 traditional statistical modelling approach in R around this idea:
 
@@ -26,10 +26,10 @@ should be built within S7. Traditionally, `<formula>` is used to
 describe the relationship between LHS (left-hand side) and RHS
 (right-hand side), but `<model_id>` take it on another different level.
 
-[statim](https://github.com/joshuamarie/statim) has built-in
-`<model_id>` objects:
+[statim](https://github.com/s7-stats/statim) has built-in `<model_id>`
+objects:
 
-1.  [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md):
+1.  [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md):
     When used, it is simply translated as “compare x by group”. It
     requires 2 main arguments: `x` and `group`, and it is ideal for
     pipelines which compares `x` by `group`. Moreover, you can
@@ -49,7 +49,7 @@ describe the relationship between LHS (left-hand side) and RHS
     Both `x` and `group` accept `<tidyselect>` helpers, such as
     `starts_with()`. Only when a data frame is supplied.
 
-2.  [`rel()`](https://joshuamarie.github.io/statim/reference/rel.md): It
+2.  [`rel()`](https://s7-stats.github.io/statim/reference/rel.md): It
     simply reads the expression once used as “relationship between x and
     y”. It requires 2 main arguments: `x` and `resp`, and it is ideal
     for pipelines which describes the relationship of `x` to `resp`.
@@ -62,7 +62,7 @@ describe the relationship between LHS (left-hand side) and RHS
     Both `x` and `resp` accept `<tidyselect>` helpers, such as
     `starts_with()`. Only when a data frame is supplied.
 
-3.  [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md):
+3.  [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md):
     With this function, all variables being selected by it will generate
     all pairwise combinations. Use `direction` to regulate which pairs
     are kept, and it’s `"lt"` (less than) by default.
@@ -78,11 +78,10 @@ describe the relationship between LHS (left-hand side) and RHS
     alphabetically”. Also, it accepts `<tidyselect>` helpers if a data
     frame is given.
 
-4.  [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md):
-    Use this when the data is just a single observed count, namely the
+4.  [`prop()`](https://s7-stats.github.io/statim/reference/prop.md): Use
+    this when the data is just a single observed count, namely the
     number of successes `x` out of `n` trials. Unlike the other model
-    IDs,
-    [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md)
+    IDs, [`prop()`](https://s7-stats.github.io/statim/reference/prop.md)
     takes scalar constants directly; no variable names or data frame is
     involved.
 
@@ -92,7 +91,7 @@ describe the relationship between LHS (left-hand side) and RHS
     ```
 
     Because the data is embedded in the model ID itself,
-    [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)
+    [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
     does not require a data frame:
 
     ``` r
@@ -113,7 +112,7 @@ environment (global environment by default). If you don’t want to write
 intermediate variables by assigning the data you created in a variable,
 use inline data with [`I()`](https://rdrr.io/r/base/AsIs.html) or
 multiple inlines with
-[`inlines()`](https://joshuamarie.github.io/statim/reference/inlines.md):
+[`inlines()`](https://s7-stats.github.io/statim/reference/inlines.md):
 
 ``` r
 
@@ -131,19 +130,17 @@ pairwise(inlines(rnorm(30), rnorm(30), rnorm(30)))
 
 ![](workflow.jpg)
 
-Usual workflow of writing
-[statim](https://github.com/joshuamarie/statim) comes with three (3)
-stages:
+Usual workflow of writing [statim](https://github.com/s7-stats/statim)
+comes with three (3) stages:
 
 1.  *Model processor and definition:* The stage which explains the model
     to be analyzed throughout the
-    [statim](https://github.com/joshuamarie/statim)’s statistical
-    inference pipeline. This stage is where you supplied either data
-    frame (it could be any data structure, as long as they’re dispatched
-    into
-    [`model_processor()`](https://joshuamarie.github.io/statim/reference/model-processor.md))
+    [statim](https://github.com/s7-stats/statim)’s statistical inference
+    pipeline. This stage is where you supplied either data frame (it
+    could be any data structure, as long as they’re dispatched into
+    [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md))
     or a `<model_id>` (formula objects are special ones) into
-    [`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md),
+    [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
     and then some functions to be added in the future (like
     transformations and updating the model).
 
@@ -226,9 +223,9 @@ sleep |>
 There are times where you do not need the full pipeline, a quick eager
 form can do that. For a quick one-shot result, every test exposes an
 eager form that skips
-[`define_model()`](https://joshuamarie.github.io/statim/reference/model-define-base.md)
+[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
 and
-[`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md)
+[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
 entirely:
 
 ``` r
@@ -256,17 +253,17 @@ The eager form accepts the same model ID and data arguments, pass the
 rest of arguments, and returns the same printed output. The only
 constraints the “eager form” compensates is you can’t use the rest of
 the API, such as
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md) and
-[`tidy()`](https://joshuamarie.github.io/statim/reference/tidy.md).
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) and
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md).
 
 ## Recalibrating the estimation method
 
-[statim](https://github.com/joshuamarie/statim) has a way to recalibrate
+[statim](https://github.com/s7-stats/statim) has a way to recalibrate
 the method of estimation in the statistical inference pipeline. Use
-[`via()`](https://joshuamarie.github.io/statim/reference/via.md) to
-switch a lazy pipeline to an alternative estimation method. It updates
-the specification while the whole pipeline is defused before
-[`conclude()`](https://joshuamarie.github.io/statim/reference/conclude.md)
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) to switch
+a lazy pipeline to an alternative estimation method. It updates the
+specification while the whole pipeline is defused before
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 executes it. Any named arguments after `.method` are forwarded to that
 variant.
 
@@ -365,39 +362,38 @@ sleep |>
 ## Hypothesis expressioms
 
 One of the distinguishing features of
-[statim](https://github.com/joshuamarie/statim) is the ability to state
-the null hypothesis as a mathematical expression. The conventional
-approach in base R uses declarative strings gotchas like
-`alternative = "less"`. While it is a shortcase, they encode a direction
-without naming the parameter being constrained or the value it is being
-tested against. You cannot read `alternative = "greater"` and know
-whether the claim is about a population mean, a population proportion,
-or a population correlation without reading the surrounding context.
-After all, hypothesis testing is about testing the null hypothesis of
-whether you have an evidence to support the claim, and parametric tests
-are about testing the population population.
+[statim](https://github.com/s7-stats/statim) is the ability to state the
+null hypothesis as a mathematical expression. The conventional approach
+in base R uses declarative strings gotchas like `alternative = "less"`.
+While it is a shortcase, they encode a direction without naming the
+parameter being constrained or the value it is being tested against. You
+cannot read `alternative = "greater"` and know whether the claim is
+about a population mean, a population proportion, or a population
+correlation without reading the surrounding context. After all,
+hypothesis testing is about testing the null hypothesis of whether you
+have an evidence to support the claim, and parametric tests are about
+testing the population population.
 
-While [statim](https://github.com/joshuamarie/statim) still supports
-this, [statim](https://github.com/joshuamarie/statim) made some
-redirection with explicit hypothesis declaration built from parameter
-objects, in `<param_obj>` class, and standard R comparison operators.
-The expression names the population parameter, the relational operator,
-and the hypothesized scalar — the same three components that appear in
-any textbook null hypothesis statement. Internally,
-[`state_null()`](https://joshuamarie.github.io/statim/reference/null-hyp.md)
+While [statim](https://github.com/s7-stats/statim) still supports this,
+[statim](https://github.com/s7-stats/statim) made some redirection with
+explicit hypothesis declaration built from parameter objects, in
+`<param_obj>` class, and standard R comparison operators. The expression
+names the population parameter, the relational operator, and the
+hypothesized scalar — the same three components that appear in any
+textbook null hypothesis statement. Internally,
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
 parses the expression, extracts the important components, and passes
 them into the `fn` implementation from
-[`baseline()`](https://joshuamarie.github.io/statim/reference/baseline.md)
-/
-[`variant()`](https://joshuamarie.github.io/statim/reference/variant.md).
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+/ [`variant()`](https://s7-stats.github.io/statim/reference/variant.md).
 Any linear combination of parameters is accepted on either side.
 
 The supported operators are `==`, `!=`, `<`, `>`, `<=`, `>=`, and `%=%`
 (simultaneous equality across multiple parameters). Here are the current
 built-in `<param_obj>` objects:
 
-- [`MU()`](https://joshuamarie.github.io/statim/reference/MU.md): refers
-  to the population mean \mu. It has following usages:
+- [`MU()`](https://s7-stats.github.io/statim/reference/MU.md): refers to
+  the population mean \mu. It has following usages:
 
   1.  `MU(x)` which means the assumed population mean of the variable
       `x`.
@@ -405,22 +401,22 @@ built-in `<param_obj>` objects:
   2.  `MU(x, group == "1")` which means the assumed population mean of
       the variable `x` given the `group` equal `"1"`.
 
-- [`RHO()`](https://joshuamarie.github.io/statim/reference/RHO.md): or
-  \rho which refers to the population correlation between 2 variables —
+- [`RHO()`](https://s7-stats.github.io/statim/reference/RHO.md): or \rho
+  which refers to the population correlation between 2 variables —
   `RHO(x, y) == 0` simply means the population correlation between `x`
   and `y` is 0 or \rho\_{x, y} = 0.
 
-- [`PI()`](https://joshuamarie.github.io/statim/reference/PI.md): refers
-  to the population proportion \pi. Used with
-  [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md)
+- [`PI()`](https://s7-stats.github.io/statim/reference/PI.md): refers to
+  the population proportion \pi. Used with
+  [`prop()`](https://s7-stats.github.io/statim/reference/prop.md)
   pipelines. It accepts zero or one argument:
 
-  1.  [`PI()`](https://joshuamarie.github.io/statim/reference/PI.md) —
-      the population proportion of the modelled count, when the variable
+  1.  [`PI()`](https://s7-stats.github.io/statim/reference/PI.md) — the
+      population proportion of the modelled count, when the variable
       name is already encoded in the model ID via
-      [`prop()`](https://joshuamarie.github.io/statim/reference/prop.md)
+      [`prop()`](https://s7-stats.github.io/statim/reference/prop.md)
       (see
-      [`?P_TEST`](https://joshuamarie.github.io/statim/reference/P_TEST.md)).
+      [`?P_TEST`](https://s7-stats.github.io/statim/reference/P_TEST.md)).
 
   2.  `PI(x)` — the population proportion of a named variable `x`, for
       future two-sample proportion tests.

@@ -55,7 +55,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/joshuamarie/statim" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/s7-stats/statim" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
@@ -64,7 +64,6 @@
     <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
   </ul>
 </li>
-<li class="nav-item"><a class="external-link nav-link" href="https://joshuamarie.com"><span class="fa fa-blog"></span> Blog</a></li>
       </ul>
 </div>
 
@@ -84,22 +83,22 @@
 <div class="section level2">
 <h2 id="package-overview">Package Overview<a class="anchor" aria-label="anchor" href="#package-overview"></a>
 </h2>
-<p>What does <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> mean?</p>
-<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is a Latin word for “immediately, at once”. The name carries a double meaning:</p>
+<p>What does <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> mean?</p>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is a Latin word for “immediately, at once”. The name carries a double meaning:</p>
 <ul>
 <li>
 <em>stat</em>: as in statistics, the domain this package lives in</li>
 <li>
 <em>im</em> (<em>statim</em>): as in “immediate”, signalling that inference should be expressible as a direct declaration, not somewhat a sequence of mechanical steps</li>
 </ul>
-<p>This simply means: you declare <em>what</em> statistical inference you want to perform, then <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> immediately delivers <em>how</em>.</p>
+<p>This simply means: you declare <em>what</em> statistical inference you want to perform, then <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> immediately delivers <em>how</em>.</p>
 </div>
 <div class="section level2">
 <h2 id="why-statim">Why statim?<a class="anchor" aria-label="anchor" href="#why-statim"></a>
 </h2>
 <p>R has a rich statistical ecosystem, but statistical inference in general is served by an assortment of disconnected functions. R gained a grammar for graphics (<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>) and one for data manipulation (<a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>), but statistical inference has no equivalent: each testing function ships with its own interface, its own way of specifying data, and its own output format. There is no shared grammar for inference: no way to say <em>what</em> you want to test without simultaneously committing to <em>how</em> the procedure carries it out.</p>
-<p><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> is an attempt to re-imagine this from the ground up, the same way <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> introduced a grammar for graphics without replacing base plotting functions. The core idea is that any inferential procedure can be described in <a href="#general-usage">three steps</a>.</p>
-<p>This separation matters because it makes statistical workflows <em>composable</em>. For example, in t-test you just want to switch from classical to permutation. <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> won’t need you to do a lot of work (which sometimes require rewriting your code) to switch from a classical to a permutation procedure does not require rewriting your code, just a single addition to the syntax.</p>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is an attempt to re-imagine this from the ground up, the same way <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> introduced a grammar for graphics without replacing base plotting functions. The core idea is that any inferential procedure can be described in <a href="#general-usage">three steps</a>.</p>
+<p>This separation matters because it makes statistical workflows <em>composable</em>. For example, in t-test you just want to switch from classical to permutation. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> won’t need you to do a lot of work (which sometimes require rewriting your code) to switch from a classical to a permutation procedure does not require rewriting your code, just a single addition to the syntax.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Classical t-test</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span> </span>
@@ -144,8 +143,8 @@
 </h2>
 <p>Loading a library comes with <a href="https://joshuamarie.com/posts/06-load-pkg/" class="external-link">a lot of preferences</a>. In this example, <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> is used for a simple demonstration:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/joshuamarie/statim" class="external-link">statim</a></span><span class="op">)</span></span></code></pre></div>
-<p>All you need to know is that the usual workflow of <a href="https://github.com/joshuamarie/statim" class="external-link">statim</a> comes with three usual steps:</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/s7-stats/statim" class="external-link">statim</a></span><span class="op">)</span></span></code></pre></div>
+<p>All you need to know is that the usual workflow of <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> comes with three usual steps:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span>                                <span class="co"># 1</span></span>
 <span>    <span class="fu"><a href="reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span>   <span class="co"># 1              </span></span>
@@ -190,8 +189,8 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/joshuamarie/statim/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/joshuamarie/statim/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/s7-stats/statim/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/s7-stats/statim/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -244,7 +243,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>. Visit my <a href="https://joshuamarie.com" class="external-link">blog</a> for more content.</p>
+  <p>Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>. Visit my <a href="https://s7-stats.com" class="external-link">blog</a> for more content.</p>
 </div>
 
     </footer>

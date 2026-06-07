@@ -2,7 +2,7 @@
 
 `define_model()` captures a model ID and optional data into a
 `def_model` object that can be passed into
-[`prepare_test()`](https://joshuamarie.github.io/statim/reference/prepare-test.md).
+[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md).
 
 ## Usage
 
@@ -15,9 +15,9 @@ define_model(.x, ...)
 - .x:
 
   A model ID object from
-  [`x_by()`](https://joshuamarie.github.io/statim/reference/x_by.md),
-  [`rel()`](https://joshuamarie.github.io/statim/reference/rel.md),
-  [`pairwise()`](https://joshuamarie.github.io/statim/reference/pairwise.md),
+  [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
+  [`rel()`](https://s7-stats.github.io/statim/reference/rel.md),
+  [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md),
   or a formula. It is also dispatched for a data frame class when using
   the data-first pipe style.
 
