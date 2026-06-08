@@ -126,8 +126,8 @@ for full argument lists, variants, and result class details:</p><ul><li><p><code
 <dt><code>"permute"</code></dt>
 <dd><p>Permutation test. Accepts <code>n</code> and <code>seed</code>.</p></dd>
 
-<dt><code>"weighted"</code></dt>
-<dd><p>Weighted contrast. Accepts <code>.w</code>, <code>.mu</code>, <code>.ci</code>, <code>.op</code>.</p></dd>
+<dt><code>"contrast"</code></dt>
+<dd><p>Welch-Satterthwaite linear contrast test. Accepts <code>.w</code>, <code>.mu</code>, <code>.ci</code>, <code>.op</code>.</p></dd>
 
 
 </dl></div>
@@ -142,8 +142,8 @@ for full argument lists, variants, and result class details:</p><ul><li><p><code
     <h2 id="hypothesis-claims">Hypothesis claims<a class="anchor" aria-label="anchor" href="#hypothesis-claims"></a></h2>
 
 
-<p>Supports <code><a href="MU.html">MU()</a></code> via <code><a href="null-hyp.html">state_null()</a></code>. The <code>weighted</code> variant additionally
-accepts contrast coefficients via <code>.w</code>.</p>
+<p>Supports <code><a href="MU.html">MU()</a></code> via <code><a href="null-hyp.html">state_null()</a></code>. The <code>contrast</code> variant performs Welch-Satterthwaite linear contrast test
+and additionally accepts contrast coefficients via <code>.w</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -267,7 +267,7 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># weighted t-test</span></span></span>
+<span class="r-in"><span><span class="co"># Contrast t-test</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -275,7 +275,7 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-in"><span>        <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="co"># Try to obtain 90% of the confidence interval</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="via.html">via</a></span><span class="op">(</span><span class="st">"weighted"</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="via.html">via</a></span><span class="op">(</span><span class="st">"contrast"</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
@@ -285,7 +285,7 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     by_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> == T-Test · weighted =========================================================== </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> == T-Test · contrast =========================================================== </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -- Summary ---------------------------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

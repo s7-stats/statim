@@ -94,9 +94,10 @@ The following arguments are passed via `...` in `TTEST()` or
 
   Permutation test. Accepts `n` and `seed`.
 
-- `"weighted"`:
+- `"contrast"`:
 
-  Weighted contrast. Accepts `.w`, `.mu`, `.ci`, `.op`.
+  Welch-Satterthwaite linear contrast test. Accepts `.w`, `.mu`, `.ci`,
+  `.op`.
 
 ## Result class
 
@@ -112,8 +113,8 @@ and [`print()`](https://rdrr.io/r/base/print.html) automatically.
 
 Supports [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) via
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
-The `weighted` variant additionally accepts contrast coefficients via
-`.w`.
+The `contrast` variant performs Welch-Satterthwaite linear contrast test
+and additionally accepts contrast coefficients via `.w`.
 
 ## See also
 
@@ -245,7 +246,7 @@ sleep |>
 #> 
 #> 
 
-# weighted t-test
+# Contrast t-test
 sleep |>
     define_model(x_by(extra, group)) |>
     prepare_test(TTEST) |>
@@ -253,7 +254,7 @@ sleep |>
         2 * MU(extra, group == "1") <= MU(extra, group == "2")
     ) |>
     # Try to obtain 90% of the confidence interval
-    via("weighted", .ci = 0.9) |>
+    via("contrast", .ci = 0.9) |>
     conclude()
 #> 
 #> == Model ======================================================================= 
@@ -263,7 +264,7 @@ sleep |>
 #>     x_vars : 1 
 #>     by_vars : 1 
 #> 
-#> == T-Test · weighted =========================================================== 
+#> == T-Test · contrast =========================================================== 
 #> 
 #> -- Summary ---------------------------------------------------------------------
 #> 

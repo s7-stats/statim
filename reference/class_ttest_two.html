@@ -69,7 +69,7 @@ automatically. Downstream packages can use it as a <code>parent</code> in
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Slots (populated automatically by <a href="TTEST.html">TTEST</a>):</p><ul><li><p><code>group</code>: name of the grouping variable.</p></li>
-<li><p><code>estimate</code>: mean difference (or weighted contrast estimate).</p></li>
+<li><p><code>estimate</code>: mean difference (or linear contrast estimate).</p></li>
 <li><p><code>t_stat</code>: t-statistic.</p></li>
 <li><p><code>df</code>: degrees of freedom.</p></li>
 <li><p><code>p_val</code>: p-value.</p></li>
@@ -81,8 +81,8 @@ automatically. Downstream packages can use it as a <code>parent</code> in
     <h2 id="shared-by-variants">Shared by variants<a class="anchor" aria-label="anchor" href="#shared-by-variants"></a></h2>
 
 
-<p>Both <code>default</code> and <code>weighted</code> return a <code>class_ttest_two</code>, so
-<code><a href="auto_tidy.html">auto_tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> are inherited by <code>weighted</code> for free.</p>
+<p>Both the default (<code>base</code>) and <code>contrast</code> return a <code>class_ttest_two</code>, so
+<code><a href="auto_tidy.html">auto_tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> are inherited by <code>contrast</code> for free.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

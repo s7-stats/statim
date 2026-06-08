@@ -20,7 +20,7 @@ Slots (populated automatically by
 
 - `group`: name of the grouping variable.
 
-- `estimate`: mean difference (or weighted contrast estimate).
+- `estimate`: mean difference (or linear contrast estimate).
 
 - `t_stat`: t-statistic.
 
@@ -36,10 +36,10 @@ Slots (populated automatically by
 
 ## Shared by variants
 
-Both `default` and `weighted` return a `class_ttest_two`, so
+Both the default (`base`) and `contrast` return a `class_ttest_two`, so
 [`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 and [`print()`](https://rdrr.io/r/base/print.html) are inherited by
-`weighted` for free.
+`contrast` for free.
 
 ## See also
 
