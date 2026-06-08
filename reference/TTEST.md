@@ -245,14 +245,15 @@ sleep |>
 #> 
 #> 
 
-# weighted contrast
+# weighted t-test
 sleep |>
     define_model(x_by(extra, group)) |>
     prepare_test(TTEST) |>
     state_null(
         2 * MU(extra, group == "1") <= MU(extra, group == "2")
     ) |>
-    via("weighted") |>
+    # Try to obtain 90% of the confidence interval
+    via("weighted", .ci = 0.9) |>
     conclude()
 #> 
 #> == Model ======================================================================= 
@@ -276,9 +277,9 @@ sleep |>
 #> -- Confidence Interval ---------------------------------------------------------
 #> 
 #> ─────────────────────────────
-#>   group  lower_95  upper_95  
+#>   group  lower_90  upper_90  
 #> ─────────────────────────────
-#>   group   -2.282     Inf     
+#>   group   -2.573     Inf     
 #> ─────────────────────────────
 #> 
 #> 
