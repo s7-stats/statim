@@ -436,7 +436,7 @@ sleep |>
     define_model(extra %by% group) |>
     prepare_test(TTEST) |>
     state_null(
-        MU(x, group == "1") <= MU(x, group == "2")
+        MU(extra, group == "1") <= MU(extra, group == "2")
     ) |>
     conclude()
 #> 

@@ -25,6 +25,9 @@ A `PI` / `param_obj` S7 object.
 ## Examples
 
 ``` r
+PI()
+#> <param: PI>
+#> 
 PI(success)
 #> <param: PI>
 #> 

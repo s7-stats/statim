@@ -1,7 +1,7 @@
 # Base class for population parameters
 
-`param_obj` is the base S7 class for all population parameter objects,
-analogous to
+`param_obj` is the abstract base S7 class for all population parameter
+objects, analogous to
 [`model_id()`](https://s7-stats.github.io/statim/reference/model_id.md).
 Concrete subclasses (`MU`, `PI`, `SIGMA`, `RHO`) inherit from it. The
 base class is a pure marker — each subclass declares its own properties.
