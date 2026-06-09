@@ -1,7 +1,9 @@
 # Correlation Test
 
 `CORTEST()` performs a correlation test for one-to-one or many-to-one
-variable relationships.
+variable relationships. If `CORTEST` is supplied within the lazy-loaded
+pipeline, supply `CORTEST` as a function i.e.
+`prepare_test(.test = CORTEST)` call.
 
 ## Usage
 
@@ -13,11 +15,9 @@ CORTEST(.model = NULL, .data = NULL, ...)
 
 - .model:
 
-  A model ID from
+  A registered model ID for `CORTEST()`, e.g.
   [`rel()`](https://s7-stats.github.io/statim/reference/rel.md). When
-  supplied, the test executes immediately. When `NULL` (default),
-  returns a `test_spec` for use in the pipeline via
-  [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md).
+  supplied, the test executes immediately.
 
 - .data:
 

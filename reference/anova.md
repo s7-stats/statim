@@ -1,7 +1,9 @@
 # ANOVA
 
 `ANOVA()` performs an analysis of variance for one-way, two-way, or
-formula-based comparisons.
+formula-based comparisons. If `ANOVA` is supplied within the lazy-loaded
+pipeline, supply `ANOVA` as a function within i.e.
+`prepare_test(.test = ANOVA)` call.
 
 ## Usage
 
@@ -15,9 +17,7 @@ ANOVA(.model = NULL, .data = NULL, ...)
 
   A model ID from
   [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) or a
-  formula. When supplied, the test executes immediately. When `NULL`
-  (default), returns a `test_spec` for use in the pipeline via
-  [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md).
+  formula. When supplied, the test executes immediately.
 
 - .data:
 

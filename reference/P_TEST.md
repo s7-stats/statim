@@ -1,7 +1,9 @@
 # Proportion Test
 
 `P_TEST()` performs a one-sample proportion test using either an exact
-binomial test or a normal approximation.
+binomial test or a normal approximation. If `P_TEST` is supplied within
+the lazy-loaded pipeline, supply `P_TEST` as a function within i.e.
+`prepare_test(.test = P_TEST)` call.
 
 ## Usage
 
@@ -13,10 +15,9 @@ P_TEST(.model = NULL, .data = NULL, ...)
 
 - .model:
 
-  A [`prop()`](https://s7-stats.github.io/statim/reference/prop.md)
-  model ID. When supplied, the test executes immediately. When `NULL`
-  (default), returns a `test_spec` for use in the pipeline via
-  [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md).
+  A registered model ID, e.g.
+  [`prop()`](https://s7-stats.github.io/statim/reference/prop.md). When
+  supplied, the test executes immediately.
 
 - .data:
 

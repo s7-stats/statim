@@ -1,7 +1,9 @@
 # T-Test
 
 `TTEST()` performs a t-test for one-sample, two-sample, paired,
-pairwise, or formula-based comparisons.
+pairwise, or formula-based comparisons. If `TTEST` is supplied within
+the lazy-loaded pipeline, supply `TTEST` as a function within i.e.
+`prepare_test(.test = TTEST)` call.
 
 ## Usage
 
@@ -16,9 +18,7 @@ TTEST(.model = NULL, .data = NULL, ...)
   A model ID from
   [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
   [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md),
-  or a formula. When supplied, the test executes immediately. When
-  `NULL` (default), returns a `test_spec` for use in the pipeline via
-  [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md).
+  or a formula. When supplied, the test executes immediately.
 
 - .data:
 
