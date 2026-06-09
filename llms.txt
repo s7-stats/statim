@@ -350,6 +350,8 @@ Classes and internal functions
   : Model evaluator
 - [`model_id_info()`](https://s7-stats.github.io/statim/reference/model_id_info.md)
   : Extract metadata from a model ID
+- [`class_model_inform`](https://s7-stats.github.io/statim/reference/class_model_inform.md)
+  : Output class for model ID metadata
 
 ### Implementation containers
 

@@ -33,73 +33,68 @@ model_id_info(.model_id, processed = NULL, ...)
 
 ## Value
 
-A list with fields:
+A `class_model_inform` S7 object with fields:
+
+- `model_id`:
+
+  The original model ID object.
 
 - `model_type`:
 
-  A string naming the primary model ID class.
+  Derived from the class name of `model_id`.
 
 - `args`:
 
-  A formatted string summarising the model's arguments.
+  A formatted string summarising the model's arguments. Defaults to
+  `"<?>"` for unregistered subclasses.
 
 - `other_info`:
 
-  A named list of model-type-specific metadata.
+  A named list of model-type-specific metadata. Empty for unregistered
+  subclasses.
 
 - `vars`:
 
-  A list of lists with `name` and `preview` fields. Only present when
-  `processed` is supplied.
+  A list of lists with `name` and `preview` fields. Empty for
+  unregistered subclasses or when `processed` is `NULL`.
 
 ## Examples
 
 ``` r
 # without processed — no vars, no counts
 model_id_info(x_by(extra, group))
-#> $model_type
-#> [1] "x_by"
-#> 
-#> $args
-#> [1] "extra | group"
-#> 
-#> $other_info
-#> list()
-#> 
+#> <statim::class_model_inform>
+#>  @ model_id  : <statim::x_by>
+#>  .. @ x    : language ~extra
+#>  .. .. - attr(*, ".Environment")=<environment: 0x55be553a5690> 
+#>  .. @ group: language ~group
+#>  .. .. - attr(*, ".Environment")=<environment: 0x55be553a5690> 
+#>  @ model_type: chr "x_by"
+#>  @ args      : chr "extra | group"
+#>  @ other_info: list()
+#>  @ vars      : list()
+#>  @ registered: logi TRUE
 
 # with processed — includes vars and counts
 dm = define_model(x_by(extra, group), sleep)
 model_id_info(dm@model_id, dm@processed)
-#> $model_type
-#> [1] "x_by"
-#> 
-#> $args
-#> [1] "extra | group"
-#> 
-#> $other_info
-#> $other_info$x_vars
-#> [1] 1
-#> 
-#> $other_info$by_vars
-#> [1] 1
-#> 
-#> 
-#> $vars
-#> $vars[[1]]
-#> $vars[[1]]$name
-#> [1] "extra"
-#> 
-#> $vars[[1]]$preview
-#> [1] "<dbl [20]>"
-#> 
-#> 
-#> $vars[[2]]
-#> $vars[[2]]$name
-#> [1] "group"
-#> 
-#> $vars[[2]]$preview
-#> [1] "<fct [20]>"
-#> 
-#> 
-#> 
+#> <statim::class_model_inform>
+#>  @ model_id  : <statim::x_by>
+#>  .. @ x    : language ~extra
+#>  .. .. - attr(*, ".Environment")=<environment: 0x55be553a5690> 
+#>  .. @ group: language ~group
+#>  .. .. - attr(*, ".Environment")=<environment: 0x55be553a5690> 
+#>  @ model_type: chr "x_by"
+#>  @ args      : chr "extra | group"
+#>  @ other_info:List of 2
+#>  .. $ x_vars : int 1
+#>  .. $ by_vars: int 1
+#>  @ vars      :List of 2
+#>  .. $ :List of 2
+#>  ..  ..$ name   : chr "extra"
+#>  ..  ..$ preview: chr "<dbl [20]>"
+#>  .. $ :List of 2
+#>  ..  ..$ name   : chr "group"
+#>  ..  ..$ preview: chr "<fct [20]>"
+#>  @ registered: logi TRUE
 ```
