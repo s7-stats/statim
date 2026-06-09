@@ -196,11 +196,17 @@ Core class of "population parameter" definer
 - [`param_obj()`](https://s7-stats.github.io/statim/reference/param_obj.md)
   : Base class for population parameters
 
-### Modelled hypothesis management
+### Modelled hypothesis management and validators
 
 Core helpers to parse the modelled hypotheses, objects from
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
 
+- [`validate_claim_vars()`](https://s7-stats.github.io/statim/reference/claim-vars-validators.md)
+  [`check_param_nodes()`](https://s7-stats.github.io/statim/reference/claim-vars-validators.md)
+  [`validate_one_param_node()`](https://s7-stats.github.io/statim/reference/claim-vars-validators.md)
+  [`check_x_and_given()`](https://s7-stats.github.io/statim/reference/claim-vars-validators.md)
+  : Validate hypothesis parameter references against a model's declared
+  variables
 - [`claim_scalar_diff()`](https://s7-stats.github.io/statim/reference/claim_scalar_diff.md)
   : Extract the hypothesized scalar value from a null claim
 - [`claim_contrast_coefs()`](https://s7-stats.github.io/statim/reference/claim_contrast_coefs.md)

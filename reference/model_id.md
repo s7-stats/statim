@@ -17,4 +17,5 @@ You cannot instantiate `model_id` directly; use one of its subclasses.
 
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
 [`rel()`](https://s7-stats.github.io/statim/reference/rel.md),
-[`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md)
+[`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md),
+[`prop()`](https://s7-stats.github.io/statim/reference/prop.md)

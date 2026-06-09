@@ -30,6 +30,7 @@
 <url><loc>https://s7-stats.github.io/statim/reference/anova_able.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/auto_tidy.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/baseline.html</loc></url>
+<url><loc>https://s7-stats.github.io/statim/reference/claim-vars-validators.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/claim_contrast_coefs.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/claim_scalar_diff.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/claim_translate.html</loc></url>
@@ -66,7 +67,6 @@
 <url><loc>https://s7-stats.github.io/statim/reference/ttest-pairwise.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/ttest-xby.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/update-test-lazy.html</loc></url>
-<url><loc>https://s7-stats.github.io/statim/reference/validate_claim_vars.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/variant.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/via.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/write_models.html</loc></url>
