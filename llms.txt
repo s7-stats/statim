@@ -289,12 +289,14 @@ Verbs used to perform ANOVA for linear models
 - [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
   : Lazily prepare a model inference
 
-### Result retrieval
+### Output retriever and displayer
 
 Verbs used to retrieve outputs in standard R’s data structure
 
 - [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) : Tidy
   a concluded statistical result
+- [`display()`](https://s7-stats.github.io/statim/reference/display.md)
+  : Display individual results from a multi_exec
 
 ### H-test container and executioner
 

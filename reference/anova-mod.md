@@ -1,7 +1,7 @@
 # ANOVA table for linear model comparisons
 
 `anova()` computes an incremental F-test across two or more fitted
-linear models. It dispatches on three input types:
+linear models. It dispatches on four input types:
 
 ## Usage
 
@@ -17,7 +17,7 @@ An object of class `S7_external_generic` of length 4.
 
 - object:
 
-  An `anova_lazy`, `model_lazy`, or `cld_exec` object.
+  A `multi_lazy`, `anova_lazy`, `model_lazy`, or `cld_exec` object.
 
 - ...:
 
@@ -33,7 +33,10 @@ A `cld_anova` object, invisibly.
 
 ## Details
 
-- An `anova_lazy` from `write_models() |> prepare_model()`.
+- A `multi_lazy` from `write_models() |> prepare_model()`.
+
+- An `anova_lazy` from `write_models() |> prepare_model()` (legacy path,
+  kept for backward compatibility).
 
 - One or more `model_lazy` objects from
   [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md).
