@@ -3,31 +3,244 @@
 ## Introduction
 
 [statim](https://github.com/s7-stats/statim) is a new and modified
-approach of high-level statistical inference in R. It is fully built for
-statistical inference pipeline, made to be pipe-able, extensible, and
-exportable. This package is built at top of S7, making
-[statim](https://github.com/s7-stats/statim) flexible and strict. The
-idea is not completely new, as the said approach apparantly inherits
-traditional statistical modelling approach in R around this idea:
+approach of high-level statistical inference in R. It is fully
+declarative, built for statistical inference pipeline, made to be
+pipe-able, extensible, and exportable. This package is built at top of
+S7, and its design inherits the traditional R idiom:
 
 ``` r
 <<statistical-function>>(<formula>, <data>)
 ```
 
-But it comes with the flavors of tidyverse-esque grammar verbs
-composition.
+But it brings that idiom into a composable, pipe-friendly grammar —
+closer in spirit to [ggplot2](https://ggplot2.tidyverse.org) or
+[dplyr](https://dplyr.tidyverse.org) than to base R’s scattered
+inference functions.
+
+## General Workflow
+
+![](workflow.jpg)
+
+The usual [statim](https://github.com/s7-stats/statim) workflow has
+three (3) stages:
+
+### i. Model definition and processing
+
+The stage where you define the shape of the model to be analyzed. This
+always happens at the beginning of the pipeline. [](#model-id) objects
+describe the shape of the inference, e.g. what variable, what grouping,
+what relationship, while functions like
+[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
+binds that shape to data.
+
+There are two ways to start a pipeline:
+
+1.  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
+    to define one model at a time.
+
+``` r
+
+sleep_dm = define_model(sleep, extra %by% group)
+mtcars_dm = define_model(mtcars, mpg ~ .)
+# mtcars_dm = define_model(mpg ~ ., mtcars)
+```
+
+2.  [`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+    to define multiple named models at once.
+
+``` r
+sleep_wm = write_models(
+    sleep,
+    mod1 = extra %by% group,
+    mod2 = extra %by% c(group, ID),
+    mod3 = extra ~ 1
+    mod4 = extra ~ 1 + group
+)
+```
+
+Future updates will include transformations and model updating
+functions.
+
+### ii. Parameterization
+
+This stage is always AFTER defining the model to be analyzed within the
+statistical inference pipeline, a stage which defines the estimation
+process of the statistical inference. It is either a model-based
+inference (e.g. linear regression) or H-test inference (e.g. t-test).
+They are lazy-loaded, and nothing is executed yet.
+
+Let’s try with two forms of statistical inference:
+
+1.  H-test inference uses
+    [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
+
+``` r
+
+sleep_dm = define_model(sleep, extra %by% group)
+sleep_tt = sleep_dm |> prepare_test(TTEST) |> update(.ci = 0.9)
+```
+
+2.  Model-based inference uses
+    [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
+
+``` r
+
+mtcars_dm = define_model(mtcars, mpg ~ .)
+mtcars_lm = mtcars_dm |> prepare_model(LINEAR_REG)
+```
+
+> Note:
+> [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
+> and
+> [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
+> can supply extra arguments from the default (base) implementation of
+> `<STAT_FN>` functions like
+> [`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) and
+> [`LINEAR_REG()`](https://s7-stats.github.io/statim/reference/LINEAR_REG.md).
+> Using [`update()`](https://rdrr.io/r/stats/update.html) is totally
+> optional.
+
+Later updates may include other processes, such as sensitivity analysis.
+
+### iii. Execution and retrieval
+
+The lazy pipeline from stages i and ii is executed here, and results are
+retrieved. The primary function is
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md),
+and [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) can
+be chained after it when tidy output methods are registered.
+
+``` r
+
+out = conclude(sleep_tt)
+print(out)
+tidy(out)
+```
+
+### A complete example
+
+[statim](https://github.com/s7-stats/statim) is intentionally making the
+syntax pipe-able. Since the pipeline is pipe-able, the three stages read
+like a sentence:
+
+``` r
+
+# t-test example
+sleep |> 
+    define_model(extra %by% group) |> 
+    prepare_test(TTEST) |> 
+    update(.ci = 0.9) |> 
+    conclude() |> 
+    tidy()
+#> # A tibble: 1 × 7
+#>   group estimate t_stat    df  p_val lower_90 upper_90
+#>   <chr>    <dbl>  <dbl> <dbl>  <dbl>    <dbl>    <dbl>
+#> 1 group    -1.58  -1.86  17.8 0.0794    -3.05   -0.107
+
+# Linear regression example
+mtcars |> 
+    define_model(mpg ~ .) |> 
+    prepare_model(LINEAR_REG) |> 
+    conclude() |> 
+    tidy()
+#> # A tibble: 11 × 5
+#>    term        estimate std_error statistic p_value
+#>    <chr>          <dbl>     <dbl>     <dbl>   <dbl>
+#>  1 (Intercept)  12.3      18.7        0.657  0.518 
+#>  2 cyl          -0.111     1.05      -0.107  0.916 
+#>  3 disp          0.0133    0.0179     0.747  0.463 
+#>  4 hp           -0.0215    0.0218    -0.987  0.335 
+#>  5 drat          0.787     1.64       0.481  0.635 
+#>  6 wt           -3.72      1.89      -1.96   0.0633
+#>  7 qsec          0.821     0.731      1.12   0.274 
+#>  8 vs            0.318     2.10       0.151  0.881 
+#>  9 am            2.52      2.06       1.23   0.234 
+#> 10 gear          0.655     1.49       0.439  0.665 
+#> 11 carb         -0.199     0.829     -0.241  0.812
+```
+
+### Eager Form
+
+There are times where you do not need the full pipeline, a quick eager
+form can do that. For a quick one-shot result, every test exposes an
+eager form that skips
+[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
+and
+[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
+entirely:
+
+``` r
+
+TTEST(extra %by% group, sleep, .ci = 0.9)
+#> -- Summary ---------------------------------------------------------------------
+#> 
+#> ──────────────────────────────────────────
+#>   group  estimate  t_stat    df    p_val  
+#> ──────────────────────────────────────────
+#>   group   -1.580   -1.861  17.780  0.079  
+#> ──────────────────────────────────────────
+#> 
+#> 
+#> -- Confidence Interval ---------------------------------------------------------
+#> 
+#> ─────────────────────────────
+#>   group  lower_90  upper_90  
+#> ─────────────────────────────
+#>   group   -3.053    -0.107   
+#> ─────────────────────────────
+LINEAR_REG(mpg ~ ., mtcars)
+#> -- Coefficients ----------------------------------------------------------------
+#> 
+#> ──────────────┬───────────────────────────────────────────
+#>   term        │  estimate  std_error  statistic  p_value  
+#> ──────────────┼───────────────────────────────────────────
+#>   (Intercept) │   12.303    18.718      0.657     0.518   
+#>   cyl         │   -0.111     1.045     -0.107     0.916   
+#>   disp        │   0.013      0.018      0.747     0.463   
+#>   hp          │   -0.021     0.022     -0.987     0.335   
+#>   drat        │   0.787      1.635      0.481     0.635   
+#>   wt          │   -3.715     1.894     -1.961     0.063   
+#>   qsec        │   0.821      0.731      1.123     0.274   
+#>   vs          │   0.318      2.105      0.151     0.881   
+#>   am          │   2.520      2.057      1.225     0.234   
+#>   gear        │   0.655      1.493      0.439     0.665   
+#>   carb        │   -0.199     0.829     -0.241     0.812   
+#> ──────────────┴───────────────────────────────────────────
+#> 
+#> 
+#> -- Model Fit -------------------------------------------------------------------
+#> Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
+#> status 2
+#> ------------------------------------------------------
+#>   R Squared      :    0.87    F-statistic :    13.93
+#>   Adj. R Squared :    0.81    df1         :       10
+#>   Sigma          :    2.65    df2         :       21
+#>   n              :      32    p-value     :   <0.001
+#>   df (residual)  :      21                :         
+#> ------------------------------------------------------
+```
+
+The eager form accepts the same model ID and data arguments, pass the
+rest of arguments, and returns the same printed output. The only
+constraints the “eager form” compensates is you can’t use the rest of
+the API, such as
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) and
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md).
 
 ## Emulation of formulas: model IDs
 
-The functions that emulate the `<formula>` (and its idea) to describe
-the model to be written within the pipeline are called model IDs.
-Normally, they inherit the parent S7 class of `<model_id>`, and they
-should be built within S7. Traditionally, `<formula>` is used to
-describe the relationship between LHS (left-hand side) and RHS
-(right-hand side), but `<model_id>` take it on another different level.
+Now you know the usual workflow of
+[statim](https://github.com/s7-stats/statim), now we’ll talk about
+`<model_id>` objects. Empirical, they are functions that emulate the
+`<formula>` (and its idiom) to describe the shape of a statistical
+inference. Normally, they all inherit from the abstract S7 class
+`<model_id>`, and they should be built within S7. Here, we have
+`<formula>` and is used to describe the relationship between LHS
+(left-hand side) and RHS (right-hand side), but `<model_id>` take it on
+another different level.
 
-[statim](https://github.com/s7-stats/statim) has built-in `<model_id>`
-objects:
+[statim](https://github.com/s7-stats/statim) provides the following
+built-in model IDs:
 
 1.  [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md):
     When used, it is simply translated as “compare x by group”. It
@@ -63,9 +276,9 @@ objects:
     `starts_with()`. Only when a data frame is supplied.
 
 3.  [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md):
-    With this function, all variables being selected by it will generate
-    all pairwise combinations. Use `direction` to regulate which pairs
-    are kept, and it’s `"lt"` (less than) by default.
+    With this function, all variables being selected by it generate all
+    pairwise combinations. Use `direction` to regulate which pairs are
+    kept, and it’s `"lt"` (less than) by default.
 
     ``` r
 
@@ -101,168 +314,33 @@ objects:
 
 And if you notice, they also emulate `aes()` mapper from
 [ggplot2](https://ggplot2.tidyverse.org), which it captures the
-expression internally, instead of evaluating them — indeed they are
-mappers, just like `<formula>` objects. Take note that `model_id`
-abstract S7 class must be carried as you create another `<model_id>`
-object (see more details).
+expression internally, instead of evaluating them, which indeed they are
+mappers. Take note that `<model_id>` abstract S7 class must be carried
+as you create another `<model_id>` object (see more details).
 
-If you don’t have the given data frame, internally it tries to look up
-the variables you passed on `<model_id>` objects at the current
-environment (global environment by default). If you don’t want to write
-intermediate variables by assigning the data you created in a variable,
-use inline data with [`I()`](https://rdrr.io/r/base/AsIs.html) or
-multiple inlines with
-[`inlines()`](https://s7-stats.github.io/statim/reference/inlines.md):
+When no data frame is supplied,
+[statim](https://github.com/s7-stats/statim) looks up the variable names
+from the current environment (global environment by default). If you
+want to avoid creating intermediate variables, use
+[`I()`](https://rdrr.io/r/base/AsIs.html) for a single inline value or
+[`inlines()`](https://s7-stats.github.io/statim/reference/inlines.md)
+for multiple:
 
 ``` r
 
-# `x_by()`
 I(rnorm(30)) %by% I(rep(c("a", "b"), each = 30))
-
-# `rel()`
 rel(I(rnorm(30)), I(rnorm(30)))
-
-# `pairwise()`
 pairwise(inlines(rnorm(30), rnorm(30), rnorm(30)))
 ```
-
-## General Workflow
-
-![](workflow.jpg)
-
-Usual workflow of writing [statim](https://github.com/s7-stats/statim)
-comes with three (3) stages:
-
-1.  *Model processor and definition:* The stage which explains the model
-    to be analyzed throughout the
-    [statim](https://github.com/s7-stats/statim)’s statistical inference
-    pipeline. This stage is where you supplied either data frame (it
-    could be any data structure, as long as they’re dispatched into
-    [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md))
-    or a `<model_id>` (formula objects are special ones) into
-    [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
-    and then some functions to be added in the future (like
-    transformations and updating the model).
-
-2.  *Parameterization:* This stage is always AFTER defining the model to
-    be analyzed within the statistical inference pipeline, a stage which
-    defines the estimation process of the statistical inference. It is
-    either a model-based inference (e.g. linear regression) or H-test
-    inference (e.g. t-test). They are lazy-loaded, and you should be
-    able to do anything. Later updates may include other processes, such
-    as sensitivity analysis.
-
-3.  *Execution and retrieval:* You’ll execute the first-two stages,
-    especially the parameterization stage, and then retrieve the output.
-
-Example:
-
-``` r
-
-# i. Model processor and definition
-sleep_dm = define_model(sleep, extra %by% group)
-
-# ii. Parameterization (lazy-loaded)
-sleep_tt = sleep_dm |> prepare_test(TTEST) |> update(.ci = 0.9)
-
-# iii. Output processing and retrieval
-out = conclude(sleep_tt)
-print(out)
-#> 
-#> == Model ======================================================================= 
-#> 
-#> Model ID : x_by 
-#> Args : extra | group 
-#>     x_vars : 1 
-#>     by_vars : 1 
-#> 
-#> == T-Test ====================================================================== 
-#> 
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ──────────────────────────────────────────
-#>   group  estimate  t_stat    df    p_val  
-#> ──────────────────────────────────────────
-#>   group   -1.580   -1.861  17.780  0.079  
-#> ──────────────────────────────────────────
-#> 
-#> 
-#> -- Confidence Interval ---------------------------------------------------------
-#> 
-#> ─────────────────────────────
-#>   group  lower_90  upper_90  
-#> ─────────────────────────────
-#>   group   -3.053    -0.107   
-#> ─────────────────────────────
-tidy(out)
-#> # A tibble: 1 × 7
-#>   group estimate t_stat    df  p_val lower_90 upper_90
-#>   <chr>    <dbl>  <dbl> <dbl>  <dbl>    <dbl>    <dbl>
-#> 1 group    -1.58  -1.86  17.8 0.0794    -3.05   -0.107
-```
-
-Since it is pipe-able, you can write down at once the following example
-above as:
-
-``` r
-
-sleep |> 
-    define_model(extra %by% group) |> 
-    prepare_test(TTEST) |> 
-    update(.ci = 0.9) |> 
-    conclude() |> 
-    tidy()
-#> # A tibble: 1 × 7
-#>   group estimate t_stat    df  p_val lower_90 upper_90
-#>   <chr>    <dbl>  <dbl> <dbl>  <dbl>    <dbl>    <dbl>
-#> 1 group    -1.58  -1.86  17.8 0.0794    -3.05   -0.107
-```
-
-### Eager Form
-
-There are times where you do not need the full pipeline, a quick eager
-form can do that. For a quick one-shot result, every test exposes an
-eager form that skips
-[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
-and
-[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
-entirely:
-
-``` r
-
-TTEST(extra %by% group, sleep, .ci = 0.9)
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ──────────────────────────────────────────
-#>   group  estimate  t_stat    df    p_val  
-#> ──────────────────────────────────────────
-#>   group   -1.580   -1.861  17.780  0.079  
-#> ──────────────────────────────────────────
-#> 
-#> 
-#> -- Confidence Interval ---------------------------------------------------------
-#> 
-#> ─────────────────────────────
-#>   group  lower_90  upper_90  
-#> ─────────────────────────────
-#>   group   -3.053    -0.107   
-#> ─────────────────────────────
-```
-
-The eager form accepts the same model ID and data arguments, pass the
-rest of arguments, and returns the same printed output. The only
-constraints the “eager form” compensates is you can’t use the rest of
-the API, such as
-[`via()`](https://s7-stats.github.io/statim/reference/via.md) and
-[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md).
 
 ## Recalibrating the estimation method
 
 [statim](https://github.com/s7-stats/statim) has a way to recalibrate
 the method of estimation in the statistical inference pipeline. Use
 [`via()`](https://s7-stats.github.io/statim/reference/via.md) to switch
-a lazy pipeline to an alternative estimation method. It updates the
-specification while the whole pipeline is defused before
+a lazy pipeline from the default estimation method to an alternative
+estimation method. It updates the specification while the whole pipeline
+is defused before
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 executes it. Any named arguments after `.method` are forwarded to that
 variant.
@@ -330,62 +408,33 @@ sleep |>
 #> ───────────────────────────────
 #>    -1.580     0.102     999    
 #> ───────────────────────────────
-
-# Bootstrap
-sleep |>
-    define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
-    via("boot", n = 2000L) |>
-    conclude()
-#> 
-#> == Model ======================================================================= 
-#> 
-#> Model ID : x_by 
-#> Args : extra | group 
-#>     x_vars : 1 
-#>     by_vars : 1 
-#> 
-#> == T-Test · boot =============================================================== 
-#> 
-#> ============================== Bootstrapped T-test =============================
-#> 
-#> 
-#> -- Summary ---------------------------------------------------------------------
-#> Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-#> status 2
-#> ------------------------------
-#>   CI     :   [-3.1, -0.0198]
-#>   n_reps :              2000
-#> ------------------------------
 ```
 
-## Hypothesis expressioms
+## Hypothesis expressions
 
-One of the distinguishing features of
-[statim](https://github.com/s7-stats/statim) is the ability to state the
-null hypothesis as a mathematical expression. The conventional approach
-in base R uses declarative strings gotchas like `alternative = "less"`.
-While it is a shortcase, they encode a direction without naming the
-parameter being constrained or the value it is being tested against. You
-cannot read `alternative = "greater"` and know whether the claim is
-about a population mean, a population proportion, or a population
-correlation without reading the surrounding context. After all,
-hypothesis testing is about testing the null hypothesis of whether you
-have an evidence to support the claim, and parametric tests are about
-testing the population population.
+One of [statim](https://github.com/s7-stats/statim)’s distinguishing
+features is the ability to state the null hypothesis as a mathematical
+expression. The conventional base R approach uses declarative string
+gotchas like `alternative = "less"`. While concise, this encodes only a
+direction: it does not name the population parameter being constrained
+or the value it is being tested against. You cannot read
+`alternative = "greater"` and know whether the claim is about a mean, a
+proportion, or a correlation without reading the surrounding context.
 
-While [statim](https://github.com/s7-stats/statim) still supports this,
-[statim](https://github.com/s7-stats/statim) made some redirection with
-explicit hypothesis declaration built from parameter objects, in
-`<param_obj>` class, and standard R comparison operators. The expression
-names the population parameter, the relational operator, and the
-hypothesized scalar — the same three components that appear in any
-textbook null hypothesis statement. Internally,
+While [statim](https://github.com/s7-stats/statim) still supports this
+(if defined under `stat_define`),
+[statim](https://github.com/s7-stats/statim) provides an explicit
+hypothesis DSL built from `<param_obj>` objects and standard R
+comparison operators. The expression names the population parameter, the
+relational operator, and the hypothesized scalar — the same three
+components that appear in any textbook null hypothesis statement.
+Internally,
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
-parses the expression, extracts the important components, and passes
-them into the `fn` implementation from
+parses the expression, extracts those components, and passes them into
+the `fn` implementation from
 [`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
-/ [`variant()`](https://s7-stats.github.io/statim/reference/variant.md).
+or
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md).
 Any linear combination of parameters is accepted on either side.
 
 The supported operators are `==`, `!=`, `<`, `>`, `<=`, `>=`, and `%=%`
@@ -421,14 +470,16 @@ built-in `<param_obj>` objects:
   2.  `PI(x)` — the population proportion of a named variable `x`, for
       future two-sample proportion tests.
 
-Here’s a simple example of a t-test that tests the following null
-hypothesis:
+As an example, consider the built-in `sleep` dataset. It records the
+extra hours of sleep (`extra`) gained by 10 patients under each of two
+drugs (`group`). A researcher wants to know whether drug 1 produces less
+additional sleep than drug 2 on average.
 
-\mu\_{x\|\text{group}=1} \leq \mu\_{x\|\text{group}=2}
+The null hypothesis is that drug 1 is at least as effective — that is,
+the mean extra sleep under drug 1 is greater than or equal to that under
+drug 2:
 
-or sometimes this null hypothesis can be written as:
-
-\mu_1 \leq \mu_2
+\mu\_{x\|\text{group}=1} \geq \mu\_{x\|\text{group}=2}
 
 ``` r
 
@@ -436,7 +487,7 @@ sleep |>
     define_model(extra %by% group) |>
     prepare_test(TTEST) |>
     state_null(
-        MU(extra, group == "1") <= MU(extra, group == "2")
+        MU(extra, group == "1") >= MU(extra, group == "2")
     ) |>
     conclude()
 #> 
@@ -454,7 +505,7 @@ sleep |>
 #> ──────────────────────────────────────────
 #>   group  estimate  t_stat    df    p_val  
 #> ──────────────────────────────────────────
-#>   group   -1.580   -1.861  17.780  0.960  
+#>   group   -1.580   -1.861  17.780  0.040  
 #> ──────────────────────────────────────────
 #> 
 #> 
@@ -463,7 +514,7 @@ sleep |>
 #> ─────────────────────────────
 #>   group  lower_95  upper_95  
 #> ─────────────────────────────
-#>   group   -3.053     Inf     
+#>   group    -Inf     -0.107   
 #> ─────────────────────────────
 ```
 

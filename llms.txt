@@ -275,8 +275,6 @@ notations
   a variable, optionally conditioned on a subgroup
 - [`PI()`](https://s7-stats.github.io/statim/reference/PI.md) :
   Proportion of a variable, optionally conditioned on a subgroup
-- [`SIGMA()`](https://s7-stats.github.io/statim/reference/SIGMA.md) :
-  Variance of a variable, optionally conditioned on a subgroup
 - [`RHO()`](https://s7-stats.github.io/statim/reference/RHO.md) :
   Population correlation between two variables
 
