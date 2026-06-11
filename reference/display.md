@@ -1,7 +1,7 @@
-# Display individual results from a multi_exec
+# Display individual results
 
-`display()` prints the first `n` concluded models from a `multi_exec` S7
-class in full. Useful when
+`display()` prints the first `n` concluded models from an abstract S7
+class, e.g. `multi_exec`, in full. Useful when
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 has been called on a
 [`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
@@ -17,11 +17,13 @@ display(x, n = 3L, ...)
 
 - x:
 
-  A `multi_exec` object.
+  An object yield by
+  [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
 
 - n:
 
-  A positive integer. The number of models to display. Defaults to `3`.
+  A positive integer. The number of models' output to display. Defaults
+  to `3`.
 
 - ...:
 

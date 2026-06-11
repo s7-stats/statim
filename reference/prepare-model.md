@@ -16,8 +16,10 @@ prepare_model(.x, .model_fn, ...)
 
 - .x:
 
-  A `def_model` object from
-  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md).
+  An S7 object extension yielded by, e.g. `def_model` object from
+  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
+  or an `expanded_model` object from
+  [`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md).
 
 - .model_fn:
 

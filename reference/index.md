@@ -79,7 +79,7 @@ Verbs used to retrieve outputs in standard R’s data structure
 - [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) : Tidy
   a concluded statistical result
 - [`display()`](https://s7-stats.github.io/statim/reference/display.md)
-  : Display individual results from a multi_exec
+  : Display individual results
 
 ### H-test container and executioner
 
