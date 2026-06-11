@@ -1,56 +1,15 @@
-# Correlation Test
+# Correlation Test: `rel` interface
 
-`CORTEST()` performs a correlation test for one-to-one variable
-relationships. If `CORTEST` is supplied within the lazy-loaded pipeline,
-supply `CORTEST` as a function i.e. `prepare_test(.test = CORTEST)`
-call.
+The `rel` implementation performs a correlation test between exactly one
+independent variable and one response variable.
 
-## Usage
-
-``` r
-CORTEST(.model = NULL, .data = NULL, ...)
-```
+Use [`rel()`](https://s7-stats.github.io/statim/reference/rel.md) as the
+model ID to select this implementation.
 
 ## Arguments
 
-- .model:
-
-  A model ID for `CORTEST()`, e.g.
-  [`rel()`](https://s7-stats.github.io/statim/reference/rel.md). When
-  supplied, the test executes immediately.
-
-- .data:
-
-  A data frame. Only used on the standalone path.
-
-- ...:
-
-  Additional arguments passed to the implementation. See the
-  **Arguments** section of each implementation page.
-
-## Value
-
-A `cld_exec` object (in
-[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)),
-or a `test_spec` object when `.model = NULL`. The default correlation
-test class for most paths is
-[class_corr_two](https://s7-stats.github.io/statim/reference/class_corr_two.md).
-
-## Supported model IDs
-
-Each model ID routes to a separate implementation. See the linked pages
-for full argument lists, variants, and correlation test class details:
-
-- [`rel()`](https://s7-stats.github.io/statim/reference/rel.md):
-  one-to-one correlation test. See
-  [cortest-rel](https://s7-stats.github.io/statim/reference/cortest-rel.md).
-
-- `<formula>`: one-to-many correlation test. See
-  [cortest-formula](https://s7-stats.github.io/statim/reference/cortest-formula.md).
-
-## Arguments
-
-The following arguments are passed via `...` in `CORTEST()`:
+The following arguments are passed via `...` in
+[`CORTEST()`](https://s7-stats.github.io/statim/reference/CORTEST.md):
 
 - `.alt`:
 
@@ -116,41 +75,13 @@ follows:
 
 ## See also
 
-[cortest-rel](https://s7-stats.github.io/statim/reference/cortest-rel.md),
-[cortest-formula](https://s7-stats.github.io/statim/reference/cortest-formula.md)
-for per-implementation details.
-[class_corr_two](https://s7-stats.github.io/statim/reference/class_corr_two.md)
-for correlation test class slots.
-[`via()`](https://s7-stats.github.io/statim/reference/via.md),
-[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md),
-[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md),
-[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md).
+Other cortest-implementations:
+[`cortest-formula`](https://s7-stats.github.io/statim/reference/cortest-formula.md)
 
 ## Examples
 
 ``` r
-# eager
-CORTEST(rel(speed, dist), cars)
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ─────────────────────────────────────────────────
-#>       pair      estimate  statistic  df  p_val   
-#> ─────────────────────────────────────────────────
-#>   dist ~ speed   0.807      9.464    48  <0.001  
-#> ─────────────────────────────────────────────────
-#> 
-#> 
-#> -- Confidence Interval ---------------------------------------------------------
-#> 
-#> ────────────────────────────────────
-#>       pair      lower_95  upper_95  
-#> ────────────────────────────────────
-#>   dist ~ speed   0.682     0.886    
-#> ────────────────────────────────────
-#> 
-#> 
-
-# grammatical syntax
+# base (Pearson)
 cars |>
     define_model(rel(speed, dist)) |>
     prepare_test(CORTEST) |>
@@ -211,7 +142,68 @@ cars |>
 #> 
 #> 
 
-# Custom Hypothesis Expression
+# Kendall
+cars |>
+    define_model(rel(speed, dist)) |>
+    prepare_test(CORTEST) |>
+    via("kendall") |>
+    conclude()
+#> 
+#> == Model ======================================================================= 
+#> 
+#> Model ID : rel 
+#> Args : speed ; dist 
+#>     x_vars : 1 
+#>     resp_vars : 1 
+#> 
+#> == Correlation Test · kendall ================================================== 
+#> 
+#> -- Summary ---------------------------------------------------------------------
+#> 
+#> ─────────────────────────────────────────────
+#>       pair      estimate  statistic  p_val   
+#> ─────────────────────────────────────────────
+#>   dist ~ speed   0.669      6.665    <0.001  
+#> ─────────────────────────────────────────────
+#> 
+#> 
+
+# hypothesis claim: two-sided against zero
+cars |>
+    define_model(rel(speed, dist)) |>
+    prepare_test(CORTEST) |>
+    state_null(RHO(speed, dist) == 0) |>
+    conclude()
+#> 
+#> == Model ======================================================================= 
+#> 
+#> Model ID : rel 
+#> Args : speed ; dist 
+#>     x_vars : 1 
+#>     resp_vars : 1 
+#> 
+#> == Correlation Test ============================================================ 
+#> 
+#> -- Summary ---------------------------------------------------------------------
+#> 
+#> ─────────────────────────────────────────────────
+#>       pair      estimate  statistic  df  p_val   
+#> ─────────────────────────────────────────────────
+#>   dist ~ speed   0.807      9.464    48  <0.001  
+#> ─────────────────────────────────────────────────
+#> 
+#> 
+#> -- Confidence Interval ---------------------------------------------------------
+#> 
+#> ────────────────────────────────────
+#>       pair      lower_95  upper_95  
+#> ────────────────────────────────────
+#>   dist ~ speed   0.682     0.886    
+#> ────────────────────────────────────
+#> 
+#> 
+
+# hypothesis claim: non-zero null, one-sided
 cars |>
     define_model(rel(speed, dist)) |>
     prepare_test(CORTEST) |>

@@ -378,6 +378,8 @@ will be shareable
   : Structured result container for two-sample t-tests
 - [`class_p_test`](https://s7-stats.github.io/statim/reference/class_p_test.md)
   : Structured result container for proportion tests
+- [`class_corr_two`](https://s7-stats.github.io/statim/reference/class_corr_two.md)
+  : Structured result container for two-sample t-tests
 - [`class_lm_object`](https://s7-stats.github.io/statim/reference/class_lm_object.md)
   : Structured result container for linear model fits
 - [`class_glm_object`](https://s7-stats.github.io/statim/reference/class_glm_object.md)
