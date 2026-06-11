@@ -63,12 +63,12 @@ A `class_model_inform` S7 object with fields:
 ``` r
 # without processed — no vars, no counts
 model_id_info(x_by(extra, group))
-#> <statim::class_model_inform>
+#> <statim::model_inform>
 #>  @ model_id  : <statim::x_by>
 #>  .. @ x    : language ~extra
-#>  .. .. - attr(*, ".Environment")=<environment: 0x560a0617df00> 
+#>  .. .. - attr(*, ".Environment")=<environment: 0x561fb824afb8> 
 #>  .. @ group: language ~group
-#>  .. .. - attr(*, ".Environment")=<environment: 0x560a0617df00> 
+#>  .. .. - attr(*, ".Environment")=<environment: 0x561fb824afb8> 
 #>  @ model_type: chr "x_by"
 #>  @ args      : chr "extra | group"
 #>  @ other_info: list()
@@ -78,12 +78,12 @@ model_id_info(x_by(extra, group))
 # with processed — includes vars and counts
 dm = define_model(x_by(extra, group), sleep)
 model_id_info(dm@model_id, dm@processed)
-#> <statim::class_model_inform>
+#> <statim::model_inform>
 #>  @ model_id  : <statim::x_by>
 #>  .. @ x    : language ~extra
-#>  .. .. - attr(*, ".Environment")=<environment: 0x560a0617df00> 
+#>  .. .. - attr(*, ".Environment")=<environment: 0x561fb824afb8> 
 #>  .. @ group: language ~group
-#>  .. .. - attr(*, ".Environment")=<environment: 0x560a0617df00> 
+#>  .. .. - attr(*, ".Environment")=<environment: 0x561fb824afb8> 
 #>  @ model_type: chr "x_by"
 #>  @ args      : chr "extra | group"
 #>  @ other_info:List of 2
