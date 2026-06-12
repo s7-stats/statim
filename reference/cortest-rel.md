@@ -73,6 +73,19 @@ follows:
   `0.9 == RHO(x, y)` are handled correctly via
   [`claim_scalar_diff()`](https://s7-stats.github.io/statim/reference/claim_scalar_diff.md).
 
+## References
+
+Fisher, R. A. (1915). Frequency distribution of the values of the
+correlation coefficient in samples from an indefinitely large
+population. *Biometrika*, **10**(4), 507–521.
+[doi:10.2307/2331838](https://doi.org/10.2307/2331838)
+
+Fisher, R. A. (1921). On the "probable error" of a coefficient of
+correlation deduced from a small sample. *Metron*, **1**, 3–32.
+
+Zar, J. H. (2010). *Biostatistical Analysis* (5th ed.). Pearson. Section
+19.3.
+
 ## See also
 
 Other cortest-implementations:
@@ -116,12 +129,13 @@ cars |>
 #> 
 
 # Spearman
-cars |>
-    define_model(rel(speed, dist)) |>
-    prepare_test(CORTEST) |>
-    via("spearman") |>
-    conclude()
-#> Warning: cannot compute exact p-value with ties
+suppressWarnings({
+    cars |>
+        define_model(rel(speed, dist)) |>
+        prepare_test(CORTEST) |>
+        via("spearman") |>
+        conclude()
+})
 #> 
 #> == Model ======================================================================= 
 #> 
@@ -143,11 +157,13 @@ cars |>
 #> 
 
 # Kendall
-cars |>
-    define_model(rel(speed, dist)) |>
-    prepare_test(CORTEST) |>
-    via("kendall") |>
-    conclude()
+suppressWarnings({
+    cars |>
+        define_model(rel(speed, dist)) |>
+        prepare_test(CORTEST) |>
+        via("kendall") |>
+        conclude()
+})
 #> 
 #> == Model ======================================================================= 
 #> 
