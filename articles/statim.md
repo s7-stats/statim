@@ -4,18 +4,18 @@
 
 [statim](https://github.com/s7-stats/statim) is a new and modified
 approach of high-level statistical inference in R. It is fully
-declarative, built for statistical inference pipeline, made to be
-pipe-able, extensible, and exportable. This package is built at top of
-S7, and its design inherits the traditional R idiom:
+declarative, built for statistical inference pipelines, made to be
+extensible and exportable. This package is built at top of S7, and its
+design inherits the traditional R idiom:
 
 ``` r
 <<statistical-function>>(<formula>, <data>)
 ```
 
-But it brings that idiom into a composable, pipe-friendly grammar —
-closer in spirit to [ggplot2](https://ggplot2.tidyverse.org) or
-[dplyr](https://dplyr.tidyverse.org) than to base R’s scattered
-inference functions.
+But it brings that idiom into a composable, pipe-friendly and readable
+with grammar syntax — much close in spirit to
+[ggplot2](https://ggplot2.tidyverse.org) or
+[dplyr](https://dplyr.tidyverse.org).
 
 ## General Workflow
 
@@ -227,11 +227,11 @@ the API, such as
 [`via()`](https://s7-stats.github.io/statim/reference/via.md) and
 [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md).
 
-## Emulation of formulas: model IDs
+## Model IDs: Emulation of formulas
 
 Now you know the usual workflow of
-[statim](https://github.com/s7-stats/statim), now we’ll talk about
-`<model_id>` objects. Empirical, they are functions that emulate the
+[statim](https://github.com/s7-stats/statim), now let’s talk about
+`<model_id>` objects. Empirically, they are functions that emulate the
 `<formula>` (and its idiom) to describe the shape of a statistical
 inference. Normally, they all inherit from the abstract S7 class
 `<model_id>`, and they should be built within S7. Here, we have
@@ -312,19 +312,21 @@ built-in model IDs:
     define_model(prop(45, 100))
     ```
 
-And if you notice, they also emulate `aes()` mapper from
-[ggplot2](https://ggplot2.tidyverse.org), which it captures the
-expression internally, instead of evaluating them, which indeed they are
-mappers. Take note that `<model_id>` abstract S7 class must be carried
-as you create another `<model_id>` object (see more details).
+And if you are familiar with `aes()` (aesthetics) mapper from
+[ggplot2](https://ggplot2.tidyverse.org) package, they are indeed more
+like mappers mappers, where they capture the expression internally,
+instead of evaluating them immediately. Take note that `<model_id>`
+abstract S7 class must be carried around as you create another
+`<model_id>` object (see more
+[details](https://s7-stats.github.io/statim/articles/pointers/model_id.html)).
 
 When no data frame is supplied,
 [statim](https://github.com/s7-stats/statim) looks up the variable names
 from the current environment (global environment by default). If you
 want to avoid creating intermediate variables, use
 [`I()`](https://rdrr.io/r/base/AsIs.html) for a single inline value or
-[`inlines()`](https://s7-stats.github.io/statim/reference/inlines.md)
-for multiple:
+multiple inline codes at once with
+[`inlines()`](https://s7-stats.github.io/statim/reference/inlines.md):
 
 ``` r
 
@@ -339,8 +341,8 @@ pairwise(inlines(rnorm(30), rnorm(30), rnorm(30)))
 the method of estimation in the statistical inference pipeline. Use
 [`via()`](https://s7-stats.github.io/statim/reference/via.md) to switch
 a lazy pipeline from the default estimation method to an alternative
-estimation method. It updates the specification while the whole pipeline
-is defused before
+estimation method. It updates the specification while the whole grammar
+syntax pipeline is defused before
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 executes it. Any named arguments after `.method` are forwarded to that
 variant.

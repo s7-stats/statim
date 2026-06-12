@@ -89,13 +89,13 @@
 </h2>
 <p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is a new and modified approach of high-level
 statistical inference in R. It is fully declarative, built for
-statistical inference pipeline, made to be pipe-able, extensible, and
-exportable. This package is built at top of S7, and its design inherits
-the traditional R idiom:</p>
+statistical inference pipelines, made to be extensible and exportable.
+This package is built at top of S7, and its design inherits the
+traditional R idiom:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;</span>statistical<span class="sc">-</span><span class="cf">function</span><span class="sc">&gt;</span><span class="er">&gt;</span>(<span class="sc">&lt;</span>formula<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">&gt;</span>)</span></code></pre></div>
-<p>But it brings that idiom into a composable, pipe-friendly grammar —
-closer in spirit to <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> or <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> than
-to base R’s scattered inference functions.</p>
+<p>But it brings that idiom into a composable, pipe-friendly and
+readable with grammar syntax — much close in spirit to
+<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> or <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="general-workflow">General Workflow<a class="anchor" aria-label="anchor" href="#general-workflow"></a>
@@ -280,10 +280,10 @@ the API, such as <code><a href="../reference/via.html">via()</a></code> and <cod
 </div>
 </div>
 <div class="section level2">
-<h2 id="model-id">Emulation of formulas: model IDs<a class="anchor" aria-label="anchor" href="#model-id"></a>
+<h2 id="model-id">Model IDs: Emulation of formulas<a class="anchor" aria-label="anchor" href="#model-id"></a>
 </h2>
-<p>Now you know the usual workflow of <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, now we’ll
-talk about <code>&lt;model_id&gt;</code> objects. Empirical, they are
+<p>Now you know the usual workflow of <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, now let’s
+talk about <code>&lt;model_id&gt;</code> objects. Empirically, they are
 functions that emulate the <code>&lt;formula&gt;</code> (and its idiom)
 to describe the shape of a statistical inference. Normally, they all
 inherit from the abstract S7 class <code>&lt;model_id&gt;</code>, and
@@ -351,17 +351,17 @@ involved.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </li>
 </ol>
-<p>And if you notice, they also emulate <code>aes()</code> mapper from
-<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>, which it captures the expression internally,
-instead of evaluating them, which indeed they are mappers. Take note
-that <code>&lt;model_id&gt;</code> abstract S7 class must be carried as
-you create another <code>&lt;model_id&gt;</code> object (see more
-details).</p>
+<p>And if you are familiar with <code>aes()</code> (aesthetics) mapper
+from <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> package, they are indeed more like mappers
+mappers, where they capture the expression internally, instead of
+evaluating them immediately. Take note that
+<code>&lt;model_id&gt;</code> abstract S7 class must be carried around
+as you create another <code>&lt;model_id&gt;</code> object (see more <a href="https://s7-stats.github.io/statim/articles/pointers/model_id.html">details</a>).</p>
 <p>When no data frame is supplied, <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> looks up the
 variable names from the current environment (global environment by
 default). If you want to avoid creating intermediate variables, use
-<code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code> for a single inline value or <code><a href="../reference/inlines.html">inlines()</a></code> for
-multiple:</p>
+<code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code> for a single inline value or multiple inline codes at
+once with <code><a href="../reference/inlines.html">inlines()</a></code>:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/rel.html">rel</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -374,9 +374,9 @@ multiple:</p>
 estimation in the statistical inference pipeline. Use <code><a href="../reference/via.html">via()</a></code>
 to switch a lazy pipeline from the default estimation method to an
 alternative estimation method. It updates the specification while the
-whole pipeline is defused before <code><a href="../reference/conclude.html">conclude()</a></code> executes it.
-Any named arguments after <code>.method</code> are forwarded to that
-variant.</p>
+whole grammar syntax pipeline is defused before <code><a href="../reference/conclude.html">conclude()</a></code>
+executes it. Any named arguments after <code>.method</code> are
+forwarded to that variant.</p>
 <p>For example, switching from a classical t-test to a permutation test
 is a single added line, with nothing else changing:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">

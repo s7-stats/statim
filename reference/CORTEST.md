@@ -185,12 +185,13 @@ cars |>
 #> 
 
 # Spearman
-cars |>
-    define_model(rel(speed, dist)) |>
-    prepare_test(CORTEST) |>
-    via("spearman") |>
-    conclude()
-#> Warning: cannot compute exact p-value with ties
+suppressWarnings({
+    cars |>
+        define_model(rel(speed, dist)) |>
+        prepare_test(CORTEST) |>
+        via("spearman") |>
+        conclude()
+})
 #> 
 #> == Model ======================================================================= 
 #> 
