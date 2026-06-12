@@ -31,17 +31,20 @@ The following arguments are passed via `...` in
   Numeric. Confidence level. Default `0.95`. Only used for Pearson;
   silently ignored for Kendall and Spearman.
 
-- `.rho`:
-
-  Numeric. Hypothesized population correlation. Default `0`. Only used
-  for Pearson; triggers Fisher-z test when non-zero.
-
 ## Correlation test default class
 
 Returns a
 [class_corr_two](https://s7-stats.github.io/statim/reference/class_corr_two.md)
 object inheriting from
 [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md).
+
+## Hypothesis claims
+
+Not supported. Use
+[`rel()`](https://s7-stats.github.io/statim/reference/rel.md) with the
+`base` variant for
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+with [`RHO()`](https://s7-stats.github.io/statim/reference/RHO.md).
 
 ## See also
 

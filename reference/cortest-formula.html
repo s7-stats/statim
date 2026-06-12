@@ -86,10 +86,6 @@ Default <code>"two.sided"</code>.</p></dd>
 <dd><p>Numeric. Confidence level. Default <code>0.95</code>. Only used for
 Pearson; silently ignored for Kendall and Spearman.</p></dd>
 
-<dt><code>.rho</code></dt>
-<dd><p>Numeric. Hypothesized population correlation. Default <code>0</code>.
-Only used for Pearson; triggers Fisher-z test when non-zero.</p></dd>
-
 
 </dl></div>
     <div class="section level2">
@@ -97,6 +93,13 @@ Only used for Pearson; triggers Fisher-z test when non-zero.</p></dd>
 
 
 <p>Returns a <a href="class_corr_two.html">class_corr_two</a> object inheriting from <a href="class_stat_infer.html">class_stat_infer</a>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="hypothesis-claims">Hypothesis claims<a class="anchor" aria-label="anchor" href="#hypothesis-claims"></a></h2>
+
+
+<p>Not supported. Use <code><a href="rel.html">rel()</a></code> with the <code>base</code> variant for <code><a href="null-hyp.html">state_null()</a></code>
+with <code><a href="RHO.html">RHO()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
