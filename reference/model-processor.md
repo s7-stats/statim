@@ -5,7 +5,7 @@ A function for development use to extract the information in model IDs.
 ## Usage
 
 ``` r
-model_processor(x, ...)
+model_processor(x, data = NULL, ...)
 ```
 
 ## Arguments
@@ -13,6 +13,11 @@ model_processor(x, ...)
 - x:
 
   The model IDs to be extracted.
+
+- data:
+
+  Optional. Only passed when a certain data structure (normally it's
+  data frame) is required.
 
 - ...:
 
