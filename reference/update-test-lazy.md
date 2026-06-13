@@ -25,32 +25,7 @@ sleep |>
     prepare_test(TTEST) |>
     update(.paired = TRUE) |>
     conclude()
-#> 
-#> == Model ======================================================================= 
-#> 
-#> Model ID : formula 
-#> Args : extra ~ group 
-#>     left_var : 1 
-#>     right_var : 1 
-#> 
-#> == T-Test ====================================================================== 
-#> 
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ───────────────────────────────────────────────────────
-#>   groups     type     est_type   est    t-stat  pval   
-#> ───────────────────────────────────────────────────────
-#>   group   two sample  mu_diff   -1.580  -1.861  0.079  
-#> ───────────────────────────────────────────────────────
-#> 
-#> 
-#> -- Confidence Interval ---------------------------------------------------------
-#> 
-#> ──────────────────────────────────────────
-#>   groups     type     lower_95  upper_95  
-#> ──────────────────────────────────────────
-#>   group   two sample   -3.365    0.205    
-#> ──────────────────────────────────────────
-#> 
-#> 
+#> Error in inject_and_run(impl = impl, processed = .x@processed, args = all_args): Unknown argument: `.paired`.
+#> ℹ Accepted arguments: `.mu`, `.alt`, and `.ci`.
+#> ℹ Did you misspell one of the supported arguments?
 ```
