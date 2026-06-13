@@ -26,9 +26,14 @@ metadata are included in the result."></head><body>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
     <li><a class="dropdown-item" href="../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/stat_define.html">stat_define objects</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/hypothesis-expressions.html">Writing Full Null Hypothesis Expression</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/recalibration-method.html">via(): Recalibrating existing methods</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/execution-methods.html">Execution and Retrieval of Outputs</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Writing statim extensions</h6></li>
-    <li><a class="dropdown-item" href="../articles/extend/extensibility1.html">Writing new `tidy()` method</a></li>
+    <li><a class="dropdown-item" href="../articles/extend/new-est-method.html">Writing new estimation method for inferential statistics</a></li>
+    <li><a class="dropdown-item" href="../articles/extend/new-tidy.html">Writing new `tidy()` method</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -112,9 +117,9 @@ Empty for unregistered subclasses or when <code>processed</code> is <code>NULL</
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;statim::model_inform&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ model_id  : &lt;statim::x_by&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ x    : language ~extra</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. - attr(*, ".Environment")=&lt;environment: 0x56031e76ce08&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. - attr(*, ".Environment")=&lt;environment: 0x5576035c1fb8&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ group: language ~group</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. - attr(*, ".Environment")=&lt;environment: 0x56031e76ce08&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. - attr(*, ".Environment")=&lt;environment: 0x5576035c1fb8&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ model_type: chr "x_by"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ args      : chr "extra | group"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ other_info: list()</span>
@@ -127,9 +132,9 @@ Empty for unregistered subclasses or when <code>processed</code> is <code>NULL</
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;statim::model_inform&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ model_id  : &lt;statim::x_by&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ x    : language ~extra</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. - attr(*, ".Environment")=&lt;environment: 0x56031e76ce08&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. - attr(*, ".Environment")=&lt;environment: 0x5576035c1fb8&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ group: language ~group</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. - attr(*, ".Environment")=&lt;environment: 0x56031e76ce08&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. - attr(*, ".Environment")=&lt;environment: 0x5576035c1fb8&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ model_type: chr "x_by"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ args      : chr "extra | group"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ other_info:List of 2</span>
