@@ -23,9 +23,34 @@ The modified `test_lazy` object.
 sleep |>
     define_model(extra ~ group) |>
     prepare_test(TTEST) |>
-    update(.paired = TRUE) |>
+    update(.ci = 0.9) |>
     conclude()
-#> Error in inject_and_run(impl = impl, processed = .x@processed, args = all_args): Unknown argument: `.paired`.
-#> ℹ Accepted arguments: `.mu`, `.alt`, and `.ci`.
-#> ℹ Did you misspell one of the supported arguments?
+#> 
+#> == Model ======================================================================= 
+#> 
+#> Model ID : formula 
+#> Args : extra ~ group 
+#>     left_var : 1 
+#>     right_var : 1 
+#> 
+#> == T-Test ====================================================================== 
+#> 
+#> -- Summary ---------------------------------------------------------------------
+#> 
+#> ───────────────────────────────────────────────────────
+#>   groups     type     est_type   est    t-stat  pval   
+#> ───────────────────────────────────────────────────────
+#>   group   two sample  mu_diff   -1.580  -1.861  0.079  
+#> ───────────────────────────────────────────────────────
+#> 
+#> 
+#> -- Confidence Interval ---------------------------------------------------------
+#> 
+#> ──────────────────────────────────────────
+#>   groups     type     lower_90  upper_90  
+#> ──────────────────────────────────────────
+#>   group   two sample   -3.053    -0.107   
+#> ──────────────────────────────────────────
+#> 
+#> 
 ```
