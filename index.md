@@ -1,7 +1,5 @@
 # statim ![](reference/figures/logo.png)
 
-> This package is under active development. APIs may change.
-
 **A Declarative Interface for Statistical Inference**
 
 ## Package Overview
