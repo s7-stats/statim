@@ -466,6 +466,28 @@ for following `STAT_CONSTRUCTOR` objects
 
 # Articles
 
+### A guide on using statim R package
+
+- [New approach of hypothesis testing with
+  {statim}](https://s7-stats.github.io/statim/articles/usage/htest.md):
+
+  A guide on using statim R package
+
+- [New approach of model-based inference with
+  {statim}](https://s7-stats.github.io/statim/articles/usage/model-infer.md):
+
+  A guide on using statim R package
+
+- [ANOVA for Linear models with
+  {statim}](https://s7-stats.github.io/statim/articles/usage/anova-mod.md):
+
+  A guide on using statim R package
+
+- [Multiple executions in a single
+  line](https://s7-stats.github.io/statim/articles/usage/multiple-exec.md):
+
+  A guide on using statim R package
+
 ### Pointers of statim you need to know
 
 - [\`\<model_id\>\`
