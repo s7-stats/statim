@@ -1,13 +1,13 @@
 #' State a null hypothesis in the pipeline
 #'
 #' `state_null()` captures a hypothesis expression and attaches it to a
-#' `test_lazy` object. Accepts either a single expression or a `more_h0()`
+#' `test_lazy` object. Accepts either a single expression or a `list_h0()`
 #' block for multiple named hypotheses.
 #'
 #' @param .x A `test_lazy` object from [prepare_test()].
 #' @param ... Currently unused.
 #'
-#' @slot expr A hypothesis expression, or a `more_h0()` block. It is passed
+#' @slot expr A hypothesis expression, or a `list_h0()` block. It is passed
 #'     after `prepare_test(...)` to supply the hypothesis expression, e.g.
 #'     `... |> prepare_test(TTEST) |> state_null(expr = MU(x) == 0)`
 #'
@@ -24,7 +24,7 @@
 #' sleep |>
 #'     define_model(extra %by% group) |>
 #'     prepare_test(TTEST) |>
-#'     state_null(more_h0(
+#'     state_null(list_h0(
 #'         h01 = MU(extra) == 2,
 #'         h02 = MU(extra) == 3
 #'     )) |>
@@ -39,8 +39,8 @@ S7::method(state_null, test_lazy) = function(.x, expr, ...) {
     raw = rlang::enquo(expr)
     expr_val = rlang::quo_get_expr(raw)
     env = rlang::caller_env()
-    claim = if (rlang::is_call(expr_val, "more_h0")) {
-        eval_more_h0(expr_val, env)
+    claim = if (rlang::is_call(expr_val, "list_h0")) {
+        eval_list_h0(expr_val, env)
     } else {
         parse_null_claim(rlang::new_quosure(expr_val, env))
     }
@@ -93,37 +93,99 @@ S7::method(print, stated_null) = function(x, ...) {
     invisible(x)
 }
 
-# #' @export
-# write_claims = function(...) {
-#     quos = rlang::enquos(...)
-#     if (length(quos) == 0L) {
-#         cli::cli_abort("Supply at least one hypothesis expression.")
-#     }
-#     claims = lapply(quos, parse_null_claim)
-#     null_claims(
-#         claims = claims,
-#         expr = rlang::expr(write_claims(!!!lapply(quos, rlang::quo_get_expr)))
-#     )
-# }
-
+#' Declare a list of named hypotheses with an optional base declaration
+#'
+#' `list_h0()` captures multiple named hypothesis expressions for use inside
+#' [state_null()]. Each named argument (`h1 = ...`, `h2 = ...`, ...) is a
+#' standalone comparison claim, and may reference earlier names by their
+#' resolved scalar value (e.g. `h2 = MU(extra) == h1 + 1`).
+#'
+#' `.base_null` is an optional declaration of the parameters this block is
+#' allowed to reference. Since R cannot parse chained comparisons like
+#' `<expr1> == <expr2> == <expr3>`, `%=%` is used as the chaining operator,
+#' e.g. `MU(a) %=% (2 * MU(b)) %=% MU(c)`. A single comparison (`MU(a) == 0`)
+#' is also accepted. Coefficients written inside `.base_null`
+#' (e.g. `2 * MU(...)`) are declarative only — they document the relationship
+#' being tested and impose no constraint on the named claims. Only the
+#' parameter *names* referenced in `.base_null` are checked against each
+#' named claim.
+#'
+#' @param ... Named comparison expressions, e.g.
+#'   `h1 = MU(extra, group == "1") - MU(extra, group == "2") == 0`.
+#' @param .base_null An optional declaration of valid parameter names, either
+#'   a `%=%` chain (e.g. `MU(a) %=% (2 * MU(b)) %=% MU(c)`) or a single
+#'   comparison (e.g. `MU(a) == 0`).
+#'
+#' @return A `list_h0_claims` object. Only meaningful inside [state_null()].
+#'
+#' @examples
+#' \dontrun{
+#' npk |>
+#'     define_model(x_by(yield, block)) |>
+#'     prepare_test(ANOVA) |>
+#'     state_null(list_h0(
+#'         h1 = MU(yield, block == "1") - MU(yield, block == "2") == 0,
+#'         h2 = MU(yield, block == "1") - MU(yield, block == "3") >= 0,
+#'         .base_null = MU(yield, block == "1") %=%
+#'             (2 * MU(yield, block == "2")) %=%
+#'             MU(yield, block == "3")
+#'     )) |>
+#'     conclude()
+#' }
+#'
 #' @rdname null-hyp
 #' @export
-more_h0 = function(...) {
+list_h0 = function(..., .base_null = NULL) {
     cli::cli_abort(
-        "{.fn more_h0} must be used inside {.fn state_null}."
+        "{.fn list_h0} must be used inside {.fn state_null}."
     )
 }
 
 #' @keywords internal
 #' @noRd
-eval_more_h0 = function(expr, env) {
+eval_list_h0 = function(expr, env) {
     args = as.list(expr[-1])
     nms = names(args)
 
+    base_idx = which(nms == ".base_null")
+    has_base = length(base_idx) > 0L
+
+    base_claim = NULL
+    if (has_base) {
+        base_expr = args[[base_idx]]
+        if (rlang::is_call(base_expr, "(")) base_expr = base_expr[[2]]
+
+        base_quo = rlang::new_quosure(base_expr, env)
+        base_claim = parse_null_claim(base_quo)
+
+        args = args[-base_idx]
+        nms = nms[-base_idx]
+    }
+
+    if (length(args) == 0L) {
+        cli::cli_abort(
+            "{.fn list_h0} requires at least one named hypothesis."
+        )
+    }
+
     if (is.null(nms) || any(!nzchar(nms))) {
         cli::cli_abort(
-            "All expressions in {.fn more_h0} must be named."
+            "All hypotheses in {.fn list_h0} must be named."
         )
+    }
+
+    base_names = if (has_base) {
+        base_nodes = if (base_claim@op == "%=%") {
+            base_claim@lhs
+        } else {
+            unlist(
+                lapply(list(base_claim@lhs, base_claim@rhs), param_nodes_from_node),
+                recursive = FALSE
+            )
+        }
+        vapply(base_nodes, extract_param_name, character(1))
+    } else {
+        NULL
     }
 
     ref_env = new.env(parent = env)
@@ -135,6 +197,10 @@ eval_more_h0 = function(expr, env) {
         nm = nms[[i]]
         raw = rlang::new_quosure(args[[i]], ref_env)
         claim = parse_null_claim(raw)
+
+        if (has_base) {
+            validate_against_base(claim, base_names, nm)
+        }
 
         scalar_val = tryCatch(
             claim_scalar_diff(claim),
@@ -162,7 +228,27 @@ eval_more_h0 = function(expr, env) {
         claims[[i]] = claim
     }
 
-    null_claims(claims = claims, expr = expr)
+    list_h0_claims(claims = claims, base_claim = base_claim, expr = expr)
+}
+
+#' @keywords internal
+#' @noRd
+validate_against_base = function(claim, base_names, claim_name) {
+    nodes = if (claim@op == "%=%") claim@lhs else list(claim@lhs, claim@rhs)
+    param_nodes = unlist(lapply(nodes, param_nodes_from_node), recursive = FALSE)
+
+    used_names = vapply(param_nodes, extract_param_name, character(1))
+    bad = setdiff(unique(used_names), base_names)
+
+    if (length(bad) > 0L) {
+        cli::cli_abort(c(
+            "Hypothesis {.val {claim_name}} references parameter{?s} not declared in {.arg .base_null}.",
+            "x" = "Unknown: {.val {bad}}.",
+            "i" = "Declared in {.arg .base_null}: {.val {base_names}}."
+        ))
+    }
+
+    invisible(NULL)
 }
 
 #' @keywords internal
@@ -270,6 +356,16 @@ null_claims = S7::new_class(
     )
 )
 
+# ---- list_h0_claims ----
+
+list_h0_claims = S7::new_class(
+    "list_h0_claims",
+    parent = null_claims,
+    properties = list(
+        base_claim = S7::class_any
+    )
+)
+
 S7::method(print, null_claim) = function(x, ...) {
     cat("\n")
     cat(cli::rule(left = "Null Hypothesis", line = "-"), "\n\n")
@@ -307,6 +403,37 @@ S7::method(print, null_claims) = function(x, ...) {
                 param_node_label(cl@rhs)
             ))
         }
+    }
+    cat("\n")
+    invisible(x)
+}
+
+S7::method(print, list_h0_claims) = function(x, ...) {
+    cat("\n")
+    cat(cli::rule(left = "Null Hypotheses", line = "-"), "\n\n")
+
+    if (!is.null(x@base_claim)) {
+        labels = if (x@base_claim@op == "%=%") {
+            vapply(x@base_claim@lhs, param_node_label, character(1))
+        } else {
+            c(
+                param_node_label(x@base_claim@lhs),
+                param_node_label(x@base_claim@rhs)
+            )
+        }
+        cat("Base   :", paste(labels, collapse = " %=% "), "\n\n")
+    }
+
+    for (i in seq_along(x@claims)) {
+        cl = x@claims[[i]]
+        nm = names(x@claims)[[i]]
+        cat(sprintf(
+            "  [%s] H\u2080 : %s %s %s\n",
+            nm,
+            param_node_label(cl@lhs),
+            cl@op,
+            param_node_label(cl@rhs)
+        ))
     }
     cat("\n")
     invisible(x)

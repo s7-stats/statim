@@ -96,6 +96,155 @@ claim_contrast_coefs = function(claim) {
     list(coefs = coefs, scalar = scalar_val, op = op)
 }
 
+#' Build a `.contrasts`-shaped list from a `%=%` chain
+#'
+#' Extracts coefficients from a `%=%`-chained claim, e.g.
+#' `MU(a) %=% (2 * MU(b)) %=% MU(c)`. Each operand becomes its own column
+#' (`h01`, `h02`, ...). The matrix carries `"ops"` and `"scalars"`
+#' attributes, and is returned inside a list named by the model's grouping
+#' variable — the exact shape `.contrasts` resolvers return.
+#'
+#' @param claim A `null_claim` object with `op == "%=%"`.
+#' @param processed The processed model output (`.proc` / `lazy@processed`),
+#'   used to look up the grouping variable name.
+#' @param operand_resolver A function `function(node)` that turns a single
+#'   `%=%` operand into a `claim_contrast_coefs()`-shaped list (`coefs`,
+#'   `scalar`, `op`). Defaults to [peq_operand_as_param()], which treats the
+#'   operand as a single parameter equated to zero — the current behavior
+#'   for `MU(a) %=% (2 * MU(b)) %=% MU(c)`. Supply a different resolver to
+#'   support other `%=%` notations (e.g. operands that are themselves linear
+#'   combinations, `mu1 - mu2 = mu2 + mu3 = ...`).
+#'
+#' @return A named list with one element: a numeric matrix with `"ops"` and
+#'   `"scalars"` attributes.
+#'
+#' @export
+claim_peq_coefs = function(claim, processed, operand_resolver = peq_operand_as_param) {
+    if (claim@op != "%=%") {
+        cli::cli_abort("{.arg claim} must have op {.code %=%}.")
+    }
+
+    claim_nms = sprintf("h0%d", seq_along(claim@lhs))
+    resolved = lapply(claim@lhs, operand_resolver)
+
+    param_nms = unique(unlist(lapply(resolved, function(r) names(r$coefs))))
+
+    grp_name = names(processed$group_data)[[1]]
+    all_lvls = unique(as.character(processed$group_data[[grp_name]]))
+    row_order = c(param_nms, setdiff(all_lvls, param_nms))
+
+    mat = matrix(
+        0,
+        nrow = length(row_order),
+        ncol = length(claim_nms),
+        dimnames = list(row_order, claim_nms)
+    )
+
+    for (j in seq_along(resolved)) {
+        coef = resolved[[j]]$coefs
+        mat[names(coef), j] = coef
+    }
+
+    attr(mat, "ops") = vapply(resolved, `[[`, character(1), "op")
+    attr(mat, "scalars") = vapply(resolved, `[[`, numeric(1), "scalar")
+
+    rlang::set_names(list(mat), grp_name)
+}
+
+#' Default `%=%` operand resolver: a single parameter equated to zero
+#'
+#' Treats a `%=%` operand (e.g. `MU(a)` or `2 * MU(b)`) as `<operand> == 0`
+#' and extracts its coefficient via [claim_contrast_coefs()]. This is the
+#' default `operand_resolver` for [claim_peq_coefs()], matching
+#' `MU(a) %=% (2 * MU(b)) %=% MU(c)`-style chains.
+#'
+#' Default `%=%` operand resolver: a single parameter equated to zero
+#'
+#' Treats a `%=%` operand (e.g. `MU(a)` or `2 * MU(b)`) as `<operand> == 0`
+#' and extracts its coefficient via [claim_contrast_coefs()]. This is the
+#' default `operand_resolver` for [claim_peq_coefs()], matching
+#' `MU(a) %=% (2 * MU(b)) %=% MU(c)`-style chains.
+#'
+#' @param node A single `%=%` operand node (a `param_obj` or `arith_node`).
+#'
+#' @return A `claim_contrast_coefs()`-shaped list (`coefs`, `scalar`, `op`).
+#'
+#' @keywords internal
+peq_operand_as_param = function(node) {
+    single = null_claim(lhs = node, rhs = 0, op = "==", alt_op = "!=", expr = node)
+    claim_contrast_coefs(single)
+}
+
+#' Build a `.contrasts`-shaped list from a `list_h0()` block
+#'
+#' Extracts each named claim's contrast coefficients via
+#' [claim_contrast_coefs()] and assembles them into a single matrix, one
+#' column per named hypothesis, with each claim's own operator and scalar.
+#' Rows are ordered by `.base_null` if present, otherwise by first
+#' appearance. The matrix carries `"ops"` and `"scalars"` attributes, and is
+#' returned inside a list named by the model's grouping variable — the exact
+#' shape `.contrasts` resolvers return.
+#'
+#' @param claim A `list_h0_claims` object, as returned inside [state_null()]
+#'   when using [list_h0()].
+#' @param processed The processed model output (`.proc` / `lazy@processed`),
+#'   used to look up the grouping variable name.
+#'
+#' @return A named list with one element: a numeric matrix with `"ops"` and
+#'   `"scalars"` attributes.
+#'
+#' @export
+claim_list_h0_coefs = function(claim, processed) {
+    if (!S7::S7_inherits(claim, list_h0_claims)) {
+        cli::cli_abort("{.arg claim} must be a {.cls list_h0_claims} object.")
+    }
+
+    claim_nms = names(claim@claims)
+    resolved = lapply(claim@claims, claim_contrast_coefs)
+
+    base_names = if (!is.null(claim@base_claim)) {
+        base_nodes = if (claim@base_claim@op == "%=%") {
+            claim@base_claim@lhs
+        } else {
+            unlist(
+                lapply(list(claim@base_claim@lhs, claim@base_claim@rhs), param_nodes_from_node),
+                recursive = FALSE
+            )
+        }
+        vapply(base_nodes, extract_param_name, character(1))
+    } else {
+        NULL
+    }
+
+    all_param_nms = unique(unlist(lapply(resolved, function(r) names(r$coefs))))
+    row_nms = if (!is.null(base_names)) {
+        c(base_names, setdiff(all_param_nms, base_names))
+    } else {
+        all_param_nms
+    }
+
+    grp_name = names(processed$group_data)[[1]]
+    all_lvls = unique(as.character(processed$group_data[[grp_name]]))
+    row_order = c(row_nms, setdiff(all_lvls, row_nms))
+
+    mat = matrix(
+        0,
+        nrow = length(row_order),
+        ncol = length(claim_nms),
+        dimnames = list(row_order, claim_nms)
+    )
+
+    for (j in seq_along(resolved)) {
+        coef = resolved[[j]]$coefs
+        mat[names(coef), j] = coef
+    }
+
+    attr(mat, "ops") = vapply(resolved, `[[`, character(1), "op")
+    attr(mat, "scalars") = vapply(resolved, `[[`, numeric(1), "scalar")
+
+    rlang::set_names(list(mat), grp_name)
+}
+
 #' Package resolved claim arguments for injection
 #'
 #' Used inside a `claim_translator` to declare argument names and values

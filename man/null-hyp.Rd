@@ -3,30 +3,53 @@
 \name{null-hyp}
 \alias{null-hyp}
 \alias{state_null}
-\alias{more_h0}
+\alias{list_h0}
 \title{State a null hypothesis in the pipeline}
 \usage{
 state_null(.x, ...)
 
-more_h0(...)
+list_h0(..., .base_null = NULL)
 }
 \arguments{
 \item{.x}{A \code{test_lazy} object from \code{\link[=prepare_test]{prepare_test()}}.}
 
-\item{...}{Currently unused.}
+\item{...}{Named comparison expressions, e.g.
+\code{h1 = MU(extra, group == "1") - MU(extra, group == "2") == 0}.}
+
+\item{.base_null}{An optional declaration of valid parameter names, either
+a \verb{\%=\%} chain (e.g. \code{MU(a) \%=\% (2 * MU(b)) \%=\% MU(c)}) or a single
+comparison (e.g. \code{MU(a) == 0}).}
 }
 \value{
 The modified \code{test_lazy} object.
+
+A \code{list_h0_claims} object. Only meaningful inside \code{\link[=state_null]{state_null()}}.
 }
 \description{
 \code{state_null()} captures a hypothesis expression and attaches it to a
-\code{test_lazy} object. Accepts either a single expression or a \code{more_h0()}
+\code{test_lazy} object. Accepts either a single expression or a \code{list_h0()}
 block for multiple named hypotheses.
+
+\code{list_h0()} captures multiple named hypothesis expressions for use inside
+\code{\link[=state_null]{state_null()}}. Each named argument (\code{h1 = ...}, \code{h2 = ...}, ...) is a
+standalone comparison claim, and may reference earlier names by their
+resolved scalar value (e.g. \code{h2 = MU(extra) == h1 + 1}).
+}
+\details{
+\code{.base_null} is an optional declaration of the parameters this block is
+allowed to reference. Since R cannot parse chained comparisons like
+\verb{<expr1> == <expr2> == <expr3>}, \verb{\%=\%} is used as the chaining operator,
+e.g. \code{MU(a) \%=\% (2 * MU(b)) \%=\% MU(c)}. A single comparison (\code{MU(a) == 0})
+is also accepted. Coefficients written inside \code{.base_null}
+(e.g. \code{2 * MU(...)}) are declarative only — they document the relationship
+being tested and impose no constraint on the named claims. Only the
+parameter \emph{names} referenced in \code{.base_null} are checked against each
+named claim.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{expr}}{A hypothesis expression, or a \code{more_h0()} block. It is passed
+\item{\code{expr}}{A hypothesis expression, or a \code{list_h0()} block. It is passed
 after \code{prepare_test(...)} to supply the hypothesis expression, e.g.
 \code{... |> prepare_test(TTEST) |> state_null(expr = MU(x) == 0)}}
 }}
@@ -42,9 +65,23 @@ sleep |>
 sleep |>
     define_model(extra \%by\% group) |>
     prepare_test(TTEST) |>
-    state_null(more_h0(
+    state_null(list_h0(
         h01 = MU(extra) == 2,
         h02 = MU(extra) == 3
+    )) |>
+    conclude()
+}
+
+\dontrun{
+npk |>
+    define_model(x_by(yield, block)) |>
+    prepare_test(ANOVA) |>
+    state_null(list_h0(
+        h1 = MU(yield, block == "1") - MU(yield, block == "2") == 0,
+        h2 = MU(yield, block == "1") - MU(yield, block == "3") >= 0,
+        .base_null = MU(yield, block == "1") \%=\%
+            (2 * MU(yield, block == "2")) \%=\%
+            MU(yield, block == "3")
     )) |>
     conclude()
 }
