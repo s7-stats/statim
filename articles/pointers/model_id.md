@@ -100,18 +100,18 @@ Two simple steps are required:
     under `parent` argument. Using `constructor` argument is optional
     unless required.
 
-``` r
+    ``` r
 
-xyz = S7::new_class(
-    "xyz",
-    parent = statim::model_id,
-    properties = list(
-        x = S7::class_numeric,
-        y = S7::class_numeric,
-        z = S7::class_numeric
+    xyz = S7::new_class(
+        "xyz",
+        parent = statim::model_id,
+        properties = list(
+            x = S7::class_numeric,
+            y = S7::class_numeric,
+            z = S7::class_numeric
+        )
     )
-)
-```
+    ```
 
 2.  Extract the info you need by dispatching
     [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md)
@@ -119,36 +119,36 @@ xyz = S7::new_class(
     needed to place within the dispatched functions: `x`, `data` (which
     is optional), and the unused ellipsis `...`.
 
-``` r
+&nbsp;
 
-S7::method(model_processor, xyz) = function(x, ...) {
-    list(
-        x = x@x,
-        y = x@y,
-        z = x@z
-    )
-}
-#> Warning: model_processor(<xyz>) doesn't have argument `data`
-```
+    ``` r
+    S7::method(model_processor, xyz) = function(x, ...) {
+        list(
+            x = x@x,
+            y = x@y,
+            z = x@z
+        )
+    }
+    #> Warning: model_processor(<xyz>) doesn't have argument `data`
+    ```
 
 At this point, `xyz` is a fully functional `<model_id>`. It can be
 passed straight into
 [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md):
 
-``` r
-
-m = xyz(x = 1, y = 2, z = 3)
-def = define_model(m)
-def@processed
-#> $x
-#> [1] 1
-#> 
-#> $y
-#> [1] 2
-#> 
-#> $z
-#> [1] 3
-```
+    ``` r
+    m = xyz(x = 1, y = 2, z = 3)
+    def = define_model(m)
+    def@processed
+    #> $x
+    #> [1] 1
+    #> 
+    #> $y
+    #> [1] 2
+    #> 
+    #> $z
+    #> [1] 3
+    ```
 
 ## A bit more complicated: capturing unevaluated expressions
 

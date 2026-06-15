@@ -123,17 +123,15 @@ functions like <code><a href="../reference/model-define-base.html">define_model(
 <p>There are two ways to start a pipeline:</p>
 <ol style="list-style-type: lower-roman">
 <li>
-<code><a href="../reference/model-define-base.html">define_model()</a></code> to define one model at a time.</li>
-</ol>
+<p><code><a href="../reference/model-define-base.html">define_model()</a></code> to define one model at a time.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
 <span><span class="va">mtcars_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
 <span><span class="co"># mtcars_dm = define_model(mpg ~ ., mtcars)</span></span></code></pre></div>
-<ol start="2" style="list-style-type: lower-roman">
+</li>
 <li>
-<code><a href="../reference/write_models.html">write_models()</a></code> to define multiple named models at
-once.</li>
-</ol>
+<p><code><a href="../reference/write_models.html">write_models()</a></code> to define multiple named models at
+once.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>sleep_wm <span class="ot">=</span> <span class="fu">write_models</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    sleep,</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">mod1 =</span> extra <span class="sc">%by%</span> group,</span>
@@ -141,6 +139,8 @@ once.</li>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="at">mod3 =</span> extra <span class="sc">~</span> <span class="dv">1</span></span>
 <span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    <span class="at">mod4 =</span> extra <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> group</span>
 <span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span></code></pre></div>
+</li>
+</ol>
 <p>Future updates will include transformations and model updating
 functions.</p>
 </div>
@@ -154,26 +154,20 @@ inference (e.g. linear regression) or H-test inference (e.g. t-test).
 They are lazy-loaded, and nothing is executed yet.</p>
 <p>Let’s try with two forms of statistical inference:</p>
 <ol style="list-style-type: lower-roman">
-<li>H-test inference uses <code><a href="../reference/prepare-test.html">prepare_test()</a></code>
-</li>
-</ol>
+<li>
+<p>H-test inference uses <code><a href="../reference/prepare-test.html">prepare_test()</a></code></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
 <span><span class="va">sleep_tt</span> <span class="op">=</span> <span class="va">sleep_dm</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></code></pre></div>
-<ol start="2" style="list-style-type: lower-roman">
-<li>Model-based inference uses <code><a href="../reference/prepare-model.html">prepare_model()</a></code>
 </li>
+<li><p>Model-based inference uses <code><a href="../reference/prepare-model.html">prepare_model()</a></code></p></li>
 </ol>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mtcars_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
-<span><span class="va">mtcars_lm</span> <span class="op">=</span> <span class="va">mtcars_dm</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span></span></code></pre></div>
-<blockquote>
-<p>Note: <code><a href="../reference/prepare-test.html">prepare_test()</a></code> and <code><a href="../reference/prepare-model.html">prepare_model()</a></code>
-can supply extra arguments from the default (base) implementation of
-<code>&lt;STAT_FN&gt;</code> functions like <code><a href="../reference/TTEST.html">TTEST()</a></code> and
-<code><a href="../reference/LINEAR_REG.html">LINEAR_REG()</a></code>. Using <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> is totally
-optional.</p>
-</blockquote>
+<pre><code>``` r 
+mtcars_dm = define_model(mtcars, mpg ~ .)
+mtcars_lm = mtcars_dm |&gt; prepare_model(LINEAR_REG)
+```
+
+&gt; Note: `prepare_test()` and `prepare_model()` can supply extra arguments from the default (base) implementation of `&lt;STAT_FN&gt;` functions like `TTEST()` and `LINEAR_REG()`. Using `update()` is totally optional.  </code></pre>
 <p>Later updates may include other processes, such as sensitivity
 analysis.</p>
 </div>
