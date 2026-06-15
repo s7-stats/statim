@@ -8,8 +8,6 @@ block for multiple named hypotheses.
 
 ``` r
 state_null(.x, ...)
-
-more_h0(...)
 ```
 
 ## Arguments

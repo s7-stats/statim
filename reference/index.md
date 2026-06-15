@@ -40,7 +40,6 @@ inference
 - [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
   : Lazily prepare a model inference
 - [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
-  [`more_h0()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
   : State a null hypothesis in the pipeline
 - [`via()`](https://s7-stats.github.io/statim/reference/via.md) :
   Recalibrate the method variant
@@ -89,8 +88,6 @@ Container and an eager executioner of a prepared H-test function
   T-Test
 - [`CORTEST()`](https://s7-stats.github.io/statim/reference/CORTEST.md)
   : Correlation Test
-- [`ANOVA()`](https://s7-stats.github.io/statim/reference/anova.md) :
-  ANOVA
 - [`P_TEST()`](https://s7-stats.github.io/statim/reference/P_TEST.md) :
   Proportion Test
 
