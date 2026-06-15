@@ -145,7 +145,7 @@ for full argument lists, variants, and result class details:</p><ul><li><p><code
 
 </dl></div>
     <div class="section level2">
-    <h2 id="result-class">Result class<a class="anchor" aria-label="anchor" href="#result-class"></a></h2>
+    <h2 id="two-sample-t-test-default-class">Two-sample t-test default class<a class="anchor" aria-label="anchor" href="#two-sample-t-test-default-class"></a></h2>
 
 
 <p>Returns a <a href="class_ttest_two.html">class_ttest_two</a> object. All variants that also return
@@ -157,6 +157,19 @@ for full argument lists, variants, and result class details:</p><ul><li><p><code
 
 <p>Supports <code><a href="MU.html">MU()</a></code> via <code><a href="null-hyp.html">state_null()</a></code>. The <code>contrast</code> variant performs Welch-Satterthwaite linear contrast test
 and additionally accepts contrast coefficients via <code>.w</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+
+
+<p>Welch, B. L. (1947). The generalization of "Student's" problem when
+several different population variances are involved. <em>Biometrika</em>,
+34(1-2), 28-35. <a href="https://doi.org/10.1093/biomet/34.1-2.28" class="external-link">https://doi.org/10.1093/biomet/34.1-2.28</a></p>
+<p>Satterthwaite, F. E. (1946). An approximate distribution of estimates
+of variance components. <em>Biometrics Bulletin</em>, 2(6), 110-114.
+<a href="https://doi.org/10.2307/3002019" class="external-link">https://doi.org/10.2307/3002019</a></p>
+<p>Kutner, M. H., Nachtsheim, C. J., Neter, J., &amp; Li, W. (2004).
+<em>Applied Linear Statistical Models</em> (5th ed.). McGraw-Hill/Irwin.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -281,6 +294,7 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Contrast t-test</span></span></span>
+<span class="r-in"><span><span class="co"># This performs Welch-Satterthwaite linear contrast test for t-test</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>

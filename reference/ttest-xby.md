@@ -42,7 +42,7 @@ The following arguments are passed via `...` in
   Welch-Satterthwaite linear contrast test. Accepts `.w`, `.mu`, `.ci`,
   `.op`.
 
-## Result class
+## Two-sample t-test default class
 
 Returns a
 [class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
@@ -58,6 +58,19 @@ Supports [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) via
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
 The `contrast` variant performs Welch-Satterthwaite linear contrast test
 and additionally accepts contrast coefficients via `.w`.
+
+## References
+
+Welch, B. L. (1947). The generalization of "Student's" problem when
+several different population variances are involved. *Biometrika*,
+34(1-2), 28-35. <https://doi.org/10.1093/biomet/34.1-2.28>
+
+Satterthwaite, F. E. (1946). An approximate distribution of estimates of
+variance components. *Biometrics Bulletin*, 2(6), 110-114.
+<https://doi.org/10.2307/3002019>
+
+Kutner, M. H., Nachtsheim, C. J., Neter, J., & Li, W. (2004). *Applied
+Linear Statistical Models* (5th ed.). McGraw-Hill/Irwin.
 
 ## See also
 
