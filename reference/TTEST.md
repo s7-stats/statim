@@ -84,6 +84,12 @@ The following arguments are passed via `...` in `TTEST()` or
 
   Confidence level. Default `0.95`.
 
+- `.first_group`:
+
+  Only if uses
+  [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
+  Considers first term as the first order. Default is `NULL`.
+
 ## Variants
 
 - `"boot"`:
@@ -98,6 +104,10 @@ The following arguments are passed via `...` in `TTEST()` or
 
   Welch-Satterthwaite linear contrast test. Accepts `.w`, `.mu`, `.ci`,
   `.op`.
+
+- `"multi"`:
+
+  Accepts multiple selected `group` variables
 
 ## Two-sample t-test default class
 
@@ -347,32 +357,8 @@ sleep |>
     prepare_test(TTEST) |>
     state_null(MU(extra) == 0) |>
     conclude()
-#> 
-#> == Model ======================================================================= 
-#> 
-#> Model ID : x_by 
-#> Args : extra | group 
-#>     x_vars : 1 
-#>     by_vars : 1 
-#> 
-#> == T-Test ====================================================================== 
-#> 
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ──────────────────────────────────────────
-#>   group  estimate  t_stat    df    p_val  
-#> ──────────────────────────────────────────
-#>   group   -1.580   -1.861  17.780  0.079  
-#> ──────────────────────────────────────────
-#> 
-#> 
-#> -- Confidence Interval ---------------------------------------------------------
-#> 
-#> ─────────────────────────────
-#>   group  lower_95  upper_95  
-#> ─────────────────────────────
-#>   group   -3.365    0.206    
-#> ─────────────────────────────
-#> 
-#> 
+#> Error in r(claim, processed): T-test for `x_by()` only supports two-sample mean differences.
+#> ℹ Found contrast coefficients: 1.
+#> ℹ Use `via("contrast")` for weighted/contrast hypotheses,
+#> ℹ or use a formula model for one-sample tests.
 ```

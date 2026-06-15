@@ -110,34 +110,10 @@ after <code>prepare_test(...)</code> to supply the hypothesis expression, e.g.
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu">state_null</span><span class="op">(</span><span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : x_by </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Args : extra | group </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     by_vars : 1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> == T-Test ====================================================================== </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -- Summary ---------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   group  estimate  t_stat    df    p_val  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   group   -1.580   -1.861  17.780  <span style="font-style: italic;">0.079</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -- Confidence Interval ---------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   group  lower_95  upper_95  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   group   -3.365    0.206    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in r(claim, processed):</span> T-test for `x_by()` only supports two-sample mean differences.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Found contrast coefficients: <span style="color: #0000BB;">1</span>.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Use `via("contrast")` for weighted/contrast hypotheses,</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> or use a formula model for one-sample tests.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>

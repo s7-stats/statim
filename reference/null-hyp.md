@@ -41,34 +41,10 @@ sleep |>
     prepare_test(TTEST) |>
     state_null(MU(extra) == 0) |>
     conclude()
-#> 
-#> == Model ======================================================================= 
-#> 
-#> Model ID : x_by 
-#> Args : extra | group 
-#>     x_vars : 1 
-#>     by_vars : 1 
-#> 
-#> == T-Test ====================================================================== 
-#> 
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ──────────────────────────────────────────
-#>   group  estimate  t_stat    df    p_val  
-#> ──────────────────────────────────────────
-#>   group   -1.580   -1.861  17.780  0.079  
-#> ──────────────────────────────────────────
-#> 
-#> 
-#> -- Confidence Interval ---------------------------------------------------------
-#> 
-#> ─────────────────────────────
-#>   group  lower_95  upper_95  
-#> ─────────────────────────────
-#>   group   -3.365    0.206    
-#> ─────────────────────────────
-#> 
-#> 
+#> Error in r(claim, processed): T-test for `x_by()` only supports two-sample mean differences.
+#> ℹ Found contrast coefficients: 1.
+#> ℹ Use `via("contrast")` for weighted/contrast hypotheses,
+#> ℹ or use a formula model for one-sample tests.
 
 if (FALSE) { # \dontrun{
 sleep |>

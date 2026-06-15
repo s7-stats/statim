@@ -27,6 +27,12 @@ The following arguments are passed via `...` in
 
   Confidence level. Default `0.95`.
 
+- `.first_group`:
+
+  Only if uses
+  [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
+  Considers first term as the first order. Default is `NULL`.
+
 ## Variants
 
 - `"boot"`:
@@ -41,6 +47,10 @@ The following arguments are passed via `...` in
 
   Welch-Satterthwaite linear contrast test. Accepts `.w`, `.mu`, `.ci`,
   `.op`.
+
+- `"multi"`:
+
+  Accepts multiple selected `group` variables
 
 ## Two-sample t-test default class
 

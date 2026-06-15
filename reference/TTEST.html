@@ -127,6 +127,9 @@ for full argument lists, variants, and result class details:</p><ul><li><p><code
 <dt><code>.ci</code></dt>
 <dd><p>Confidence level. Default <code>0.95</code>.</p></dd>
 
+<dt><code>.first_group</code></dt>
+<dd><p>Only if uses <code><a href="null-hyp.html">state_null()</a></code>. Considers first term as the first order. Default is <code>NULL</code>.</p></dd>
+
 
 </dl></div>
     <div class="section level2">
@@ -141,6 +144,9 @@ for full argument lists, variants, and result class details:</p><ul><li><p><code
 
 <dt><code>"contrast"</code></dt>
 <dd><p>Welch-Satterthwaite linear contrast test. Accepts <code>.w</code>, <code>.mu</code>, <code>.ci</code>, <code>.op</code>.</p></dd>
+
+<dt><code>"multi"</code></dt>
+<dd><p>Accepts multiple selected <code>group</code> variables</p></dd>
 
 
 </dl></div>
@@ -381,34 +387,10 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="null-hyp.html">state_null</a></span><span class="op">(</span><span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : x_by </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Args : extra | group </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     by_vars : 1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> == T-Test ====================================================================== </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -- Summary ---------------------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   group  estimate  t_stat    df    p_val  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   group   -1.580   -1.861  17.780  <span style="font-style: italic;">0.079</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -- Confidence Interval ---------------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   group  lower_95  upper_95  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   group   -3.365    0.206    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in r(claim, processed):</span> T-test for `x_by()` only supports two-sample mean differences.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Found contrast coefficients: <span style="color: #0000BB;">1</span>.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Use `via("contrast")` for weighted/contrast hypotheses,</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> or use a formula model for one-sample tests.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
