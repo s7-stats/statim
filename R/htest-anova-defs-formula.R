@@ -84,57 +84,13 @@ anova_def_formula = test_define(
     claim_translator = claim_translate(
         default = map_claim(
             .contrasts = function(claim, processed) {
-                claims_list = if (S7::S7_inherits(claim, null_claims)) {
-                    claim@claims
-                } else {
-                    list(claim)
+                if (S7::S7_inherits(claim, list_h0_claims)) {
+                    return(claim_list_h0_coefs(claim, processed))
                 }
-
-                ops = vapply(claims_list, function(cl) cl@op, character(1))
-                all_peq = all(ops == "%=%")
-                any_peq = any(ops == "%=%")
-
-                if (any_peq && !all_peq) {
-                    cli::cli_abort(c(
-                        "Cannot mix {.code %=%} and {.code ==} in the same {.fn more_h0} block.",
-                        "i" = "Use {.code %=%} alone for omnibus equality, or {.code ==} alone for contrasts."
-                    ))
+                if (claim@op == "%=%") {
+                    return(claim_peq_coefs(claim, processed))
                 }
-
-                # Omnibus %=% — no custom contrast matrix needed
-                if (all_peq) {
-                    return(NULL)
-                }
-
-                # Infer the grouping variable from the first claim's param nodes.
-                # For the formula variant we don't have processed$group_data, so
-                # we extract the group name from the `given` predicate of each
-                # MU() call (e.g. MU(y, group == "A") -> "group").
-                grp_name = infer_group_name_from_claims(claims_list)
-                resolved = lapply(claims_list, claim_contrast_coefs)
-
-                # Collect all level names mentioned across all contrasts so the
-                # matrix row set is complete. compute_aov_contrasts aligns rows
-                # to fit$model levels at compute time, so partial coverage here
-                # is fine — missing levels stay at zero.
-                all_lvls = unique(unlist(lapply(resolved, function(r) names(r$coefs))))
-
-                mat = matrix(0, nrow = length(all_lvls), ncol = length(resolved))
-                rownames(mat) = all_lvls
-                colnames(mat) = names(claims_list)
-                scalars = numeric(length(resolved))
-
-                for (j in seq_along(resolved)) {
-                    coef = resolved[[j]]$coefs
-                    matched = intersect(names(coef), all_lvls)
-                    mat[matched, j] = coef[matched]
-                    scalars[[j]] = resolved[[j]]$scalar
-                }
-
-                ops_vec = vapply(claims_list, function(cl) cl@op, character(1))
-                attr(mat, "ops") = ops_vec
-                attr(mat, "scalars") = scalars
-                rlang::set_names(list(mat), grp_name)
+                NULL
             }
         )
     )

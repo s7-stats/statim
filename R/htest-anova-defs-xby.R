@@ -247,63 +247,13 @@ anova_def_xby = test_define(
     claim_translator = claim_translate(
         default = map_claim(
             .contrasts = function(claim, processed) {
-                claims_list = if (S7::S7_inherits(claim, null_claims)) {
-                    claim@claims
-                } else {
-                    list(claim)
+                if (S7::S7_inherits(claim, list_h0_claims)) {
+                    return(claim_list_h0_coefs(claim, processed))
                 }
-
-                ops = vapply(claims_list, function(cl) cl@op, character(1))
-                all_peq = all(ops == "%=%")
-                any_peq = any(ops == "%=%")
-
-                if (any_peq && !all_peq) {
-                    cli::cli_abort(c(
-                        "Cannot mix {.code %=%} and {.code ==} in the same {.fn more_h0} block.",
-                        "i" = "Use {.code %=%} alone for omnibus equality, or {.code ==} alone for contrasts."
-                    ))
+                if (claim@op == "%=%") {
+                    return(claim_peq_coefs(claim, processed))
                 }
-
-                if (all_peq) {
-                    has_weighted = any(vapply(claims_list, function(cl) {
-                        any(vapply(cl@lhs, inherits, logical(1), "arith_node"))
-                    }, logical(1)))
-                    if (has_weighted) {
-                        cli::cli_abort(c(
-                            "Weighted terms found in {.code %=%} hypothesis.",
-                            "i" = "Use {.code via(\"weighted\")} for weighted equality hypotheses."
-                        ))
-                    }
-                    return(NULL)
-                }
-
-                grp_name = names(processed$group_data)[[1]]
-                lvls = unique(as.character(processed$group_data[[grp_name]]))
-
-                resolved = lapply(claims_list, claim_contrast_coefs)
-
-                mat = matrix(0, nrow = length(lvls), ncol = length(resolved))
-                rownames(mat) = lvls
-                colnames(mat) = names(claims_list)
-                scalars = numeric(length(resolved))
-
-                for (j in seq_along(resolved)) {
-                    coef = resolved[[j]]$coefs
-                    matched = intersect(names(coef), lvls)
-                    if (length(matched) == 0L) {
-                        cli::cli_abort(c(
-                            "Contrast references groups not found in data.",
-                            "i" = "Available levels: {.val {lvls}}."
-                        ))
-                    }
-                    mat[matched, j] = coef[matched]
-                    scalars[[j]] = resolved[[j]]$scalar
-                }
-
-                ops_vec = vapply(claims_list, function(cl) cl@op, character(1))
-                attr(mat, "ops") = ops_vec
-                attr(mat, "scalars") = scalars
-                rlang::set_names(list(mat), grp_name)
+                NULL
             }
         ),
         weighted = map_claim(
