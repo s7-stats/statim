@@ -83,14 +83,22 @@ Let’s try with two forms of statistical inference:
 2.  Model-based inference uses
     [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
 
-&nbsp;
+    ``` r
 
-    ``` r 
     mtcars_dm = define_model(mtcars, mpg ~ .)
     mtcars_lm = mtcars_dm |> prepare_model(LINEAR_REG)
     ```
 
-    > Note: `prepare_test()` and `prepare_model()` can supply extra arguments from the default (base) implementation of `<STAT_FN>` functions like `TTEST()` and `LINEAR_REG()`. Using `update()` is totally optional.  
+> Note:
+> [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
+> and
+> [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
+> can supply extra arguments from the default (base) implementation of
+> `<STAT_FN>` functions like
+> [`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) and
+> [`LINEAR_REG()`](https://s7-stats.github.io/statim/reference/LINEAR_REG.md).
+> Using [`update()`](https://rdrr.io/r/stats/update.html) is totally
+> optional.
 
 Later updates may include other processes, such as sensitivity analysis.
 
