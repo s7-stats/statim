@@ -42,7 +42,15 @@ The following arguments are passed via `...` in `P_TEST()` or
 
 - `.p`:
 
-  Numeric. Hypothesized proportion under H\\\_0\\. Default `0.5`.
+  Numeric. Hypothesized proportion under H\\\_0\\, used directly in
+  [`stats::binom.test()`](https://rdrr.io/r/stats/binom.test.html) /
+  [`stats::prop.test()`](https://rdrr.io/r/stats/prop.test.html).
+  Default `0.5`. When a hypothesis is stated via
+  [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+  with a scaled claim like `c * PI() == k`, `.p` is resolved to the
+  solved value `k / c`, since `c * PI() == k` and `PI() == k / c` are
+  the same hypothesis (the binomial likelihood is invariant under this
+  linear reparameterization).
 
 - `.alt`:
 
@@ -52,6 +60,14 @@ The following arguments are passed via `...` in `P_TEST()` or
 - `.ci`:
 
   Confidence level. Default `0.95`.
+
+- `.true_p`:
+
+  Only meaningful via
+  [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
+  Carries the hypothesis's scalar value *as written* (unsolved), purely
+  for display in `true_p`. Default `NULL`, in which case `true_p` falls
+  back to `.p`. Not intended to be set directly by users.
 
 ## Variants
 
@@ -72,6 +88,19 @@ Supports [`PI()`](https://s7-stats.github.io/statim/reference/PI.md) via
         prepare_test(P_TEST) |>
         state_null(PI() == 0.5) |>
         conclude()
+
+Scaled claims are also supported, e.g. `2 * PI() == 0.3`. The test
+itself solves for
+[`PI()`](https://s7-stats.github.io/statim/reference/PI.md)
+(`.p = 0.15`) and runs exactly via
+[`stats::binom.test()`](https://rdrr.io/r/stats/binom.test.html) or
+[`stats::prop.test()`](https://rdrr.io/r/stats/prop.test.html) — no
+approximation is introduced by the scaling, since testing
+`c * PI() == k` is mathematically identical to testing `PI() == k / c`.
+`true_p` in the printed/tidied output instead shows the scalar as
+written on the right-hand side of the claim (`0.3`, not the solved
+`0.15`), so the displayed hypothesis matches what was typed even though
+the underlying test operates on the solved proportion.
 
 ## See also
 
@@ -176,6 +205,40 @@ define_model(prop(45, 100)) |>
 define_model(prop(45, 100)) |>
     prepare_test(P_TEST) |>
     state_null(PI() == 0.3) |>
+    conclude()
+#> 
+#> == Model ======================================================================= 
+#> 
+#> Model ID : prop 
+#> Args : 45 / 100 
+#>     x : 45 
+#>     n : 100 
+#> 
+#> == Proportion Test ============================================================= 
+#> 
+#> -- Summary ---------------------------------------------------------------------
+#> 
+#> ────────────────────────────────────────────────
+#>   x    n   true_p  estimate  statistic  p_val   
+#> ────────────────────────────────────────────────
+#>   45  100  0.300    0.450       45      <0.001  
+#> ────────────────────────────────────────────────
+#> 
+#> 
+#> -- Confidence Interval ---------------------------------------------------------
+#> 
+#> ──────────────────────
+#>   lower_95  upper_95  
+#> ──────────────────────
+#>    0.350     0.553    
+#> ──────────────────────
+#> 
+#> 
+
+# scaled hypothesis claim
+define_model(prop(45, 100)) |>
+    prepare_test(P_TEST) |>
+    state_null(2 * PI() == 0.3) |>
     conclude()
 #> 
 #> == Model ======================================================================= 

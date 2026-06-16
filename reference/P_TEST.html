@@ -104,7 +104,12 @@ The object stored in <code>cld_exec@data</code> is a <a href="class_p_test.html"
 
 <p>The following arguments are passed via <code>...</code> in <code>P_TEST()</code> or <code><a href="via.html">via()</a></code>:</p>
 <dl><dt><code>.p</code></dt>
-<dd><p>Numeric. Hypothesized proportion under H\(_0\). Default <code>0.5</code>.</p></dd>
+<dd><p>Numeric. Hypothesized proportion under H\(_0\), used directly
+in <code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">stats::binom.test()</a></code> / <code><a href="https://rdrr.io/r/stats/prop.test.html" class="external-link">stats::prop.test()</a></code>. Default <code>0.5</code>. When a
+hypothesis is stated via <code><a href="null-hyp.html">state_null()</a></code> with a scaled claim like
+<code>c * PI() == k</code>, <code>.p</code> is resolved to the solved value <code>k / c</code>, since
+<code>c * PI() == k</code> and <code>PI() == k / c</code> are the same hypothesis (the
+binomial likelihood is invariant under this linear reparameterization).</p></dd>
 
 <dt><code>.alt</code></dt>
 <dd><p>Direction: <code>"two.sided"</code>, <code>"greater"</code>, or <code>"less"</code>.
@@ -112,6 +117,12 @@ Default <code>"two.sided"</code>.</p></dd>
 
 <dt><code>.ci</code></dt>
 <dd><p>Confidence level. Default <code>0.95</code>.</p></dd>
+
+<dt><code>.true_p</code></dt>
+<dd><p>Only meaningful via <code><a href="null-hyp.html">state_null()</a></code>. Carries the
+hypothesis's scalar value <em>as written</em> (unsolved), purely for display
+in <code>true_p</code>. Default <code>NULL</code>, in which case <code>true_p</code> falls back to
+<code>.p</code>. Not intended to be set directly by users.</p></dd>
 
 
 </dl></div>
@@ -136,6 +147,14 @@ continuity correction should be applied or not.</p></dd>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">P_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/null-hyp.html">state_null</a></span><span class="op">(</span><span class="fu"><a href="../reference/PI.html">PI</a></span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre><p></p></div>
+<p>Scaled claims are also supported, e.g. <code>2 * PI() == 0.3</code>. The test itself
+solves for <code><a href="PI.html">PI()</a></code> (<code>.p = 0.15</code>) and runs exactly via <code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">stats::binom.test()</a></code>
+or <code><a href="https://rdrr.io/r/stats/prop.test.html" class="external-link">stats::prop.test()</a></code> — no approximation is introduced by the scaling,
+since testing <code>c * PI() == k</code> is mathematically identical to testing
+<code>PI() == k / c</code>. <code>true_p</code> in the printed/tidied output instead shows the
+scalar as written on the right-hand side of the claim (<code>0.3</code>, not the
+solved <code>0.15</code>), so the displayed hypothesis matches what was typed even
+though the underlying test operates on the solved proportion.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -236,6 +255,40 @@ continuity correction should be applied or not.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">P_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="null-hyp.html">state_null</a></span><span class="op">(</span><span class="fu"><a href="PI.html">PI</a></span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : prop </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Args : 45 / 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     x : 45 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     n : 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> == Proportion Test ============================================================= </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- Summary ---------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   x    n   true_p  estimate  statistic  p_val   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   45  100  0.300    0.450       45      <span style="font-weight: bold;">&lt;0.001</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- Confidence Interval ---------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   lower_95  upper_95  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0.350     0.553    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># scaled hypothesis claim</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">P_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="null-hyp.html">state_null</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="PI.html">PI</a></span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>

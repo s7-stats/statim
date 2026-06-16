@@ -94,8 +94,27 @@
 
     
     
-
-  </main>
+<div class="section level2">
+<h2 id="rationale">Rationale<a class="anchor" aria-label="anchor" href="#rationale"></a>
+</h2>
+<p>This is only applied on piped/grammar syntax pipelines. The functions
+you’ll be using are the shared grammars and cannot be accessed with
+“eager form” syntax. Eager forms like
+<code>TTEST(&lt;model_id&gt;, &lt;data&gt;)</code> directly executes the
+outputs but cannot share grammars like <code><a href="../../reference/conclude.html">conclude()</a></code> and
+<code><a href="../../reference/tidy.html">tidy()</a></code> to retrieve the outputs.</p>
+</div>
+<div class="section level2">
+<h2 id="structure">Structure<a class="anchor" aria-label="anchor" href="#structure"></a>
+</h2>
+<p>The output from “eager form” syntax and output from the piped/grammar
+syntax have the same structure, only differs from their classes</p>
+</div>
+<div class="section level2">
+<h2 id="section"></h2>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

@@ -96,8 +96,41 @@
 
     
     
-
-  </main>
+<div class="section level2">
+<h2 id="rationale">Rationale<a class="anchor" aria-label="anchor" href="#rationale"></a>
+</h2>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is designed for extrapolation of estimation
+methods in statistical inference, attempting to bring barely known
+methods into <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> pipelines, while harnessing syntactic
+sugars when writing <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> syntax.
+<code>stat_define</code> is another but the main data structure of
+<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> that keeps the implementation and the rest of the
+metadata which describes the pipeline.</p>
+</div>
+<div class="section level2">
+<h2 id="anatomy-of-stat_define">Anatomy of stat_define<a class="anchor" aria-label="anchor" href="#anatomy-of-stat_define"></a>
+</h2>
+<p>This is the containerization of the existing methods while being
+called in a single line. We have:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>model_type</code> - you must supply a <a href="https://s7-stats.github.io/statim/articles/pointers/model_id.html"><code>&lt;model_id&gt;</code></a>
+that</p></li>
+<li><p><code>impl</code> - a list of methods to be used in a single
+<code>&lt;stat_fn&gt;</code></p></li>
+<li><p><code>compatible_params</code></p></li>
+<li><p><code>claim_translator</code></p></li>
+</ol>
+</div>
+<div class="section level2">
+<h2 id="how-it-is-used">How it is used<a class="anchor" aria-label="anchor" href="#how-it-is-used"></a>
+</h2>
+</div>
+<div class="section level2">
+<h2 id="extending-stat_define-objects">Extending stat_define objects<a class="anchor" aria-label="anchor" href="#extending-stat_define-objects"></a>
+</h2>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
