@@ -163,6 +163,16 @@ for full argument lists, variants, and result class details:</p><ul><li><p><code
 
 <p>Supports <code><a href="MU.html">MU()</a></code> via <code><a href="null-hyp.html">state_null()</a></code>. The <code>contrast</code> variant performs Welch-Satterthwaite linear contrast test
 and additionally accepts contrast coefficients via <code>.w</code>.</p>
+<p>Claim order is respected: writing <code>MU(x, g == "a") - MU(x, g == "b")</code> versus
+<code>MU(x, g == "b") - MU(x, g == "a")</code> flips the sign of <code>estimate</code> and
+<code>t_stat</code>, since the group with coefficient <code>+1</code> in the parsed claim becomes
+<code>x</code> in <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code>. This is implemented via an internal <code>.first_group</code>
+argument resolved from the claim — it is not meant to be set directly by
+users. If you call <code>via("base", .first_group = ...)</code> or use <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> to
+override it manually, note that it accepts a single group label (one of
+the two levels of the grouping variable) and silently falls back to the
+data's natural level order (<code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> on the grouping variable) if <code>NULL</code>,
+unset, or not found among the levels.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -300,6 +310,7 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Contrast t-test</span></span></span>
+<span class="r-in"><span><span class="co"># This uses `state_null()` in a higher degree</span></span></span>
 <span class="r-in"><span><span class="co"># This performs Welch-Satterthwaite linear contrast test for t-test</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -380,17 +391,6 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-out co"><span class="r-pr">#&gt;</span>                     36.463         4.719                    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                     <span style="font-weight: bold;">&lt;0.001</span>         <span style="font-weight: bold;">&lt;0.001</span>                   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># hypothesis claim</span></span></span>
-<span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="null-hyp.html">state_null</a></span><span class="op">(</span><span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in r(claim, processed):</span> T-test for `x_by()` only supports two-sample mean differences.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Found contrast coefficients: <span style="color: #0000BB;">1</span>.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Use `via("contrast")` for weighted/contrast hypotheses,</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> or use a formula model for one-sample tests.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

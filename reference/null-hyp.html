@@ -105,26 +105,39 @@ after <code>prepare_test(...)</code> to supply the hypothesis expression, e.g.
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu">state_null</span><span class="op">(</span><span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Using binomial test as a simple example</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">P_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu">state_null</span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="PI.html">PI</a></span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0.25</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in r(claim, processed):</span> T-test for `x_by()` only supports two-sample mean differences.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Found contrast coefficients: <span style="color: #0000BB;">1</span>.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Use `via("contrast")` for weighted/contrast hypotheses,</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> or use a formula model for one-sample tests.</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu">state_null</span><span class="op">(</span><span class="fu">more_h0</span><span class="op">(</span></span></span>
-<span class="r-in"><span>        h01 <span class="op">=</span> <span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span><span class="op">)</span> <span class="op">==</span> <span class="fl">2</span>,</span></span>
-<span class="r-in"><span>        h02 <span class="op">=</span> <span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span><span class="op">)</span> <span class="op">==</span> <span class="fl">3</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : prop </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Args : 45 / 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     x : 45 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     n : 100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> == Proportion Test ============================================================= </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- Summary ---------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   x    n   true_p  estimate  statistic  p_val   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   45  100  0.120    0.450       45      <span style="font-weight: bold;">&lt;0.001</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- Confidence Interval ---------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   lower_95  upper_95  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0.350     0.553    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

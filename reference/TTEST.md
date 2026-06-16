@@ -126,6 +126,19 @@ Supports [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) via
 The `contrast` variant performs Welch-Satterthwaite linear contrast test
 and additionally accepts contrast coefficients via `.w`.
 
+Claim order is respected: writing `MU(x, g == "a") - MU(x, g == "b")`
+versus `MU(x, g == "b") - MU(x, g == "a")` flips the sign of `estimate`
+and `t_stat`, since the group with coefficient `+1` in the parsed claim
+becomes `x` in [`stats::t.test()`](https://rdrr.io/r/stats/t.test.html).
+This is implemented via an internal `.first_group` argument resolved
+from the claim — it is not meant to be set directly by users. If you
+call `via("base", .first_group = ...)` or use
+[`update()`](https://rdrr.io/r/stats/update.html) to override it
+manually, note that it accepts a single group label (one of the two
+levels of the grouping variable) and silently falls back to the data's
+natural level order ([`unique()`](https://rdrr.io/r/base/unique.html) on
+the grouping variable) if `NULL`, unset, or not found among the levels.
+
 ## References
 
 Welch, B. L. (1947). The generalization of "Student's" problem when
@@ -270,6 +283,7 @@ sleep |>
 #> 
 
 # Contrast t-test
+# This uses `state_null()` in a higher degree
 # This performs Welch-Satterthwaite linear contrast test for t-test
 sleep |>
     define_model(x_by(extra, group)) |>
@@ -350,15 +364,4 @@ iris |>
 #>                     36.463         4.719                    
 #>                     <0.001         <0.001                   
 #> ────────────────────────────────────────────────────────────
-
-# hypothesis claim
-sleep |>
-    define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
-    state_null(MU(extra) == 0) |>
-    conclude()
-#> Error in r(claim, processed): T-test for `x_by()` only supports two-sample mean differences.
-#> ℹ Found contrast coefficients: 1.
-#> ℹ Use `via("contrast")` for weighted/contrast hypotheses,
-#> ℹ or use a formula model for one-sample tests.
 ```

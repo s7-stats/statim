@@ -36,24 +36,37 @@ The modified `test_lazy` object.
 ## Examples
 
 ``` r
-sleep |>
-    define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
-    state_null(MU(extra) == 0) |>
+# Using binomial test as a simple example
+define_model(prop(45, 100)) |>
+    prepare_test(P_TEST) |>
+    state_null(2 * PI() == 0.25) |>
     conclude()
-#> Error in r(claim, processed): T-test for `x_by()` only supports two-sample mean differences.
-#> ℹ Found contrast coefficients: 1.
-#> ℹ Use `via("contrast")` for weighted/contrast hypotheses,
-#> ℹ or use a formula model for one-sample tests.
-
-if (FALSE) { # \dontrun{
-sleep |>
-    define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
-    state_null(more_h0(
-        h01 = MU(extra) == 2,
-        h02 = MU(extra) == 3
-    )) |>
-    conclude()
-} # }
+#> 
+#> == Model ======================================================================= 
+#> 
+#> Model ID : prop 
+#> Args : 45 / 100 
+#>     x : 45 
+#>     n : 100 
+#> 
+#> == Proportion Test ============================================================= 
+#> 
+#> -- Summary ---------------------------------------------------------------------
+#> 
+#> ────────────────────────────────────────────────
+#>   x    n   true_p  estimate  statistic  p_val   
+#> ────────────────────────────────────────────────
+#>   45  100  0.120    0.450       45      <0.001  
+#> ────────────────────────────────────────────────
+#> 
+#> 
+#> -- Confidence Interval ---------------------------------------------------------
+#> 
+#> ──────────────────────
+#>   lower_95  upper_95  
+#> ──────────────────────
+#>    0.350     0.553    
+#> ──────────────────────
+#> 
+#> 
 ```

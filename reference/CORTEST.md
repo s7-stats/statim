@@ -110,9 +110,9 @@ follows:
 - The operator maps to `.alt`: `==` and `!=` become `"two.sided"`, `>=`
   and `>` become `"less"`, `<=` and `<` become `"greater"`.
 
-- The scalar maps to `.rho`: both `RHO(x, y) == 0.9` and
-  `0.9 == RHO(x, y)` are handled correctly via
-  [`claim_scalar_diff()`](https://s7-stats.github.io/statim/reference/claim_scalar_diff.md).
+- The scalar maps to `.rho`: `RHO(x, y) == 0.9`, not `0.9 == RHO(x, y)`,
+  is handled correctly via
+  [`claim_scalar()`](https://s7-stats.github.io/statim/reference/claim_scalar.md).
 
 ## See also
 

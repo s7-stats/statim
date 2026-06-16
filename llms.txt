@@ -429,8 +429,8 @@ Core helpers to parse the modelled hypotheses, objects from
   [`check_x_and_given()`](https://s7-stats.github.io/statim/reference/claim-vars-validators.md)
   : Validate hypothesis parameter references against a model's declared
   variables
-- [`claim_scalar_diff()`](https://s7-stats.github.io/statim/reference/claim_scalar_diff.md)
-  : Extract the hypothesized scalar value from a null claim
+- [`claim_scalar()`](https://s7-stats.github.io/statim/reference/claim_scalar.md)
+  : Extract a scalar hypothesis value from a null claim
 - [`claim_contrast_coefs()`](https://s7-stats.github.io/statim/reference/claim_contrast_coefs.md)
   : Extract contrast coefficients from a null claim
 

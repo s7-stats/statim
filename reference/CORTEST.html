@@ -160,8 +160,8 @@ are omitted from the printed output.</p>
 <p>Supports <code><a href="RHO.html">RHO()</a></code> via <code><a href="null-hyp.html">state_null()</a></code>. Only available on the <code>base</code>
 (Pearson) variant. The claim is parsed as follows:</p><ul><li><p>The operator maps to <code>.alt</code>: <code>==</code> and <code>!=</code> become <code>"two.sided"</code>,
 <code>&gt;=</code> and <code>&gt;</code> become <code>"less"</code>, <code>&lt;=</code> and <code>&lt;</code> become <code>"greater"</code>.</p></li>
-<li><p>The scalar maps to <code>.rho</code>: both <code>RHO(x, y) == 0.9</code> and
-<code>0.9 == RHO(x, y)</code> are handled correctly via <code><a href="claim_scalar_diff.html">claim_scalar_diff()</a></code>.</p></li>
+<li><p>The scalar maps to <code>.rho</code>: <code>RHO(x, y) == 0.9</code>, not <code>0.9 == RHO(x, y)</code>,
+is handled correctly via <code><a href="claim_scalar.html">claim_scalar()</a></code>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

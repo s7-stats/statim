@@ -121,6 +121,16 @@ t-test. It accepts one or more grouping variables via <code><a href="x_by.html">
 
 <p>Supports <code><a href="MU.html">MU()</a></code> via <code><a href="null-hyp.html">state_null()</a></code>. The <code>contrast</code> variant performs Welch-Satterthwaite linear contrast test
 and additionally accepts contrast coefficients via <code>.w</code>.</p>
+<p>Claim order is respected: writing <code>MU(x, g == "a") - MU(x, g == "b")</code> versus
+<code>MU(x, g == "b") - MU(x, g == "a")</code> flips the sign of <code>estimate</code> and
+<code>t_stat</code>, since the group with coefficient <code>+1</code> in the parsed claim becomes
+<code>x</code> in <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code>. This is implemented via an internal <code>.first_group</code>
+argument resolved from the claim — it is not meant to be set directly by
+users. If you call <code>via("base", .first_group = ...)</code> or use <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> to
+override it manually, note that it accepts a single group label (one of
+the two levels of the grouping variable) and silently falls back to the
+data's natural level order (<code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> on the grouping variable) if <code>NULL</code>,
+unset, or not found among the levels.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
