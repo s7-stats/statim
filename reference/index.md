@@ -51,8 +51,6 @@ inference
 Functions that emulate the population parameter, close to textbook
 notations
 
-- [`` `%=%` ``](https://s7-stats.github.io/statim/reference/equal-op.md)
-  : Chained equality operator for null hypotheses
 - [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) : Mean of
   a variable, optionally conditioned on a subgroup
 - [`PI()`](https://s7-stats.github.io/statim/reference/PI.md) :

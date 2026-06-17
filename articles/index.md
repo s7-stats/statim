@@ -35,8 +35,8 @@
 - [Writing Full Null Hypothesis
   Expression](https://s7-stats.github.io/statim/articles/pointers/hypothesis-expressions.md):
 
-- [via(): Recalibrating existing
-  methods](https://s7-stats.github.io/statim/articles/pointers/recalibration-method.md):
+- [via(): Switching to different
+  mode](https://s7-stats.github.io/statim/articles/pointers/recalibration-method.md):
 
 - [Execution and Retrieval of
   Outputs](https://s7-stats.github.io/statim/articles/pointers/execution-methods.md):
