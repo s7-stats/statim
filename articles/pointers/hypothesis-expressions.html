@@ -98,24 +98,145 @@ Explanation</h3>
 <div class="section level2">
 <h2 id="rationale">Rationale<a class="anchor" aria-label="anchor" href="#rationale"></a>
 </h2>
-<p>It may sound complex to you, but it is intuitive and logical.
-<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> tries to emulate the way the null hypotheses being
-written under the statistics textbooks you read. Under the hood, it
-signifies the use of syntactic sugars and DSLs (domain specific
-language). It was inspired by <code>join_by()</code> from
-<a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> package, where…</p>
+<p>It may sound complex, but it’s meant to mirror what you’d already
+write under a hypothesis heading in a statistics textbook.
+<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> leans on syntactic sugar and a small embedded DSL
+(domain-specific language) to do this, and the closest existing analogue
+in R is <code>join_by()</code> from <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>: a join
+condition like <code>x == y</code> is never evaluated as a boolean —
+it’s captured as an unevaluated expression and interpreted structurally
+by the join itself.</p>
+<p><code><a href="../../reference/null-hyp.html">state_null()</a></code> works the same way. <code>MU(x) == 0</code>
+is never run as a logical test; <code><a href="../../reference/null-hyp.html">state_null()</a></code> parses it into
+a <code>null_claim</code> object recording the parameter, the operator,
+and the scalar, and hands that structure to whichever <code>fn</code>
+the active variant runs.</p>
 </div>
 <div class="section level2">
-<h2 id="section"></h2>
-</div>
-<div class="section level2">
-<h2 id="section-1"></h2>
-</div>
-<div class="section level2">
-<h2 id="potential-grips">Potential Grips<a class="anchor" aria-label="anchor" href="#potential-grips"></a>
+<h2 id="how-state_null-reads-an-expression">How <code>state_null()</code> reads an expression<a class="anchor" aria-label="anchor" href="#how-state_null-reads-an-expression"></a>
 </h2>
-<p>It tries to be strict when writing hypothesis expressions, as it
-tries to be mathematically sound.</p>
+<p>Parsing happens in two passes. First, the top-level operator is
+checked against a fixed set — <code>==</code>, <code>!=</code>,
+<code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>,
+<code>&gt;=</code> — anything else is rejected before either side is
+touched. Then each side is parsed independently: a numeric literal
+becomes a scalar term, a call to a known <code>&lt;param_obj&gt;</code>
+constructor (<code><a href="../../reference/MU.html">MU()</a></code>, <code><a href="../../reference/PI.html">PI()</a></code>, <code><a href="../../reference/RHO.html">RHO()</a></code>)
+becomes a parameter term with its arguments captured as quosures rather
+than evaluated, and <code>+</code>, <code>-</code>, <code>*</code>,
+<code>/</code>, <code>^</code> recurse into the same parser, so a
+combination like the one below parses just as readily as a bare
+parameter on its own:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">c</span> <span class="op">*</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">g</span> <span class="op">==</span> <span class="st">"a"</span><span class="op">)</span> <span class="op">-</span> <span class="va">d</span> <span class="op">==</span> <span class="va">scalar</span></span></code></pre></div>
+<p>A bare symbol is the one exception: if it isn’t a known parameter
+constructor, <code><a href="../../reference/null-hyp.html">state_null()</a></code> tries evaluating it in the
+calling environment and accepts the result only if it’s numeric, which
+is how a named threshold like <code>thresh = 0.5</code> followed by
+<code>PI() == thresh</code> works without being mistaken for a
+parameter.</p>
+</div>
+<div class="section level2">
+<h2 id="linear-combinations">Linear combinations<a class="anchor" aria-label="anchor" href="#linear-combinations"></a>
+</h2>
+<p>A claim with exactly one parameter term is handled by
+<code><a href="../../reference/claim_scalar.html">claim_scalar()</a></code>, which rearranges
+<code>c * PARAM + d == scalar</code> so everything but the parameter
+sits on the right. This is what lets <code><a href="../../reference/P_TEST.html">P_TEST()</a></code> accept a
+scaled claim like <code>2 * PI() == 0.3</code> and solve it down to
+<code>.p = 0.15</code> for <code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code>, while still
+displaying <code>0.3</code> as the hypothesis you actually typed.</p>
+<p>A claim with more than one parameter term needs
+<code><a href="../../reference/claim_contrast_coefs.html">claim_contrast_coefs()</a></code> instead, and it adds a guard
+<code><a href="../../reference/claim_scalar.html">claim_scalar()</a></code> doesn’t have: <code>assert_linear()</code>
+walks the expression first and rejects a parameter multiplied by another
+parameter, a parameter in a denominator, or a parameter raised to a
+power, each with an error pointing at the exact offending
+subexpression.</p>
+<p>This is what backs the t-test contrast variant:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
+<span>        <span class="co"># Internally, `&lt;=` will be automatically flipped for the alternative hypothesis</span></span>
+<span>        <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">0</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"contrast"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Order matters here in a way that’s easy to miss: which named term
+ends up with coefficient <code>+1</code> versus <code>-1</code> is
+decided by the order you wrote the expression in, not by any property of
+the groups themselves.
+<code>MU(extra, group == "1") - MU(extra, group == "2")</code> and
+<code>MU(extra, group == "2") - MU(extra, group == "1")</code> are the
+same hypothesis mathematically — one is just the negation of the other —
+but <code><a href="../../reference/TTEST.html">TTEST()</a></code>’s <code><a href="../../reference/x_by.html">x_by()</a></code> translator reads
+whichever name has coefficient <code>+1</code> as
+<code>.first_group</code>, and uses it to decide which group becomes
+<code>x</code> in the underlying <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code> call.</p>
+<p>Write the groups in the opposite order and the test still runs and
+reports the same p-value, but <code>estimate</code> and
+<code>t_stat</code> come back with the opposite sign. This isn’t
+specific to <code><a href="../../reference/TTEST.html">TTEST()</a></code>, either — any
+<code>claim_translator</code> that reads
+<code>names(coefs)[coefs == 1]</code> the same way inherits the same
+sensitivity, since <code><a href="../../reference/claim_contrast_coefs.html">claim_contrast_coefs()</a></code> preserves the
+left-to-right order terms were written in all the way through to the
+<code>coefs</code> vector it returns.</p>
+<p>That guard is specific to <code><a href="../../reference/claim_contrast_coefs.html">claim_contrast_coefs()</a></code>,
+though, not to non-linearity in general. <code><a href="../../reference/claim_scalar.html">claim_scalar()</a></code>
+never calls <code>assert_linear()</code>, so the same mistake in a
+single-parameter claim doesn’t get the same clean diagnostic:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">P_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span><span class="fl">5</span> <span class="op">/</span> <span class="fu"><a href="../../reference/PI.html">PI</a></span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>This still fails, but inside <code>collect_terms()</code>’s
+arithmetic branches, which assume their non-coefficient operand is
+numeric and divide into it without checking — the result is a generic R
+error about a non-numeric argument to a binary operator, not a message
+naming the parameter or the rule it broke. Worth knowing if you ever hit
+a cryptic error from a hypothesis that looks fine at a glance: the
+parser did catch it, but only the multi-parameter path explains why.</p>
+<p>If two terms for the same parameter happen to cancel inside a
+contrast — writing <code>MU(x, a) - MU(x, a)</code>, say — the
+coefficient resolves to zero rather than silently vanishing, and
+<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> warns about it instead of quietly dropping the
+term, since a zero coefficient is far more often a typo than an
+intentional contrast. The same duplicate in a single-parameter claim
+never reaches that logic at all: <code><a href="../../reference/claim_scalar.html">claim_scalar()</a></code> counts it
+as two parameter terms and refuses outright before any cancellation
+could happen.</p>
+</div>
+<div class="section level2">
+<h2 id="potential-grips">Potential grips<a class="anchor" aria-label="anchor" href="#potential-grips"></a>
+</h2>
+<p>Three guardrails are worth knowing about before assuming a claim will
+just work.</p>
+<ol style="list-style-type: lower-roman">
+<li><p>The left-hand side must contain a parameter.
+<code>0.5 == PI()</code> is rejected outright, with the error suggesting
+the flipped, accepted form — <code>PI() == 0.5</code> — rather than
+silently swapping it for you. The direction you write is the direction
+that’s kept.</p></li>
+<li><p>Every <code>stat_define</code> can restrict which parameter types
+it accepts via <code>compatible_params</code>, and
+<code><a href="../../reference/null-hyp.html">state_null()</a></code> enforces this the moment the claim is
+attached, not later at <code><a href="../../reference/conclude.html">conclude()</a></code> time.
+<code><a href="../../reference/P_TEST.html">P_TEST()</a></code>’s default implementation only accepts
+<code><a href="../../reference/PI.html">PI()</a></code>; writing <code>state_null(MU(x) == 0)</code> against a
+<code><a href="../../reference/prop.html">prop()</a></code> pipeline fails immediately, naming the parameter you
+used and the parameters that were actually allowed.</p></li>
+<li><p>Every variable named inside a parameter is checked against the
+variables the model ID actually declared. Let’s take a look of this:
+<code>MU(extra, group == "1")</code>. <code>extra</code> and
+<code>group</code>. Every problem found is collected and reported
+together rather than stopping at the first one. A typo’d variable name
+fails at <code><a href="../../reference/null-hyp.html">state_null()</a></code>, not three steps later inside the
+test implementation.</p></li>
+</ol>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
