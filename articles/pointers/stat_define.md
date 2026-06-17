@@ -2,6 +2,343 @@
 
 ## What are objects?
 
-## Why objects are required?
+`stat_define` is an S7 object used as a unit of registration that tells
+a top-level function like
+[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) or
+[`LINEAR_REG()`](https://s7-stats.github.io/statim/reference/LINEAR_REG.md)
+how to behave for one particular shape of model. “Shape of model” means
+the model ID under `<model_id>` class:
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
+[`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md),
+[`rel()`](https://s7-stats.github.io/statim/reference/rel.md), a
+`<formula>`, and so on. Each shape implies a different procedure, a
+different set of arguments, and often a different result structure, even
+though the user calls the same top-level function regardless of which
+shape they pass in.
 
-## 
+[`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md)
+is exported under three names, and all three build the exact same S7
+class:
+
+``` r
+
+stat_define         # the canonical name
+test_define         # alias, conventionally used for HTEST_FN()-fed defs
+model_infer_define  # alias, conventionally used for MODEL_FN()-fed defs
+```
+
+The alias is purely a readability convention, not a different type.
+`ptest_def`, which feeds
+[`P_TEST()`](https://s7-stats.github.io/statim/reference/P_TEST.md), is
+written with
+[`test_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md);
+`linear_reg_def_rel`, which feeds
+[`LINEAR_REG()`](https://s7-stats.github.io/statim/reference/LINEAR_REG.md),
+is written with
+[`model_infer_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md).
+Both are `stat_define` objects with identical properties:
+
+``` r
+ptest_def = test_define(
+    model_type = <model_id>,                 # Which is `prop`
+    impl = agendas(...),
+    compatible_params = list(<param_obj>),   # which is `PI`
+    claim_translator = claim_translate(...)
+)
+
+linear_reg_def_rel = model_infer_define(
+    model_type = <model_id>,                 # Which is `rel`
+    impl = agendas(...),
+    compatible_params = list()
+)
+```
+
+A top-level function such as `TTEST` or `LINEAR_REG` contains a list of
+`stat_define`, one per supported model shape, passed in as `defs`:
+
+``` r
+
+TTEST = HTEST_FN(
+    cls = "ttest",
+    defs = list(
+        ttest_def_two, 
+        ttest_def_formula, 
+        ttest_def_pairwise,
+        ...
+    ),
+    .name = "T-Test"
+)
+
+LINEAR_REG = MODEL_FN(
+    cls = "linear_reg",
+    defs = list(
+        linear_reg_def_rel, 
+        linear_reg_def_formula,
+        ...
+    ),
+    .name = "Linear Regression"
+)
+```
+
+When you call `TTEST(x_by(extra, group), sleep)`, the dispatcher looks
+at the class of the model ID you passed, finds the matching
+`stat_define` (i.e. `ttest_def_two` in this case), and runs that
+implementation. The exact same lookup runs when you call
+`LINEAR_REG(rel(mpg, wt), mtcars)`, only the exception that is the
+registry being searched differs.
+
+## Why are objects required?
+
+The alternative to this registration pattern is a long `if`/`switch`
+inside the body of every top-level function, each branch hand-rolling
+its own argument handling and result wrapping. That breaks down fast:
+not just because `TTEST` alone has three model shapes, but because the
+package has two whole families of top-level function — hypothesis tests
+built with
+[`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md)
+and model-based inference built with
+[`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)
+— and both need the same dispatch machinery underneath.
+
+`stat_define` is what lets that machinery be written exactly once.
+[`STAT_CONSTRUCTOR()`](https://s7-stats.github.io/statim/reference/STAT_CONSTRUCTOR.md)
+is the function both
+[`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md)
+and
+[`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)
+delegate to; `build_lookup()`, `find_def()`, and
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
+don’t know or care whether the `stat_define` list they’re searching came
+from a test function or a model function. Adding a fourth model shape to
+`TTEST`, or a third model fit to `LINEAR_REG`, means writing one more
+`stat_define` and adding it to that function’s `defs` — it never means
+touching the dispatcher itself.
+
+This is also why `compatible_params` and `claim_translator` live on
+`stat_define` rather than on the top-level function as a whole: a
+hypothesis vocabulary is a property of one model shape’s implementation,
+not of the test in the abstract, and not every implementation needs one
+at all (more on that below).
+
+## Anatomy of a object
+
+Each argument is explain by each section.
+
+``` r
+stat_define(
+    model_type = <model_id>,
+    impl = agendas(...),
+    compatible_params = list(<param_obj>, ...),
+    claim_translator = claim_translate(...)
+)
+```
+
+1.  `model_type`
+
+    The `<model_id>` class this implementation handles — `x_by`, `rel`,
+    `pairwise`, `prop`, or
+    [`S7::class_formula`](https://rconsortium.github.io/S7/reference/base_s3_classes.html)
+    for formula-based dispatch. This is the key `find_def()` uses to
+    route an incoming model ID to the right `stat_define`, via
+    `S7::S7_class(model_id)@name` (or the literal string `"formula"`
+    when the model ID is a formula rather than an S7 model ID object).
+
+2.  `impl`
+
+    An
+    [`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md)
+    object: exactly one
+    [`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+    for `base`, plus zero or more named
+    [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
+    entries. `base` is what the default of top functions like
+    [`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) —
+    it runs when no
+    [`via()`](https://s7-stats.github.io/statim/reference/via.md) is
+    called and is the only thing reachable on the eager path. Every `fn`
+    inside, whether it computes a binomial test or fits an
+    [`lm()`](https://rdrr.io/r/stats/lm.html), must have `.proc` as its
+    literal first formal.
+    [`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+    and
+    [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
+    both check this at construction time and refuse anything else:
+
+    ``` r
+
+    baseline(
+        fn = function(data, ...) NULL,
+        print = NULL
+    )
+    ```
+
+         [1m [33mError [39m in `baseline()`: [22m
+         [1m [22m [33m! [39m `fn` must have `.proc` as its first argument.
+         [36mℹ [39m Found `data` instead.
+         [36mℹ [39m See `baseline()` for the expected signature.
+
+    `linear_reg_def_rel`’s implementation shows the same shape as
+    `ptest_def`’s, just fitting a different model:
+
+    ``` r
+
+    linear_reg_def_rel = model_infer_define(
+        model_type = rel,
+        impl = agendas(
+            base = baseline(
+                fn = function(.proc, ...) {
+                    x_data = .proc$x_data
+                    resp_data = .proc$resp_data
+                    f = stats::reformulate(names(x_data), response = names(resp_data))
+                    lm_to_lm_object(stats::lm(f, data = vctrs::vec_cbind(resp_data, x_data), ...))
+                }
+            )
+        )
+    )
+    ```
+
+3.  `compatible_params`
+
+    A list of population-parameter classes — `list(MU)`, `list(PI)` —
+    this implementation’s hypothesis claims are allowed to reference. An
+    empty list, the default, skips the check entirely. In practice this
+    property is a hypothesis-test concern: `ptest_def` sets it to
+    `list(PI)`, while `linear_reg_def_rel` and `linear_reg_def_formula`
+    both leave it at the default, because model-based inference doesn’t
+    currently route through
+    [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+    claims at all.
+
+4.  `claim_translator`
+
+    Either a single function or a
+    [`claim_translate()`](https://s7-stats.github.io/statim/reference/claim_translate.md)
+    object holding one function per variant, that turns a parsed
+    [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+    claim into named arguments for `fn`. Like `compatible_params`, this
+    is `NULL` by default and stays `NULL` on every `LINEAR_REG` def —
+    there is no claim vocabulary to translate when the implementation
+    was never given a hypothesis to begin with. It only does work where
+    a `stat_define` explicitly opts in:
+
+    ``` r
+
+    claim_translator = claim_translate(
+        default = map_claim(
+            .p = function(claim, processed) claim_scalar(claim, solve_coef = TRUE)$scalar,
+            .alt = function(claim, processed) {
+                switch(
+                    claim@op,
+                    "==" = , "!=" = "two.sided",
+                    ">=" = , ">" = "less",
+                    "<=" = , "<" = "greater"
+                )
+            }
+        )
+    )
+    ```
+
+## How a object gets used
+
+Both families of top-level function reach `stat_define` through a
+mirrored pair of pipelines that differ only in name:
+
+|  | Hypothesis tests | Model-based inference |
+|----|----|----|
+| Constructor | [`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md) | [`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md) |
+| Lazy attach step | [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md) | [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md) |
+| Lazy spec class | `test_spec` | `model_spec` |
+| Lazy pipeline object | `test_lazy` | `model_lazy` |
+| Example | `TTEST`, `P_TEST` | `LINEAR_REG`, `GLM` |
+
+Both pipelines converge on the same terminal generic. There are two
+paths into a `stat_define`’s `impl`, and both end at `inject_and_run()`.
+
+1.  Eager path: `TTEST(x_by(extra, group), sleep)` or
+    `LINEAR_REG(rel(mpg, wt), mtcars)` calls `run_stat()`, which finds
+    the matching `stat_define` via `find_def()`, processes the model ID
+    through
+    [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md),
+    and runs `def@impl$base` directly. There is no variant resolution on
+    this path — only `base` is reachable.
+
+2.  Lazy path:
+    `sleep |> define_model(x_by(extra, group)) |> prepare_test(TTEST) |> via("boot", n = 2000) |> conclude()`
+    and
+    `mtcars |> define_model(rel(mpg, wt)) |> prepare_model(LINEAR_REG) |> conclude()`
+    both defer execution until
+    [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md),
+    which has separate
+    [`S7::method()`](https://rconsortium.github.io/S7/reference/method.html)
+    implementations for `test_lazy` and `model_lazy`, but both methods
+    do the same four things: resolve the variant’s `fn` (falling back to
+    `base` only when no variant was requested), merge
+    [`via()`](https://s7-stats.github.io/statim/reference/via.md)’s
+    arguments over whatever was supplied at
+    [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
+    /
+    [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
+    time, run the matching `claim_translator` entry if a claim is
+    present (test side only, in practice), and call `inject_and_run()`
+    once with the assembled argument list.
+
+## The contract
+
+`fn` can return anything, but returning a `class_stat_infer` subclass
+unlocks two things for free:
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md)
+dispatches to
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
+automatically based on the result’s S7 class, and
+[`print()`](https://rdrr.io/r/base/print.html) on the wrapping
+`cld_exec` falls back to that class’s own `print` method when
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+/ [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
+didn’t supply one directly.
+
+Test-side and model-side implementations both rely on this, through
+different branches of the same hierarchy:
+
+    class_stat_infer
+        ├── anova_able
+        │       └── class_lm_object       (LINEAR_REG)
+        ├── class_ttest_two               (TTEST · x_by)
+        ├── class_ttest_pairwise          (TTEST · pairwise)
+        ├── class_corr_two                (CORTEST · rel)
+        └── class_p_test                  (P_TEST)
+
+A variant that reuses its def’s existing result class inherits
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) and
+[`print()`](https://rdrr.io/r/base/print.html) for free — the
+weighted-least-squares idea in the extension guide returns
+`class_lm_object` and gets
+[`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
+support along with it, without writing a single method. A variant that
+needs genuinely different output, like the two-sample t-test’s `boot`
+and `permute` variants returning plain lists, opts out of class-based
+dispatch and supplies `print` directly on the
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
+call instead.
+
+## Current status
+
+Two things worth knowing before relying on this too heavily.
+`compatible_params` is validated as a property: it must be a list of
+parameter classes if non-empty, although it is not yet consulted
+anywhere in the dispatch path. Declaring `compatible_params = list(PI)`
+does not currently stop a claim written with
+[`MU()`](https://s7-stats.github.io/statim/reference/MU.md) from
+reaching that implementation’s claim translator; treat it as documented
+intent rather than an enforced contract for now.
+
+Second, `defs` is closed over inside
+[`STAT_CONSTRUCTOR()`](https://s7-stats.github.io/statim/reference/STAT_CONSTRUCTOR.md)
+at the moment a top-level function is built, with no exported way to
+append a new `stat_define` to an existing function afterward. Teaching
+`TTEST` or `LINEAR_REG` a model shape it doesn’t already support means
+editing the package source, not extending it from outside. Adding a new
+*variant* to a model shape that’s already supported is the public
+extension surface, and it doesn’t touch `defs` at all — see the [writing
+a new estimation
+method](https://s7-stats.github.io/statim/articles/extend/new-est-method.md)
+guide for that path.
