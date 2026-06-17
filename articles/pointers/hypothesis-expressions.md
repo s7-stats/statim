@@ -58,14 +58,15 @@ accept a scaled claim like `2 * PI() == 0.3` and solve it down to
 [`binom.test()`](https://rdrr.io/r/stats/binom.test.html), while still
 displaying `0.3` as the hypothesis you actually typed.
 
-A claim with more than one parameter term needs
+A null hypothesis claim expression with more than one parameter term,
+e.g. `c1 * MU(x, g == "a") + c2 * MU(x, g == "b") == scalar`, needs
 [`claim_contrast_coefs()`](https://s7-stats.github.io/statim/reference/claim_contrast_coefs.md)
 instead, and it adds a guard
 [`claim_scalar()`](https://s7-stats.github.io/statim/reference/claim_scalar.md)
-doesn’t have: `assert_linear()` walks the expression first and rejects a
-parameter multiplied by another parameter, a parameter in a denominator,
-or a parameter raised to a power, each with an error pointing at the
-exact offending subexpression.
+doesn’t have: it uses `assert_linear()` internally that walks the
+expression first and rejects a parameter multiplied by another
+parameter, a parameter in a denominator, or a parameter raised to a
+power, each with an error pointing at the exact offending subexpression.
 
 This is what backs the t-test contrast variant:
 
@@ -75,7 +76,7 @@ sleep |>
     define_model(extra %by% group) |>
     prepare_test(TTEST) |>
     state_null(
-        # Internally, `<=` will be automatically flipped for the alternative hypothesis
+        # Internally, `<=` will be automatically flipped into `>` for the alternative hypothesis
         2 * MU(extra, group == "1") - MU(extra, group == "2") <= 0
     ) |>
     via("contrast") |>
