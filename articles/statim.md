@@ -2,7 +2,7 @@
 
 ## Introduction
 
-[statim](https://github.com/s7-stats/statim) is a new and modified
+[statim](https://github.com/s7-stats/statim) provides a modified
 approach of high-level statistical inference in R. It is fully
 declarative, built for statistical inference pipelines, made to be
 extensible and exportable. This package is built at top of S7, and its
@@ -63,13 +63,13 @@ functions.
 
 ### ii. Parameterization
 
-This stage is always AFTER defining the model to be analyzed within the
-statistical inference pipeline, a stage which defines the estimation
-process of the statistical inference. It is either a model-based
-inference (e.g. linear regression) or H-test inference (e.g. t-test).
-They are lazy-loaded, and nothing is executed yet.
+This stage is always AFTER the model is defined that shapes a certain
+statistical inference pipeline to be analyzed, a stage which defines the
+estimation process of the statistical inference. It is either a
+model-based inference (e.g. linear regression) or H-test inference
+(e.g. t-test). They are lazy-loaded, and nothing is executed yet.
 
-Let’s try with two forms of statistical inference:
+Let’s try with the two common forms of statistical inference:
 
 1.  H-test inference uses
     [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
@@ -223,8 +223,9 @@ LINEAR_REG(mpg ~ ., mtcars)
 The eager form accepts the same model ID and data arguments, pass the
 rest of arguments, and returns the same printed output. The only
 constraints the “eager form” compensates is you can’t use the rest of
-the API, such as
-[`via()`](https://s7-stats.github.io/statim/reference/via.md) and
+the API, such as switching between modes (recalibration) using
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) or
+extracting the output in a data frame structure with
 [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md).
 
 ## Model IDs: Emulation of formulas
@@ -314,10 +315,11 @@ built-in model IDs:
 
 And if you are familiar with `aes()` (aesthetics) mapper from
 [ggplot2](https://ggplot2.tidyverse.org) package, they are indeed more
-like mappers mappers, where they capture the expression internally,
-instead of evaluating them immediately. Take note that `<model_id>`
-abstract S7 class must be carried around as you create another
-`<model_id>` object (see more
+like mappers, where they capture the expression internally, instead of
+evaluating them immediately. In fact, `aes()` heavily inspires
+`<model_id>` with the exception of having varieties. Take note that
+`<model_id>` abstract S7 class must be carried around as you create
+another `<model_id>` object (see more
 [details](https://s7-stats.github.io/statim/articles/pointers/model_id.html)).
 
 When no data frame is supplied,
@@ -416,21 +418,21 @@ sleep |>
 
 One of [statim](https://github.com/s7-stats/statim)’s distinguishing
 features is the ability to state the null hypothesis as a mathematical
-expression. The conventional base R approach uses declarative string
+expression. The conventional approach in R uses declarative string
 gotchas like `alternative = "less"`. While concise, this encodes only a
 direction: it does not name the population parameter being constrained
 or the value it is being tested against. You cannot read
 `alternative = "greater"` and know whether the claim is about a mean, a
 proportion, or a correlation without reading the surrounding context.
 
-While [statim](https://github.com/s7-stats/statim) still supports this
-(if defined under `stat_define`),
-[statim](https://github.com/s7-stats/statim) provides an explicit
-hypothesis DSL built from `<param_obj>` objects and standard R
-comparison operators. The expression names the population parameter, the
-relational operator, and the hypothesized scalar — the same three
-components that appear in any textbook null hypothesis statement.
-Internally,
+[statim](https://github.com/s7-stats/statim) still supports this
+approach (if defined under `stat_define`) by updating the arguments, but
+[statim](https://github.com/s7-stats/statim) provides a recommendable
+approach: an explicit hypothesis DSL (domain specific language) built
+from `<param_obj>` objects and standard R comparison operators. The
+expression names the population parameter, the relational operator, and
+the hypothesized scalar — the same three components that appear in any
+textbook null hypothesis statement. Internally,
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
 parses the expression, extracts those components, and passes them into
 the `fn` implementation from
@@ -454,8 +456,8 @@ built-in `<param_obj>` objects:
 
 - [`RHO()`](https://s7-stats.github.io/statim/reference/RHO.md): or \rho
   which refers to the population correlation between 2 variables —
-  `RHO(x, y) == 0` simply means the population correlation between `x`
-  and `y` is 0 or \rho\_{x, y} = 0.
+  `RHO(x, y) == 0` simply means the true population correlation between
+  `x` and `y` is 0 or \rho\_{x, y} = 0.
 
 - [`PI()`](https://s7-stats.github.io/statim/reference/PI.md): refers to
   the population proportion \pi. Used with
@@ -519,10 +521,3 @@ sleep |>
 #>   group    -Inf     -0.107   
 #> ─────────────────────────────
 ```
-
-## Generalization
-
-If you have an inferential statistics tasks, give this package a shot —
-it’s updated and more modernized. Besides, it’s written in S7, so type
-annotation is the least of your worries. And that’s pretty much all you
-need to know when you started working with this package.

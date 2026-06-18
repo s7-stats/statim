@@ -98,7 +98,7 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is a new and modified approach of high-level
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> provides a modified approach of high-level
 statistical inference in R. It is fully declarative, built for
 statistical inference pipelines, made to be extensible and exportable.
 This package is built at top of S7, and its design inherits the
@@ -147,12 +147,12 @@ functions.</p>
 <div class="section level3">
 <h3 id="ii--parameterization">ii. Parameterization<a class="anchor" aria-label="anchor" href="#ii--parameterization"></a>
 </h3>
-<p>This stage is always AFTER defining the model to be analyzed within
-the statistical inference pipeline, a stage which defines the estimation
-process of the statistical inference. It is either a model-based
-inference (e.g. linear regression) or H-test inference (e.g. t-test).
-They are lazy-loaded, and nothing is executed yet.</p>
-<p>Let’s try with two forms of statistical inference:</p>
+<p>This stage is always AFTER the model is defined that shapes a certain
+statistical inference pipeline to be analyzed, a stage which defines the
+estimation process of the statistical inference. It is either a
+model-based inference (e.g. linear regression) or H-test inference
+(e.g. t-test). They are lazy-loaded, and nothing is executed yet.</p>
+<p>Let’s try with the two common forms of statistical inference:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>H-test inference uses <code><a href="../reference/prepare-test.html">prepare_test()</a></code></p>
@@ -287,7 +287,9 @@ an eager form that skips <code><a href="../reference/model-define-base.html">def
 <p>The eager form accepts the same model ID and data arguments, pass the
 rest of arguments, and returns the same printed output. The only
 constraints the “eager form” compensates is you can’t use the rest of
-the API, such as <code><a href="../reference/via.html">via()</a></code> and <code><a href="../reference/tidy.html">tidy()</a></code>.</p>
+the API, such as switching between modes (recalibration) using
+<code><a href="../reference/via.html">via()</a></code> or extracting the output in a data frame structure
+with <code><a href="../reference/tidy.html">tidy()</a></code>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -363,11 +365,13 @@ involved.</p>
 </li>
 </ol>
 <p>And if you are familiar with <code>aes()</code> (aesthetics) mapper
-from <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> package, they are indeed more like mappers
-mappers, where they capture the expression internally, instead of
-evaluating them immediately. Take note that
-<code>&lt;model_id&gt;</code> abstract S7 class must be carried around
-as you create another <code>&lt;model_id&gt;</code> object (see more <a href="https://s7-stats.github.io/statim/articles/pointers/model_id.html">details</a>).</p>
+from <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> package, they are indeed more like mappers,
+where they capture the expression internally, instead of evaluating them
+immediately. In fact, <code>aes()</code> heavily inspires
+<code>&lt;model_id&gt;</code> with the exception of having varieties.
+Take note that <code>&lt;model_id&gt;</code> abstract S7 class must be
+carried around as you create another <code>&lt;model_id&gt;</code>
+object (see more <a href="https://s7-stats.github.io/statim/articles/pointers/model_id.html">details</a>).</p>
 <p>When no data frame is supplied, <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> looks up the
 variable names from the current environment (global environment by
 default). If you want to avoid creating intermediate variables, use
@@ -455,23 +459,25 @@ is a single added line, with nothing else changing:</p>
 </h2>
 <p>One of <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s distinguishing features is the ability
 to state the null hypothesis as a mathematical expression. The
-conventional base R approach uses declarative string gotchas like
+conventional approach in R uses declarative string gotchas like
 <code>alternative = "less"</code>. While concise, this encodes only a
 direction: it does not name the population parameter being constrained
 or the value it is being tested against. You cannot read
 <code>alternative = "greater"</code> and know whether the claim is about
 a mean, a proportion, or a correlation without reading the surrounding
 context.</p>
-<p>While <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> still supports this (if defined under
-<code>stat_define</code>), <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> provides an explicit
-hypothesis DSL built from <code>&lt;param_obj&gt;</code> objects and
-standard R comparison operators. The expression names the population
-parameter, the relational operator, and the hypothesized scalar — the
-same three components that appear in any textbook null hypothesis
-statement. Internally, <code><a href="../reference/null-hyp.html">state_null()</a></code> parses the expression,
-extracts those components, and passes them into the <code>fn</code>
-implementation from <code><a href="../reference/baseline.html">baseline()</a></code> or <code><a href="../reference/variant.html">variant()</a></code>.
-Any linear combination of parameters is accepted on either side.</p>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> still supports this approach (if defined under
+<code>stat_define</code>) by updating the arguments, but
+<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> provides a recommendable approach: an explicit
+hypothesis DSL (domain specific language) built from
+<code>&lt;param_obj&gt;</code> objects and standard R comparison
+operators. The expression names the population parameter, the relational
+operator, and the hypothesized scalar — the same three components that
+appear in any textbook null hypothesis statement. Internally,
+<code><a href="../reference/null-hyp.html">state_null()</a></code> parses the expression, extracts those
+components, and passes them into the <code>fn</code> implementation from
+<code><a href="../reference/baseline.html">baseline()</a></code> or <code><a href="../reference/variant.html">variant()</a></code>. Any linear
+combination of parameters is accepted on either side.</p>
 <p>The supported operators are <code>==</code>, <code>!=</code>,
 <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>,
 <code>&gt;=</code>, and <code>%=%</code> (simultaneous equality across
@@ -490,7 +496,7 @@ population mean of the variable <code>x</code> given the
 </li>
 <li><p><code><a href="../reference/RHO.html">RHO()</a></code>: or <span class="math inline">\rho</span>
 which refers to the population correlation between 2 variables —
-<code>RHO(x, y) == 0</code> simply means the population correlation
+<code>RHO(x, y) == 0</code> simply means the true population correlation
 between <code>x</code> and <code>y</code> is 0 or <span class="math inline">\rho_{x, y} = 0</span>.</p></li>
 <li>
 <p><code><a href="../reference/PI.html">PI()</a></code>: refers to the population proportion <span class="math inline">\pi</span>. Used with <code><a href="../reference/prop.html">prop()</a></code> pipelines.
@@ -549,14 +555,8 @@ under drug 2:</p>
 <span><span class="co">#&gt; ─────────────────────────────</span></span>
 <span><span class="co">#&gt;   group    -Inf     -0.107   </span></span>
 <span><span class="co">#&gt; ─────────────────────────────</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="generalization">Generalization<a class="anchor" aria-label="anchor" href="#generalization"></a>
-</h2>
-<p>If you have an inferential statistics tasks, give this package a shot
-— it’s updated and more modernized. Besides, it’s written in S7, so type
-annotation is the least of your worries. And that’s pretty much all you
-need to know when you started working with this package.</p>
+<!-- ## Generalization -->
+<!-- If you have an inferential statistics tasks, give this package a shot — it's updated and more modernized. Besides, it's written in S7, so type annotation is the least of your worries. And that's pretty much all you need to know when you started working with this package.  -->
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
