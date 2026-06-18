@@ -12,26 +12,11 @@ models.
 ## Usage
 
 ``` r
-stat_define(
-  model_type = NULL,
-  impl = NULL,
-  compatible_params = list(),
-  claim_translator = NULL
-)
+stat_define(model_type = NULL, impl = NULL, compatible_params = list())
 
-test_define(
-  model_type = NULL,
-  impl = NULL,
-  compatible_params = list(),
-  claim_translator = NULL
-)
+test_define(model_type = NULL, impl = NULL, compatible_params = list())
 
-model_infer_define(
-  model_type = NULL,
-  impl = NULL,
-  compatible_params = list(),
-  claim_translator = NULL
-)
+model_infer_define(model_type = NULL, impl = NULL, compatible_params = list())
 ```
 
 ## Arguments
@@ -60,13 +45,8 @@ model_infer_define(
   A list of S7 param classes (e.g. `list(MU, PI)`) this implementation
   accepts in hypothesis claims. An empty list (the default) disables the
   check entirely. Useful when a test is param-agnostic or the
-  restriction has not yet been declared.
-
-- claim_translator:
-
-  A `claim_translate` object or function that maps a `ClaimDef` to named
-  arguments injected into the implementation alongside `.proc`. `NULL`
-  if `write_claim()` is not supported.
+  restriction has not yet been declared. Applies to every variant in
+  `impl`.
 
 ## Value
 

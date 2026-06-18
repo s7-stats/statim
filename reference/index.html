@@ -581,7 +581,7 @@
       </dl></div><div class="section level2">
 
       <h3 id="modelled-hypothesis-translator-and-container">Modelled hypothesis translator and container<a class="anchor" aria-label="anchor" href="#modelled-hypothesis-translator-and-container"></a></h3>
-      <div class="section-desc"><p>Core function to contain the implementation to translate modelled hypothesis, placed under <code>claim_translator</code> from <code>stat_define</code></p></div>
+      <div class="section-desc"><p>Core function to contain the implementation to translate modelled hypothesis, placed under <code>claim_parser</code> from <code><a href="../reference/baseline.html">baseline()</a></code> / <code><a href="../reference/variant.html">variant()</a></code></p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -590,17 +590,24 @@
 
       <dl><dt>
 
-          <code><a href="claim_translate.html">claim_translate()</a></code>
-
-        </dt>
-        <dd>Declare per-variant claim translators</dd>
-
-        <dt>
-
           <code><a href="map_claim.html">map_claim()</a></code>
 
         </dt>
-        <dd>Build a claim translator from named resolver functions</dd>
+        <dd>Build a claim parser from named resolver functions</dd>
+
+        <dt>
+
+          <code><a href="baseline.html">baseline()</a></code>
+
+        </dt>
+        <dd>Declare the canonical implementation of a test or model</dd>
+
+        <dt>
+
+          <code><a href="variant.html">variant()</a></code>
+
+        </dt>
+        <dd>Declare an alternative implementation of a test or model</dd>
       </dl></div><div class="section level2">
 
       <h3 id="tidy-implementation-container">Tidy implementation container<a class="anchor" aria-label="anchor" href="#tidy-implementation-container"></a></h3>

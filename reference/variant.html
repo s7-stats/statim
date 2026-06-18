@@ -69,7 +69,7 @@ via(). Never runs on the eager path."></head><body>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">variant</span><span class="op">(</span><span class="va">fn</span>, print <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">variant</span><span class="op">(</span><span class="va">fn</span>, print <span class="op">=</span> <span class="cn">NULL</span>, claim_parser <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -113,6 +113,12 @@ can override selectively:</p>
 <dd><p>A function with signature <code>function(x, ...)</code>. <code>x</code> is a
 <code>cld_exec</code> object. <code>NULL</code> falls back to <code>print(x@data)</code>.</p></dd>
 
+
+<dt id="arg-claim-parser">claim_parser<a class="anchor" aria-label="anchor" href="#arg-claim-parser"></a></dt>
+<dd><p>A <code><a href="map_claim.html">map_claim()</a></code> object that maps a <code>null_claim</code> to
+named arguments injected into <code>fn</code> alongside <code>.proc</code>. <code>NULL</code> (the
+default) if this variant does not support <code><a href="null-hyp.html">state_null()</a></code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -121,7 +127,7 @@ can override selectively:</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="baseline.html">baseline()</a></code>, <code><a href="agendas.html">agendas()</a></code>, <code><a href="via.html">via()</a></code>, <code><a href="model-processor.html">model_processor()</a></code>,
-<a href="class_stat_infer.html">class_stat_infer</a>, <code><a href="auto_tidy.html">auto_tidy()</a></code></p></div>
+<code><a href="map_claim.html">map_claim()</a></code>, <a href="class_stat_infer.html">class_stat_infer</a>, <code><a href="auto_tidy.html">auto_tidy()</a></code></p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

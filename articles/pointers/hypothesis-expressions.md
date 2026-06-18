@@ -99,8 +99,8 @@ Write the groups in the opposite order and the test still runs and
 reports the same p-value, but `estimate` and `t_stat` come back with the
 opposite sign. This isn’t specific to
 [`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md),
-either — any `claim_translator` that reads `names(coefs)[coefs == 1]`
-the same way inherits the same sensitivity, since
+either — any `claim_parser` that reads `names(coefs)[coefs == 1]` the
+same way inherits the same sensitivity, since
 [`claim_contrast_coefs()`](https://s7-stats.github.io/statim/reference/claim_contrast_coefs.md)
 preserves the left-to-right order terms were written in all the way
 through to the `coefs` vector it returns.

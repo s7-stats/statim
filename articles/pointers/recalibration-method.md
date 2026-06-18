@@ -227,17 +227,21 @@ declared defaults in its `fn` signature.
 If a hypothesis was attached with
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md),
 recalibrating the method does not invalidate it, as long as the variant
-you switch to actually has a `claim_translator` registered for it. Each
-[`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md)
-can register a `claim_translator` that knows how to turn a stated claim
-into the arguments a specific variant’s `fn` expects, since different
-estimation methods can require the same population-parameter claim
-expressed differently. `TTEST`’s
+you switch to actually declares a `claim_parser` of its own.
+`claim_parser` is an argument to
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+and to each
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
+individually — a
+[`map_claim()`](https://s7-stats.github.io/statim/reference/map_claim.md)
+object that knows how to turn a stated claim into the arguments that one
+`fn` expects, since different estimation methods can require the same
+population-parameter claim expressed differently. `TTEST`’s
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
-implementation, for instance, registers a `claim_translator` for its
-`default` method and for `"contrast"`, but not for the resampling-based
-`"boot"` or `"permute"` variants, since those do not take a hypothesized
-value as an argument in the first place.
+implementation, for instance, gives a `claim_parser` to its `base` and
+to `"contrast"`, but not to the resampling-based `"boot"` or `"permute"`
+variants, since those do not take a hypothesized value as an argument in
+the first place.
 
 ``` r
 
@@ -279,12 +283,11 @@ sleep |>
 
 At
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md),
-the translator registered for the `"contrast"` variant runs against the
-stated claim, and its output (in this case, `.mu`, `.op`, and `.w`) is
-merged into the argument list the same way the rest of
+the `"contrast"` variant’s own `claim_parser` runs against the stated
+claim, and its output (in this case, `.mu`, `.op`, and `.w`) is merged
+into the argument list the same way the rest of
 [`via()`](https://s7-stats.github.io/statim/reference/via.md)’s
-arguments are. If a `claim_translator` is not registered for the variant
-you switched to,
+arguments are. If the variant you switched to has no `claim_parser`,
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 reports that explicitly rather than silently ignoring the claim:
 
@@ -297,11 +300,24 @@ sleep |>
     via("permute", n = 999L) |>
     conclude()
 #> Error in `method(conclude, statim::test_lazy)`:
-#> ! No claim translator defined for variant "permute".
+#> ! No claim parser defined for variant "permute".
 #> ℹ Remove `state_null()` or use a supported variant.
 ```
 
-## Summary
+Because `claim_parser` lives on the implementation itself rather than in
+a separate lookup keyed by variant name, there’s nothing else to update
+when you add a new variant via
+[`add_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md)
+— give it a `claim_parser` if it should support
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md),
+or leave the argument out if it shouldn’t. Either way
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
+checks whichever `impl` it actually resolved, regardless of whether that
+came from the original
+[`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md) or
+from the runtime registry.
+
+## TL;DR
 
 - [`via()`](https://s7-stats.github.io/statim/reference/via.md) only
   works on lazy objects, before
@@ -318,5 +334,4 @@ sleep |>
   merged with, not substituted for, the arguments already declared
   earlier in the pipeline.
 - A stated null hypothesis survives recalibration only if the new
-  variant has a registered `claim_translator`, not every variant needs
-  one.
+  variant declares its own `claim_parser`; not every variant needs one.

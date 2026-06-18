@@ -269,17 +269,17 @@ declared defaults in its <code>fn</code> signature.</p>
 </h2>
 <p>If a hypothesis was attached with <code><a href="../../reference/null-hyp.html">state_null()</a></code>,
 recalibrating the method does not invalidate it, as long as the variant
-you switch to actually has a <code>claim_translator</code> registered
-for it. Each <code><a href="../../reference/stat-infer-definer.html">stat_define()</a></code> can register a
-<code>claim_translator</code> that knows how to turn a stated claim into
-the arguments a specific variant’s <code>fn</code> expects, since
-different estimation methods can require the same population-parameter
-claim expressed differently. <code>TTEST</code>’s <code><a href="../../reference/x_by.html">x_by()</a></code>
-implementation, for instance, registers a <code>claim_translator</code>
-for its <code>default</code> method and for <code>"contrast"</code>, but
-not for the resampling-based <code>"boot"</code> or
-<code>"permute"</code> variants, since those do not take a hypothesized
-value as an argument in the first place.</p>
+you switch to actually declares a <code>claim_parser</code> of its own.
+<code>claim_parser</code> is an argument to <code><a href="../../reference/baseline.html">baseline()</a></code> and
+to each <code><a href="../../reference/variant.html">variant()</a></code> individually — a <a href="../../reference/map_claim.html"><code>map_claim()</code></a>
+object that knows how to turn a stated claim into the arguments that one
+<code>fn</code> expects, since different estimation methods can require
+the same population-parameter claim expressed differently.
+<code>TTEST</code>’s <code><a href="../../reference/x_by.html">x_by()</a></code> implementation, for instance,
+gives a <code>claim_parser</code> to its <code>base</code> and to
+<code>"contrast"</code>, but not to the resampling-based
+<code>"boot"</code> or <code>"permute"</code> variants, since those do
+not take a hypothesized value as an argument in the first place.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -315,14 +315,13 @@ value as an argument in the first place.</p>
 <span><span class="co">#&gt; ─────────────────────────────</span></span>
 <span><span class="co">#&gt;   group   -3.112     Inf     </span></span>
 <span><span class="co">#&gt; ─────────────────────────────</span></span></code></pre></div>
-<p>At <code><a href="../../reference/conclude.html">conclude()</a></code>, the translator registered for the
-<code>"contrast"</code> variant runs against the stated claim, and its
-output (in this case, <code>.mu</code>, <code>.op</code>, and
-<code>.w</code>) is merged into the argument list the same way the rest
-of <code><a href="../../reference/via.html">via()</a></code>’s arguments are. If a
-<code>claim_translator</code> is not registered for the variant you
-switched to, <code><a href="../../reference/conclude.html">conclude()</a></code> reports that explicitly rather than
-silently ignoring the claim:</p>
+<p>At <code><a href="../../reference/conclude.html">conclude()</a></code>, the <code>"contrast"</code> variant’s own
+<code>claim_parser</code> runs against the stated claim, and its output
+(in this case, <code>.mu</code>, <code>.op</code>, and <code>.w</code>)
+is merged into the argument list the same way the rest of
+<code><a href="../../reference/via.html">via()</a></code>’s arguments are. If the variant you switched to has
+no <code>claim_parser</code>, <code><a href="../../reference/conclude.html">conclude()</a></code> reports that
+explicitly rather than silently ignoring the claim:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -331,11 +330,19 @@ silently ignoring the claim:</p>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `method(conclude, statim::test_lazy)`:</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> No claim translator defined for variant <span style="color: #0000BB;">"permute"</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> No claim parser defined for variant <span style="color: #0000BB;">"permute"</span>.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Remove `state_null()` or use a supported variant.</span></span></code></pre></div>
+<p>Because <code>claim_parser</code> lives on the implementation itself
+rather than in a separate lookup keyed by variant name, there’s nothing
+else to update when you add a new variant via <code><a href="../../reference/add-variant.html">add_variant()</a></code>
+— give it a <code>claim_parser</code> if it should support
+<code><a href="../../reference/null-hyp.html">state_null()</a></code>, or leave the argument out if it shouldn’t.
+Either way <code><a href="../../reference/conclude.html">conclude()</a></code> checks whichever <code>impl</code> it
+actually resolved, regardless of whether that came from the original
+<code><a href="../../reference/agendas.html">agendas()</a></code> or from the runtime registry.</p>
 </div>
 <div class="section level2">
-<h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
+<h2 id="tldr">TL;DR<a class="anchor" aria-label="anchor" href="#tldr"></a>
 </h2>
 <ul>
 <li>
@@ -349,8 +356,8 @@ registered afterwards via <code><a href="../../reference/add-variant.html">add_v
 <li>Arguments from <code><a href="../../reference/via.html">via()</a></code> are merged with, not substituted
 for, the arguments already declared earlier in the pipeline.</li>
 <li>A stated null hypothesis survives recalibration only if the new
-variant has a registered <code>claim_translator</code>, not every
-variant needs one.</li>
+variant declares its own <code>claim_parser</code>; not every variant
+needs one.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

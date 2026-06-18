@@ -7,7 +7,7 @@ reachable on the eager path.
 ## Usage
 
 ``` r
-baseline(fn, print = NULL)
+baseline(fn, print = NULL, claim_parser = NULL)
 ```
 
 ## Arguments
@@ -58,6 +58,15 @@ baseline(fn, print = NULL)
   result. `x` is a `cld_exec` object — read your result from `x@data`.
   `NULL` falls back to `print(x@data)`.
 
+- claim_parser:
+
+  A
+  [`map_claim()`](https://s7-stats.github.io/statim/reference/map_claim.md)
+  object that maps a `null_claim` to named arguments injected into `fn`
+  alongside `.proc`. `NULL` (the default) if this implementation does
+  not support
+  [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
+
 ## Value
 
 A `baseline` S7 object.
@@ -68,5 +77,6 @@ A `baseline` S7 object.
 [`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md),
 [`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md),
 [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md),
+[`map_claim()`](https://s7-stats.github.io/statim/reference/map_claim.md),
 [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md),
 [`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)

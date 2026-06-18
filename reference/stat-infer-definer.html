@@ -75,26 +75,11 @@ for adding new tests or models.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stat_define</span><span class="op">(</span></span>
-<span>  model_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  impl <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  compatible_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  claim_translator <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">stat_define</span><span class="op">(</span>model_type <span class="op">=</span> <span class="cn">NULL</span>, impl <span class="op">=</span> <span class="cn">NULL</span>, compatible_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">test_define</span><span class="op">(</span></span>
-<span>  model_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  impl <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  compatible_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  claim_translator <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span>
+<span><span class="fu">test_define</span><span class="op">(</span>model_type <span class="op">=</span> <span class="cn">NULL</span>, impl <span class="op">=</span> <span class="cn">NULL</span>, compatible_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">model_infer_define</span><span class="op">(</span></span>
-<span>  model_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  impl <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  compatible_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  claim_translator <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">model_infer_define</span><span class="op">(</span>model_type <span class="op">=</span> <span class="cn">NULL</span>, impl <span class="op">=</span> <span class="cn">NULL</span>, compatible_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -117,13 +102,8 @@ for the keys available on <code>.proc</code> per model type.</p></dd>
 <dd><p>A list of S7 param classes (e.g. <code>list(MU, PI)</code>)
 this implementation accepts in hypothesis claims. An empty list (the
 default) disables the check entirely. Useful when a test is param-agnostic
-or the restriction has not yet been declared.</p></dd>
-
-
-<dt id="arg-claim-translator">claim_translator<a class="anchor" aria-label="anchor" href="#arg-claim-translator"></a></dt>
-<dd><p>A <code>claim_translate</code> object or function that maps a
-<code>ClaimDef</code> to named arguments injected into the implementation alongside
-<code>.proc</code>. <code>NULL</code> if <code>write_claim()</code> is not supported.</p></dd>
+or the restriction has not yet been declared. Applies to every variant
+in <code>impl</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

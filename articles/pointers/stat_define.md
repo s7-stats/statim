@@ -41,9 +41,11 @@ Both are `stat_define` objects with identical properties:
 ``` r
 ptest_def = test_define(
     model_type = <model_id>,                 # Which is `prop`
-    impl = agendas(...),
-    compatible_params = list(<param_obj>),   # which is `PI`
-    claim_translator = claim_translate(...)
+    impl = agendas(
+        base = baseline(fn = ..., claim_parser = map_claim(...)),
+        ...
+    ),
+    compatible_params = list(<param_obj>)   # which is `PI`
 )
 
 linear_reg_def_rel = model_infer_define(
@@ -114,11 +116,16 @@ from a test function or a model function. Adding a fourth model shape to
 `stat_define` and adding it to that function’s `defs` — it never means
 touching the dispatcher itself.
 
-This is also why `compatible_params` and `claim_translator` live on
-`stat_define` rather than on the top-level function as a whole: a
-hypothesis vocabulary is a property of one model shape’s implementation,
-not of the test in the abstract, and not every implementation needs one
-at all (more on that below).
+This is also why `compatible_params` lives on `stat_define` while
+`claim_parser` lives one level down, on
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+and each
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md):
+which parameter types a hypothesis may reference is a property of the
+model shape as a whole, but how a claim gets turned into arguments is
+specific to one implementation — different variants of the same model
+shape can need the same claim expressed differently, or not support
+claims at all (more on that below).
 
 ## Anatomy of a object
 
@@ -128,8 +135,7 @@ Each argument is explain by each section.
 stat_define(
     model_type = <model_id>,
     impl = agendas(...),
-    compatible_params = list(<param_obj>, ...),
-    claim_translator = claim_translate(...)
+    compatible_params = list(<param_obj>, ...)
 )
 ```
 
@@ -197,6 +203,14 @@ stat_define(
     )
     ```
 
+    Both
+    [`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+    and
+    [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
+    also accept a third, optional argument: `claim_parser`. This is
+    where the hypothesis vocabulary for *that one implementation* lives
+    — see the dedicated section below.
+
 3.  `compatible_params`
 
     A list of population-parameter classes — `list(MU)`, `list(PI)` —
@@ -207,36 +221,68 @@ stat_define(
     both leave it at the default, because model-based inference doesn’t
     currently route through
     [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
-    claims at all.
+    claims at all. Unlike `claim_parser` below, `compatible_params`
+    applies to every variant inside `impl` uniformly — it isn’t
+    something an individual
+    [`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+    or
+    [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
+    declares for itself.
 
-4.  `claim_translator`
+## `claim_parser`: turning a claim into arguments
 
-    Either a single function or a
-    [`claim_translate()`](https://s7-stats.github.io/statim/reference/claim_translate.md)
-    object holding one function per variant, that turns a parsed
-    [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
-    claim into named arguments for `fn`. Like `compatible_params`, this
-    is `NULL` by default and stays `NULL` on every `LINEAR_REG` def —
-    there is no claim vocabulary to translate when the implementation
-    was never given a hypothesis to begin with. It only does work where
-    a `stat_define` explicitly opts in:
+`claim_parser` is not a `stat_define` property — it’s an optional
+argument to
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+and to each
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
+individually, holding a
+[`map_claim()`](https://s7-stats.github.io/statim/reference/map_claim.md)
+object that turns a parsed
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+claim into named arguments for that one `fn`. It defaults to `NULL`, and
+stays `NULL` on every `LINEAR_REG` implementation — there is no claim
+vocabulary to parse when the implementation was never given a hypothesis
+to begin with. It only does work where a
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+or [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
+explicitly opts in:
 
-    ``` r
+``` r
 
-    claim_translator = claim_translate(
-        default = map_claim(
-            .p = function(claim, processed) claim_scalar(claim, solve_coef = TRUE)$scalar,
-            .alt = function(claim, processed) {
-                switch(
-                    claim@op,
-                    "==" = , "!=" = "two.sided",
-                    ">=" = , ">" = "less",
-                    "<=" = , "<" = "greater"
-                )
-            }
-        )
+baseline(
+    fn = function(.proc, .p = 0.5, .alt = "two.sided", .ci = 0.95, .true_p = NULL) {
+        # ...
+    },
+    claim_parser = map_claim(
+        .p = function(claim, processed) claim_scalar(claim, solve_coef = TRUE)$scalar,
+        .alt = function(claim, processed) {
+            switch(
+                claim@op,
+                "==" = , "!=" = "two.sided",
+                ">=" = , ">" = "less",
+                "<=" = , "<" = "greater"
+            )
+        }
     )
-    ```
+)
+```
+
+Because `claim_parser` sits on the implementation itself rather than in
+a separate name-keyed lookup, there is nothing to keep in sync when you
+add a new variant: a
+[`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
+that needs claim support declares its own `claim_parser`, and one that
+doesn’t simply omits the argument.
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
+checks whichever `impl` was actually resolved (`base`, a named variant,
+or one registered via
+[`add_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md))
+for a `claim_parser` at the moment a stated claim needs translating —
+see [recalibration and hypothesis
+claims](https://s7-stats.github.io/statim/articles/explanation/recalibration-method.html#recalibration-and-hypothesis-claims)
+for how that interacts with
+[`via()`](https://s7-stats.github.io/statim/reference/via.md).
 
 ## How a object gets used
 
@@ -270,17 +316,19 @@ paths into a `stat_define`’s `impl`, and both end at `inject_and_run()`.
     [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md),
     which has separate
     [`S7::method()`](https://rconsortium.github.io/S7/reference/method.html)
-    implementations for `test_lazy` and `model_lazy`, but both methods
-    do the same four things: resolve the variant’s `fn` (falling back to
+    implementations for `test_lazy` and `model_lazy`. The `test_lazy`
+    method does four things: resolve the variant’s `fn` (falling back to
     `base` only when no variant was requested), merge
     [`via()`](https://s7-stats.github.io/statim/reference/via.md)’s
     arguments over whatever was supplied at
     [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
-    /
-    [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
-    time, run the matching `claim_translator` entry if a claim is
-    present (test side only, in practice), and call `inject_and_run()`
-    once with the assembled argument list.
+    time, run that resolved implementation’s own `claim_parser` if a
+    claim is present, and call `inject_and_run()` once with the
+    assembled argument list. The `model_lazy` method does the same,
+    minus the claim step — `model_lazy` objects have no `claims` slot at
+    all, since
+    [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+    only ever dispatches on `test_lazy`.
 
 ## The contract
 
@@ -322,16 +370,7 @@ call instead.
 
 ## Current status
 
-Two things worth knowing before relying on this too heavily.
-`compatible_params` is validated as a property: it must be a list of
-parameter classes if non-empty, although it is not yet consulted
-anywhere in the dispatch path. Declaring `compatible_params = list(PI)`
-does not currently stop a claim written with
-[`MU()`](https://s7-stats.github.io/statim/reference/MU.md) from
-reaching that implementation’s claim translator; treat it as documented
-intent rather than an enforced contract for now.
-
-Second, `defs` is closed over inside
+`defs` is closed over inside
 [`STAT_CONSTRUCTOR()`](https://s7-stats.github.io/statim/reference/STAT_CONSTRUCTOR.md)
 at the moment a top-level function is built, with no exported way to
 append a new `stat_define` to an existing function afterward. Teaching

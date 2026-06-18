@@ -7,7 +7,7 @@ runs on the eager path.
 ## Usage
 
 ``` r
-variant(fn, print = NULL)
+variant(fn, print = NULL, claim_parser = NULL)
 ```
 
 ## Arguments
@@ -66,6 +66,15 @@ variant(fn, print = NULL)
   A function with signature `function(x, ...)`. `x` is a `cld_exec`
   object. `NULL` falls back to `print(x@data)`.
 
+- claim_parser:
+
+  A
+  [`map_claim()`](https://s7-stats.github.io/statim/reference/map_claim.md)
+  object that maps a `null_claim` to named arguments injected into `fn`
+  alongside `.proc`. `NULL` (the default) if this variant does not
+  support
+  [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
+
 ## Value
 
 A `variant` S7 object.
@@ -76,5 +85,6 @@ A `variant` S7 object.
 [`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md),
 [`via()`](https://s7-stats.github.io/statim/reference/via.md),
 [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md),
+[`map_claim()`](https://s7-stats.github.io/statim/reference/map_claim.md),
 [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md),
 [`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)

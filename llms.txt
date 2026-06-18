@@ -436,12 +436,16 @@ Core helpers to parse the modelled hypotheses, objects from
 ### Modelled hypothesis translator and container
 
 Core function to contain the implementation to translate modelled
-hypothesis, placed under `claim_translator` from `stat_define`
+hypothesis, placed under `claim_parser` from
+[`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+/ [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
 
-- [`claim_translate()`](https://s7-stats.github.io/statim/reference/claim_translate.md)
-  : Declare per-variant claim translators
 - [`map_claim()`](https://s7-stats.github.io/statim/reference/map_claim.md)
-  : Build a claim translator from named resolver functions
+  : Build a claim parser from named resolver functions
+- [`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md)
+  : Declare the canonical implementation of a test or model
+- [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
+  : Declare an alternative implementation of a test or model
 
 ### Tidy implementation container
 

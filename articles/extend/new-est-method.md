@@ -30,8 +30,8 @@ and
 are both thin wrappers around
 [`STAT_CONSTRUCTOR()`](https://s7-stats.github.io/statim/reference/STAT_CONSTRUCTOR.md).
 This vignette covers that mechanism. For the full anatomy of
-`model_type`, `impl`, `compatible_params`, and `claim_translator`, see
-the [`stat_define`
+`model_type`, `impl`, `compatible_params`, and `claim_parser`, see the
+[`stat_define`
 objects](https://s7-stats.github.io/statim/articles/pointers/stat_define.md)
 article. This one assumes that vocabulary and focuses on extending it.
 
