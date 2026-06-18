@@ -22,7 +22,7 @@ delivers *how*.
 
 R has a rich statistical ecosystem. Most of the packages in the wild
 were written at top of S3 and S4, and it is yet for the S7 to be
-prominent into statistics ecosystem —
+prominent into statistical ecosystem —
 [statim](https://github.com/s7-stats/statim) is glad to take the step
 (there are reasons why [S7 supersedes both S3 and
 S4](https://tidyverse.org/blog/2024/11/s7-0-2-0/)). Statistical
@@ -63,7 +63,8 @@ sleep |>
 sleep |> 
     define_model(x_by(extra, group)) |> 
     prepare_test(TTEST) |> 
-    via("permute", n = 1000L) |>         # Here, one line added, nothing else changes
+    # Here, one line added, nothing else changes
+    via("permute", n = 1000L) |>         
     conclude()
 ```
 
@@ -75,9 +76,9 @@ For a quick result, the eager form skips the piped syntax entirely:
 TTEST(x_by(extra, group), sleep)
 ```
 
-But it’s not as expressive and assertive as the piped syntax form as
-shown above, and you can’t process the output after executing this ([see
-for more details](#core-semantics)).
+But it’s not as expressive and assertive as the piped/grammar syntax
+form as shown above, and it doesn’t have an ability to mung the output
+after executing this ([see for more details](#core-semantics)).
 
 ## Installation
 

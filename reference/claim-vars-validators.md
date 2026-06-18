@@ -35,7 +35,7 @@ check_x_and_given(x_quo, given_quo, x_vars, by_vars, cls_name)
 
 - claims:
 
-  A single `null_claim` or a `null_claims` object.
+  A `null_claim` object.
 
 - ...:
 
