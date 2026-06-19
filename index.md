@@ -2,7 +2,7 @@
 
 **A Declarative Interface for Statistical Inference**
 
-## Package Overview
+## Package Overview: Simple Fun Fact
 
 What does [statim](https://github.com/s7-stats/statim) mean?
 
@@ -76,9 +76,11 @@ For a quick result, the eager form skips the piped syntax entirely:
 TTEST(x_by(extra, group), sleep)
 ```
 
-But it’s not as expressive and assertive as the piped/grammar syntax
-form as shown above, and it doesn’t have an ability to mung the output
-after executing this ([see for more details](#core-semantics)).
+The trade-off: eager forms cannot be recalibrated / switch off into
+different methods with
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) and do not
+support post-execution output manipulation ([see for more
+details](#core-semantics)).
 
 ## Installation
 
@@ -115,12 +117,16 @@ All you need to know is that the most usual usage of
 [statim](https://github.com/s7-stats/statim) comes with three steps.
 
 ``` r
-
-sleep |>                                # 1
-    define_model(extra %by% group) |>   # 1              
-    prepare_test(TTEST) |>              # 2            
-    conclude() |>                       # 3           
-    tidy()                              # 3          
+data |>                                                       # 1
+    define_model(<model_id>(var1, var2, ...)) |>              # 1  
+    # Lazy loading begins after
+    prepare_<test/model>(<STAT_FN>) |>                        # 2  
+    # Must come after `prepare_test()` / prepare_model()` 
+    via() |>                                                  # 2
+    state_null() |>                                           # 2 
+    # End of lazy loading
+    conclude() |>                                             # 3            
+    <output-to-process>()                                     # 3          
 ```
 
 Brief explanation of the code above:
@@ -160,22 +166,7 @@ works.
 
 The package is designed around three ideas:
 
-1.  **A shared grammar**: every inferential procedure follows the same
-    shape —
-    [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
-    [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md),
-    [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md),
-    regardless of which test or model ID is used. The model ID objects
-    (e.g. `x_by`, `rel`, `pairwise`) defines the shape of the
-    statistical inference throughout
-    [statim](https://github.com/s7-stats/statim) pipeline, while the
-    grammar stays the same. Eager forms
-    ([`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md),
-    [`CORTEST()`](https://s7-stats.github.io/statim/reference/CORTEST.md),
-    …) provide a shortcut when the full pipeline (in a form of piped
-    syntax that reads like a sentence) is not needed.
-
-2.  **Composability**: the simplest way to write
+1.  **Composability**: the simplest way to write
     [statim](https://github.com/s7-stats/statim) has two forms: the
     eager form and the grammar/piped syntax form. The eager form skips
     the verbs and cannot be recalibrated, only skips to the output. On
@@ -185,6 +176,22 @@ The package is designed around three ideas:
     [`via()`](https://s7-stats.github.io/statim/reference/via.md) call,
     and the execution of the lazy-loaded pipeline with
     [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
+
+2.  **A shared grammar**: Only applied on the main
+    [statim](https://github.com/s7-stats/statim) semantics:
+    piped/grammar syntax.
+    [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
+    =\> `prepare_*()` =\>
+    [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
+    is the same shape for every inferential procedure. The `<model_id>`
+    objects (`x_by`, `rel`, `pairwise`, …) describe the statistical
+    structure of the problem; the verbs stay constant.
+
+    > Eager forms
+    > ([`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md),
+    > [`CORTEST()`](https://s7-stats.github.io/statim/reference/CORTEST.md),
+    > …) provide a shortcut when the full pipeline (in a form of piped
+    > syntax that reads like a sentence) is not needed.
 
 3.  **Extensible by design**: the
     [statim](https://github.com/s7-stats/statim) pipeline is extensible.
