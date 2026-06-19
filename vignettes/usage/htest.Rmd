@@ -10,3 +10,246 @@ vignette: |
     %\VignetteEngine{knitr::rmarkdown}
     \usepackage[utf8]{inputenc}
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
+library(statim)
+```
+
+## What inference am I declaring?
+
+A hypothesis test in {statim} is built the same way a model is: a def_model (or expanded_model) is bound to a test specification rather than a model specification. prepare_test() attaches that specification, producing a test_lazy, which conclude() resolves into a cld_exec.
+
+```{r}
+sleep |>
+    define_model(extra ~ group) |>
+    prepare_test(TTEST) |>
+    conclude()
+```
+
+Three test families ship with {statim}, each constructed with HTEST_FN() and each dispatching on the *model ID* you pass to define_model():
+
+- **TTEST**: one-sample, two-sample, paired, pairwise, or formula-based t-tests, dispatched on x_by(), pairwise(), or a formula.
+- **CORTEST**: correlation tests between one or many variable pairs, dispatched on rel() or a formula.
+- **P_TEST**: one-sample proportion tests, dispatched on prop().
+
+Every test object returned by conclude() stores a structured result class inheriting from class_stat_infer, so auto_tidy() and print() work the same way regardless of which test produced it.
+
+## T-Test
+
+TTEST() covers one-sample, two-sample, paired, and pairwise comparisons. Which implementation runs is determined entirely by the model ID.
+
+### Two-sample: x_by()
+
+x_by() (or its infix form %by%) declares a response measured across exactly one grouping variable with two levels:
+
+```{r}
+sleep |>
+    define_model(x_by(extra, group)) |>
+    prepare_test(TTEST) |>
+    conclude()
+```
+
+The returned class_ttest_two reports the mean difference, t_stat, df, p_val, and a confidence interval. By default, the test is unpaired and tests against a mean difference of zero; pass .paired, .mu, .alt, or .ci through prepare_test() or via() to change that.
+
+### One-sample and formula syntax
+
+The formula implementation reads the response from the left-hand side. A bare ~ 1 runs a one-sample test against .mu; a grouping term runs the two-sample test; combining both runs each in turn:
+
+```{r}
+sleep |>
+    define_model(extra ~ 1) |>
+    prepare_test(TTEST) |>
+    conclude()
+```
+
+```{r}
+sleep |>
+    define_model(extra ~ group + 1) |>
+    prepare_test(TTEST) |>
+    conclude()
+```
+
+The formula path returns a tibble of t.test() results rather than a class_ttest_two, since it can hold a mixed set of one- and two-sample tests in a single call.
+
+### Variants: boot, permute, contrast, multi
+
+via() swaps in an alternative implementation while keeping the rest of the pipeline intact. Each variant reads its own arguments:
+
+```{r}
+sleep |>
+    define_model(x_by(extra, group)) |>
+    prepare_test(TTEST) |>
+    via("boot", n = 2000) |>
+    conclude()
+```
+
+```{r}
+sleep |>
+    define_model(x_by(extra, group)) |>
+    prepare_test(TTEST) |>
+    via("permute", n = 2000) |>
+    conclude()
+```
+
+"contrast" runs a Welch-Satterthwaite linear contrast test and is the variant used whenever state_null() carries weighted MU() terms (see below). "multi" accepts more than one grouping variable in a single call, returning one row of class_ttest_two per grouping variable.
+
+### Hypothesis claims with MU()
+
+Instead of passing .mu and .alt directly, a hypothesis can be stated declaratively with state_null() and MU(). The claim's operator resolves to .alt, and the coefficients resolve to .mu:
+
+```{r}
+sleep |>
+    define_model(extra %by% group) |>
+    prepare_test(TTEST) |>
+    state_null(2 * MU(extra, group == "1") - MU(extra, group == "2") <= 0) |>
+    via("contrast") |>
+    conclude()
+```
+
+Because state_null() resolves which group carries the +1 coefficient, writing the groups in the opposite order flips the sign of estimate and t_stat — the claim, not argument position, decides which group is x in the underlying t.test() call.
+
+### Pairwise: pairwise()
+
+pairwise() runs independent t-tests across every pair of a set of numeric variables and presents the result as a matrix: 
+
+```{r}
+iris |>
+    define_model(pairwise(Sepal.Length, Sepal.Width, Petal.Length)) |>
+    prepare_test(TTEST) |>
+    conclude()
+```
+
+The returned class_ttest_pairwise prints as a pairwise matrix rather than a flat table. When pairwise() is constructed with direction = "eq", each variable is tested against its own .mu instead of against another variable, and only the diagonal of the matrix is populated.
+
+## Correlation Test
+
+CORTEST() tests the relationship between a response and one or more independent variables, dispatched on rel() or a formula.
+
+### One-to-one: rel()
+
+```{r}
+cars |>
+    define_model(rel(speed, dist)) |>
+    prepare_test(CORTEST) |>
+    conclude()
+```
+
+The default (base) variant runs a Pearson correlation test via stats::cor.test(), returning a class_corr_two with estimate, statistic, df, p_val, and a confidence interval.
+
+### Formula: one-to-many
+
+A formula correlates a single response against every term on the right-hand side, returning one row per term:
+
+```{r}
+mtcars |>
+    define_model(mpg ~ wt + hp) |>
+    prepare_test(CORTEST) |>
+    conclude()
+```
+
+### Spearman and Kendall variants
+
+```{r}
+suppressWarnings({
+    cars |>
+        define_model(rel(speed, dist)) |>
+        prepare_test(CORTEST) |>
+        via("spearman") |>
+        conclude()
+})
+```
+
+Neither "spearman" nor "kendall" returns a confidence interval, and neither supports state_null().
+
+### Hypothesis claims with RHO()
+
+state_null() with RHO() is only available on the Pearson (base) variant. A claim against zero delegates to stats::cor.test() directly; a non-zero claim switches to a Fisher-z test:
+
+```{r}
+cars |>
+    define_model(rel(speed, dist)) |>
+    prepare_test(CORTEST) |>
+    state_null(RHO(speed, dist) >= 0.8) |>
+    conclude()
+```
+
+As with MU(), the claim's operator resolves to .alt: ==`/!=` becomes "two.sided", >=`/`> becomes "less", and <=`/`< becomes "greater".
+
+## Proportion Test
+
+P_TEST() runs a one-sample test on a prop(x, n) model ID — x successes out of n trials.
+
+```{r}
+P_TEST(prop(45, 100))
+```
+
+Or through the pipeline:
+
+```{r}
+define_model(prop(45, 100)) |>
+    prepare_test(P_TEST) |>
+    conclude()
+```
+
+By default this runs an exact binomial test via stats::binom.test() against .p = 0.5. The "prop" variant switches to a normal approximation via stats::prop.test(), with an additional correct argument controlling Yates' continuity correction:
+
+```{r}
+define_model(prop(45, 100)) |>
+    prepare_test(P_TEST) |>
+    via("prop") |>
+    conclude()
+```
+
+### Hypothesis claims with PI()
+
+```{r}
+define_model(prop(45, 100)) |>
+    prepare_test(P_TEST) |>
+    state_null(PI() == 0.3) |>
+    conclude()
+```
+
+Scaled claims are also solved exactly rather than approximated — testing c * PI() == k is mathematically identical to testing PI() == k / c, so {statim} solves for the unscaled proportion and runs the exact test on it. The printed true_p still shows the scalar as written, so the output matches what you typed even though the test itself operates on the solved value:
+
+```{r}
+define_model(prop(45, 100)) |>
+    prepare_test(P_TEST) |>
+    state_null(2 * PI() == 0.3) |>
+    conclude()
+```
+
+## Recalibrating a lazy test
+
+Arguments can be changed after prepare_test() without re-declaring the whole pipeline, using update():
+
+```{r}
+sleep |>
+    define_model(extra ~ group) |>
+    prepare_test(TTEST) |>
+    update(.ci = 0.9) |>
+    conclude()
+```
+
+update() modifies the recalibration arguments in place — it does not change the method variant or the model ID. Printing a test_lazy before conclude() shows the test name, the resolved method, and any pending recalibration arguments:
+
+```{r}
+sleep |>
+    define_model(x_by(extra, group)) |>
+    prepare_test(TTEST)
+```
+
+## Summary of the pipeline
+
+| Step | Function | What it does |
+|---|---|---|
+| Define | define_model(formula) or define_model(prop(x, n)), etc. | Binds the model ID and data into a def_model |
+| Prepare | prepare_test(TTEST), prepare_test(CORTEST), prepare_test(P_TEST) | Attaches the test spec lazily, returns test_lazy |
+| Select method | via("boot"), via("contrast"), via("prop"), ... | Switches to a registered variant implementation |
+| State a hypothesis | state_null(MU(...) ...), state_null(RHO(...) ...), state_null(PI() ...) | Declares the null hypothesis instead of passing raw arguments |
+| Recalibrate | update(...) | Changes pending arguments without changing method or model ID |
+| Fit | conclude() | Executes; returns cld_exec |
+| Tidy | auto_tidy() | Extracts a tidy tibble from the result class |
