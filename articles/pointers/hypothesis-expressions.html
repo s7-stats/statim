@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Writing Full Null Hypothesis Expression • statim</title>
+<title>What are {statim}'s Null Hypothesis Expressions?  • statim</title>
 <!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../../katex-auto.js"></script><script src="../../lightswitch.js"></script><script src="../../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -13,7 +13,7 @@
 <link href="../../deps/Fira_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="../../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Writing Full Null Hypothesis Expression">
+<script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="What are {statim}'s Null Hypothesis Expressions? ">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -47,7 +47,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
     <li><a class="dropdown-item" href="../../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/stat_define.html">stat_define objects</a></li>
-    <li><a class="dropdown-item" href="../../articles/pointers/hypothesis-expressions.html">Writing Full Null Hypothesis Expression</a></li>
+    <li><a class="dropdown-item" href="../../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/execution-methods.html">Execution and Retrieval of Outputs</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -84,7 +84,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Writing Full Null Hypothesis Expression</h1>
+      <h1>What are {statim}'s Null Hypothesis Expressions? </h1>
             <h3 data-toc-skip class="subtitle">A New Feature and
 Explanation</h3>
             
@@ -98,14 +98,14 @@ Explanation</h3>
 <div class="section level2">
 <h2 id="rationale">Rationale<a class="anchor" aria-label="anchor" href="#rationale"></a>
 </h2>
-<p>It may sound complex, but it’s meant to mirror what you’d already
-write under a hypothesis heading in a statistics textbook.
-<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> leans on syntactic sugar and a small embedded DSL
-(domain-specific language) to do this, and the closest existing analogue
-in R is <code>join_by()</code> from <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>: a join
-condition like <code>x == y</code> is never evaluated as a boolean —
-it’s captured as an unevaluated expression and interpreted structurally
-by the join itself.</p>
+<p>It may sound complex, but it’s easy and intuitive. It is meant to
+mirror what you’d read and already write under a hypothesis heading in a
+statistics textbook. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> leans on syntactic sugar and
+a small embedded DSL (domain-specific language) to do this, and the
+closest existing analogue in R is <code>join_by()</code> from
+<a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>: a join condition like <code>x == y</code> is never
+evaluated as a boolean — it’s captured as an unevaluated expression and
+interpreted structurally by the join itself.</p>
 <p><code><a href="../../reference/null-hyp.html">state_null()</a></code> works the same way. <code>MU(x) == 0</code>
 is never run as a logical test; <code><a href="../../reference/null-hyp.html">state_null()</a></code> parses it into
 a <code>null_claim</code> object recording the parameter, the operator,
@@ -165,30 +165,183 @@ pointing at the exact offending subexpression.</p>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"contrast"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+== Model ======================================================================= 
+
+Model ID : x_by 
+Args : extra | group 
+    x_vars : 1 
+    by_vars : 1 
+
+== T-Test · contrast =========================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+──────────────────────────────────────────
+  group  estimate  t_stat    df    p_val  
+──────────────────────────────────────────
+  group   -0.830   -0.640  14.130  <span style="font-style: italic;">0.734</span>  
+──────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+  group   -3.112     Inf     
+─────────────────────────────
+</code></pre>
 <p>Order matters here in a way that’s easy to miss: which named term
 ends up with coefficient <code>+1</code> versus <code>-1</code> is
 decided by the order you wrote the expression in, not by any property of
-the groups themselves.
-<code>MU(extra, group == "1") - MU(extra, group == "2")</code> and
-<code>MU(extra, group == "2") - MU(extra, group == "1")</code> are the
-same hypothesis mathematically — one is just the negation of the other —
-but <code><a href="../../reference/TTEST.html">TTEST()</a></code>’s <code><a href="../../reference/x_by.html">x_by()</a></code> translator reads
-whichever name has coefficient <code>+1</code> as
-<code>.first_group</code>, and uses it to decide which group becomes
-<code>x</code> in the underlying <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code> call.</p>
-<p>Write the groups in the opposite order and the test still runs and
-reports the same p-value, but <code>estimate</code> and
-<code>t_stat</code> come back with the opposite sign. This isn’t
-specific to <code><a href="../../reference/TTEST.html">TTEST()</a></code>, either — any <code>claim_parser</code>
-that reads <code>names(coefs)[coefs == 1]</code> the same way inherits
-the same sensitivity, since <code><a href="../../reference/claim_contrast_coefs.html">claim_contrast_coefs()</a></code>
-preserves the left-to-right order terms were written in all the way
-through to the <code>coefs</code> vector it returns.</p>
-<p>That guard is specific to <code><a href="../../reference/claim_contrast_coefs.html">claim_contrast_coefs()</a></code>,
-though, not to non-linearity in general. <code><a href="../../reference/claim_scalar.html">claim_scalar()</a></code>
-never calls <code>assert_linear()</code>, so the same mistake in a
-single-parameter claim doesn’t get the same clean diagnostic:</p>
+the groups themselves.</p>
+<div class="section level3 tabset">
+<h3 class="tabset" id="another-simple-example">Another simple example<a class="anchor" aria-label="anchor" href="#another-simple-example"></a>
+</h3>
+
+
+<ul class="nav nav-tabs" id="another-simple-example" role="tablist">
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#vs-2" id="vs-2-tab" type="button" role="tab" aria-controls="vs-2" aria-selected="true" class="active nav-link">1 vs 2</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#vs-1" id="vs-1-tab" type="button" role="tab" aria-controls="vs-1" aria-selected="false" class="nav-link">2 vs 1</button></li>
+</ul>
+<div class="tab-content">
+<div class="active  tab-pane" id="vs-2" role="tabpanel" aria-labelledby="vs-2-tab">
+
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">0</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+== Model ======================================================================= 
+
+Model ID : x_by 
+Args : extra | group 
+    x_vars : 1 
+    by_vars : 1 
+
+== T-Test ====================================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+──────────────────────────────────────────
+  group  estimate  t_stat    df    p_val  
+──────────────────────────────────────────
+  group   -1.580   -1.861  17.780  <span style="font-style: italic;">0.960</span>  
+──────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+  group   -3.053     Inf     
+─────────────────────────────
+</code></pre>
+</div>
+<div class="tab-pane" id="vs-1" role="tabpanel" aria-labelledby="vs-1-tab">
+
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">0</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+== Model ======================================================================= 
+
+Model ID : x_by 
+Args : extra | group 
+    x_vars : 1 
+    by_vars : 1 
+
+== T-Test ====================================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+──────────────────────────────────────────
+  group  estimate  t_stat    df    p_val  
+──────────────────────────────────────────
+  group   1.580    1.861   17.780  <span style="color: #BB0000;">0.040</span>  
+──────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+  group   0.107      Inf     
+─────────────────────────────
+</code></pre>
+</div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="explanation">Explanation<a class="anchor" aria-label="anchor" href="#explanation"></a>
+</h3>
+<p><code>MU(extra, group == "1") - MU(extra, group == "2")</code> and
+<code>MU(extra, group == "2") - MU(extra, group == "1")</code> are the
+same hypothesis mathematically. One is just the negation of the other,
+but <code><a href="../../reference/TTEST.html">TTEST()</a></code>’s <code><a href="../../reference/x_by.html">x_by()</a></code> <code>claim_parser</code>
+reads whichever name has coefficient <code>+1</code> as
+<code>.first_group</code>, and uses it to decide which group becomes
+<code>x</code> and which becomes <code>y</code> in the underlying
+<code>stats::t.test(x, y, ...)</code> call.</p>
+<p>Run both tabs above and the asymmetry shows up immediately:
+<code>estimate</code> and <code>t_stat</code> flip sign, exactly as
+you’d expect from swapping <code>x</code> and <code>y</code>. The
+p-value, though, does <em>not</em> stay put — it goes from
+<code>0.960</code> to <code>0.040</code>, the two numbers summing to
+almost exactly <code>1</code>. That’s the signature of a one-sided test
+whose tail got swapped along with the groups, not preserved.
+<code>.alt</code> is resolved from <code>claim@op</code> alone —
+<code>&lt;=</code> always becomes <code>"greater"</code>, regardless of
+which side of the contrast a group landed on — so reordering the groups
+changes which physical quantity (<code>x - y</code> vs
+<code>y - x</code>) that fixed <code>"greater"</code> direction is being
+asked about. The hypothesis you wrote and the hypothesis
+<code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test()</a></code> actually evaluated end up pointing in opposite
+directions, even though <code>.alt</code> itself never changed.</p>
+<p>This is specific to one-sided claims. Write the same comparison with
+<code>==</code> instead of <code>&lt;=</code>, and the p-value genuinely
+is invariant to order, because a two-sided test is symmetric around zero
+— swapping <code>x</code> and <code>y</code> only negates the statistic,
+and <code>"two.sided"</code> doesn’t care which side of zero you landed
+on. It’s only <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>,
+and <code>&gt;=</code> claims where group order silently decides which
+one-sided question gets asked, which makes this worth checking
+deliberately rather than assuming the test “just knows” which direction
+you meant.</p>
+<p>Nor is this specific to <code><a href="../../reference/TTEST.html">TTEST()</a></code> — any
+<code>claim_parser</code> that reads
+<code>names(coefs)[coefs == 1]</code> to pick out a “first” term the
+same way inherits the same sensitivity, since
+<code><a href="../../reference/claim_contrast_coefs.html">claim_contrast_coefs()</a></code> preserves the left-to-right order
+terms were written in all the way through to the <code>coefs</code>
+vector it returns. If you’re writing a <code>claim_parser</code> for a
+new variant and it derives both an entity (a group, a side, a reference
+level) and a direction (<code>.alt</code>, a sign convention) from the
+same claim independently, double-check that the two stay consistent
+under reordering — they won’t, by default.</p>
+<p>The <code>assert_linear()</code> guard from the previous section is
+unrelated to this. It only rejects non-linear <em>structure</em> (a
+parameter times a parameter, in a denominator, raised to a power), and
+has nothing to say about term order, which is exactly why swapping two
+valid linear terms passes silently instead of erroring: there’s no rule
+being broken, just an implicit convention (whichever term is
+<code>+1</code> is “first”) that’s easy to not notice you’re relying on.
+<code><a href="../../reference/claim_scalar.html">claim_scalar()</a></code> never calls <code>assert_linear()</code> at
+all, so the same kind of structural mistake in a single-parameter claim
+doesn’t get the same clean diagnostic:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">P_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span><span class="fl">5</span> <span class="op">/</span> <span class="fu"><a href="../../reference/PI.html">PI</a></span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -209,6 +362,7 @@ intentional contrast. The same duplicate in a single-parameter claim
 never reaches that logic at all: <code><a href="../../reference/claim_scalar.html">claim_scalar()</a></code> counts it
 as two parameter terms and refuses outright before any cancellation
 could happen.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="potential-grips">Potential grips<a class="anchor" aria-label="anchor" href="#potential-grips"></a>

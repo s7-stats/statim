@@ -1,12 +1,12 @@
-# Writing Full Null Hypothesis Expression
+# What are {statim}'s Null Hypothesis Expressions?
 
 ## Rationale
 
-It may sound complex, but it’s meant to mirror what you’d already write
-under a hypothesis heading in a statistics textbook.
-[statim](https://github.com/s7-stats/statim) leans on syntactic sugar
-and a small embedded DSL (domain-specific language) to do this, and the
-closest existing analogue in R is `join_by()` from
+It may sound complex, but it’s easy and intuitive. It is meant to mirror
+what you’d read and already write under a hypothesis heading in a
+statistics textbook. [statim](https://github.com/s7-stats/statim) leans
+on syntactic sugar and a small embedded DSL (domain-specific language)
+to do this, and the closest existing analogue in R is `join_by()` from
 [dplyr](https://dplyr.tidyverse.org): a join condition like `x == y` is
 never evaluated as a boolean — it’s captured as an unevaluated
 expression and interpreted structurally by the join itself.
@@ -83,34 +83,181 @@ sleep |>
     conclude()
 ```
 
+``` fansi
+
+== Model ======================================================================= 
+
+Model ID : x_by 
+Args : extra | group 
+    x_vars : 1 
+    by_vars : 1 
+
+== T-Test · contrast =========================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+──────────────────────────────────────────
+  group  estimate  t_stat    df    p_val  
+──────────────────────────────────────────
+  group   -0.830   -0.640  14.130  0.734  
+──────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+  group   -3.112     Inf     
+─────────────────────────────
+```
+
 Order matters here in a way that’s easy to miss: which named term ends
 up with coefficient `+1` versus `-1` is decided by the order you wrote
 the expression in, not by any property of the groups themselves.
+
+### Another simple example
+
+- 1 vs 2
+- 2 vs 1
+
+``` r
+
+sleep |>
+    define_model(extra %by% group) |>
+    prepare_test(TTEST) |>
+    state_null(
+        MU(extra, group == "1") - MU(extra, group == "2") <= 0
+    ) |>
+    conclude()
+```
+
+``` fansi
+
+== Model ======================================================================= 
+
+Model ID : x_by 
+Args : extra | group 
+    x_vars : 1 
+    by_vars : 1 
+
+== T-Test ====================================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+──────────────────────────────────────────
+  group  estimate  t_stat    df    p_val  
+──────────────────────────────────────────
+  group   -1.580   -1.861  17.780  0.960  
+──────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+  group   -3.053     Inf     
+─────────────────────────────
+```
+
+``` r
+
+sleep |>
+    define_model(extra %by% group) |>
+    prepare_test(TTEST) |>
+    state_null(
+        MU(extra, group == "2") - MU(extra, group == "1") <= 0
+    ) |>
+    conclude()
+```
+
+``` fansi
+
+== Model ======================================================================= 
+
+Model ID : x_by 
+Args : extra | group 
+    x_vars : 1 
+    by_vars : 1 
+
+== T-Test ====================================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+──────────────────────────────────────────
+  group  estimate  t_stat    df    p_val  
+──────────────────────────────────────────
+  group   1.580    1.861   17.780  0.040  
+──────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+  group   0.107      Inf     
+─────────────────────────────
+```
+
+### Explanation
+
 `MU(extra, group == "1") - MU(extra, group == "2")` and
 `MU(extra, group == "2") - MU(extra, group == "1")` are the same
-hypothesis mathematically — one is just the negation of the other — but
+hypothesis mathematically. One is just the negation of the other, but
 [`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md)’s
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
-translator reads whichever name has coefficient `+1` as `.first_group`,
-and uses it to decide which group becomes `x` in the underlying
-[`stats::t.test()`](https://rdrr.io/r/stats/t.test.html) call.
+`claim_parser` reads whichever name has coefficient `+1` as
+`.first_group`, and uses it to decide which group becomes `x` and which
+becomes `y` in the underlying `stats::t.test(x, y, ...)` call.
 
-Write the groups in the opposite order and the test still runs and
-reports the same p-value, but `estimate` and `t_stat` come back with the
-opposite sign. This isn’t specific to
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md),
-either — any `claim_parser` that reads `names(coefs)[coefs == 1]` the
-same way inherits the same sensitivity, since
+Run both tabs above and the asymmetry shows up immediately: `estimate`
+and `t_stat` flip sign, exactly as you’d expect from swapping `x` and
+`y`. The p-value, though, does *not* stay put — it goes from `0.960` to
+`0.040`, the two numbers summing to almost exactly `1`. That’s the
+signature of a one-sided test whose tail got swapped along with the
+groups, not preserved. `.alt` is resolved from `claim@op` alone — `<=`
+always becomes `"greater"`, regardless of which side of the contrast a
+group landed on — so reordering the groups changes which physical
+quantity (`x - y` vs `y - x`) that fixed `"greater"` direction is being
+asked about. The hypothesis you wrote and the hypothesis
+[`t.test()`](https://rdrr.io/r/stats/t.test.html) actually evaluated end
+up pointing in opposite directions, even though `.alt` itself never
+changed.
+
+This is specific to one-sided claims. Write the same comparison with
+`==` instead of `<=`, and the p-value genuinely is invariant to order,
+because a two-sided test is symmetric around zero — swapping `x` and `y`
+only negates the statistic, and `"two.sided"` doesn’t care which side of
+zero you landed on. It’s only `<`, `<=`, `>`, and `>=` claims where
+group order silently decides which one-sided question gets asked, which
+makes this worth checking deliberately rather than assuming the test
+“just knows” which direction you meant.
+
+Nor is this specific to
+[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) — any
+`claim_parser` that reads `names(coefs)[coefs == 1]` to pick out a
+“first” term the same way inherits the same sensitivity, since
 [`claim_contrast_coefs()`](https://s7-stats.github.io/statim/reference/claim_contrast_coefs.md)
 preserves the left-to-right order terms were written in all the way
-through to the `coefs` vector it returns.
+through to the `coefs` vector it returns. If you’re writing a
+`claim_parser` for a new variant and it derives both an entity (a group,
+a side, a reference level) and a direction (`.alt`, a sign convention)
+from the same claim independently, double-check that the two stay
+consistent under reordering — they won’t, by default.
 
-That guard is specific to
-[`claim_contrast_coefs()`](https://s7-stats.github.io/statim/reference/claim_contrast_coefs.md),
-though, not to non-linearity in general.
+The `assert_linear()` guard from the previous section is unrelated to
+this. It only rejects non-linear *structure* (a parameter times a
+parameter, in a denominator, raised to a power), and has nothing to say
+about term order, which is exactly why swapping two valid linear terms
+passes silently instead of erroring: there’s no rule being broken, just
+an implicit convention (whichever term is `+1` is “first”) that’s easy
+to not notice you’re relying on.
 [`claim_scalar()`](https://s7-stats.github.io/statim/reference/claim_scalar.md)
-never calls `assert_linear()`, so the same mistake in a single-parameter
-claim doesn’t get the same clean diagnostic:
+never calls `assert_linear()` at all, so the same kind of structural
+mistake in a single-parameter claim doesn’t get the same clean
+diagnostic:
 
 ``` r
 

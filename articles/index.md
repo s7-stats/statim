@@ -32,8 +32,9 @@
 - [stat_define
   objects](https://s7-stats.github.io/statim/articles/pointers/stat_define.md):
 
-- [Writing Full Null Hypothesis
-  Expression](https://s7-stats.github.io/statim/articles/pointers/hypothesis-expressions.md):
+- [What are {statim}'s Null Hypothesis
+  Expressions?](https://s7-stats.github.io/statim/articles/pointers/hypothesis-expressions.md)
+  :
 
 - [via(): Switching to different
   mode](https://s7-stats.github.io/statim/articles/pointers/recalibration-method.md):
