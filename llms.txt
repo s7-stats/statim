@@ -10,6 +10,7 @@ What does [statim](https://github.com/s7-stats/statim) mean?
 “immediately, at once”. The name carries a double meaning:
 
 - *stat*: as in statistics, the domain this package lives in
+
 - *im* (*statim*): as in “immediate”, signalling that inference should
   be expressible as a direct declaration, not somewhat a sequence of
   mechanical steps
@@ -20,15 +21,9 @@ delivers *how*.
 
 ## Why statim?
 
-R has a rich statistical ecosystem. Most of the packages in the wild
-were written at top of S3 and S4, and it is yet for the S7 to be
-prominent into statistical ecosystem —
-[statim](https://github.com/s7-stats/statim) is glad to take the step
-(there are reasons why [S7 supersedes both S3 and
-S4](https://tidyverse.org/blog/2024/11/s7-0-2-0/)). Statistical
-inference in general is served by an assortment of disconnected
-functions: the functions you’re looking for may exist but they are
-scattered across different packages.
+R has a rich statistical ecosystem. Statistical inference in general is
+served by an assortment of disconnected functions: the functions you’re
+looking for may exist but they are scattered across different packages.
 
 R gained a grammar for graphics
 ([ggplot2](https://ggplot2.tidyverse.org)), and one for data
@@ -104,9 +99,8 @@ pak::pak("s7-stats/statim")
 
 ## General Usage
 
-By the way, loading a library comes with [a lot of
-preferences](https://joshuamarie.com/posts/06-load-pkg/). Let us start
-by loading [statim](https://github.com/s7-stats/statim) first:
+Let us start by loading [statim](https://github.com/s7-stats/statim)
+first:
 
 ``` r
 
@@ -121,15 +115,14 @@ data |>                                                       # 1
     define_model(<model_id>(var1, var2, ...)) |>              # 1  
     # Lazy loading begins after
     prepare_*(<STAT_FN>) |>                                   # 2  
-    # Must come after `prepare_test()` / prepare_model()` 
     via() |>                                                  # 2
-    state_null() |>                                           # 2 
+    state_null(<expr>) |>                                     # 2 
     # End of lazy loading
-    conclude() |>                                             # 3            
-    <output-to-process>()                                     # 3          
+    conclude() |>                                             # 3         
+    <output-to-process>()                                     # 3         
 ```
 
-Brief explanation of the code above:
+Explanation of the code above:
 
 1.  *Model processor and definition*, where defining the shape of model
     *to be analyzed* happens at the beginning during statistical
@@ -148,6 +141,13 @@ Brief explanation of the code above:
     [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)).
     With that said, the execution is lazy-loaded, and only executed if
     needed.
+
+    > [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+    > is one of the reasons why
+    > [statim](https://github.com/s7-stats/statim) — it’s astronomical
+    > way of writing null hypothesis expressed mathematically. Learn
+    > more about it on
+    > `vignette("hypothesis-expressions", package = "statim")`.
 
 3.  *Execution and retrieval*, where the first 2 steps is (re-)executed
     and then retrieve the output. The most common function is
