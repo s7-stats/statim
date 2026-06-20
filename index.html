@@ -150,7 +150,7 @@
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>data <span class="sc">|&gt;</span>                                                       <span class="co"># 1</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>    <span class="fu">define_model</span>(<span class="sc">&lt;</span>model_id<span class="sc">&gt;</span>(var1, var2, ...)) <span class="sc">|&gt;</span>              <span class="co"># 1  </span></span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    <span class="co"># Lazy loading begins after</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    prepare_<span class="sc">&lt;</span>test<span class="sc">/</span>model<span class="sc">&gt;</span>(<span class="sc">&lt;</span>STAT_FN<span class="sc">&gt;</span>) <span class="sc">|&gt;</span>                        <span class="co"># 2  </span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    prepare_<span class="sc">*</span>(<span class="sc">&lt;</span>STAT_FN<span class="sc">&gt;</span>) <span class="sc">|&gt;</span>                                   <span class="co"># 2  </span></span>
 <span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>    <span class="co"># Must come after `prepare_test()` / prepare_model()` </span></span>
 <span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    <span class="fu">via</span>() <span class="sc">|&gt;</span>                                                  <span class="co"># 2</span></span>
 <span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    <span class="fu">state_null</span>() <span class="sc">|&gt;</span>                                           <span class="co"># 2 </span></span>

@@ -120,7 +120,7 @@ All you need to know is that the most usual usage of
 data |>                                                       # 1
     define_model(<model_id>(var1, var2, ...)) |>              # 1  
     # Lazy loading begins after
-    prepare_<test/model>(<STAT_FN>) |>                        # 2  
+    prepare_*(<STAT_FN>) |>                                   # 2  
     # Must come after `prepare_test()` / prepare_model()` 
     via() |>                                                  # 2
     state_null() |>                                           # 2 
