@@ -61,9 +61,27 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="statim-development-version">statim (development version)<a class="anchor" aria-label="anchor" href="#statim-development-version"></a></h2>
-<ul><li>Initial development version.</li>
-<li>Most of the API is written on S7</li>
-</ul><!-- -  Initial CRAN submission. --></div>
+<!-- -  Initial CRAN submission. -->
+<ul><li><p>Initial development version.</p></li>
+<li><p>New and much modern approach to statistical inference in R</p></li>
+<li><p>Core API built with S7 — taking advantage of formal classes and constructors.</p></li>
+<li>
+<p>Two complementary interfaces:</p>
+<ol style="list-style-type: decimal"><li>
+<p>Eager Form Approach:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;</span>STAT_FN<span class="sc">&gt;</span><span class="er">&gt;</span>(<span class="sc">&lt;</span>model_id<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">&gt;</span>)</span></code></pre></div>
+</li>
+<li>
+<p>Piped/Grammar Syntax</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>... <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="fu">define_model</span>(<span class="sc">&lt;</span>data<span class="sc">/</span>model_id<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">/</span>model_id<span class="sc">&gt;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    prepare_<span class="sc">*</span>(<span class="sc">&lt;</span><span class="er">&lt;</span>STAT_FN<span class="sc">&gt;</span><span class="er">&gt;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="fu">state_null</span>(<span class="sc">&lt;</span>expr<span class="sc">&gt;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    <span class="fu">via</span>(<span class="st">"&lt;method&gt;"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    <span class="fu">conclude</span>()</span></code></pre></div>
+</li>
+</ol></li>
+</ul></div>
   </main></div>
 
 
