@@ -49,10 +49,24 @@ The following arguments are passed via `...` in
 
 ## Correlation test default class
 
-Returns a
+By default, it returns a
 [class_corr_two](https://s7-stats.github.io/statim/reference/class_corr_two.md)
 object inheriting from
 [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md).
+All variants that also return
+[class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
+inherit
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
+and [`print()`](https://rdrr.io/r/base/print.html) automatically.
+Otherwise, to process outputs:
+
+- [`print()`](https://rdrr.io/r/base/print.html): Write it down through
+  `print` from
+  [`variant()`](https://s7-stats.github.io/statim/reference/variant.md).
+
+- [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md): Use
+  [`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
+  to register a tidy method if needed.
 
 For the `base` variant, `df`, `lower_ci`, and `upper_ci` are always
 populated. For `spearman` and `kendall`, those slots are `numeric(0)`

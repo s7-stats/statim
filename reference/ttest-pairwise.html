@@ -104,19 +104,23 @@ Default <code>"two.sided"</code>.</p></dd>
 <code><a href="add-variant.html">add_variant()</a></code> to register custom variants at the user or package level.</p>
     </div>
     <div class="section level2">
-    <h2 id="result-class">Result class<a class="anchor" aria-label="anchor" href="#result-class"></a></h2>
+    <h2 id="pairwise-t-test-class">Pairwise t-test class<a class="anchor" aria-label="anchor" href="#pairwise-t-test-class"></a></h2>
 
 
-<p>Returns a <a href="class_ttest_pairwise.html">class_ttest_pairwise</a> object inheriting from <a href="class_stat_infer.html">class_stat_infer</a>.
-Results are printed as a pairwise matrix via <code><a href="https://rdrr.io/pkg/tabstats/man/pairwise_matrix.html" class="external-link">tabstats::pairwise_matrix()</a></code>.</p>
-    </div>
+<p>By default, it returns a <a href="class_ttest_pairwise.html">class_ttest_pairwise</a> object inheriting from <a href="class_stat_infer.html">class_stat_infer</a>.
+Objects from it are printed as a pairwise matrix via <code><a href="https://rdrr.io/pkg/tabstats/man/pairwise_matrix.html" class="external-link">tabstats::pairwise_matrix()</a></code>. All variants that
+also return <a href="class_ttest_two.html">class_ttest_two</a> inherit <code><a href="auto_tidy.html">auto_tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> automatically. Otherwise,
+to process outputs:</p><ul><li><p><code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>: Write it down through <code>print</code> from <code><a href="variant.html">variant()</a></code>.</p></li>
+<li><p><code><a href="tidy.html">tidy()</a></code>: Use <code><a href="making_tidy.html">making_tidy()</a></code> to register a tidy method if needed.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="one-sample-mode">One-sample mode<a class="anchor" aria-label="anchor" href="#one-sample-mode"></a></h2>
 
 
-<p>When <code><a href="pairwise.html">pairwise()</a></code> is constructed with a <code>direction = "eq"</code> argument, each
-variable is tested against its own <code>.mu</code> value rather than against another
-variable. The result matrix displays diagonal entries only.</p>
+<p>When <code><a href="pairwise.html">pairwise()</a></code> has equal referred columns, made by <code>direction = "&lt;eq, lteq, gteq&gt;"</code>
+argument, each variable is tested against its own <code>.mu</code> value rather than against another
+variable, resonating to a one-sample test. The pairwise t-test output matrix displays
+diagonal entries only.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -148,25 +152,29 @@ variable. The result matrix displays diagonal entries only.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |         &lt; diff &gt;          |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |        &lt; t_stat &gt;         |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |         <span style="font-style: italic;">&lt; pval &gt;</span>          |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |          &lt; ci &gt;           |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └───────────────────────────┘</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   Welch Two Sample t-test                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Variable       Sepal.Length   Petal.Length   Sepal.Width  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Sepal.Length                                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Petal.Length      -2.085                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    -13.098                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     <span style="font-weight: bold;">&lt;0.001</span>                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Sepal.Width       2.786          0.701                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     36.463         4.719                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     <span style="font-weight: bold;">&lt;0.001</span>         <span style="font-weight: bold;">&lt;0.001</span>                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      Welch Two Sample t-test                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Variable         Sepal.Length      Petal.Length    Sepal.Width  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Sepal.Length                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Petal.Length        -2.085                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      -13.098                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       <span style="font-weight: bold;">&lt;0.001</span>                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  [-2.399  -1.772]                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Sepal.Width         2.786             0.701                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       36.463            4.719                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       <span style="font-weight: bold;">&lt;0.001</span>            <span style="font-weight: bold;">&lt;0.001</span>                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   [2.635  2.937]    [0.408  0.994]                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────────────────────────────</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

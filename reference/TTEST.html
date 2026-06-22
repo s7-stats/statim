@@ -106,74 +106,10 @@ For instance:</p><ul><li><p><code>ttest_x_by</code>, by default, returns a <a hr
 
 
 <p>Each model ID routes to a separate implementation. See the linked pages
-for full argument lists, variants, and result class details:</p><ul><li><p><code><a href="x_by.html">x_by()</a></code>: two-sample or paired t-test. See <a href="ttest-xby.html">ttest-xby</a>.</p></li>
-<li><p><code><a href="pairwise.html">pairwise()</a></code>: pairwise t-tests across variables. See <a href="ttest-pairwise.html">ttest-pairwise</a>.</p></li>
-<li><p><code>&lt;formula&gt;</code>: one-sample and/or two-sample t-test. See <a href="ttest-formula.html">ttest-formula</a>.</p></li>
+for full argument lists, variants, and result class details:</p><ul><li><p><code><a href="x_by.html">x_by()</a></code>: two-sample or paired t-test. See details from <a href="ttest-xby.html">ttest-xby</a>.</p></li>
+<li><p><code><a href="pairwise.html">pairwise()</a></code>: pairwise t-tests across variables. See details from <a href="ttest-pairwise.html">ttest-pairwise</a>.</p></li>
+<li><p><code>&lt;formula&gt;</code>: one-sample and/or two-sample t-test. See details from <a href="ttest-formula.html">ttest-formula</a>.</p></li>
 </ul></div>
-    <div class="section level2">
-    <h2 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h2>
-
-
-<p>The following arguments are passed via <code>...</code> in <code>TTEST()</code> or <code><a href="via.html">via()</a></code>:</p>
-<dl><dt><code>.paired</code></dt>
-<dd><p>Logical. Whether to perform a paired t-test. Default <code>FALSE</code>.</p></dd>
-
-<dt><code>.mu</code></dt>
-<dd><p>Numeric. Hypothesized mean difference. Default <code>0</code>.</p></dd>
-
-<dt><code>.alt</code></dt>
-<dd><p>Direction: <code>"two.sided"</code>, <code>"greater"</code>, or <code>"less"</code>. Default <code>"two.sided"</code>.</p></dd>
-
-<dt><code>.ci</code></dt>
-<dd><p>Confidence level. Default <code>0.95</code>.</p></dd>
-
-<dt><code>.first_group</code></dt>
-<dd><p>Only if uses <code><a href="null-hyp.html">state_null()</a></code>. Considers first term as the first order. Default is <code>NULL</code>.</p></dd>
-
-
-</dl></div>
-    <div class="section level2">
-    <h2 id="variants">Variants<a class="anchor" aria-label="anchor" href="#variants"></a></h2>
-
-
-<dl><dt><code>"boot"</code></dt>
-<dd><p>Bootstrap CI. Accepts <code>n</code> (reps) and <code>seed</code>.</p></dd>
-
-<dt><code>"permute"</code></dt>
-<dd><p>Permutation test. Accepts <code>n</code> and <code>seed</code>.</p></dd>
-
-<dt><code>"contrast"</code></dt>
-<dd><p>Welch-Satterthwaite linear contrast test. Accepts <code>.w</code>, <code>.mu</code>, <code>.ci</code>, <code>.op</code>.</p></dd>
-
-<dt><code>"multi"</code></dt>
-<dd><p>Accepts multiple selected <code>group</code> variables</p></dd>
-
-
-</dl></div>
-    <div class="section level2">
-    <h2 id="two-sample-t-test-default-class">Two-sample t-test default class<a class="anchor" aria-label="anchor" href="#two-sample-t-test-default-class"></a></h2>
-
-
-<p>Returns a <a href="class_ttest_two.html">class_ttest_two</a> object. All variants that also return
-<a href="class_ttest_two.html">class_ttest_two</a> inherit <code><a href="auto_tidy.html">auto_tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> automatically.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="hypothesis-claims">Hypothesis claims<a class="anchor" aria-label="anchor" href="#hypothesis-claims"></a></h2>
-
-
-<p>Supports <code><a href="MU.html">MU()</a></code> via <code><a href="null-hyp.html">state_null()</a></code>. The <code>contrast</code> variant performs Welch-Satterthwaite linear contrast test
-and additionally accepts contrast coefficients via <code>.w</code>.</p>
-<p>Claim order is respected: writing <code>MU(x, g == "a") - MU(x, g == "b")</code> versus
-<code>MU(x, g == "b") - MU(x, g == "a")</code> flips the sign of <code>estimate</code> and
-<code>t_stat</code>, since the group with coefficient <code>+1</code> in the parsed claim becomes
-<code>x</code> in <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code>. This is implemented via an internal <code>.first_group</code>
-argument resolved from the claim — it is not meant to be set directly by
-users. If you call <code>via("base", .first_group = ...)</code> or use <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> to
-override it manually, note that it accepts a single group label (one of
-the two levels of the grouping variable) and silently falls back to the
-data's natural level order (<code><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique()</a></code> on the grouping variable) if <code>NULL</code>,
-unset, or not found among the levels.</p>
-    </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
 
@@ -372,25 +308,29 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-out co"><span class="r-pr">#&gt;</span> |         &lt; diff &gt;          |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |        &lt; t_stat &gt;         |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> |         <span style="font-style: italic;">&lt; pval &gt;</span>          |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> |          &lt; ci &gt;           |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> └───────────────────────────┘</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   Welch Two Sample t-test                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Variable       Sepal.Length   Petal.Length   Sepal.Width  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Sepal.Length                                              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Petal.Length      -2.085                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    -13.098                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     <span style="font-weight: bold;">&lt;0.001</span>                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Sepal.Width       2.786          0.701                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     36.463         4.719                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     <span style="font-weight: bold;">&lt;0.001</span>         <span style="font-weight: bold;">&lt;0.001</span>                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      Welch Two Sample t-test                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Variable         Sepal.Length      Petal.Length    Sepal.Width  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Sepal.Length                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Petal.Length        -2.085                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      -13.098                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       <span style="font-weight: bold;">&lt;0.001</span>                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  [-2.399  -1.772]                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Sepal.Width         2.786             0.701                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       36.463            4.719                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       <span style="font-weight: bold;">&lt;0.001</span>            <span style="font-weight: bold;">&lt;0.001</span>                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   [2.635  2.937]    [0.408  0.994]                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ──────────────────────────────────────────────────────────────────</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

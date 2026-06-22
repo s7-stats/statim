@@ -112,9 +112,11 @@ t-test. It accepts one or more grouping variables via <code><a href="x_by.html">
     <h2 id="two-sample-t-test-default-class">Two-sample t-test default class<a class="anchor" aria-label="anchor" href="#two-sample-t-test-default-class"></a></h2>
 
 
-<p>Returns a <a href="class_ttest_two.html">class_ttest_two</a> object. All variants that also return
-<a href="class_ttest_two.html">class_ttest_two</a> inherit <code><a href="auto_tidy.html">auto_tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> automatically.</p>
-    </div>
+<p>By default, returns a <a href="class_ttest_two.html">class_ttest_two</a> object. All variants that also return
+<a href="class_ttest_two.html">class_ttest_two</a> inherit <code><a href="auto_tidy.html">auto_tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> automatically. Otherwise,
+to process outputs:</p><ul><li><p><code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>: Write it down through <code>print</code> from <code><a href="variant.html">variant()</a></code>.</p></li>
+<li><p><code><a href="tidy.html">tidy()</a></code>: Use <code><a href="making_tidy.html">making_tidy()</a></code> to register a tidy method if needed.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="hypothesis-claims">Hypothesis claims<a class="anchor" aria-label="anchor" href="#hypothesis-claims"></a></h2>
 

@@ -54,13 +54,22 @@ The following arguments are passed via `...` in
 
 ## Two-sample t-test default class
 
-Returns a
+By default, returns a
 [class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
 object. All variants that also return
 [class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
 inherit
 [`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
 and [`print()`](https://rdrr.io/r/base/print.html) automatically.
+Otherwise, to process outputs:
+
+- [`print()`](https://rdrr.io/r/base/print.html): Write it down through
+  `print` from
+  [`variant()`](https://s7-stats.github.io/statim/reference/variant.md).
+
+- [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md): Use
+  [`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
+  to register a tidy method if needed.
 
 ## Hypothesis claims
 

@@ -104,64 +104,8 @@ when <code>.model = NULL</code>. The default correlation test class for most pat
 
 
 <p>Each model ID routes to a separate implementation. See the linked pages
-for full argument lists, variants, and correlation test class details:</p><ul><li><p><code><a href="rel.html">rel()</a></code>: one-to-one correlation test. See <a href="cortest-rel.html">cortest-rel</a>.</p></li>
-<li><p><code>&lt;formula&gt;</code>: one-to-many correlation test. See <a href="cortest-formula.html">cortest-formula</a>.</p></li>
-</ul></div>
-    <div class="section level2">
-    <h2 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h2>
-
-
-<p>The following arguments are passed via <code>...</code> in <code>CORTEST()</code>:</p>
-<dl><dt><code>.alt</code></dt>
-<dd><p>String. One of <code>"two.sided"</code>, <code>"greater"</code>, or <code>"less"</code>.
-Default <code>"two.sided"</code>.</p></dd>
-
-<dt><code>.ci</code></dt>
-<dd><p>Numeric. Confidence level. Default <code>0.95</code>. Not applicable
-to Spearman and Kendall variants.</p></dd>
-
-<dt><code>.rho</code></dt>
-<dd><p>Numeric. Hypothesized population correlation coefficient
-under H\(_0\). Default <code>0</code>. Only applicable to the <code>base</code> (Pearson)
-variant. When <code>0</code>, delegates to <code><a href="https://rdrr.io/r/stats/cor.test.html" class="external-link">stats::cor.test()</a></code>. When non-zero,
-uses a Fisher-z test against the specified null value.</p></dd>
-
-
-</dl></div>
-    <div class="section level2">
-    <h2 id="variants">Variants<a class="anchor" aria-label="anchor" href="#variants"></a></h2>
-
-
-<dl><dt><code>"spearman"</code></dt>
-<dd><p>Spearman's \(\rho\). Uses <code><a href="https://rdrr.io/r/stats/cor.test.html" class="external-link">stats::cor.test()</a></code> with
-<code>method = "spearman"</code>. No confidence interval is returned. Does not
-support <code><a href="null-hyp.html">state_null()</a></code>.</p></dd>
-
-<dt><code>"kendall"</code></dt>
-<dd><p>Kendall's \(\tau\). Uses <code><a href="https://rdrr.io/r/stats/cor.test.html" class="external-link">stats::cor.test()</a></code> with
-<code>method = "kendall"</code>. No confidence interval is returned. Does not
-support <code><a href="null-hyp.html">state_null()</a></code>.</p></dd>
-
-
-</dl></div>
-    <div class="section level2">
-    <h2 id="correlation-test-default-class">Correlation test default class<a class="anchor" aria-label="anchor" href="#correlation-test-default-class"></a></h2>
-
-
-<p>Returns a <a href="class_corr_two.html">class_corr_two</a> object inheriting from <a href="class_stat_infer.html">class_stat_infer</a>.</p>
-<p>For the <code>base</code> variant, <code>df</code>, <code>lower_ci</code>, and <code>upper_ci</code> are always
-populated. For <code>spearman</code> and <code>kendall</code>, those slots are <code>numeric(0)</code> and
-are omitted from the printed output.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="hypothesis-claims">Hypothesis claims<a class="anchor" aria-label="anchor" href="#hypothesis-claims"></a></h2>
-
-
-<p>Supports <code><a href="RHO.html">RHO()</a></code> via <code><a href="null-hyp.html">state_null()</a></code>. Only available on the <code>base</code>
-(Pearson) variant. The claim is parsed as follows:</p><ul><li><p>The operator maps to <code>.alt</code>: <code>==</code> and <code>!=</code> become <code>"two.sided"</code>,
-<code>&gt;=</code> and <code>&gt;</code> become <code>"less"</code>, <code>&lt;=</code> and <code>&lt;</code> become <code>"greater"</code>.</p></li>
-<li><p>The scalar maps to <code>.rho</code>: <code>RHO(x, y) == 0.9</code>, not <code>0.9 == RHO(x, y)</code>,
-is handled correctly via <code><a href="claim_scalar.html">claim_scalar()</a></code>.</p></li>
+for full argument lists, variants, and correlation test class details:</p><ul><li><p><code><a href="rel.html">rel()</a></code>: one-to-one correlation test. See details from <a href="cortest-rel.html">cortest-rel</a>.</p></li>
+<li><p><code>&lt;formula&gt;</code>: one-to-many correlation test. See details from <a href="cortest-formula.html">cortest-formula</a>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -223,6 +167,39 @@ is handled correctly via <code><a href="claim_scalar.html">claim_scalar()</a></c
 <span class="r-out co"><span class="r-pr">#&gt;</span>       pair      lower_95  upper_95  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dist ~ speed   0.682     0.886    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">cars</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">~</span> <span class="va">dist</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : formula </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Args : speed ~ dist </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     left_var : 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     right_var : 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> == Correlation Test ============================================================ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- Summary ---------------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       pair      estimate  statistic  df  p_val   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   speed ~ dist   0.807      9.464    48  <span style="font-weight: bold;">&lt;0.001</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ─────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- Confidence Interval ---------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       pair      lower_95  upper_95  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   speed ~ dist   0.682     0.886    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ────────────────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

@@ -52,92 +52,15 @@ Each model ID routes to a separate implementation. See the linked pages
 for full argument lists, variants, and result class details:
 
 - [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md):
-  two-sample or paired t-test. See
+  two-sample or paired t-test. See details from
   [ttest-xby](https://s7-stats.github.io/statim/reference/ttest-xby.md).
 
 - [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md):
-  pairwise t-tests across variables. See
+  pairwise t-tests across variables. See details from
   [ttest-pairwise](https://s7-stats.github.io/statim/reference/ttest-pairwise.md).
 
-- `<formula>`: one-sample and/or two-sample t-test. See
+- `<formula>`: one-sample and/or two-sample t-test. See details from
   [ttest-formula](https://s7-stats.github.io/statim/reference/ttest-formula.md).
-
-## Arguments
-
-The following arguments are passed via `...` in `TTEST()` or
-[`via()`](https://s7-stats.github.io/statim/reference/via.md):
-
-- `.paired`:
-
-  Logical. Whether to perform a paired t-test. Default `FALSE`.
-
-- `.mu`:
-
-  Numeric. Hypothesized mean difference. Default `0`.
-
-- `.alt`:
-
-  Direction: `"two.sided"`, `"greater"`, or `"less"`. Default
-  `"two.sided"`.
-
-- `.ci`:
-
-  Confidence level. Default `0.95`.
-
-- `.first_group`:
-
-  Only if uses
-  [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
-  Considers first term as the first order. Default is `NULL`.
-
-## Variants
-
-- `"boot"`:
-
-  Bootstrap CI. Accepts `n` (reps) and `seed`.
-
-- `"permute"`:
-
-  Permutation test. Accepts `n` and `seed`.
-
-- `"contrast"`:
-
-  Welch-Satterthwaite linear contrast test. Accepts `.w`, `.mu`, `.ci`,
-  `.op`.
-
-- `"multi"`:
-
-  Accepts multiple selected `group` variables
-
-## Two-sample t-test default class
-
-Returns a
-[class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
-object. All variants that also return
-[class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
-inherit
-[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
-and [`print()`](https://rdrr.io/r/base/print.html) automatically.
-
-## Hypothesis claims
-
-Supports [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) via
-[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
-The `contrast` variant performs Welch-Satterthwaite linear contrast test
-and additionally accepts contrast coefficients via `.w`.
-
-Claim order is respected: writing `MU(x, g == "a") - MU(x, g == "b")`
-versus `MU(x, g == "b") - MU(x, g == "a")` flips the sign of `estimate`
-and `t_stat`, since the group with coefficient `+1` in the parsed claim
-becomes `x` in [`stats::t.test()`](https://rdrr.io/r/stats/t.test.html).
-This is implemented via an internal `.first_group` argument resolved
-from the claim — it is not meant to be set directly by users. If you
-call `via("base", .first_group = ...)` or use
-[`update()`](https://rdrr.io/r/stats/update.html) to override it
-manually, note that it accepts a single group label (one of the two
-levels of the grouping variable) and silently falls back to the data's
-natural level order ([`unique()`](https://rdrr.io/r/base/unique.html) on
-the grouping variable) if `NULL`, unset, or not found among the levels.
 
 ## References
 
@@ -345,23 +268,27 @@ iris |>
 #> |         < diff >          |
 #> |        < t_stat >         |
 #> |         < pval >          |
+#> |          < ci >           |
 #> └───────────────────────────┘
 #> 
 #> 
-#>                   Welch Two Sample t-test                   
-#> ────────────────────────────────────────────────────────────
-#>   Variable       Sepal.Length   Petal.Length   Sepal.Width  
-#> ────────────────────────────────────────────────────────────
-#>   Sepal.Length                                              
-#>                                                             
-#>                                                             
-#> ────────────────────────────────────────────────────────────
-#>   Petal.Length      -2.085                                  
-#>                    -13.098                                  
-#>                     <0.001                                  
-#> ────────────────────────────────────────────────────────────
-#>   Sepal.Width       2.786          0.701                    
-#>                     36.463         4.719                    
-#>                     <0.001         <0.001                   
-#> ────────────────────────────────────────────────────────────
+#>                      Welch Two Sample t-test                      
+#> ──────────────────────────────────────────────────────────────────
+#>   Variable         Sepal.Length      Petal.Length    Sepal.Width  
+#> ──────────────────────────────────────────────────────────────────
+#>   Sepal.Length                                                    
+#>                                                                   
+#>                                                                   
+#>                                                                   
+#> ──────────────────────────────────────────────────────────────────
+#>   Petal.Length        -2.085                                      
+#>                      -13.098                                      
+#>                       <0.001                                      
+#>                  [-2.399  -1.772]                                 
+#> ──────────────────────────────────────────────────────────────────
+#>   Sepal.Width         2.786             0.701                     
+#>                       36.463            4.719                     
+#>                       <0.001            <0.001                    
+#>                   [2.635  2.937]    [0.408  0.994]                
+#> ──────────────────────────────────────────────────────────────────
 ```

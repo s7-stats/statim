@@ -36,15 +36,21 @@ No variants are currently registered for the formula path. Use
 [`add_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md)
 to register custom variants at the user or package level.
 
-## Result class
+## Formula-based t-test class
 
 Returns a tibble with columns `type`, `group`, and `ttest` (a
 list-column of [`stats::t.test()`](https://rdrr.io/r/stats/t.test.html)
-results). This path does not currently return a
+objects). This path does not currently return a
 [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
-subclass — use
-[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
-to register a tidy method if needed.
+subclass. Otherwise, to process outputs:
+
+- [`print()`](https://rdrr.io/r/base/print.html): Write it down through
+  `print` from
+  [`variant()`](https://s7-stats.github.io/statim/reference/variant.md).
+
+- [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md): Use
+  [`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
+  to register a tidy method if needed.
 
 ## See also
 

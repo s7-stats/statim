@@ -33,10 +33,25 @@ The following arguments are passed via `...` in
 
 ## Correlation test default class
 
-Returns a
+As detailed by
+[cortest-rel](https://s7-stats.github.io/statim/reference/cortest-rel.md),
+it returns a
 [class_corr_two](https://s7-stats.github.io/statim/reference/class_corr_two.md)
 object inheriting from
-[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md).
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
+by default. You need to process outputs by:
+
+- [`print()`](https://rdrr.io/r/base/print.html): Write it down through
+  `print` from
+  [`variant()`](https://s7-stats.github.io/statim/reference/variant.md).
+
+- [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md): Use
+  [`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
+  to register a tidy method if needed.
+
+if the variants from this method pipeline doesn't return a
+[class_corr_two](https://s7-stats.github.io/statim/reference/class_corr_two.md)
+object.
 
 ## Hypothesis claims
 

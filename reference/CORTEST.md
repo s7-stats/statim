@@ -42,77 +42,11 @@ Each model ID routes to a separate implementation. See the linked pages
 for full argument lists, variants, and correlation test class details:
 
 - [`rel()`](https://s7-stats.github.io/statim/reference/rel.md):
-  one-to-one correlation test. See
+  one-to-one correlation test. See details from
   [cortest-rel](https://s7-stats.github.io/statim/reference/cortest-rel.md).
 
-- `<formula>`: one-to-many correlation test. See
+- `<formula>`: one-to-many correlation test. See details from
   [cortest-formula](https://s7-stats.github.io/statim/reference/cortest-formula.md).
-
-## Arguments
-
-The following arguments are passed via `...` in `CORTEST()`:
-
-- `.alt`:
-
-  String. One of `"two.sided"`, `"greater"`, or `"less"`. Default
-  `"two.sided"`.
-
-- `.ci`:
-
-  Numeric. Confidence level. Default `0.95`. Not applicable to Spearman
-  and Kendall variants.
-
-- `.rho`:
-
-  Numeric. Hypothesized population correlation coefficient under
-  H\\\_0\\. Default `0`. Only applicable to the `base` (Pearson)
-  variant. When `0`, delegates to
-  [`stats::cor.test()`](https://rdrr.io/r/stats/cor.test.html). When
-  non-zero, uses a Fisher-z test against the specified null value.
-
-## Variants
-
-- `"spearman"`:
-
-  Spearman's \\\rho\\. Uses
-  [`stats::cor.test()`](https://rdrr.io/r/stats/cor.test.html) with
-  `method = "spearman"`. No confidence interval is returned. Does not
-  support
-  [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
-
-- `"kendall"`:
-
-  Kendall's \\\tau\\. Uses
-  [`stats::cor.test()`](https://rdrr.io/r/stats/cor.test.html) with
-  `method = "kendall"`. No confidence interval is returned. Does not
-  support
-  [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
-
-## Correlation test default class
-
-Returns a
-[class_corr_two](https://s7-stats.github.io/statim/reference/class_corr_two.md)
-object inheriting from
-[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md).
-
-For the `base` variant, `df`, `lower_ci`, and `upper_ci` are always
-populated. For `spearman` and `kendall`, those slots are `numeric(0)`
-and are omitted from the printed output.
-
-## Hypothesis claims
-
-Supports [`RHO()`](https://s7-stats.github.io/statim/reference/RHO.md)
-via
-[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
-Only available on the `base` (Pearson) variant. The claim is parsed as
-follows:
-
-- The operator maps to `.alt`: `==` and `!=` become `"two.sided"`, `>=`
-  and `>` become `"less"`, `<=` and `<` become `"greater"`.
-
-- The scalar maps to `.rho`: `RHO(x, y) == 0.9`, not `0.9 == RHO(x, y)`,
-  is handled correctly via
-  [`claim_scalar()`](https://s7-stats.github.io/statim/reference/claim_scalar.md).
 
 ## See also
 
@@ -180,6 +114,39 @@ cars |>
 #>       pair      lower_95  upper_95  
 #> ────────────────────────────────────
 #>   dist ~ speed   0.682     0.886    
+#> ────────────────────────────────────
+#> 
+#> 
+
+cars |>
+    define_model(speed ~ dist) |>
+    prepare_test(CORTEST) |>
+    conclude()
+#> 
+#> == Model ======================================================================= 
+#> 
+#> Model ID : formula 
+#> Args : speed ~ dist 
+#>     left_var : 1 
+#>     right_var : 1 
+#> 
+#> == Correlation Test ============================================================ 
+#> 
+#> -- Summary ---------------------------------------------------------------------
+#> 
+#> ─────────────────────────────────────────────────
+#>       pair      estimate  statistic  df  p_val   
+#> ─────────────────────────────────────────────────
+#>   speed ~ dist   0.807      9.464    48  <0.001  
+#> ─────────────────────────────────────────────────
+#> 
+#> 
+#> -- Confidence Interval ---------------------------------------------------------
+#> 
+#> ────────────────────────────────────
+#>       pair      lower_95  upper_95  
+#> ────────────────────────────────────
+#>   speed ~ dist   0.682     0.886    
 #> ────────────────────────────────────
 #> 
 #> 

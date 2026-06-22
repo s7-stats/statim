@@ -103,7 +103,10 @@ Pearson; silently ignored for Kendall and Spearman.</p></dd>
     <h2 id="correlation-test-default-class">Correlation test default class<a class="anchor" aria-label="anchor" href="#correlation-test-default-class"></a></h2>
 
 
-<p>Returns a <a href="class_corr_two.html">class_corr_two</a> object inheriting from <a href="class_stat_infer.html">class_stat_infer</a>.</p>
+<p>As detailed by <a href="cortest-rel.html">cortest-rel</a>, it returns a <a href="class_corr_two.html">class_corr_two</a> object inheriting
+from <a href="class_stat_infer.html">class_stat_infer</a> by default. You need to process outputs by:</p><ul><li><p><code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>: Write it down through <code>print</code> from <code><a href="variant.html">variant()</a></code>.</p></li>
+<li><p><code><a href="tidy.html">tidy()</a></code>: Use <code><a href="making_tidy.html">making_tidy()</a></code> to register a tidy method if needed.</p></li>
+</ul><p>if the variants from this method pipeline doesn't return a <a href="class_corr_two.html">class_corr_two</a> object.</p>
     </div>
     <div class="section level2">
     <h2 id="hypothesis-claims">Hypothesis claims<a class="anchor" aria-label="anchor" href="#hypothesis-claims"></a></h2>

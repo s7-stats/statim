@@ -111,14 +111,14 @@ Default <code>"two.sided"</code>.</p></dd>
 <code><a href="add-variant.html">add_variant()</a></code> to register custom variants at the user or package level.</p>
     </div>
     <div class="section level2">
-    <h2 id="result-class">Result class<a class="anchor" aria-label="anchor" href="#result-class"></a></h2>
+    <h2 id="formula-based-t-test-class">Formula-based t-test class<a class="anchor" aria-label="anchor" href="#formula-based-t-test-class"></a></h2>
 
 
 <p>Returns a tibble with columns <code>type</code>, <code>group</code>, and <code>ttest</code> (a list-column
-of <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code> results). This path does not currently return a
-<a href="class_stat_infer.html">class_stat_infer</a> subclass — use <code><a href="making_tidy.html">making_tidy()</a></code> to register a tidy
-method if needed.</p>
-    </div>
+of <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code> objects). This path does not currently return a
+<a href="class_stat_infer.html">class_stat_infer</a> subclass. Otherwise, to process outputs:</p><ul><li><p><code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>: Write it down through <code>print</code> from <code><a href="variant.html">variant()</a></code>.</p></li>
+<li><p><code><a href="tidy.html">tidy()</a></code>: Use <code><a href="making_tidy.html">making_tidy()</a></code> to register a tidy method if needed.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other ttest-implementations:
