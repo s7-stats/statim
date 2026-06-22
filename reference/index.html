@@ -27,7 +27,7 @@
     <li><a class="dropdown-item" href="../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -65,7 +65,7 @@
 
       <dl></dl></div><div class="section level2">
 
-      <h3 id="model-definition-and-data-preparation">Model definition and data preparation<a class="anchor" aria-label="anchor" href="#model-definition-and-data-preparation"></a></h3>
+      <h3 id="statistical-inference-layout-definer-and-data-preparation">Statistical Inference Layout definer and data preparation<a class="anchor" aria-label="anchor" href="#statistical-inference-layout-definer-and-data-preparation"></a></h3>
       <div class="section-desc"><p>Verbs that describe the model you want to analyze</p></div>
 
       <dl></dl></div><div class="section level2">
@@ -75,10 +75,10 @@
 
       <dl><dt>
 
-          <code><a href="model-define-base.html">define_model()</a></code>
+          <code><a href="layout-define-base.html">define_model()</a></code>
 
         </dt>
-        <dd>Model define constructor</dd>
+        <dd>Define a layout supplied by a Variable Mapper</dd>
 
         <dt>
 
@@ -88,7 +88,7 @@
         <dd>Write multiple model definitions from a data frame</dd>
       </dl></div><div class="section level2">
 
-      <h3 id="model-ids">Model IDs<a class="anchor" aria-label="anchor" href="#model-ids"></a></h3>
+      <h3 id="variable-mapper-ids">Variable Mapper IDs<a class="anchor" aria-label="anchor" href="#variable-mapper-ids"></a></h3>
       <div class="section-desc"><p>Mappers similar to formula in R to shape the model you want to describe. Formula also allowed.</p></div>
 
       <dl></dl></div><div class="section level2">
@@ -135,10 +135,10 @@
 
       <dl><dt>
 
-          <code><a href="model-define-base.html">define_model()</a></code>
+          <code><a href="layout-define-base.html">define_model()</a></code>
 
         </dt>
-        <dd>Model define constructor</dd>
+        <dd>Define a layout supplied by a Variable Mapper</dd>
 
         <dt>
 
@@ -325,7 +325,7 @@
           <code><a href="inlines.html">inlines()</a></code>
 
         </dt>
-        <dd>Inline multiple expressions in a model ID</dd>
+        <dd>Inline multiple expressions in a Variable Mapper</dd>
       </dl></div><div class="section level2">
 
       <h3 id="output-renderer-and-saver">Output renderer and saver<a class="anchor" aria-label="anchor" href="#output-renderer-and-saver"></a></h3>
@@ -359,10 +359,10 @@
 
       <dl><dt>
 
-          <code><a href="model_id.html">model_id</a></code>
+          <code><a href="var_id.html">var_id</a></code>
 
         </dt>
-        <dd>Base class for model ID objects</dd>
+        <dd>Base class for Variable Mapper objects</dd>
 
         <dt>
 
@@ -373,17 +373,17 @@
 
         <dt>
 
-          <code><a href="model_id_info.html">model_id_info()</a></code>
+          <code><a href="var_id_info.html">var_id_info()</a></code>
 
         </dt>
-        <dd>Extract metadata from a model ID</dd>
+        <dd>Extract metadata from a Variable Mapper</dd>
 
         <dt>
 
-          <code><a href="class_model_inform.html">class_model_inform</a></code>
+          <code><a href="class_var_inform.html">class_var_inform</a></code>
 
         </dt>
-        <dd>Output class for model ID metadata</dd>
+        <dd>Output class for Variable Mapper metadata</dd>
       </dl></div><div class="section level2">
 
       <h3 id="implementation-containers">Implementation containers<a class="anchor" aria-label="anchor" href="#implementation-containers"></a></h3>

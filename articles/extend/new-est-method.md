@@ -155,7 +155,7 @@ cars |>
 
     == Model ======================================================================= 
 
-    Model ID : formula 
+    Variable Mapper : formula 
     Args : dist ~ speed 
         left_var : 1 
         right_var : 1 

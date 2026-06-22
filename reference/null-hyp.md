@@ -1,8 +1,7 @@
 # State a null hypothesis in the pipeline
 
 `state_null()` captures a hypothesis expression and attaches it to a
-`test_lazy` object. Accepts either a single expression or a `more_h0()`
-block for multiple named hypotheses.
+`test_lazy` object.
 
 ## Usage
 
@@ -29,8 +28,8 @@ The modified `test_lazy` object.
 
 - `expr`:
 
-  A hypothesis expression, or a `more_h0()` block. It is passed after
-  `prepare_test(...)` to supply the hypothesis expression, e.g.
+  A hypothesis expression. It is passed after `prepare_test(...)` to
+  supply the hypothesis expression, e.g.
   `... |> prepare_test(TTEST) |> state_null(expr = MU(x) == 0)`
 
 ## Examples
@@ -44,7 +43,7 @@ define_model(prop(45, 100)) |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : prop 
+#> Variable Mapper : prop 
 #> Args : 45 / 100 
 #>     x : 45 
 #>     n : 100 

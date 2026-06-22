@@ -8,14 +8,14 @@ the lazy-loaded pipeline, supply `TTEST` as a function within i.e.
 ## Usage
 
 ``` r
-TTEST(.model = NULL, .data = NULL, ...)
+TTEST(.var_id = NULL, .data = NULL, ...)
 ```
 
 ## Arguments
 
-- .model:
+- .var_id:
 
-  A model ID from
+  A variable mapper `<var_id>` from
   [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
   [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md),
   or a formula. When supplied, the test executes immediately.
@@ -27,13 +27,13 @@ TTEST(.model = NULL, .data = NULL, ...)
 - ...:
 
   Additional arguments passed to the implementation. See the **Arguments
-  by model ID** section for the full list per path.
+  by variable mapper** section for the full list per path.
 
 ## Value
 
 A `cld_exec` object (in
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)),
-a `stat_infer_spec` object, or a `test_spec` when `.model = NULL`.
+a `stat_infer_spec` object, or a `test_spec` when `.var_id = NULL`.
 Depending on the implementation you wrote, it returns any class.
 However, by default, some implementations use base `{statim}` S7
 classes. For instance:
@@ -46,10 +46,11 @@ classes. For instance:
   [class_ttest_pairwise](https://s7-stats.github.io/statim/reference/class_ttest_pairwise.md)
   object
 
-## Supported model IDs
+## Supported variable mapper `<var_id>`s
 
-Each model ID routes to a separate implementation. See the linked pages
-for full argument lists, variants, and result class details:
+Each variable mapper `<var_id>` routes to a separate implementation. See
+the linked pages for full argument lists, variants, and result class
+details:
 
 - [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md):
   two-sample or paired t-test. See details from
@@ -121,7 +122,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 
@@ -156,7 +157,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 
@@ -185,7 +186,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 
@@ -220,7 +221,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 
@@ -254,7 +255,7 @@ iris |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : pairwise 
+#> Variable Mapper : pairwise 
 #> Args : Sepal.Length, Sepal.Width, Petal.Length 
 #>     direction : lt 
 #>     n_pairs : 3 

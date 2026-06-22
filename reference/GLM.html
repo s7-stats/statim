@@ -27,7 +27,7 @@
     <li><a class="dropdown-item" href="../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -66,20 +66,20 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GLM</span><span class="op">(</span>.model <span class="op">=</span> <span class="cn">NULL</span>, .data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">GLM</span><span class="op">(</span>.var_id <span class="op">=</span> <span class="cn">NULL</span>, .data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg--model">.model<a class="anchor" aria-label="anchor" href="#arg--model"></a></dt>
-<dd><p>A model ID from <code><a href="model-define-base.html">define_model()</a></code>, or <code>NULL</code> to return a
+<dl><dt id="arg--var-id">.var_id<a class="anchor" aria-label="anchor" href="#arg--var-id"></a></dt>
+<dd><p>A variable mapper <code>&lt;var_id&gt;</code> from <code><a href="layout-define-base.html">define_model()</a></code>, or <code>NULL</code> to return a
 <code>model_spec</code> for use in <code><a href="prepare-model.html">prepare_model()</a></code>.</p></dd>
 
 
 <dt id="arg--data">.data<a class="anchor" aria-label="anchor" href="#arg--data"></a></dt>
-<dd><p>A data frame. Used when <code>.model</code> is supplied directly.</p></dd>
+<dd><p>A data frame. Used when <code>.var_id</code> is supplied directly.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -89,7 +89,7 @@
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>cld_exec</code> object in a <code>class_glm_object</code>, or a <code>model_spec</code>
-when <code>.model = NULL</code>.</p>
+when <code>.var_id = NULL</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -103,14 +103,14 @@ is <code>family</code>, which controls the error distribution and link function
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># logistic regression</span></span></span>
 <span class="r-in"><span><span class="va">mtcars</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">GLM</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : formula </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : formula </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : am ~ wt + hp </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     left_var : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     right_var : 2 </span>
@@ -141,17 +141,17 @@ is <code>family</code>, which controls the error distribution and link function
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># model comparison via anova()</span></span></span>
 <span class="r-in"><span><span class="va">mod1</span> <span class="op">=</span> <span class="va">mtcars</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">GLM</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mod2</span> <span class="op">=</span> <span class="va">mtcars</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="va">wt</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="va">wt</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">GLM</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mod3</span> <span class="op">=</span> <span class="va">mtcars</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">GLM</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>

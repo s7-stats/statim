@@ -7,7 +7,7 @@ a top-level function like
 [`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) or
 [`LINEAR_REG()`](https://s7-stats.github.io/statim/reference/LINEAR_REG.md)
 how to behave for one particular shape of model. “Shape of model” means
-the model ID under `<model_id>` class:
+the variable mapper `<var_id>` under `<var_id>` class:
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
 [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md),
 [`rel()`](https://s7-stats.github.io/statim/reference/rel.md), a
@@ -40,7 +40,7 @@ Both are `stat_define` objects with identical properties:
 
 ``` r
 ptest_def = test_define(
-    model_type = <model_id>,                 # Which is `prop`
+    model_type = <var_id>,                 # Which is `prop`
     impl = agendas(
         base = baseline(fn = ..., claim_parser = map_claim(...)),
         ...
@@ -49,7 +49,7 @@ ptest_def = test_define(
 )
 
 linear_reg_def_rel = model_infer_define(
-    model_type = <model_id>,                 # Which is `rel`
+    model_type = <var_id>,                 # Which is `rel`
     impl = agendas(...),
     compatible_params = list()
 )
@@ -83,9 +83,9 @@ LINEAR_REG = MODEL_FN(
 ```
 
 When you call `TTEST(x_by(extra, group), sleep)`, the dispatcher looks
-at the class of the model ID you passed, finds the matching
-`stat_define` (i.e. `ttest_def_two` in this case), and runs that
-implementation. The exact same lookup runs when you call
+at the class of the variable mapper `<var_id>` you passed, finds the
+matching `stat_define` (i.e. `ttest_def_two` in this case), and runs
+that implementation. The exact same lookup runs when you call
 `LINEAR_REG(rel(mpg, wt), mtcars)`, only the exception that is the
 registry being searched differs.
 
@@ -133,7 +133,7 @@ Each argument is explain by each section.
 
 ``` r
 stat_define(
-    model_type = <model_id>,
+    model_type = <var_id>,
     impl = agendas(...),
     compatible_params = list(<param_obj>, ...)
 )
@@ -141,13 +141,14 @@ stat_define(
 
 1.  `model_type`
 
-    The `<model_id>` class this implementation handles — `x_by`, `rel`,
+    The `<var_id>` class this implementation handles — `x_by`, `rel`,
     `pairwise`, `prop`, or
     [`S7::class_formula`](https://rconsortium.github.io/S7/reference/base_s3_classes.html)
     for formula-based dispatch. This is the key `find_def()` uses to
-    route an incoming model ID to the right `stat_define`, via
-    `S7::S7_class(model_id)@name` (or the literal string `"formula"`
-    when the model ID is a formula rather than an S7 model ID object).
+    route an incoming variable mapper `<var_id>` to the right
+    `stat_define`, via `S7::S7_class(var_id)@name` (or the literal
+    string `"formula"` when the variable mapper `<var_id>` is a formula
+    rather than an S7 variable mapper `<var_id>` object).
 
 2.  `impl`
 
@@ -302,8 +303,8 @@ paths into a `stat_define`’s `impl`, and both end at `inject_and_run()`.
 
 1.  Eager path: `TTEST(x_by(extra, group), sleep)` or
     `LINEAR_REG(rel(mpg, wt), mtcars)` calls `run_stat()`, which finds
-    the matching `stat_define` via `find_def()`, processes the model ID
-    through
+    the matching `stat_define` via `find_def()`, processes the variable
+    mapper `<var_id>` through
     [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md),
     and runs `def@impl$base` directly. There is no variant resolution on
     this path — only `base` is reachable.

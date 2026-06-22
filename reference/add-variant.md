@@ -34,7 +34,7 @@ remove_variant(obj, model_type, name)
 
 - model_type:
 
-  An S7 model ID class (e.g. `x_by`,
+  An S7 `<var_id>` class (e.g. `x_by`,
   [`S7::class_formula`](https://rconsortium.github.io/S7/reference/base_s3_classes.html)).
 
 - name:

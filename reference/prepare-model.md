@@ -1,7 +1,7 @@
 # Lazily prepare a model inference
 
-`prepare_model()` attaches a model specification to a `def_model`
-object, producing a `model_lazy` ready for optional recalibration with
+`prepare_model()` attaches a model specification to a `def_var` object,
+producing a `model_lazy` ready for optional recalibration with
 [`via()`](https://s7-stats.github.io/statim/reference/via.md) before
 being executed with
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
@@ -16,8 +16,8 @@ prepare_model(.x, .model_fn, ...)
 
 - .x:
 
-  An S7 object extension yielded by, e.g. `def_model` object from
-  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
+  An S7 object extension yielded by, e.g. `def_var` object from
+  [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
   or an `expanded_model` object from
   [`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md).
 
@@ -37,7 +37,7 @@ A `model_lazy` S3 object.
 ## See also
 
 [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md),
-[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
+[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
 [`via()`](https://s7-stats.github.io/statim/reference/via.md),
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 
@@ -51,7 +51,7 @@ mtcars |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : mpg ; wt 
 #>     x_vars : 1 
 #>     resp_vars : 1 

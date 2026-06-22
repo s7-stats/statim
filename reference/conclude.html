@@ -29,7 +29,7 @@ method variant, runs the implementation, and returns a cld_exec S7 object."></he
     <li><a class="dropdown-item" href="../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -93,8 +93,8 @@ or <code><a href="variant.html">variant()</a></code>. Its structure depends on t
 documentation of the stat function (e.g. <code><a href="TTEST.html">?TTEST</a></code>) for what to expect.</p></dd>
 
 <dt><code>@cld_meta</code></dt>
-<dd><p>A list of pipeline metadata:</p><dl><dt><code>$model_id</code></dt>
-<dd><p>The model ID object passed to <code><a href="model-define-base.html">define_model()</a></code>.</p></dd>
+<dd><p>A list of pipeline metadata:</p><dl><dt><code>$var_id</code></dt>
+<dd><p>The Variable Mapper object passed to <code><a href="layout-define-base.html">define_model()</a></code>.</p></dd>
 
 <dt><code>$processed</code></dt>
 <dd><p>The processed model output from <code><a href="model-processor.html">model_processor()</a></code>.
@@ -156,13 +156,13 @@ intentionally returns a non-<a href="class_stat_infer.html">class_stat_infer</a>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu">conclude</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : x_by </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : x_by </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : extra | group </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     by_vars : 1 </span>
@@ -189,14 +189,14 @@ intentionally returns a non-<a href="class_stat_infer.html">class_stat_infer</a>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="via.html">via</a></span><span class="op">(</span><span class="st">"boot"</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu">conclude</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : x_by </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : x_by </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : extra | group </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     by_vars : 1 </span>
@@ -217,13 +217,13 @@ intentionally returns a non-<a href="class_stat_infer.html">class_stat_infer</a>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mtcars</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="rel.html">rel</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">wt</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="rel.html">rel</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">wt</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu">conclude</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : rel </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : rel </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : mpg ; wt </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     resp_vars : 1 </span>

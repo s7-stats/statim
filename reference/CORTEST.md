@@ -8,14 +8,14 @@ call.
 ## Usage
 
 ``` r
-CORTEST(.model = NULL, .data = NULL, ...)
+CORTEST(.var_id = NULL, .data = NULL, ...)
 ```
 
 ## Arguments
 
-- .model:
+- .var_id:
 
-  A model ID for `CORTEST()`, e.g.
+  A variable mapper `<var_id>` for `CORTEST()`, e.g.
   [`rel()`](https://s7-stats.github.io/statim/reference/rel.md). When
   supplied, the test executes immediately.
 
@@ -32,14 +32,15 @@ CORTEST(.model = NULL, .data = NULL, ...)
 
 A `cld_exec` object (in
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)),
-or a `test_spec` object when `.model = NULL`. The default correlation
+or a `test_spec` object when `.var_id = NULL`. The default correlation
 test class for most paths is
 [class_corr_two](https://s7-stats.github.io/statim/reference/class_corr_two.md).
 
-## Supported model IDs
+## Supported variable mapper `<var_id>`s
 
-Each model ID routes to a separate implementation. See the linked pages
-for full argument lists, variants, and correlation test class details:
+Each variable mapper `<var_id>` routes to a separate implementation. See
+the linked pages for full argument lists, variants, and correlation test
+class details:
 
 - [`rel()`](https://s7-stats.github.io/statim/reference/rel.md):
   one-to-one correlation test. See details from
@@ -92,7 +93,7 @@ cars |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : speed ; dist 
 #>     x_vars : 1 
 #>     resp_vars : 1 
@@ -125,7 +126,7 @@ cars |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : speed ~ dist 
 #>     left_var : 1 
 #>     right_var : 1 
@@ -162,7 +163,7 @@ suppressWarnings({
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : speed ; dist 
 #>     x_vars : 1 
 #>     resp_vars : 1 
@@ -188,7 +189,7 @@ cars |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : speed ; dist 
 #>     x_vars : 1 
 #>     resp_vars : 1 

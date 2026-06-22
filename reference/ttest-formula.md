@@ -10,7 +10,8 @@ the left-hand side; the right-hand side determines the test type:
 
 3.  `y ~ group + 1`" both tests in a single call.
 
-Use a formula directly as the model ID to select this implementation.
+Use a formula directly as the variable mapper `<var_id>` to select this
+implementation.
 
 ## Arguments
 
@@ -68,7 +69,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : extra ~ group 
 #>     left_var : 1 
 #>     right_var : 1 
@@ -102,7 +103,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : extra ~ 1 
 #>     left_var : 1 
 #>     right_var : 0 
@@ -136,7 +137,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : extra ~ group + 1 
 #>     left_var : 1 
 #>     right_var : 1 

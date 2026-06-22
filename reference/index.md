@@ -4,16 +4,16 @@
 
 Main functions for interactive use
 
-### Model definition and data preparation
+### Statistical Inference Layout definer and data preparation
 
 Verbs that describe the model you want to analyze
 
-- [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
-  : Model define constructor
+- [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
+  : Define a layout supplied by a Variable Mapper
 - [`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
   : Write multiple model definitions from a data frame
 
-### Model IDs
+### Variable Mapper IDs
 
 Mappers similar to formula in R to shape the model you want to describe.
 Formula also allowed.
@@ -33,8 +33,8 @@ Formula also allowed.
 Verbs used for preparing and parameterize the equation of statistical
 inference
 
-- [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
-  : Model define constructor
+- [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
+  : Define a layout supplied by a Variable Mapper
 - [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
   : Lazily prepare a single test
 - [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
@@ -105,7 +105,7 @@ Analogue to [`I()`](https://rdrr.io/r/base/AsIs.html), but only captures
 the expression and accepts multiple inline codes.
 
 - [`inlines()`](https://s7-stats.github.io/statim/reference/inlines.md)
-  : Inline multiple expressions in a model ID
+  : Inline multiple expressions in a Variable Mapper
 
 ### Output renderer and saver
 
@@ -122,14 +122,14 @@ Functions for building and extending test implementations
 
 Classes and internal functions
 
-- [`model_id`](https://s7-stats.github.io/statim/reference/model_id.md)
-  : Base class for model ID objects
+- [`var_id`](https://s7-stats.github.io/statim/reference/var_id.md) :
+  Base class for Variable Mapper objects
 - [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md)
   : Model evaluator
-- [`model_id_info()`](https://s7-stats.github.io/statim/reference/model_id_info.md)
-  : Extract metadata from a model ID
-- [`class_model_inform`](https://s7-stats.github.io/statim/reference/class_model_inform.md)
-  : Output class for model ID metadata
+- [`var_id_info()`](https://s7-stats.github.io/statim/reference/var_id_info.md)
+  : Extract metadata from a Variable Mapper
+- [`class_var_inform`](https://s7-stats.github.io/statim/reference/class_var_inform.md)
+  : Output class for Variable Mapper metadata
 
 ### Implementation containers
 

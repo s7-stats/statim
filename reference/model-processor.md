@@ -1,6 +1,7 @@
 # Model evaluator
 
-A function for development use to extract the information in model IDs.
+A function for development use to extract the information in Variable
+Mappers.
 
 ## Usage
 
@@ -12,7 +13,7 @@ model_processor(x, data = NULL, ...)
 
 - x:
 
-  The model IDs to be extracted.
+  The Variable Mappers to be extracted.
 
 - data:
 

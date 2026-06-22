@@ -37,7 +37,7 @@ another_boot_tt
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 

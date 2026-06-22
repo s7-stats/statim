@@ -7,7 +7,7 @@ y ~ 1: one-sample t-test against .mu.
 y ~ group + 1" both tests in a single call.
 
 
-Use a formula directly as the model ID to select this implementation.'><meta property="og:description" content='The formula implementation performs one-sample or two-sample t-tests
+Use a formula directly as the variable mapper &amp;lt;var_id&amp;gt; to select this implementation.'><meta property="og:description" content='The formula implementation performs one-sample or two-sample t-tests
 specified via a standard R formula. The response variable is taken from
 the left-hand side; the right-hand side determines the test type:
 y ~ group: two-sample t-test, one test per grouping variable.
@@ -15,7 +15,7 @@ y ~ 1: one-sample t-test against .mu.
 y ~ group + 1" both tests in a single call.
 
 
-Use a formula directly as the model ID to select this implementation.'></head><body>
+Use a formula directly as the variable mapper &amp;lt;var_id&amp;gt; to select this implementation.'></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -43,7 +43,7 @@ Use a formula directly as the model ID to select this implementation.'></head><b
     <li><a class="dropdown-item" href="../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -82,7 +82,7 @@ specified via a standard R formula. The response variable is taken from
 the left-hand side; the right-hand side determines the test type:</p><ol><li><p><code>y ~ group</code>: two-sample t-test, one test per grouping variable.</p></li>
 <li><p><code>y ~ 1</code>: one-sample t-test against <code>.mu</code>.</p></li>
 <li><p><code>y ~ group + 1</code>" both tests in a single call.</p></li>
-</ol><p>Use a formula directly as the model ID to select this implementation.</p>
+</ol><p>Use a formula directly as the variable mapper <code>&lt;var_id&gt;</code> to select this implementation.</p>
     </div>
 
 
@@ -129,13 +129,13 @@ of <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">sta
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : formula </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : formula </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : extra ~ group </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     left_var : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     right_var : 1 </span>
@@ -163,13 +163,13 @@ of <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">sta
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># one-sample</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : formula </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : formula </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : extra ~ 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     left_var : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     right_var : 0 </span>
@@ -197,13 +197,13 @@ of <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">sta
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># both in one call</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op">~</span> <span class="va">group</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : formula </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : formula </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : extra ~ group + 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     left_var : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     right_var : 1 </span>

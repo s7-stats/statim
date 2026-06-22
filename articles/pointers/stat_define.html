@@ -46,7 +46,7 @@
     <li><a class="dropdown-item" href="../../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -101,9 +101,9 @@
 <p><code>stat_define</code> is an S7 object used as a unit of
 registration that tells a top-level function like <code><a href="../../reference/TTEST.html">TTEST()</a></code>
 or <code><a href="../../reference/LINEAR_REG.html">LINEAR_REG()</a></code> how to behave for one particular shape of
-model. “Shape of model” means the model ID under
-<code>&lt;model_id&gt;</code> class: <code><a href="../../reference/x_by.html">x_by()</a></code>,
-<code><a href="../../reference/pairwise.html">pairwise()</a></code>, <code><a href="../../reference/rel.html">rel()</a></code>, a
+model. “Shape of model” means the variable mapper
+<code>&lt;var_id&gt;</code> under <code>&lt;var_id&gt;</code> class:
+<code><a href="../../reference/x_by.html">x_by()</a></code>, <code><a href="../../reference/pairwise.html">pairwise()</a></code>, <code><a href="../../reference/rel.html">rel()</a></code>, a
 <code>&lt;formula&gt;</code>, and so on. Each shape implies a different
 procedure, a different set of arguments, and often a different result
 structure, even though the user calls the same top-level function
@@ -121,7 +121,7 @@ feeds <code><a href="../../reference/LINEAR_REG.html">LINEAR_REG()</a></code>, i
 <code><a href="../../reference/stat-infer-definer.html">model_infer_define()</a></code>. Both are <code>stat_define</code>
 objects with identical properties:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>ptest_def <span class="ot">=</span> <span class="fu">test_define</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="at">model_type =</span> <span class="sc">&lt;</span>model_id<span class="sc">&gt;</span>,                 <span class="co"># Which is `prop`</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="at">model_type =</span> <span class="sc">&lt;</span>var_id<span class="sc">&gt;</span>,                 <span class="co"># Which is `prop`</span></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    <span class="at">impl =</span> <span class="fu">agendas</span>(</span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>        <span class="at">base =</span> <span class="fu">baseline</span>(<span class="at">fn =</span> ..., <span class="at">claim_parser =</span> <span class="fu">map_claim</span>(...)),</span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>        ...</span>
@@ -130,7 +130,7 @@ objects with identical properties:</p>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>)</span>
 <span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a></span>
 <span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>linear_reg_def_rel <span class="ot">=</span> <span class="fu">model_infer_define</span>(</span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="at">model_type =</span> <span class="sc">&lt;</span>model_id<span class="sc">&gt;</span>,                 <span class="co"># Which is `rel`</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="at">model_type =</span> <span class="sc">&lt;</span>var_id<span class="sc">&gt;</span>,                 <span class="co"># Which is `rel`</span></span>
 <span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    <span class="at">impl =</span> <span class="fu">agendas</span>(...),</span>
 <span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>    <span class="at">compatible_params =</span> <span class="fu">list</span>()</span>
 <span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>)</span></code></pre></div>
@@ -159,11 +159,12 @@ per supported model shape, passed in as <code>defs</code>:</p>
 <span>    .name <span class="op">=</span> <span class="st">"Linear Regression"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>When you call <code>TTEST(x_by(extra, group), sleep)</code>, the
-dispatcher looks at the class of the model ID you passed, finds the
-matching <code>stat_define</code> (i.e. <code>ttest_def_two</code> in
-this case), and runs that implementation. The exact same lookup runs
-when you call <code>LINEAR_REG(rel(mpg, wt), mtcars)</code>, only the
-exception that is the registry being searched differs.</p>
+dispatcher looks at the class of the variable mapper
+<code>&lt;var_id&gt;</code> you passed, finds the matching
+<code>stat_define</code> (i.e. <code>ttest_def_two</code> in this case),
+and runs that implementation. The exact same lookup runs when you call
+<code>LINEAR_REG(rel(mpg, wt), mtcars)</code>, only the exception that
+is the registry being searched differs.</p>
 </div>
 <div class="section level2">
 <h2 id="why-are-objects-required">Why are <stat_define> objects required?</stat_define><a class="anchor" aria-label="anchor" href="#why-are-objects-required"></a>
@@ -202,21 +203,22 @@ need the same claim expressed differently, or not support claims at all
 </h2>
 <p>Each argument is explain by each section.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">stat_define</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    <span class="at">model_type =</span> <span class="sc">&lt;</span>model_id<span class="sc">&gt;</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>    <span class="at">model_type =</span> <span class="sc">&lt;</span>var_id<span class="sc">&gt;</span>,</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="at">impl =</span> <span class="fu">agendas</span>(...),</span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="at">compatible_params =</span> <span class="fu">list</span>(<span class="sc">&lt;</span>param_obj<span class="sc">&gt;</span>, ...)</span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>)</span></code></pre></div>
 <ol style="list-style-type: decimal">
 <li>
 <p><code>model_type</code></p>
-<p>The <code>&lt;model_id&gt;</code> class this implementation handles —
+<p>The <code>&lt;var_id&gt;</code> class this implementation handles —
 <code>x_by</code>, <code>rel</code>, <code>pairwise</code>,
 <code>prop</code>, or <code><a href="https://rconsortium.github.io/S7/reference/base_s3_classes.html" class="external-link">S7::class_formula</a></code> for formula-based
 dispatch. This is the key <code>find_def()</code> uses to route an
-incoming model ID to the right <code>stat_define</code>, via
-<code>S7::S7_class(model_id)@name</code> (or the literal string
-<code>"formula"</code> when the model ID is a formula rather than an S7
-model ID object).</p>
+incoming variable mapper <code>&lt;var_id&gt;</code> to the right
+<code>stat_define</code>, via <code>S7::S7_class(var_id)@name</code> (or
+the literal string <code>"formula"</code> when the variable mapper
+<code>&lt;var_id&gt;</code> is a formula rather than an S7 variable
+mapper <code>&lt;var_id&gt;</code> object).</p>
 </li>
 <li>
 <p><code>impl</code></p>
@@ -370,9 +372,10 @@ at <code>inject_and_run()</code>.</p>
 <code>LINEAR_REG(rel(mpg, wt), mtcars)</code> calls
 <code>run_stat()</code>, which finds the matching
 <code>stat_define</code> via <code>find_def()</code>, processes the
-model ID through <code><a href="../../reference/model-processor.html">model_processor()</a></code>, and runs
-<code>def@impl$base</code> directly. There is no variant resolution on
-this path — only <code>base</code> is reachable.</p></li>
+variable mapper <code>&lt;var_id&gt;</code> through
+<code><a href="../../reference/model-processor.html">model_processor()</a></code>, and runs <code>def@impl$base</code>
+directly. There is no variant resolution on this path — only
+<code>base</code> is reachable.</p></li>
 <li><p>Lazy path:
 <code>sleep |&gt; define_model(x_by(extra, group)) |&gt; prepare_test(TTEST) |&gt; via("boot", n = 2000) |&gt; conclude()</code>
 and

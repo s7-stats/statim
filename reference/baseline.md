@@ -17,7 +17,8 @@ baseline(fn, print = NULL, claim_parser = NULL)
   A function whose first argument must be `.proc`, the processed model
   output from
   [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md).
-  The keys available on `.proc` depend on the model ID used:
+  The keys available on `.proc` depend on the variable mapper `<var_id>`
+  used:
 
   - `x_by`: `$x_data`, `$group_data`
 
@@ -28,7 +29,7 @@ baseline(fn, print = NULL, claim_parser = NULL)
   - `formula`: `$data`, `$vars`, `$formula`
 
   Try run this to explore the structure:
-  `names(model_processor(<model_id>, <data>))`.
+  `names(model_processor(<var_id>, <data>))`.
 
     
 

@@ -46,7 +46,7 @@
     <li><a class="dropdown-item" href="../../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -124,14 +124,14 @@ cannot be used after <code><a href="../../reference/conclude.html">conclude()</a
 has already executed and the result is no longer lazy.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"boot"</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; == Model ======================================================================= </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Model ID : x_by </span></span>
+<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
 <span><span class="co">#&gt; Args : extra | group </span></span>
 <span><span class="co">#&gt;     x_vars : 1 </span></span>
 <span><span class="co">#&gt;     by_vars : 1 </span></span>
@@ -154,7 +154,7 @@ name (<code>.method</code>) and any extra named arguments
 (<code>...</code>). The actual dispatch (i.e. finding the matching
 implementation and running it) only happens once <code><a href="../../reference/conclude.html">conclude()</a></code>
 is called. This is the same “defused until executed” behavior the rest
-of the grammar follows: <code><a href="../../reference/model-define-base.html">define_model()</a></code>,
+of the grammar follows: <code><a href="../../reference/layout-define-base.html">define_model()</a></code>,
 <code><a href="../../reference/prepare-test.html">prepare_test()</a></code> / <code><a href="../../reference/prepare-model.html">prepare_model()</a></code>,
 <code><a href="../../reference/null-hyp.html">state_null()</a></code>, and <code><a href="../../reference/via.html">via()</a></code> all just accumulate
 specification, and <code><a href="../../reference/conclude.html">conclude()</a></code> is the single point where
@@ -182,7 +182,7 @@ with the <code>%&lt;-%</code> operator, and is meant for extending an
 existing <code>&lt;STAT_FN&gt;</code> (built with
 <code><a href="../../reference/HTEST_FN.html">HTEST_FN()</a></code> or <code><a href="../../reference/MODEL_FN.html">MODEL_FN()</a></code>) without touching its
 original definition:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">add_variant</span>(<span class="sc">&lt;</span>STAT_FN<span class="sc">&gt;</span>, <span class="sc">&lt;</span>model_id<span class="sc">&gt;</span>, <span class="st">"&lt;new_mode&gt;"</span>) <span class="sc">%&lt;-%</span> <span class="fu">variant</span>(</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">add_variant</span>(<span class="sc">&lt;</span>STAT_FN<span class="sc">&gt;</span>, <span class="sc">&lt;</span>var_id<span class="sc">&gt;</span>, <span class="st">"&lt;new_mode&gt;"</span>) <span class="sc">%&lt;-%</span> <span class="fu">variant</span>(</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="at">fn =</span> <span class="cf">function</span>(.proc, <span class="at">arg1 =</span> , <span class="at">arg2 =</span> , ...) {</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>        <span class="co"># ...</span></span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    }</span>
@@ -199,7 +199,7 @@ added or removed through <code><a href="../../reference/add-variant.html">add_va
 </ol>
 <p>Because matching is scoped to model type, the same variant name can
 mean different things (or simply do not exist) depending on which
-<code>&lt;model_id&gt;</code> you used in <code><a href="../../reference/model-define-base.html">define_model()</a></code>. A
+<code>&lt;var_id&gt;</code> you used in <code><a href="../../reference/layout-define-base.html">define_model()</a></code>. A
 variant registered for <code><a href="../../reference/x_by.html">x_by()</a></code> pipelines is not
 automatically available to a <code>&lt;formula&gt;</code>-based pipeline
 of the same test, even if both eventually call <code>TTEST</code>.</p>
@@ -208,7 +208,7 @@ in play, <code><a href="../../reference/via.html">via()</a></code> fails immedia
 <code><a href="../../reference/conclude.html">conclude()</a></code> is even reached:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"not_a_real_method"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `method(via, list(statim::test_lazy, class_character))`:</span></span></span>
@@ -228,7 +228,7 @@ Concretely, <code><a href="../../reference/conclude.html">conclude()</a></code> 
 <code><a href="../../reference/via.html">via()</a></code> win on overlap:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"boot"</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -236,7 +236,7 @@ Concretely, <code><a href="../../reference/conclude.html">conclude()</a></code> 
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; == Model ======================================================================= </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Model ID : x_by </span></span>
+<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
 <span><span class="co">#&gt; Args : extra | group </span></span>
 <span><span class="co">#&gt;     x_vars : 1 </span></span>
 <span><span class="co">#&gt;     by_vars : 1 </span></span>
@@ -283,7 +283,7 @@ gives a <code>claim_parser</code> to its <code>base</code> and to
 not take a hypothesized value as an argument in the first place.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">0</span></span>
@@ -293,7 +293,7 @@ not take a hypothesized value as an argument in the first place.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; == Model ======================================================================= </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Model ID : x_by </span></span>
+<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
 <span><span class="co">#&gt; Args : extra | group </span></span>
 <span><span class="co">#&gt;     x_vars : 1 </span></span>
 <span><span class="co">#&gt;     by_vars : 1 </span></span>
@@ -325,7 +325,7 @@ no <code>claim_parser</code>, <code><a href="../../reference/conclude.html">conc
 explicitly rather than silently ignoring the claim:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span><span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span> <span class="op">|&gt;</span></span>

@@ -8,14 +8,14 @@ the lazy-loaded pipeline, supply `P_TEST` as a function within i.e.
 ## Usage
 
 ``` r
-P_TEST(.model = NULL, .data = NULL, ...)
+P_TEST(.var_id = NULL, .data = NULL, ...)
 ```
 
 ## Arguments
 
-- .model:
+- .var_id:
 
-  A registered model ID, e.g.
+  A registered variable mapper `<var_id>`, e.g.
   [`prop()`](https://s7-stats.github.io/statim/reference/prop.md). When
   supplied, the test executes immediately.
 
@@ -30,7 +30,7 @@ P_TEST(.model = NULL, .data = NULL, ...)
 
 ## Value
 
-A `cld_exec` object, or a `test_spec` when `.model = NULL`. The object
+A `cld_exec` object, or a `test_spec` when `.var_id = NULL`. The object
 stored in `cld_exec@data` is a
 [class_p_test](https://s7-stats.github.io/statim/reference/class_p_test.md)
 object.
@@ -141,7 +141,7 @@ define_model(prop(45, 100)) |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : prop 
+#> Variable Mapper : prop 
 #> Args : 45 / 100 
 #>     x : 45 
 #>     n : 100 
@@ -175,7 +175,7 @@ define_model(prop(45, 100)) |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : prop 
+#> Variable Mapper : prop 
 #> Args : 45 / 100 
 #>     x : 45 
 #>     n : 100 
@@ -209,7 +209,7 @@ define_model(prop(45, 100)) |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : prop 
+#> Variable Mapper : prop 
 #> Args : 45 / 100 
 #>     x : 45 
 #>     n : 100 
@@ -243,7 +243,7 @@ define_model(prop(45, 100)) |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : prop 
+#> Variable Mapper : prop 
 #> Args : 45 / 100 
 #>     x : 45 
 #>     n : 100 

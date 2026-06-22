@@ -87,7 +87,7 @@ sleep |>
 
 == Model ======================================================================= 
 
-Model ID : x_by 
+Variable Mapper : x_by 
 Args : extra | group 
     x_vars : 1 
     by_vars : 1 
@@ -136,7 +136,7 @@ sleep |>
 
 == Model ======================================================================= 
 
-Model ID : x_by 
+Variable Mapper : x_by 
 Args : extra | group 
     x_vars : 1 
     by_vars : 1 
@@ -176,7 +176,7 @@ sleep |>
 
 == Model ======================================================================= 
 
-Model ID : x_by 
+Variable Mapper : x_by 
 Args : extra | group 
     x_vars : 1 
     by_vars : 1 
@@ -311,9 +311,9 @@ just work.
     parameters that were actually allowed.
 
 3.  Every variable named inside a parameter is checked against the
-    variables the model ID actually declared. Let’s take a look of this:
-    `MU(extra, group == "1")`. `extra` and `group`. Every problem found
-    is collected and reported together rather than stopping at the first
-    one. A typo’d variable name fails at
+    variables the variable mapper `<var_id>` actually declared. Let’s
+    take a look of this: `MU(extra, group == "1")`. `extra` and `group`.
+    Every problem found is collected and reported together rather than
+    stopping at the first one. A typo’d variable name fails at
     [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md),
     not three steps later inside the test implementation.

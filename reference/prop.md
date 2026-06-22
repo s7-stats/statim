@@ -1,8 +1,8 @@
 # Define a proportion test model
 
-`prop()` creates a `prop` model ID for proportion tests. Both arguments
-are scalar constants, and this implies the arguments are expressions
-that are not captured.
+`prop()` creates a `prop` Variable Mapper for proportion tests. Both
+arguments are scalar constants, and this implies the arguments are
+expressions that are not captured.
 
 ## Usage
 
@@ -22,7 +22,7 @@ prop(x, n)
 
 ## Value
 
-A `prop` / `model_id` S7 object.
+A `prop` / `var_id` S7 object.
 
 ## Examples
 
@@ -30,6 +30,6 @@ A `prop` / `model_id` S7 object.
 prop(45, 100)
 #> -- Model Definition ------------------------------------------------------------ 
 #> 
-#> Model ID : prop 
+#> Variable Mapper : prop 
 #> Args : 45 / 100 
 ```

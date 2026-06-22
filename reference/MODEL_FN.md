@@ -4,7 +4,7 @@
 functions like
 [`LINEAR_REG()`](https://s7-stats.github.io/statim/reference/LINEAR_REG.md).
 It returns a function that routes to the correct implementation based on
-the model ID and method variant.
+the variable mapper `<var_id>` and method variant.
 
 ## Usage
 
@@ -30,7 +30,7 @@ MODEL_FN(cls, defs, .name)
 
 ## Value
 
-A function with signature `function(.model, .data, ...)`.
+A function with signature `function(.var_id, .data, ...)`.
 
 ## See also
 

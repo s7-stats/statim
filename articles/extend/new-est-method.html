@@ -48,7 +48,7 @@
     <li><a class="dropdown-item" href="../../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -215,14 +215,14 @@ weighted-least-squares variant. It reuses the package’s own
 <p>Let’s try with a simple example:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cars</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">dist</span> <span class="op">~</span> <span class="va">speed</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">dist</span> <span class="op">~</span> <span class="va">speed</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"weighted"</span>, weights <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">cars</span><span class="op">$</span><span class="va">speed</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code>
 == Model ======================================================================= 
 
-Model ID : formula 
+Variable Mapper : formula 
 Args : dist ~ speed 
     left_var : 1 
     right_var : 1 

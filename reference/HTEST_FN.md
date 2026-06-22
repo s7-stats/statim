@@ -4,7 +4,8 @@
 functions like
 [`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md). It
 returns a function with a consistent signature that routes to the
-correct implementation based on the model ID and method variant.
+correct implementation based on the variable mapper `<var_id>` and
+method variant.
 
 ## Usage
 
@@ -30,7 +31,7 @@ HTEST_FN(cls, defs, .name)
 
 ## Value
 
-A function with signature `function(.model, .data, ...)`.
+A function with signature `function(.var_id, .data, ...)`.
 
 ## See also
 

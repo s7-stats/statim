@@ -4,7 +4,8 @@ An S7 class produced by
 [TTEST](https://s7-stats.github.io/statim/reference/TTEST.md) pipelines
 using
 [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md)
-as the model ID. Not constructed manually — use the pipeline instead.
+as the variable mapper `<var_id>`. Not constructed manually — use the
+pipeline instead.
 
 Inherits from
 [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md),

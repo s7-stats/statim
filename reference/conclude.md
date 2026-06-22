@@ -44,10 +44,10 @@ A `cld_exec` S7 object with the following slots:
 
   A list of pipeline metadata:
 
-  `$model_id`
+  `$var_id`
 
-  :   The model ID object passed to
-      [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md).
+  :   The Variable Mapper object passed to
+      [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md).
 
   `$processed`
 
@@ -132,7 +132,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 
@@ -166,7 +166,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 
@@ -193,7 +193,7 @@ mtcars |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : mpg ; wt 
 #>     x_vars : 1 
 #>     resp_vars : 1 

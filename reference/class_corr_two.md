@@ -3,8 +3,8 @@
 An S7 class produced by
 [CORTEST](https://s7-stats.github.io/statim/reference/CORTEST.md) using
 [`rel()`](https://s7-stats.github.io/statim/reference/rel.md) and
-`<formula>` as the model ID. Not constructed manually, use the "grammar
-interface" instead.
+`<formula>` as the variable mapper `<var_id>`. Not constructed manually,
+use the "grammar interface" instead.
 
 Inherits from
 [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md),

@@ -23,7 +23,8 @@ model_infer_define(model_type = NULL, impl = NULL, compatible_params = list())
 
 - model_type:
 
-  A model ID class this implementation handles (e.g. `x_by`,
+  A variable mapper `<var_id>` class this implementation handles (e.g.
+  `x_by`,
   [`S7::class_formula`](https://rconsortium.github.io/S7/reference/base_s3_classes.html)).
 
 - impl:

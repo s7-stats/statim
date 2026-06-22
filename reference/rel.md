@@ -1,8 +1,8 @@
 # Describe the relationship between two variables
 
-`rel()` creates a `rel` model ID that reads as "relationship between `x`
-and `resp`". Expressions are captured unevaluated, similar to how
-`ggplot2::aes()` captures aesthetics.
+`rel()` creates a `rel` Variable Mapper that reads as "relationship
+between `x` and `resp`". Expressions are captured unevaluated, similar
+to how `ggplot2::aes()` captures aesthetics.
 
 ## Usage
 
@@ -17,7 +17,7 @@ rel(x, resp)
   The predictor variable. Accepts a bare name, a
   [`c()`](https://rdrr.io/r/base/c.html) of bare names, a tidyselect
   helper (requires `data` in
-  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)),
+  [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)),
   or `I(expr)` for inline data.
 
 - resp:
@@ -26,7 +26,7 @@ rel(x, resp)
 
 ## Value
 
-A `rel` / `model_id` S7 object.
+A `rel` / `var_id` S7 object.
 
 ## Examples
 
@@ -34,6 +34,6 @@ A `rel` / `model_id` S7 object.
 rel(speed, dist)
 #> -- Model Definition ------------------------------------------------------------ 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : speed ; dist 
 ```

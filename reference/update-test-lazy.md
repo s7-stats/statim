@@ -28,7 +28,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : extra ~ group 
 #>     left_var : 1 
 #>     right_var : 1 

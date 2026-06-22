@@ -29,7 +29,7 @@ via(). Never runs on the eager path."></head><body>
     <li><a class="dropdown-item" href="../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -79,11 +79,11 @@ via(). Never runs on the eager path."></head><body>
 <dl><dt id="arg-fn">fn<a class="anchor" aria-label="anchor" href="#arg-fn"></a></dt>
 <dd><p>A function whose first argument must be <code>.proc</code>, the processed
 model output from <code><a href="model-processor.html">model_processor()</a></code>. The keys available on <code>.proc</code>
-depend on the model ID used:</p><ul><li><p><code>x_by</code>: <code>$x_data</code>, <code>$group_data</code></p></li>
+depend on the variable mapper <code>&lt;var_id&gt;</code> used:</p><ul><li><p><code>x_by</code>: <code>$x_data</code>, <code>$group_data</code></p></li>
 <li><p><code>rel</code>: <code>$x_data</code>, <code>$resp_data</code></p></li>
 <li><p><code>pairwise</code>: <code>$var_names</code>, <code>$pairs</code>, <code>$data</code></p></li>
 <li><p><code>formula</code>: <code>$data</code>, <code>$vars</code>, <code>$formula</code></p></li>
-</ul><p>Try run this to explore the structure: <code>names(model_processor(&lt;model_id&gt;, &lt;data&gt;))</code>.</p>
+</ul><p>Try run this to explore the structure: <code>names(model_processor(&lt;var_id&gt;, &lt;data&gt;))</code>.</p>
 <p><br></p>
 <p>Additional named arguments are user-supplied statistical parameters
 (e.g. <code>.mu</code>, <code>.ci</code>). See <code><a href="model-processor.html">model_processor()</a></code> for the full <code>.proc</code>

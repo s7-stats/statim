@@ -14,14 +14,14 @@
   1.  Eager Form Approach:
 
       ``` r
-      <<STAT_FN>>(<model_id>, <data>)
+      <<STAT_FN>>(<var_id>, <data>)
       ```
 
   2.  Piped/Grammar Syntax
 
       ``` r
       ... |>
-          define_model(<data/model_id>, <data/model_id>) |> 
+          define_model(<data/var_id>, <data/var_id>) |> 
           prepare_*(<<STAT_FN>>) |> 
           state_null(<expr>) |> 
           via("<method>") |> 

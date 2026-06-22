@@ -1,4 +1,4 @@
-# Inline multiple expressions in a model ID
+# Inline multiple expressions in a Variable Mapper
 
 `inlines()` is the multi-expression analogue of
 [`c()`](https://rdrr.io/r/base/c.html) for inline data. Where
@@ -27,9 +27,10 @@ inlines(...)
 
 ## Value
 
-A named list of quosures. Intended for use inside model ID functions
-such as [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
-and [`rel()`](https://s7-stats.github.io/statim/reference/rel.md); not
+A named list of quosures. Intended for use inside variable mapper
+`<var_id>` functions such as
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) and
+[`rel()`](https://s7-stats.github.io/statim/reference/rel.md); not
 typically called on its own.
 
 ## Details
@@ -57,7 +58,7 @@ x_by(
 )
 #> -- Model Definition ------------------------------------------------------------ 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : <inlines> | <inline> 
 
 # Unnamed — auto-named as xv1, xv2 under role "x"
@@ -67,7 +68,7 @@ x_by(
 )
 #> -- Model Definition ------------------------------------------------------------ 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : <inlines> | <inline> 
 
 # Mixed — named elements keep their name, unnamed get auto-names
@@ -77,7 +78,7 @@ x_by(
 )
 #> -- Model Definition ------------------------------------------------------------ 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : <inlines> | <inline> 
 
 # Contrast with c() — selects existing variables by name
@@ -87,6 +88,6 @@ grp = rep(c("a", "b"), each = 15)
 x_by(c(x1, x2), grp)
 #> -- Model Definition ------------------------------------------------------------ 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : x1, x2 | grp 
 ```

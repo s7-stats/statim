@@ -58,7 +58,7 @@ LifeCycleSavings |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : sr ~ 1 
 #>     left_var : 1 
 #>     right_var : 0 
@@ -91,7 +91,7 @@ LifeCycleSavings |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : sr ~ pop15 
 #>     left_var : 1 
 #>     right_var : 1 

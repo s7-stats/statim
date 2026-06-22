@@ -116,7 +116,7 @@ Here’s the general anatomy of the main
 # Data can be piped in or passed as argument to `define_model()`
 ... |>                                   # Possible extensions  
     define_model(
-        <model_id>(var1, var2, ...), 
+        <var_id>(var1, var2, ...), 
         data, ...
     ) |>                                 # 1. Model definition
     # ... |>                             # Possible extensions  
@@ -133,8 +133,8 @@ Explanation of the code above:
 1.  *Model processor and definition*, where defining the shape of model
     *to be analyzed* happens at the beginning during statistical
     inference. Typically, this step where supplying either a data frame
-    or a `<model_id>` objects into
-    [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
+    or a `<var_id>` objects into
+    [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
     occurs, and then some functions to be appended in the future
     updates.
 
@@ -187,10 +187,10 @@ The package is designed around three ideas:
 2.  **A shared grammar**: Only applied on the main
     [statim](https://github.com/s7-stats/statim) semantics:
     piped/grammar syntax.
-    [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
+    [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
     =\> `prepare_*()` =\>
     [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
-    is the same shape for every inferential procedure. The `<model_id>`
+    is the same shape for every inferential procedure. The `<var_id>`
     objects (`x_by`, `rel`, `pairwise`, …) describe the statistical
     structure of the problem; the verbs stay constant.
 

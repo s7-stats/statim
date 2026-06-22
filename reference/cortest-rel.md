@@ -4,7 +4,7 @@ The `rel` implementation performs a correlation test between exactly one
 independent variable and one response variable.
 
 Use [`rel()`](https://s7-stats.github.io/statim/reference/rel.md) as the
-model ID to select this implementation.
+variable mapper `<var_id>` to select this implementation.
 
 ## Arguments
 
@@ -116,7 +116,7 @@ cars |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : speed ; dist 
 #>     x_vars : 1 
 #>     resp_vars : 1 
@@ -153,7 +153,7 @@ suppressWarnings({
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : speed ; dist 
 #>     x_vars : 1 
 #>     resp_vars : 1 
@@ -181,7 +181,7 @@ suppressWarnings({
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : speed ; dist 
 #>     x_vars : 1 
 #>     resp_vars : 1 
@@ -207,7 +207,7 @@ cars |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : speed ; dist 
 #>     x_vars : 1 
 #>     resp_vars : 1 
@@ -242,7 +242,7 @@ cars |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : speed ; dist 
 #>     x_vars : 1 
 #>     resp_vars : 1 

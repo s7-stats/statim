@@ -1,16 +1,16 @@
 # Validate hypothesis parameter references against a model's declared variables
 
-An S7 generic dispatched on the model ID class. Called automatically
-inside
+An S7 generic dispatched on the variable mapper `<var_id>` class. Called
+automatically inside
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
 after the compatible-param guard. Implement a method for any new
-[model_id](https://s7-stats.github.io/statim/reference/model_id.md)
-subclass you define.
+[var_id](https://s7-stats.github.io/statim/reference/var_id.md) subclass
+you define.
 
 ## Usage
 
 ``` r
-validate_claim_vars(model_id, processed, claims, ...)
+validate_claim_vars(var_id, processed, claims, ...)
 
 check_param_nodes(claims, x_vars, by_vars)
 
@@ -21,12 +21,11 @@ check_x_and_given(x_quo, given_quo, x_vars, by_vars, cls_name)
 
 ## Arguments
 
-- model_id:
+- var_id:
 
-  A
-  \<[model_id](https://s7-stats.github.io/statim/reference/model_id.md)\>
+  A \<[var_id](https://s7-stats.github.io/statim/reference/var_id.md)\>
   object (usually carried by
-  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)).
+  [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)).
 
 - processed:
 
@@ -94,12 +93,12 @@ against `x_vars` and a `given` quosure against `by_vars`.
 
 ## Implementing a new method
 
-By default, unknown model ID subclasses pass through without validation.
-To add validation for a new
-[model_id](https://s7-stats.github.io/statim/reference/model_id.md)
+By default, unknown variable mapper `<var_id>` subclasses pass through
+without validation. To add validation for a new
+[var_id](https://s7-stats.github.io/statim/reference/var_id.md)
 subclass, implement a method and delegate to `check_param_nodes()`:
 
-    S7::method(validate_claim_vars, <model_id>) = function(model_id, processed, claims) {
+    S7::method(validate_claim_vars, <var_id>) = function(var_id, processed, claims) {
         check_param_nodes(
             claims,
             x_vars = names(processed$x_data),
@@ -140,4 +139,4 @@ For a subclass with two variable slots (like
 [`RHO()`](https://s7-stats.github.io/statim/reference/RHO.md),
 [`PI()`](https://s7-stats.github.io/statim/reference/PI.md),
 [`param_obj()`](https://s7-stats.github.io/statim/reference/param_obj.md),
-[`model_id()`](https://s7-stats.github.io/statim/reference/model_id.md)
+[`var_id()`](https://s7-stats.github.io/statim/reference/var_id.md)

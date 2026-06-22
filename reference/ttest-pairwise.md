@@ -6,7 +6,7 @@ results are presented as a matrix.
 
 Use
 [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md)
-as the model ID to select this implementation.
+as the variable mapper `<var_id>` to select this implementation.
 
 ## Arguments
 
@@ -85,7 +85,7 @@ iris |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : pairwise 
+#> Variable Mapper : pairwise 
 #> Args : Sepal.Length, Sepal.Width, Petal.Length 
 #>     direction : lt 
 #>     n_pairs : 3 

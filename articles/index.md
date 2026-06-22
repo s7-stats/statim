@@ -24,8 +24,8 @@
 
 ### Pointers of statim you need to know
 
-- [\`\<model_id\>\`
-  objects](https://s7-stats.github.io/statim/articles/pointers/model_id.md):
+- [\`\<var_id\>\`
+  objects](https://s7-stats.github.io/statim/articles/pointers/var_id.md):
 
   Writing statim extensions
 

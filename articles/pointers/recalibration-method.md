@@ -43,7 +43,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 
@@ -70,7 +70,7 @@ implementation and running it) only happens once
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 is called. This is the same “defused until executed” behavior the rest
 of the grammar follows:
-[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
+[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
 [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
 /
 [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md),
@@ -112,7 +112,7 @@ when the test or model was built. Two sources are checked:
     without touching its original definition:
 
     ``` r
-    add_variant(<STAT_FN>, <model_id>, "<new_mode>") %<-% variant(
+    add_variant(<STAT_FN>, <var_id>, "<new_mode>") %<-% variant(
         fn = function(.proc, arg1 = , arg2 = , ...) {
             # ...
         }
@@ -131,9 +131,9 @@ when the test or model was built. Two sources are checked:
     [`remove_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md).
 
 Because matching is scoped to model type, the same variant name can mean
-different things (or simply do not exist) depending on which
-`<model_id>` you used in
-[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md).
+different things (or simply do not exist) depending on which `<var_id>`
+you used in
+[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md).
 A variant registered for
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
 pipelines is not automatically available to a `<formula>`-based pipeline
@@ -186,7 +186,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 
@@ -256,7 +256,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 

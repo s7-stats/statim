@@ -3,10 +3,10 @@
 `write_models()` evaluates named model expressions sequentially against
 `.data`, so each name is available to subsequent expressions via
 [`stats::update()`](https://rdrr.io/r/stats/update.html). Accepts any
-valid model ID: formulas,
+valid variable mapper `<var_id>`: `<formulas>`,
 [`rel()`](https://s7-stats.github.io/statim/reference/rel.md),
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md), or any
-registered `model_id` type.
+registered `var_id` type.
 
 ## Usage
 
@@ -22,8 +22,8 @@ write_models(.data, ...)
 
 - ...:
 
-  Named model expressions. Each must evaluate to a formula or a
-  `model_id` object. Names are used as row labels in
+  Named model expressions. Each must evaluate to a formula or a `var_id`
+  object. Names are used as row labels in
   [`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
   output and as the `model` column in
   [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md).
@@ -143,7 +143,7 @@ LifeCycleSavings |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : sr ~ 1 
 #>     left_var : 1 
 #>     right_var : 0 
@@ -176,7 +176,7 @@ LifeCycleSavings |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : sr ~ pop15 
 #>     left_var : 1 
 #>     right_var : 1 
@@ -210,7 +210,7 @@ LifeCycleSavings |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : sr ~ pop15 + pop75 
 #>     left_var : 1 
 #>     right_var : 2 
@@ -245,7 +245,7 @@ LifeCycleSavings |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : sr ~ pop15 + pop75 + dpi 
 #>     left_var : 1 
 #>     right_var : 3 
@@ -281,7 +281,7 @@ LifeCycleSavings |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : sr ~ pop15 + pop75 + dpi + ddpi 
 #>     left_var : 1 
 #>     right_var : 4 

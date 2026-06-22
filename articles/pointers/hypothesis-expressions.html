@@ -46,7 +46,7 @@
     <li><a class="dropdown-item" href="../../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -158,7 +158,7 @@ pointing at the exact offending subexpression.</p>
 <p>This is what backs the t-test contrast variant:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="co"># Internally, `&lt;=` will be automatically flipped into `&gt;` for the alternative hypothesis</span></span>
@@ -169,7 +169,7 @@ pointing at the exact offending subexpression.</p>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
 
-Model ID : x_by 
+Variable Mapper : x_by 
 Args : extra | group 
     x_vars : 1 
     by_vars : 1 
@@ -211,7 +211,7 @@ the groups themselves.</p>
 
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">0</span></span>
@@ -220,7 +220,7 @@ the groups themselves.</p>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
 
-Model ID : x_by 
+Variable Mapper : x_by 
 Args : extra | group 
     x_vars : 1 
     by_vars : 1 
@@ -249,7 +249,7 @@ Args : extra | group
 
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">0</span></span>
@@ -258,7 +258,7 @@ Args : extra | group
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
 
-Model ID : x_by 
+Variable Mapper : x_by 
 Args : extra | group 
     x_vars : 1 
     by_vars : 1 
@@ -343,7 +343,7 @@ being broken, just an implicit convention (whichever term is
 all, so the same kind of structural mistake in a single-parameter claim
 doesn’t get the same clean diagnostic:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">P_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span><span class="fl">5</span> <span class="op">/</span> <span class="fu"><a href="../../reference/PI.html">PI</a></span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -385,7 +385,8 @@ attached, not later at <code><a href="../../reference/conclude.html">conclude()<
 <code><a href="../../reference/prop.html">prop()</a></code> pipeline fails immediately, naming the parameter you
 used and the parameters that were actually allowed.</p></li>
 <li><p>Every variable named inside a parameter is checked against the
-variables the model ID actually declared. Let’s take a look of this:
+variables the variable mapper <code>&lt;var_id&gt;</code> actually
+declared. Let’s take a look of this:
 <code>MU(extra, group == "1")</code>. <code>extra</code> and
 <code>group</code>. Every problem found is collected and reported
 together rather than stopping at the first one. A typo’d variable name

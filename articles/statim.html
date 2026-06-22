@@ -48,7 +48,7 @@
     <li><a class="dropdown-item" href="../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -120,14 +120,14 @@ readable with grammar syntax — much close in spirit to
 <p>The stage where you define the shape of the model to be analyzed.
 This always happens at the beginning of the pipeline. <a href="#model-id"><model_id></model_id></a> objects describe the shape of the
 inference, e.g. what variable, what grouping, what relationship, while
-functions like <code><a href="../reference/model-define-base.html">define_model()</a></code> binds that shape to data.</p>
+functions like <code><a href="../reference/layout-define-base.html">define_model()</a></code> binds that shape to data.</p>
 <p>There are two ways to start a pipeline:</p>
 <ol style="list-style-type: lower-roman">
 <li>
-<p><code><a href="../reference/model-define-base.html">define_model()</a></code> to define one model at a time.</p>
+<p><code><a href="../reference/layout-define-base.html">define_model()</a></code> to define one model at a time.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
-<span><span class="va">mtcars_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
+<span><span class="va">mtcars_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
 <span><span class="co"># mtcars_dm = define_model(mpg ~ ., mtcars)</span></span></code></pre></div>
 </li>
 <li>
@@ -158,13 +158,13 @@ model-based inference (e.g. linear regression) or H-test inference
 <li>
 <p>H-test inference uses <code><a href="../reference/prepare-test.html">prepare_test()</a></code></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
 <span><span class="va">sleep_tt</span> <span class="op">=</span> <span class="va">sleep_dm</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></code></pre></div>
 </li>
 <li>
 <p>Model-based inference uses <code><a href="../reference/prepare-model.html">prepare_model()</a></code></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mtcars_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">mtcars_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
 <span><span class="va">mtcars_lm</span> <span class="op">=</span> <span class="va">mtcars_dm</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span></span></code></pre></div>
 </li>
 </ol>
@@ -199,7 +199,7 @@ sentence:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># t-test example</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -211,7 +211,7 @@ sentence:</p>
 <span></span>
 <span><span class="co"># Linear regression example</span></span>
 <span><span class="va">mtcars</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -235,7 +235,7 @@ sentence:</p>
 </h3>
 <p>There are times where you do not need the full pipeline, a quick
 eager form can do that. For a quick one-shot result, every test exposes
-an eager form that skips <code><a href="../reference/model-define-base.html">define_model()</a></code> and
+an eager form that skips <code><a href="../reference/layout-define-base.html">define_model()</a></code> and
 <code><a href="../reference/prepare-test.html">prepare_test()</a></code> entirely:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span>, <span class="va">sleep</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
@@ -360,9 +360,9 @@ involved.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span>   <span class="co"># 45 successes out of 100 trials</span></span></code></pre></div>
 <p>Because the data is embedded in the model ID itself,
-<code><a href="../reference/model-define-base.html">define_model()</a></code> does not require a data frame:</p>
+<code><a href="../reference/layout-define-base.html">define_model()</a></code> does not require a data frame:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </li>
 </ol>
 <p>And if you are familiar with <code>aes()</code> (aesthetics) mapper
@@ -398,13 +398,13 @@ is a single added line, with nothing else changing:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Classical</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; == Model ======================================================================= </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Model ID : x_by </span></span>
+<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
 <span><span class="co">#&gt; Args : extra | group </span></span>
 <span><span class="co">#&gt;     x_vars : 1 </span></span>
 <span><span class="co">#&gt;     by_vars : 1 </span></span>
@@ -430,14 +430,14 @@ is a single added line, with nothing else changing:</p>
 <span></span>
 <span><span class="co"># Permutation: one line added</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; == Model ======================================================================= </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Model ID : x_by </span></span>
+<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
 <span><span class="co">#&gt; Args : extra | group </span></span>
 <span><span class="co">#&gt;     x_vars : 1 </span></span>
 <span><span class="co">#&gt;     by_vars : 1 </span></span>
@@ -524,7 +524,7 @@ under drug 2:</p>
 \mu_{x|\text{group}=2}</span></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span></span>
@@ -533,7 +533,7 @@ under drug 2:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; == Model ======================================================================= </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Model ID : x_by </span></span>
+<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
 <span><span class="co">#&gt; Args : extra | group </span></span>
 <span><span class="co">#&gt;     x_vars : 1 </span></span>
 <span><span class="co">#&gt;     by_vars : 1 </span></span>

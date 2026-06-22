@@ -2,26 +2,26 @@
 
 Fits an ordinary least squares linear regression model. Accepts
 [`rel()`](https://s7-stats.github.io/statim/reference/rel.md) or a
-formula as the model ID.
+formula as the variable mapper `<var_id>`.
 
 ## Usage
 
 ``` r
-LINEAR_REG(.model = NULL, .data = NULL, ...)
+LINEAR_REG(.var_id = NULL, .data = NULL, ...)
 ```
 
 ## Arguments
 
-- .model:
+- .var_id:
 
-  A model ID from
-  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
+  A variable mapper `<var_id>` from
+  [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
   or `NULL` to return a `model_spec` for use in
   [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md).
 
 - .data:
 
-  A data frame. Used when `.model` is supplied directly.
+  A data frame. Used when `.var_id` is supplied directly.
 
 - ...:
 
@@ -31,7 +31,7 @@ LINEAR_REG(.model = NULL, .data = NULL, ...)
 
 A `cld_exec` object containing a
 [class_lm_object](https://s7-stats.github.io/statim/reference/class_lm_object.md),
-or a `model_spec` when `.model = NULL`.
+or a `model_spec` when `.var_id = NULL`.
 
 ## Details
 
@@ -53,7 +53,7 @@ cars |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : rel 
+#> Variable Mapper : rel 
 #> Args : speed ; dist 
 #>     x_vars : 1 
 #>     resp_vars : 1 
@@ -91,7 +91,7 @@ cars |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : dist ~ speed 
 #>     left_var : 1 
 #>     right_var : 1 

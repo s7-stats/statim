@@ -31,7 +31,7 @@ supply CORTEST as a function i.e. prepare_test(.test = CORTEST) call."></head><b
     <li><a class="dropdown-item" href="../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -72,15 +72,15 @@ supply <code>CORTEST</code> as a function i.e. <code>prepare_test(.test = CORTES
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CORTEST</span><span class="op">(</span>.model <span class="op">=</span> <span class="cn">NULL</span>, .data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">CORTEST</span><span class="op">(</span>.var_id <span class="op">=</span> <span class="cn">NULL</span>, .data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg--model">.model<a class="anchor" aria-label="anchor" href="#arg--model"></a></dt>
-<dd><p>A model ID for <code>CORTEST()</code>, e.g. <code><a href="rel.html">rel()</a></code>.
+<dl><dt id="arg--var-id">.var_id<a class="anchor" aria-label="anchor" href="#arg--var-id"></a></dt>
+<dd><p>A variable mapper <code>&lt;var_id&gt;</code> for <code>CORTEST()</code>, e.g. <code><a href="rel.html">rel()</a></code>.
 When supplied, the test executes immediately.</p></dd>
 
 
@@ -96,14 +96,14 @@ See the <strong>Arguments</strong> section of each implementation page.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>cld_exec</code> object (in <code><a href="conclude.html">conclude()</a></code>), or a <code>test_spec</code> object
-when <code>.model = NULL</code>. The default correlation test class for most paths is
+when <code>.var_id = NULL</code>. The default correlation test class for most paths is
 <a href="class_corr_two.html">class_corr_two</a>.</p>
     </div>
     <div class="section level2">
-    <h2 id="supported-model-ids">Supported model IDs<a class="anchor" aria-label="anchor" href="#supported-model-ids"></a></h2>
+    <h2 id="supported-variable-mapper-lt-var-id-gt-s">Supported variable mapper <code>&lt;var_id&gt;</code>s<a class="anchor" aria-label="anchor" href="#supported-variable-mapper-lt-var-id-gt-s"></a></h2>
 
 
-<p>Each model ID routes to a separate implementation. See the linked pages
+<p>Each variable mapper <code>&lt;var_id&gt;</code> routes to a separate implementation. See the linked pages
 for full argument lists, variants, and correlation test class details:</p><ul><li><p><code><a href="rel.html">rel()</a></code>: one-to-one correlation test. See details from <a href="cortest-rel.html">cortest-rel</a>.</p></li>
 <li><p><code>&lt;formula&gt;</code>: one-to-many correlation test. See details from <a href="cortest-formula.html">cortest-formula</a>.</p></li>
 </ul></div>
@@ -139,13 +139,13 @@ for full argument lists, variants, and correlation test class details:</p><ul><l
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># grammatical syntax</span></span></span>
 <span class="r-in"><span><span class="va">cars</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="rel.html">rel</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="rel.html">rel</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : rel </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : rel </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : speed ; dist </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     resp_vars : 1 </span>
@@ -172,13 +172,13 @@ for full argument lists, variants, and correlation test class details:</p><ul><l
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">cars</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">~</span> <span class="va">dist</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">speed</span> <span class="op">~</span> <span class="va">dist</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : formula </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : formula </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : speed ~ dist </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     left_var : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     right_var : 1 </span>
@@ -207,7 +207,7 @@ for full argument lists, variants, and correlation test class details:</p><ul><l
 <span class="r-in"><span><span class="co"># Spearman</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="op">{</span></span></span>
 <span class="r-in"><span>    <span class="va">cars</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>        <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="rel.html">rel</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>        <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="rel.html">rel</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>        <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>        <span class="fu"><a href="via.html">via</a></span><span class="op">(</span><span class="st">"spearman"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>        <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -215,7 +215,7 @@ for full argument lists, variants, and correlation test class details:</p><ul><l
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : rel </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : rel </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : speed ; dist </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     resp_vars : 1 </span>
@@ -234,14 +234,14 @@ for full argument lists, variants, and correlation test class details:</p><ul><l
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Custom Hypothesis Expression</span></span></span>
 <span class="r-in"><span><span class="va">cars</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="rel.html">rel</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="rel.html">rel</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="null-hyp.html">state_null</a></span><span class="op">(</span><span class="fu"><a href="RHO.html">RHO</a></span><span class="op">(</span><span class="va">speed</span>, <span class="va">dist</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : rel </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : rel </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : speed ; dist </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     resp_vars : 1 </span>

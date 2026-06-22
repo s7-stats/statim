@@ -4,7 +4,8 @@ This function is a developer-interface function, a constructor for
 user-facing test functions like
 [`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md).
 It returns a function with a consistent signature that routes to the
-correct implementation based on the model ID and method variant.
+correct implementation based on the variable mapper `<var_id>` and
+method variant.
 
 ## Usage
 
@@ -32,7 +33,7 @@ STAT_CONSTRUCTOR(cls, defs, .name, spec_class)
 
 ## Value
 
-A function with signature `function(.model, .data, ...)`.
+A function with signature `function(.var_id, .data, ...)`.
 
 ## See also
 

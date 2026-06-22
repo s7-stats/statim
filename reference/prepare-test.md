@@ -1,6 +1,6 @@
 # Lazily prepare a single test
 
-`prepare_test()` attaches a test specification to a `def_model` object,
+`prepare_test()` attaches a test specification to a `def_var` object,
 producing a `test_lazy` ready for optional recalibration with
 [`via()`](https://s7-stats.github.io/statim/reference/via.md) before
 being executed with
@@ -16,8 +16,8 @@ prepare_test(.x, .test, ...)
 
 - .x:
 
-  An S7 object extension yielded by, e.g. `def_model` object from
-  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
+  An S7 object extension yielded by, e.g. `def_var` object from
+  [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
   or an `expanded_model` object from
   [`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md).
 
@@ -38,7 +38,7 @@ A `test_lazy` S3 object.
 
 ## See also
 
-[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
+[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
 [`via()`](https://s7-stats.github.io/statim/reference/via.md),
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 
@@ -52,7 +52,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 

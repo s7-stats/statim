@@ -27,7 +27,7 @@
     <li><a class="dropdown-item" href="../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -69,12 +69,12 @@
 <p>Two complementary interfaces:</p>
 <ol style="list-style-type: decimal"><li>
 <p>Eager Form Approach:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;</span>STAT_FN<span class="sc">&gt;</span><span class="er">&gt;</span>(<span class="sc">&lt;</span>model_id<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">&gt;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;</span>STAT_FN<span class="sc">&gt;</span><span class="er">&gt;</span>(<span class="sc">&lt;</span>var_id<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">&gt;</span>)</span></code></pre></div>
 </li>
 <li>
 <p>Piped/Grammar Syntax</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>... <span class="sc">|&gt;</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="fu">define_model</span>(<span class="sc">&lt;</span>data<span class="sc">/</span>model_id<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">/</span>model_id<span class="sc">&gt;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="fu">define_model</span>(<span class="sc">&lt;</span>data<span class="sc">/</span>var_id<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">/</span>var_id<span class="sc">&gt;</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    prepare_<span class="sc">*</span>(<span class="sc">&lt;</span><span class="er">&lt;</span>STAT_FN<span class="sc">&gt;</span><span class="er">&gt;</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    <span class="fu">state_null</span>(<span class="sc">&lt;</span>expr<span class="sc">&gt;</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    <span class="fu">via</span>(<span class="st">"&lt;method&gt;"</span>) <span class="sc">|&gt;</span> </span>

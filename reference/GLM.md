@@ -6,21 +6,21 @@ A modified GLM for `{statim}` pipeline passed through
 ## Usage
 
 ``` r
-GLM(.model = NULL, .data = NULL, ...)
+GLM(.var_id = NULL, .data = NULL, ...)
 ```
 
 ## Arguments
 
-- .model:
+- .var_id:
 
-  A model ID from
-  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md),
+  A variable mapper `<var_id>` from
+  [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
   or `NULL` to return a `model_spec` for use in
   [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md).
 
 - .data:
 
-  A data frame. Used when `.model` is supplied directly.
+  A data frame. Used when `.var_id` is supplied directly.
 
 - ...:
 
@@ -30,7 +30,7 @@ GLM(.model = NULL, .data = NULL, ...)
 ## Value
 
 A `cld_exec` object in a `class_glm_object`, or a `model_spec` when
-`.model = NULL`.
+`.var_id = NULL`.
 
 ## Details
 
@@ -53,7 +53,7 @@ mtcars |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : formula 
+#> Variable Mapper : formula 
 #> Args : am ~ wt + hp 
 #>     left_var : 1 
 #>     right_var : 2 

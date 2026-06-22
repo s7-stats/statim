@@ -30,12 +30,12 @@ The stage where you define the shape of the model to be analyzed. This
 always happens at the beginning of the pipeline. [](#model-id) objects
 describe the shape of the inference, e.g. what variable, what grouping,
 what relationship, while functions like
-[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
+[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
 binds that shape to data.
 
 There are two ways to start a pipeline:
 
-1.  [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
+1.  [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
     to define one model at a time.
 
     ``` r
@@ -164,7 +164,7 @@ mtcars |>
 There are times where you do not need the full pipeline, a quick eager
 form can do that. For a quick one-shot result, every test exposes an
 eager form that skips
-[`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
+[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
 and
 [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
 entirely:
@@ -305,7 +305,7 @@ built-in model IDs:
     ```
 
     Because the data is embedded in the model ID itself,
-    [`define_model()`](https://s7-stats.github.io/statim/reference/model-define-base.md)
+    [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
     does not require a data frame:
 
     ``` r
@@ -362,7 +362,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 
@@ -395,7 +395,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 
@@ -497,7 +497,7 @@ sleep |>
 #> 
 #> == Model ======================================================================= 
 #> 
-#> Model ID : x_by 
+#> Variable Mapper : x_by 
 #> Args : extra | group 
 #>     x_vars : 1 
 #>     by_vars : 1 

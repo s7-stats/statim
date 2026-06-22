@@ -31,7 +31,7 @@ supply TTEST as a function within i.e. prepare_test(.test = TTEST) call."></head
     <li><a class="dropdown-item" href="../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
-    <li><a class="dropdown-item" href="../articles/pointers/model_id.html">`&lt;model_id&gt;` objects</a></li>
+    <li><a class="dropdown-item" href="../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/stat_define.html">stat_define objects</a></li>
     <li><a class="dropdown-item" href="../articles/pointers/hypothesis-expressions.html">What are {statim}'s Null Hypothesis Expressions? </a></li>
     <li><a class="dropdown-item" href="../articles/pointers/recalibration-method.html">via(): Switching to different mode</a></li>
@@ -72,15 +72,15 @@ supply <code>TTEST</code> as a function within i.e. <code>prepare_test(.test = T
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">TTEST</span><span class="op">(</span>.model <span class="op">=</span> <span class="cn">NULL</span>, .data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">TTEST</span><span class="op">(</span>.var_id <span class="op">=</span> <span class="cn">NULL</span>, .data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg--model">.model<a class="anchor" aria-label="anchor" href="#arg--model"></a></dt>
-<dd><p>A model ID from <code><a href="x_by.html">x_by()</a></code>, <code><a href="pairwise.html">pairwise()</a></code>, or a formula.
+<dl><dt id="arg--var-id">.var_id<a class="anchor" aria-label="anchor" href="#arg--var-id"></a></dt>
+<dd><p>A variable mapper <code>&lt;var_id&gt;</code> from <code><a href="x_by.html">x_by()</a></code>, <code><a href="pairwise.html">pairwise()</a></code>, or a formula.
 When supplied, the test executes immediately.</p></dd>
 
 
@@ -90,22 +90,22 @@ When supplied, the test executes immediately.</p></dd>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments passed to the implementation. See the
-<strong>Arguments by model ID</strong> section for the full list per path.</p></dd>
+<strong>Arguments by variable mapper</strong> section for the full list per path.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>cld_exec</code> object (in <code><a href="conclude.html">conclude()</a></code>), a <code>stat_infer_spec</code> object, or a
-<code>test_spec</code> when <code>.model = NULL</code>. Depending on the implementation you wrote, it returns
+<code>test_spec</code> when <code>.var_id = NULL</code>. Depending on the implementation you wrote, it returns
 any class. However, by default, some implementations use base <code>{statim}</code> S7 classes.
 For instance:</p><ul><li><p><code>ttest_x_by</code>, by default, returns a <a href="class_ttest_two.html">class_ttest_two</a> object</p></li>
 <li><p><code>ttest_pairwise</code>, by default, returns a <a href="class_ttest_pairwise.html">class_ttest_pairwise</a> object</p></li>
 </ul></div>
     <div class="section level2">
-    <h2 id="supported-model-ids">Supported model IDs<a class="anchor" aria-label="anchor" href="#supported-model-ids"></a></h2>
+    <h2 id="supported-variable-mapper-lt-var-id-gt-s">Supported variable mapper <code>&lt;var_id&gt;</code>s<a class="anchor" aria-label="anchor" href="#supported-variable-mapper-lt-var-id-gt-s"></a></h2>
 
 
-<p>Each model ID routes to a separate implementation. See the linked pages
+<p>Each variable mapper <code>&lt;var_id&gt;</code> routes to a separate implementation. See the linked pages
 for full argument lists, variants, and result class details:</p><ul><li><p><code><a href="x_by.html">x_by()</a></code>: two-sample or paired t-test. See details from <a href="ttest-xby.html">ttest-xby</a>.</p></li>
 <li><p><code><a href="pairwise.html">pairwise()</a></code>: pairwise t-tests across variables. See details from <a href="ttest-pairwise.html">ttest-pairwise</a>.</p></li>
 <li><p><code>&lt;formula&gt;</code>: one-sample and/or two-sample t-test. See details from <a href="ttest-formula.html">ttest-formula</a>.</p></li>
@@ -155,13 +155,13 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># pipeline</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : x_by </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : x_by </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : extra | group </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     by_vars : 1 </span>
@@ -189,14 +189,14 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># bootstrap</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="via.html">via</a></span><span class="op">(</span><span class="st">"boot"</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : x_by </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : x_by </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : extra | group </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     by_vars : 1 </span>
@@ -218,14 +218,14 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># permutation</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : x_by </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : x_by </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : extra | group </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     by_vars : 1 </span>
@@ -249,7 +249,7 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-in"><span><span class="co"># This uses `state_null()` in a higher degree</span></span></span>
 <span class="r-in"><span><span class="co"># This performs Welch-Satterthwaite linear contrast test for t-test</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="null-hyp.html">state_null</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>        <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span></span></span>
@@ -260,7 +260,7 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : x_by </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : x_by </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : extra | group </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     x_vars : 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     by_vars : 1 </span>
@@ -288,13 +288,13 @@ slots. <code><a href="via.html">via()</a></code>, <code><a href="null-hyp.html">
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># pairwise</span></span></span>
 <span class="r-in"><span><span class="va">iris</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="model-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="pairwise.html">pairwise</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, <span class="va">Sepal.Width</span>, <span class="va">Petal.Length</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="pairwise.html">pairwise</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, <span class="va">Sepal.Width</span>, <span class="va">Petal.Length</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Model ID : pairwise </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable Mapper : pairwise </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Args : Sepal.Length, Sepal.Width, Petal.Length </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     direction : lt </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     n_pairs : 3 </span>
