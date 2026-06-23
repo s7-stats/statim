@@ -31,6 +31,7 @@
 <url><loc>https://s7-stats.github.io/statim/reference/RHO.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/STAT_CONSTRUCTOR.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/TTEST.html</loc></url>
+<url><loc>https://s7-stats.github.io/statim/reference/add-stat-define.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/add-variant.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/agendas.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/anova-mod.html</loc></url>
@@ -66,6 +67,7 @@
 <url><loc>https://s7-stats.github.io/statim/reference/prepare-model.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/prepare-test.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/prop.html</loc></url>
+<url><loc>https://s7-stats.github.io/statim/reference/purge_stat_defines.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/rel.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/save_excel.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/stat-infer-definer.html</loc></url>

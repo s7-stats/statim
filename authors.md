@@ -10,16 +10,14 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/s7-stats/statim/blob/master/DESCRIPTION)
+[`inst/CITATION`](https://github.com/s7-stats/statim/blob/master/inst/CITATION)
 
-Marie J, Soetewey A (2026). *statim: A Declarative Interface for
-Statistical Inference*. R package version 0.0.0.9000,
-<https://github.com/s7-stats/statim>.
+Marie, Joshua et al. (2026). statim: A Declarative Interface for
+Statistical Inference https://s7-stats.github.io/statim
 
     @Manual{,
-      title = {statim: A Declarative Interface for Statistical Inference},
+      title = {{statim}: A Declarative Interface for Statistical Inference},
       author = {Joshua Marie and Antoine Soetewey},
       year = {2026},
       note = {R package version 0.0.0.9000},
-      url = {https://github.com/s7-stats/statim},
     }

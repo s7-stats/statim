@@ -414,6 +414,17 @@ Register a new test implementation
 - [`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)
   : Build a model inference function
 
+### stat_define add-ons management
+
+Add or remove estimation method on existing test functions
+
+- [`add_stat_define()`](https://s7-stats.github.io/statim/reference/add-stat-define.md)
+  [`remove_stat_define()`](https://s7-stats.github.io/statim/reference/add-stat-define.md)
+  : Add or remove stat_define implementations on a test or model
+  function
+- [`purge_stat_defines()`](https://s7-stats.github.io/statim/reference/purge_stat_defines.md)
+  : Purge all package-scoped stat_define registrations for a package
+
 ### Session-scoped variant management
 
 Add or replace variants on existing test functions

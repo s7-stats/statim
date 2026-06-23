@@ -137,13 +137,13 @@ already supported. Let’s say adding a variant to a model shape
 <code><a href="../../reference/add-variant.html">add_variant()</a></code>, no access to internals required. The rest of
 this vignette covers it.</p></li>
 <li><p>Add another but independent support for a model shape that
-doesn’t exist yet. This needs a new stat_define registered from outside
-the package, which isn’t public yet. <code>defs</code> is closed over
-inside <code><a href="../../reference/STAT_CONSTRUCTOR.html">STAT_CONSTRUCTOR()</a></code> with no exported mutator, and the
-registration mechanism is still being designed (collision handling and
-snapshot staleness are open questions). Until it ships, this means
-contributing upstream or building your own
-<code><a href="../../reference/STAT_CONSTRUCTOR.html">STAT_CONSTRUCTOR()</a></code>-based function.</p></li>
+doesn’t exist yet. This needs a new <code>stat_define</code> registered
+from outside the package via <code><a href="../../reference/add-stat-define.html">add_stat_define()</a></code>. Unlike
+<code><a href="../../reference/add-variant.html">add_variant()</a></code>, which extends a model shape that already
+exists, <code><a href="../../reference/add-stat-define.html">add_stat_define()</a></code> teaches a stat function to handle
+a model shape it has never seen before. The mechanism, conflict
+handling, and session/package scoping are covered in the <a href="#registering-a-new-model-type">Registering a new model type</a>
+section below.</p></li>
 </ol>
 </div>
 <div class="section level2">
@@ -197,7 +197,7 @@ weighted-least-squares variant. It reuses the package’s own
 <span>        <span class="va">coef_tbl</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span></span>
 <span>        <span class="va">rss</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">residuals</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
 <span>        <span class="va">df_res</span> <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">df.residual</span></span>
-<span>        </span>
+<span></span>
 <span>        <span class="fu"><a href="../../reference/class_lm_object.html">class_lm_object</a></span><span class="op">(</span></span>
 <span>            terms <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">terms</span>,</span>
 <span>            fitted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span>,</span>
@@ -267,7 +267,7 @@ class of its left-hand side — here <code>add_variant_call</code> — to
 <p>The canonical example in <code><a href="../../reference/add-variant.html">?add_variant</a></code> does exactly the
 same thing for <code>TTEST</code> and <code><a href="../../reference/x_by.html">x_by()</a></code>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/add-variant.html">add_variant</a></span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span> <span class="op"><a href="../../reference/modifying-assignment.html">%&lt;-%</a></span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/add-variant.html">add_variant</a></span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span> <span class="op"><a href="../../reference/modifying-assignment.html">%&lt;-%</a></span></span>
 <span>    <span class="fu"><a href="../../reference/variant.html">variant</a></span><span class="op">(</span></span>
 <span>        fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">.n</span> <span class="op">=</span> <span class="fl">1000L</span><span class="op">)</span> <span class="op">{</span></span>
 <span>            <span class="va">x</span> <span class="op">=</span> <span class="va">.proc</span><span class="op">$</span><span class="va">x_data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
@@ -302,7 +302,7 @@ one message rather than failing on the first:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/variant.html">variant</a></span><span class="op">(</span></span>
 <span>    fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">weights</span><span class="op">)</span> <span class="op">{</span></span>
-<span>        <span class="co"># `weights` has no default </span></span>
+<span>        <span class="co"># `weights` has no default</span></span>
 <span>        <span class="co"># calling via("weighted") with nothing</span></span>
 <span>        <span class="co"># supplied for it aborts with "1 required argument not supplied: weights"</span></span>
 <span>    <span class="op">}</span></span>
@@ -336,19 +336,115 @@ to let a session manually tear down something a package registered on
 load.</p>
 </div>
 <div class="section level2">
+<h2 id="registering-a-new-model-type">Registering a new model type<a class="anchor" aria-label="anchor" href="#registering-a-new-model-type"></a>
+</h2>
+<p><code><a href="../../reference/add-variant.html">add_variant()</a></code> can only extend a model shape the stat
+function already handles. If you want <code><a href="../../reference/P_TEST.html">P_TEST()</a></code> to accept an
+<code><a href="../../reference/x_by.html">x_by()</a></code> input — a shape it has no built-in
+<code>stat_define</code> for — you need <code><a href="../../reference/add-stat-define.html">add_stat_define()</a></code>
+instead.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/add-stat-define.html">add_stat_define</a></span><span class="op">(</span></span>
+<span>    <span class="va">P_TEST</span>,</span>
+<span>    <span class="va">x_by</span>,</span>
+<span>    impl <span class="op">=</span> <span class="fu"><a href="../../reference/agendas.html">agendas</a></span><span class="op">(</span></span>
+<span>        base <span class="op">=</span> <span class="fu"><a href="../../reference/baseline.html">baseline</a></span><span class="op">(</span></span>
+<span>            fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">.p</span> <span class="op">=</span> <span class="fl">0.5</span>, <span class="va">.alt</span> <span class="op">=</span> <span class="st">"two.sided"</span>, <span class="va">.ci</span> <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span> <span class="op">{</span></span>
+<span>                <span class="va">x</span> <span class="op">=</span> <span class="va">.proc</span><span class="op">$</span><span class="va">x_data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span>                <span class="va">grp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">.proc</span><span class="op">$</span><span class="va">group_data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>                <span class="co"># ... compute a proportion test per group</span></span>
+<span>            <span class="op">}</span></span>
+<span>        <span class="op">)</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    compatible_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">PI</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The first two arguments mirror <code><a href="../../reference/add-variant.html">add_variant()</a></code> exactly:
+the stat function, then the model type. <code>impl</code> is a full
+<code><a href="../../reference/agendas.html">agendas()</a></code> object — <code><a href="../../reference/baseline.html">baseline()</a></code> plus any named
+<code><a href="../../reference/variant.html">variant()</a></code>s you want reachable via <code><a href="../../reference/via.html">via()</a></code>.
+<code>compatible_params</code> declares which hypothesis parameter
+classes (e.g. <code>PI</code>, <code>MU</code>) are valid in
+<code><a href="../../reference/null-hyp.html">state_null()</a></code> for this model type; omit it or pass
+<code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> to disable the check entirely.</p>
+<div class="section level3">
+<h3 id="conflict-handling">Conflict handling<a class="anchor" aria-label="anchor" href="#conflict-handling"></a>
+</h3>
+<p><code><a href="../../reference/add-stat-define.html">add_stat_define()</a></code> refuses to register a model type that
+is already handled, whether baked-in or previously registered:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># prop is baked into P_TEST</span></span>
+<span><span class="co"># Therefore, this fails</span></span>
+<span><span class="fu"><a href="../../reference/add-stat-define.html">add_stat_define</a></span><span class="op">(</span><span class="va">P_TEST</span>, <span class="va">prop</span>, impl <span class="op">=</span> <span class="fu"><a href="../../reference/agendas.html">agendas</a></span><span class="op">(</span>base <span class="op">=</span> <span class="fu"><a href="../../reference/baseline.html">baseline</a></span><span class="op">(</span>fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span><span class="op">)</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `add_stat_define()`:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Model type <span style="color: #0000BB;">"prop"</span> is already defined as a baked-in implementation of</span></span>
+<span><span class="co">#&gt;   `p_test()`.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Baked-in model types: <span style="color: #0000BB;">"prop"</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use `add_variant()` to extend an existing model type with a new method</span></span>
+<span><span class="co">#&gt;   instead.</span></span></code></pre></div>
+<p>When a registry conflict exists, the error names the prior registrant
+— its origin and package — so you know exactly who owns the entry before
+deciding whether to <code><a href="../../reference/add-stat-define.html">remove_stat_define()</a></code> it first.</p>
+</div>
+<div class="section level3">
+<h3 id="scoping-and-teardown">Scoping and teardown<a class="anchor" aria-label="anchor" href="#scoping-and-teardown"></a>
+</h3>
+<p><code><a href="../../reference/add-stat-define.html">add_stat_define()</a></code> follows the same <code>origin</code>
+contract as <code><a href="../../reference/add-variant.html">add_variant()</a></code>. <code>origin = "user"</code>
+(the default) is session-scoped and removable with
+<code><a href="../../reference/add-stat-define.html">remove_stat_define()</a></code>. <code>origin = "package"</code> is
+for <code>.onLoad()</code> in an extension package and is removed
+automatically on unload via <code><a href="../../reference/purge_stat_defines.html">purge_stat_defines()</a></code>:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># In your package's zzz.R</span></span>
+<span><span class="va">.onLoad</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">libname</span>, <span class="va">pkgname</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">statim</span><span class="fu">::</span><span class="fu"><a href="../../reference/add-stat-define.html">add_stat_define</a></span><span class="op">(</span></span>
+<span>        <span class="va">P_TEST</span>,</span>
+<span>        <span class="va">x_by</span>,</span>
+<span>        impl <span class="op">=</span> <span class="fu"><a href="../../reference/agendas.html">agendas</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span>,</span>
+<span>        origin <span class="op">=</span> <span class="st">"package"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">.onUnload</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">libpath</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">statim</span><span class="fu">::</span><span class="fu"><a href="../../reference/purge_stat_defines.html">purge_stat_defines</a></span><span class="op">(</span><span class="st">"yourpackage"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><code>origin = "package"</code> called outside a package context —
+from the global environment or a script — is a hard error, not a silent
+fallback to <code>"user"</code>. This prevents accidental use of the
+package-scoped path in interactive sessions where teardown never
+runs.</p>
+</div>
+<div class="section level3">
+<h3 id="what-conclude-sees">What <code>conclude()</code> sees<a class="anchor" aria-label="anchor" href="#what-conclude-sees"></a>
+</h3>
+<p>Internally, <code><a href="../../reference/conclude.html">conclude()</a></code> checks whether the
+<code>test_spec</code>’s stamped registry version matches the current
+<code>stat_define_registry</code> version. If it does, the cached lookup
+built at <code><a href="../../reference/prepare-test.html">prepare_test()</a></code> time is reused at zero cost. If the
+registry mutated between <code><a href="../../reference/prepare-test.html">prepare_test()</a></code> and
+<code><a href="../../reference/conclude.html">conclude()</a></code> — because <code><a href="../../reference/add-stat-define.html">add_stat_define()</a></code> was
+called in between — the lookup is rebuilt fresh. This means registration
+order relative to <code><a href="../../reference/prepare-test.html">prepare_test()</a></code> never produces a stale
+route silently; it either hits the cache correctly or rebuilds.</p>
+</div>
+</div>
+<div class="section level2">
 <h2 id="stress-testing-your-new-method-before-you-ship-it">Stress-testing your new method before you ship it<a class="anchor" aria-label="anchor" href="#stress-testing-your-new-method-before-you-ship-it"></a>
 </h2>
 <p>A few things worth checking deliberately rather than assuming, before
-considering a new variant finished.</p>
+considering a new variant or model type registration finished.</p>
 <ol style="list-style-type: lower-roman">
 <li><p>Confirm it’s actually reached by calling it through
 <code>... |&gt; via("yourname", ...)</code> and checking the output
-differs from <code>base</code> . A model-type or name mismatch between
+differs from <code>base</code>. A variant <em>name</em> mismatch between
 <code><a href="../../reference/add-variant.html">add_variant()</a></code> and your <code><a href="../../reference/via.html">via()</a></code> call resolves
-silently to <code>base</code> in the current <code><a href="../../reference/conclude.html">conclude()</a></code>
-implementation rather than throwing an error, so a passing test that
-secretly ran <code>base</code> the whole time is a real failure mode,
-not a hypothetical one.</p></li>
+silently to <code>base</code> rather than throwing an error, so a
+passing test that secretly ran <code>base</code> the whole time is a
+real failure mode, not a hypothetical one. A <em>model type</em>
+mismatch in <code><a href="../../reference/add-stat-define.html">add_stat_define()</a></code> is a hard error at
+<code><a href="../../reference/conclude.html">conclude()</a></code> time, not a silent fallback —
+<code>find_def()</code> aborts if no implementation exists for the
+requested model type.</p></li>
 <li><p>Remember <em>variants</em> are locked for grammar/piped syntax
 only: there is no way that the “eager form” call for a variant, so
 <code>LINEAR_REG(rel(x, y), data)</code> directly will never reach
@@ -365,9 +461,9 @@ differently from <code>base</code>.</p></li>
 <li><p>Finally, if you’re registering at
 <code>origin = "package"</code>, test the unload path too — calling
 <code><a href="https://rdrr.io/r/base/detach.html" class="external-link">detach()</a></code> to detach the registering package and confirming
-the variant is genuinely gone, not just inaccessible by name, is the
-difference between “self-cleaning” and “looks clean until someone
-reloads in the same session.”</p></li>
+the variant or model type is genuinely gone, not just inaccessible by
+name, is the difference between “self-cleaning” and “looks clean until
+someone reloads in the same session.”</p></li>
 </ol>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
