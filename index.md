@@ -39,12 +39,11 @@ statistical workflows is the *verbs* and the *accessibility* of the
 methods you’re looking for. For example, you want to write a t-test
 pipeline, and you want to use the classical one and then the permutation
 method. [statim](https://github.com/s7-stats/statim) lets you do that
-with [`via()`](https://s7-stats.github.io/statim/reference/via.md), and
-while you can use t-test from `default` (classical), you can access its
-permutation method through `... |> via(permute)` (or whatever the
-keyword is) with one line of code only. You won’t need you to do a lot
-of work (which sometimes require rewriting your code), just a single
-addition to the syntax.
+with `via("<method_name>")`, and while you can use t-test from `default`
+(classical), you can access its permutation method through
+`... |> via("permute")` with one line of code only. You won’t need you
+to do a lot of work (which sometimes require rewriting your code), just
+a single addition to the syntax.
 
 ``` r
 
