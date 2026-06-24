@@ -97,8 +97,357 @@
 
     
     
-
-  </main>
+<div class="section level2">
+<h2 id="what-inference-am-i-declaring">What inference am I declaring?<a class="anchor" aria-label="anchor" href="#what-inference-am-i-declaring"></a>
+</h2>
+<p>When you fit a linear model with <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, the model is
+a <code>class_lm_object</code> stored inside a <code>cld_exec</code>.
+Because <code>class_lm_object</code> inherits from
+<code>anova_able</code>, every fitted model knows how to participate in
+an ANOVA comparison: it carries the residual degrees of freedom, the
+residual sum of squares, the model matrix, and the error family.
+<code><a href="../../reference/anova-mod.html">anova()</a></code> reads those slots directly, so no separate
+conversion step is needed.</p>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> supports two distinct ANOVA questions:</p>
+<ul>
+<li>
+<strong>Single model (Type I)</strong>: how much does each predictor
+reduce residual variance, in the order the terms were added? One row per
+term, plus a Residuals row.</li>
+<li>
+<strong>Multiple models (incremental F or LRT)</strong>: is the
+extra complexity of a larger model justified over a simpler nested
+model? One row per model.</li>
+</ul>
+<p>Both questions are answered by the same <code><a href="../../reference/anova-mod.html">anova()</a></code> generic,
+dispatched on whatever object you hand it.</p>
+</div>
+<div class="section level2">
+<h2 id="single-model-type-i-anova">Single model: Type I ANOVA<a class="anchor" aria-label="anchor" href="#single-model-type-i-anova"></a>
+</h2>
+<p>The pipeline follows the standard declarative grammar. Here the
+<code>cars</code> dataset is used, which ships with base R:
+<code>speed</code> predicts stopping <code>dist</code>.</p>
+<div class="section level3">
+<h3 id="define-and-fit">Define and fit<a class="anchor" aria-label="anchor" href="#define-and-fit"></a>
+</h3>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">=</span> <span class="va">cars</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">dist</span> <span class="op">~</span> <span class="va">speed</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="../../reference/layout-define-base.html">define_model()</a></code> binds the formula to the data and
+processes it. <code>prepare_model(LINEAR_REG)</code> attaches the linear
+regression specification lazily; nothing is computed yet.
+<code><a href="../../reference/conclude.html">conclude()</a></code> resolves that specification and returns a
+<code>cld_exec</code> holding a <code>class_lm_object</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="run-the-anova">Run the ANOVA<a class="anchor" aria-label="anchor" href="#run-the-anova"></a>
+</h3>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/anova-mod.html">anova</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == ANOVA · Type I ============================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- ANOVA Table -----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ─────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;     term     df     ss         ms      f_value  p_value  </span></span>
+<span><span class="co">#&gt; ─────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;     speed    1   21185.459  21185.459  89.567   <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt;   Residuals  48  11353.521   236.532            <span style="font-style: italic;">   </span>      </span></span>
+<span><span class="co">#&gt; ─────────────────────────────────────────────────────────</span></span></code></pre></div>
+<p>The returned <code>cld_anova</code> prints the full Type I table. The
+final row is always Residuals, with <code>f_value</code> and
+<code>p_value</code> set to <code>NA</code>. A small p-value for
+<code>speed</code> says that adding <code>speed</code> to the
+intercept-only model significantly reduced the residual variance.</p>
+</div>
+<div class="section level3">
+<h3 id="tidy-the-coefficients">Tidy the coefficients<a class="anchor" aria-label="anchor" href="#tidy-the-coefficients"></a>
+</h3>
+<p><code><a href="../../reference/tidy.html">tidy()</a></code> takes the <code>cld_exec</code> returned by
+<code><a href="../../reference/conclude.html">conclude()</a></code> and extracts a tibble of primary results. For a
+<code>LINEAR_REG</code> model, that tibble is the coefficient table: one
+row per term, with columns <code>term</code>, <code>estimate</code>,
+<code>std_error</code>, <code>statistic</code>, and
+<code>p_value</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
+<span><span class="co">#&gt;   term        estimate std_error statistic  p_value</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> (Intercept)   -<span style="color: #BB0000;">17.6</span>      6.76      -<span style="color: #BB0000;">2.60</span> 1.23<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> speed           3.93     0.416      9.46 1.49<span style="color: #949494;">e</span><span style="color: #BB0000;">-12</span></span></span></code></pre></div>
+<p>This is the programmatic form of the Coefficients section that
+<code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> displays. Using <code><a href="../../reference/tidy.html">tidy()</a></code> is useful when
+you need the estimates downstream, for example to filter significant
+terms, pass them to another function, or bind rows across multiple
+models.</p>
+</div>
+<div class="section level3">
+<h3 id="from-a-model_lazy-directly">From a <code>model_lazy</code> directly<a class="anchor" aria-label="anchor" href="#from-a-model_lazy-directly"></a>
+</h3>
+<p><code><a href="../../reference/anova-mod.html">anova()</a></code> also dispatches on <code>model_lazy</code>, so
+<code><a href="../../reference/conclude.html">conclude()</a></code> is optional:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cars</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">dist</span> <span class="op">~</span> <span class="va">speed</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/anova-mod.html">anova</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == ANOVA · Type I ============================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- ANOVA Table -----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ─────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;     term     df     ss         ms      f_value  p_value  </span></span>
+<span><span class="co">#&gt; ─────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;     speed    1   21185.459  21185.459  89.567   <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt;   Residuals  48  11353.521   236.532            <span style="font-style: italic;">   </span>      </span></span>
+<span><span class="co">#&gt; ─────────────────────────────────────────────────────────</span></span></code></pre></div>
+<p>The printed result is identical.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="multiple-models-incremental-f-test">Multiple models: incremental F-test<a class="anchor" aria-label="anchor" href="#multiple-models-incremental-f-test"></a>
+</h2>
+<p>Comparing a sequence of nested models tells you whether each
+additional predictor improves fit beyond what the simpler model already
+explains. This is the main use case for <code><a href="../../reference/write_models.html">write_models()</a></code>.</p>
+<div class="section level3">
+<h3 id="using-write_models">Using <code>write_models()</code><a class="anchor" aria-label="anchor" href="#using-write_models"></a>
+</h3>
+<p><code><a href="../../reference/write_models.html">write_models()</a></code> accepts named model expressions and
+evaluates them sequentially against the same data frame. Names appear as
+row labels in the ANOVA output:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        null <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>        main <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span>,</span>
+<span>        extend <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span> <span class="op">+</span> <span class="va">pop75</span>,</span>
+<span>        full <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span> <span class="op">+</span> <span class="va">pop75</span> <span class="op">+</span> <span class="va">dpi</span> <span class="op">+</span> <span class="va">ddpi</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/anova-mod.html">anova</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == ANOVA · F =================================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- ANOVA Table -----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   model   res_df  deviance  df  dev_diff  f_value  p_value  </span></span>
+<span><span class="co">#&gt; ────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;    null     49    983.628                          <span style="font-style: italic;">   </span>      </span></span>
+<span><span class="co">#&gt;    main     48    779.511   1   204.118   14.116   <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt;   extend    47    726.168   1    53.343    3.689   <span style="font-style: italic;"> 0.061</span>   </span></span>
+<span><span class="co">#&gt;    full     45    650.713   2    75.455    2.609   <span style="font-style: italic;"> 0.085</span>   </span></span>
+<span><span class="co">#&gt; ────────────────────────────────────────────────────────────</span></span></code></pre></div>
+<p>The first row always has <code>NA</code> test statistics because
+there is no simpler model to compare it against. Each subsequent row
+answers: “given the model above, does adding these extra predictors
+significantly help?”</p>
+<p>The <code>test</code> argument accepts <code>"F"</code> (default for
+Gaussian models), <code>"LRT"</code>, or <code>"Chisq"</code>. For
+non-Gaussian families such as binomial GLMs, <code>"F"</code> is
+automatically switched to <code>"LRT"</code> with an informational
+message.</p>
+</div>
+<div class="section level3">
+<h3 id="passing-model_lazy-objects-directly">Passing <code>model_lazy</code> objects directly<a class="anchor" aria-label="anchor" href="#passing-model_lazy-objects-directly"></a>
+</h3>
+<p>When the models come from separate pipeline branches, pass them
+directly to <code><a href="../../reference/anova-mod.html">anova()</a></code>:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mod1</span> <span class="op">=</span> <span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sr</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span></span>
+<span><span class="va">mod2</span> <span class="op">=</span> <span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span></span>
+<span><span class="va">mod3</span> <span class="op">=</span> <span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span> <span class="op">+</span> <span class="va">pop75</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../../reference/anova-mod.html">anova</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">mod2</span>, <span class="va">mod3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == ANOVA · F =================================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- ANOVA Table -----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ───────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   model  res_df  deviance  df  dev_diff  f_value  p_value  </span></span>
+<span><span class="co">#&gt; ───────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;     1      49    983.628                          <span style="font-style: italic;">   </span>      </span></span>
+<span><span class="co">#&gt;     2      48    779.511   1   204.118   13.211   <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt;     3      47    726.168   1    53.343    3.453   <span style="font-style: italic;"> 0.069</span>   </span></span>
+<span><span class="co">#&gt; ───────────────────────────────────────────────────────────</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="passing-cld_exec-objects">Passing <code>cld_exec</code> objects<a class="anchor" aria-label="anchor" href="#passing-cld_exec-objects"></a>
+</h3>
+<p>Or, after calling <code><a href="../../reference/conclude.html">conclude()</a></code> on each model:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">exec1</span> <span class="op">=</span> <span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sr</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">exec2</span> <span class="op">=</span> <span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../../reference/anova-mod.html">anova</a></span><span class="op">(</span><span class="va">exec1</span>, <span class="va">exec2</span>, test <span class="op">=</span> <span class="st">"LRT"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == ANOVA · LRT ================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- ANOVA Table -----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ───────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   model  res_df  deviance  df  dev_diff  chisq_value  p_value  </span></span>
+<span><span class="co">#&gt; ───────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;     1      49    983.628                              <span style="font-style: italic;">   </span>      </span></span>
+<span><span class="co">#&gt;     2      48    779.511   1   204.118     12.569     <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt; ───────────────────────────────────────────────────────────────</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="multiple-models-conclude-and-tidy">Multiple models: <code>conclude()</code> and
+<code>tidy()</code><a class="anchor" aria-label="anchor" href="#multiple-models-conclude-and-tidy"></a>
+</h2>
+<p>When the goal is to fit all models and inspect each one,
+<code><a href="../../reference/conclude.html">conclude()</a></code> on a <code>multi_lazy</code> returns a
+<code>multi_exec</code> collecting all results:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">all_fits</span> <span class="op">=</span> <span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        null <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>        main <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span> <span class="op">+</span> <span class="va">pop75</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">all_fits</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── 2 models · Linear Regression ──────────────────────────────────────────────── </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; null : &lt;cld_exec&gt;</span></span>
+<span><span class="co">#&gt; main : &lt;cld_exec&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Use display() to inspect individual results.</span></span></span></code></pre></div>
+<p><code><a href="../../reference/tidy.html">tidy()</a></code> on a <code>multi_exec</code> returns a nested
+tibble with one row per model:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">all_fits</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
+<span><span class="co">#&gt;   model outs            </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;named list&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> null  <span style="color: #949494;">&lt;tibble [1 × 5]&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> main  <span style="color: #949494;">&lt;tibble [3 × 5]&gt;</span></span></span></code></pre></div>
+<p>Use <code><a href="../../reference/display.html">display()</a></code> to inspect individual model outputs when
+there are many:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        f1 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>        f2 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span>,</span>
+<span>        f3 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span> <span class="op">+</span> <span class="va">pop75</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/display.html">display</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1. f1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variable Mapper : formula </span></span>
+<span><span class="co">#&gt; Args : sr ~ 1 </span></span>
+<span><span class="co">#&gt;     left_var : 1 </span></span>
+<span><span class="co">#&gt;     right_var : 0 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Linear Regression =========================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Coefficients ----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ──────────────┬───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   term        │  estimate  std_error  statistic  p_value  </span></span>
+<span><span class="co">#&gt; ──────────────┼───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   (Intercept) │   9.671      0.634     15.263    <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt; ──────────────┴───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Model Fit -------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Warning in system("tput cols", intern = TRUE): running command 'tput cols' had</span></span>
+<span><span class="co">#&gt; status 2</span></span>
+<span><span class="co">#&gt; -----------------------------------------------------</span></span>
+<span><span class="co">#&gt;   R Squared      :    0.00    F-statistic :     NaN</span></span>
+<span><span class="co">#&gt;   Adj. R Squared :    0.00    df1         :       0</span></span>
+<span><span class="co">#&gt;   Sigma          :    4.48    df2         :      49</span></span>
+<span><span class="co">#&gt;   n              :      50    p-value     :     NaN</span></span>
+<span><span class="co">#&gt;   df (residual)  :      49                :        </span></span>
+<span><span class="co">#&gt; -----------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 2. f2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variable Mapper : formula </span></span>
+<span><span class="co">#&gt; Args : sr ~ pop15 </span></span>
+<span><span class="co">#&gt;     left_var : 1 </span></span>
+<span><span class="co">#&gt;     right_var : 1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Linear Regression =========================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Coefficients ----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ──────────────┬───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   term        │  estimate  std_error  statistic  p_value  </span></span>
+<span><span class="co">#&gt; ──────────────┼───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   (Intercept) │   17.497     2.280      7.675    <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt;   pop15       │   -0.223     0.063     -3.545    <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt; ──────────────┴───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Model Fit -------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Warning in system("tput cols", intern = TRUE): running command 'tput cols' had</span></span>
+<span><span class="co">#&gt; status 2</span></span>
+<span><span class="co">#&gt; ------------------------------------------------------</span></span>
+<span><span class="co">#&gt;   R Squared      :    0.21    F-statistic :    12.57</span></span>
+<span><span class="co">#&gt;   Adj. R Squared :    0.19    df1         :        1</span></span>
+<span><span class="co">#&gt;   Sigma          :    4.03    df2         :       48</span></span>
+<span><span class="co">#&gt;   n              :      50    p-value     :   &lt;0.001</span></span>
+<span><span class="co">#&gt;   df (residual)  :      48                :         </span></span>
+<span><span class="co">#&gt; ------------------------------------------------------</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="glms-likelihood-ratio-test">GLMs: likelihood ratio test<a class="anchor" aria-label="anchor" href="#glms-likelihood-ratio-test"></a>
+</h2>
+<p>For non-Gaussian families, <code><a href="../../reference/anova-mod.html">anova()</a></code> performs a likelihood
+ratio test (LRT) and reports a chi-squared statistic instead of an
+F-statistic. Pass <code>test = "LRT"</code> explicitly; <code>"F"</code>
+is not meaningful for GLMs.</p>
+<p>Supply the family directly to <code><a href="../../reference/prepare-model.html">prepare_model()</a></code> — it is
+forwarded to every model in the pipeline:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mtcars</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        null <span class="op">=</span> <span class="va">am</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>        main <span class="op">=</span> <span class="va">am</span> <span class="op">~</span> <span class="va">wt</span>,</span>
+<span>        full <span class="op">=</span> <span class="va">am</span> <span class="op">~</span> <span class="va">wt</span> <span class="op">+</span> <span class="va">hp</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">GLM</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/anova-mod.html">anova</a></span><span class="op">(</span>test <span class="op">=</span> <span class="st">"LRT"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == ANOVA · LRT ================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- ANOVA Table -----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ───────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   model  res_df  deviance  df  dev_diff  chisq_value  p_value  </span></span>
+<span><span class="co">#&gt; ───────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   null     31     7.719                               <span style="font-style: italic;">   </span>      </span></span>
+<span><span class="co">#&gt;   main     30     4.017    1    3.702      31.584     <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt;   full     29     3.399    1    0.619       5.278     <span style="color: #BB0000;"> 0.022</span>   </span></span>
+<span><span class="co">#&gt; ───────────────────────────────────────────────────────────────</span></span></code></pre></div>
+<p>The output table has a <code>chisq_value</code> column in place of
+<code>f_value</code>. The first row has <code>NA</code> test statistics
+because there is no baseline to compare it against.</p>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

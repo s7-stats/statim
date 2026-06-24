@@ -98,21 +98,530 @@
 <div class="section level2">
 <h2 id="rationale">Rationale<a class="anchor" aria-label="anchor" href="#rationale"></a>
 </h2>
-<p>This is only applied on piped/grammar syntax pipelines. The functions
-you’ll be using are the shared grammars and cannot be accessed with
-“eager form” syntax. Eager forms like
-<code>TTEST(&lt;var_id&gt;, &lt;data&gt;)</code> directly executes the
-outputs but cannot share grammars like <code><a href="../../reference/conclude.html">conclude()</a></code> and
-<code><a href="../../reference/tidy.html">tidy()</a></code> to retrieve the outputs.</p>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> separates <em>declaring</em> a statistical
+analysis from <em>running</em> it. Everything up to (and including)
+<code><a href="../../reference/via.html">via()</a></code> builds a lazy specification. <code><a href="../../reference/conclude.html">conclude()</a></code>
+is the single point where execution actually happens. This separation is
+what makes recalibration, inspection, and multi-model comparisons
+composable.</p>
+<p>This article traces the internal flow from
+<code><a href="../../reference/layout-define-base.html">define_model()</a></code> through to the retrieval functions
+(<code><a href="../../reference/conclude.html">conclude()</a></code>, <code><a href="../../reference/tidy.html">tidy()</a></code>, <code><a href="../../reference/display.html">display()</a></code>),
+describing what each stage produces and why.</p>
+<table class="table">
+<colgroup>
+<col width="25%">
+<col width="25%">
+<col width="25%">
+<col width="25%">
+</colgroup>
+<thead><tr class="header">
+<th>Stage</th>
+<th>Function</th>
+<th>Produces</th>
+<th>Executes?</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><a href="#stage-1-building-a-lazy-specification">Stage 1: lazy
+spec</a></td>
+<td><code><a href="../../reference/layout-define-base.html">define_model()</a></code></td>
+<td><code>def_model</code></td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td><a href="#stage-1-building-a-lazy-specification">Stage 1: lazy
+spec</a></td>
+<td><code><a href="../../reference/prepare-test.html">prepare_test()</a></code></td>
+<td><code>test_lazy</code></td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td><a href="#stage-1-building-a-lazy-specification">Stage 1: lazy
+spec</a></td>
+<td><code><a href="../../reference/prepare-model.html">prepare_model()</a></code></td>
+<td><code>model_lazy</code></td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td><a href="#stage-1-building-a-lazy-specification">Stage 1: lazy
+spec</a></td>
+<td><code><a href="../../reference/via.html">via()</a></code></td>
+<td>modified lazy object</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td><a href="#stage-2-execution-at-conclude">Stage 2: execution</a></td>
+<td><code><a href="../../reference/conclude.html">conclude()</a></code></td>
+<td><code>cld_exec</code></td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr class="even">
+<td><a href="#stage-3-retrieval">Stage 3: retrieval</a></td>
+<td><code><a href="../../reference/tidy.html">tidy()</a></code></td>
+<td>tibble</td>
+<td>(reads <code>cld_exec@data</code>)</td>
+</tr>
+<tr class="odd">
+<td><a href="#stage-3-retrieval">Stage 3: retrieval</a></td>
+<td><code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code></td>
+<td>side effect</td>
+<td>(reads <code>cld_exec@data</code>)</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
-<h2 id="structure">Structure<a class="anchor" aria-label="anchor" href="#structure"></a>
+<h2 id="stage-1-building-a-lazy-specification">Stage 1: building a lazy specification<a class="anchor" aria-label="anchor" href="#stage-1-building-a-lazy-specification"></a>
 </h2>
-<p>The output from “eager form” syntax and output from the piped/grammar
-syntax have the same structure, only differs from their classes</p>
+<div class="section level3">
+<h3 id="define_model-produces-a-def_model">
+<code>define_model()</code> produces a <code>def_model</code><a class="anchor" aria-label="anchor" href="#define_model-produces-a-def_model"></a>
+</h3>
+<p><code><a href="../../reference/layout-define-base.html">define_model()</a></code> is an S7 generic dispatched on its first
+argument. When called with a data frame in pipe position, it dispatches
+on <code><a href="https://rconsortium.github.io/S7/reference/base_s3_classes.html" class="external-link">S7::class_data.frame</a></code>; when called with a model ID or
+formula first, it dispatches on the union of those classes.</p>
+<p>Either way, it calls <code><a href="../../reference/model-processor.html">model_processor()</a></code> on the model ID
+and the data, then stores the result in a <code>def_model</code> S7
+object:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">def_model</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    <span class="at">model_id =</span> <span class="sc">&lt;</span>the model ID or formula<span class="sc">&gt;</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    <span class="at">processed =</span> <span class="sc">&lt;</span>list returned by <span class="fu">model_processor</span>()<span class="sc">&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>)</span></code></pre></div>
+<p>Nothing statistical has been computed. <code>@processed</code> is a
+named list of resolved data structures (data frames, scalars) that the
+implementation <code>fn</code> will later receive as <code>.proc</code>.
+No fit, no test statistic, no p-value.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span> <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Model Definition ------------------------------------------------------------ </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
+<span><span class="co">#&gt; Args : extra | group </span></span>
+<span><span class="co">#&gt; Other info:</span></span>
+<span><span class="co">#&gt;     x_vars : 1 </span></span>
+<span><span class="co">#&gt;     by_vars : 1 </span></span>
+<span><span class="co">#&gt; Variables :</span></span>
+<span><span class="co">#&gt;     extra : &lt;dbl [20]&gt; </span></span>
+<span><span class="co">#&gt;     group : &lt;fct [20]&gt;</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="prepare_test-and-prepare_model-attach-a-specification">
+<code>prepare_test()</code> and <code>prepare_model()</code> attach
+a specification<a class="anchor" aria-label="anchor" href="#prepare_test-and-prepare_model-attach-a-specification"></a>
+</h3>
+<p>The two preparation functions attach an inference specification to
+the <code>def_model</code>. They differ only in which spec class they
+produce:</p>
+<table class="table">
+<thead><tr class="header">
+<th>Preparation function</th>
+<th>Spec class</th>
+<th>Lazy object class</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>prepare_test(.test)</code></td>
+<td><code>test_spec</code></td>
+<td><code>test_lazy</code></td>
+</tr>
+<tr class="even">
+<td><code>prepare_model(.model_fn)</code></td>
+<td><code>model_spec</code></td>
+<td><code>model_lazy</code></td>
+</tr>
+</tbody>
+</table>
+<p>Internally, both functions call the stat function with
+<code>.model = NULL</code>. This special sentinel causes the function to
+return its <code>test_spec</code> or <code>model_spec</code> rather than
+running any computation, which is how <code><a href="../../reference/prepare-test.html">prepare_test()</a></code> and
+<code><a href="../../reference/prepare-model.html">prepare_model()</a></code> harvest the lookup table of
+<code>stat_define</code> objects and the function’s name.</p>
+<p>The resulting lazy object carries three things:</p>
+<ul>
+<li>
+<code>@model_id</code>: the original model ID.</li>
+<li>
+<code>@processed</code>: the resolved data structures from
+<code><a href="../../reference/model-processor.html">model_processor()</a></code>.</li>
+<li>
+<code>@model_spec</code> / <code>@test_spec</code>: the spec,
+including the <code>defs</code> lookup table.</li>
+</ul>
+<p>Still nothing has been computed:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Model Definition ------------------------------------------------------------ </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
+<span><span class="co">#&gt; Args : extra | group </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Test Specification ---------------------------------------------------------- </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Test   : T-Test </span></span>
+<span><span class="co">#&gt; Method : default</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mtcars</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; mpg ~ wt</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Model Specification --------------------------------------------------------- </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Model  : Linear Regression </span></span>
+<span><span class="co">#&gt; Method : default</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="via-recalibrates-without-executing">
+<code>via()</code> recalibrates without executing<a class="anchor" aria-label="anchor" href="#via-recalibrates-without-executing"></a>
+</h3>
+<p><code><a href="../../reference/via.html">via()</a></code> is an S7 generic dispatched on the lazy object
+class and a character string. It validates that the named variant exists
+for the current model type, then writes the variant name and any
+additional arguments into <code>@recalibrate_spec</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">.x</span><span class="op">@</span><span class="va">recalibrate_spec</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method_name <span class="op">=</span> <span class="va">.method</span>, args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The lazy object is returned modified; no computation has occurred.
+Calling <code><a href="../../reference/via.html">via()</a></code> a second time overwrites
+<code>@recalibrate_spec</code> in place.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Model Definition ------------------------------------------------------------ </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
+<span><span class="co">#&gt; Args : extra | group </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Test Specification ---------------------------------------------------------- </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Test   : T-Test </span></span>
+<span><span class="co">#&gt; Method : permute </span></span>
+<span><span class="co">#&gt; Args   : n = 999</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
-<h2 id="section"></h2>
+<h2 id="stage-2-execution-at-conclude">Stage 2: execution at <code>conclude()</code><a class="anchor" aria-label="anchor" href="#stage-2-execution-at-conclude"></a>
+</h2>
+<p><code><a href="../../reference/conclude.html">conclude()</a></code> is the terminal step. It is an S7 generic
+with separate methods for <code>test_lazy</code> and
+<code>model_lazy</code>; both methods follow the same four-step
+sequence.</p>
+<p><strong>Step 1: find the matching <code>stat_define</code>.</strong>
+<code>find_def()</code> looks up the <code>defs</code> list from the
+spec and matches on <code>S7::S7_class(model_id)@name</code> (or
+<code>"formula"</code> when the model ID is an R formula). This selects
+the right <code>stat_define</code> for the current model shape.</p>
+<p><strong>Step 2: resolve the variant implementation.</strong> If
+<code>@recalibrate_spec</code> is non-NULL, the variant name is looked
+up first in <code>def@impl$variants</code> (built-in variants), then in
+the session-scoped <code>variant_registry</code> (variants added via
+<code><a href="../../reference/add-variant.html">add_variant()</a></code>). If both are empty and no <code><a href="../../reference/via.html">via()</a></code>
+was called, <code>def@impl$base</code> is used.</p>
+<p><strong>Step 3: merge arguments.</strong> The base arguments from the
+spec are merged with any arguments supplied to <code><a href="../../reference/via.html">via()</a></code>, with
+the <code><a href="../../reference/via.html">via()</a></code> arguments taking precedence:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">all_args</span> <span class="op">=</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/modifyList.html" class="external-link">modifyList</a></span><span class="op">(</span><span class="va">spec</span><span class="op">@</span><span class="va">args</span>, <span class="va">recalibrate_spec</span><span class="op">$</span><span class="va">args</span> <span class="op"><a href="https://rdrr.io/r/base/Control.html" class="external-link">%||%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>On the test side, if a <code><a href="../../reference/null-hyp.html">state_null()</a></code> claim was present,
+the <code>claim_translator</code> on the matching
+<code>stat_define</code> is also consulted here, turning the parsed
+hypothesis into named arguments injected alongside
+<code>.proc</code>.</p>
+<p><strong>Step 4: run the implementation.</strong>
+<code>inject_and_run()</code> resolves each formal of <code>fn</code> in
+order: <code>.proc</code> is always the processed model output; every
+other formal is taken from <code>all_args</code> if present, or from the
+formal’s declared default otherwise. A formal with neither a supplied
+value nor a default is a hard error.</p>
+<p>The return value of <code>fn</code> is wrapped in a
+<code>cld_exec</code> S7 object:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">cld_exec</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>    <span class="at">data =</span> <span class="sc">&lt;</span>raw return value of fn<span class="sc">&gt;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    <span class="at">impl_cls =</span> <span class="sc">&lt;</span>string identifying the stat and model shape<span class="sc">&gt;</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>    <span class="at">cld_meta =</span> <span class="fu">list</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>        <span class="at">model_id =</span> ...,</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>        <span class="at">processed =</span> ...,</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>        <span class="at">stat_name =</span> ...,</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>        <span class="at">method =</span> <span class="sc">&lt;</span>variant name, or <span class="st">"default"</span><span class="sc">&gt;</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>        <span class="at">data_name =</span> ...</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>    )</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
+<span><span class="co">#&gt; Args : extra | group </span></span>
+<span><span class="co">#&gt;     x_vars : 1 </span></span>
+<span><span class="co">#&gt;     by_vars : 1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == T-Test ====================================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   group  estimate  t_stat    df    p_val  </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   group   -1.580   -1.861  17.780  <span style="font-style: italic;">0.079</span>  </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Confidence Interval ---------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span>
+<span><span class="co">#&gt;   group  lower_95  upper_95  </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span>
+<span><span class="co">#&gt;   group   -3.365    0.206    </span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mtcars</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variable Mapper : formula </span></span>
+<span><span class="co">#&gt; Args : mpg ~ wt </span></span>
+<span><span class="co">#&gt;     left_var : 1 </span></span>
+<span><span class="co">#&gt;     right_var : 1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Linear Regression =========================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Coefficients ----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ──────────────┬───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   term        │  estimate  std_error  statistic  p_value  </span></span>
+<span><span class="co">#&gt; ──────────────┼───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   (Intercept) │   37.285     1.878     19.858    <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt;   wt          │   -5.344     0.559     -9.559    <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt; ──────────────┴───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Model Fit -------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Warning in system("tput cols", intern = TRUE): running command 'tput cols' had</span></span>
+<span><span class="co">#&gt; status 2</span></span>
+<span><span class="co">#&gt; ------------------------------------------------------</span></span>
+<span><span class="co">#&gt;   R Squared      :    0.75    F-statistic :    91.38</span></span>
+<span><span class="co">#&gt;   Adj. R Squared :    0.74    df1         :        1</span></span>
+<span><span class="co">#&gt;   Sigma          :    3.05    df2         :       30</span></span>
+<span><span class="co">#&gt;   n              :      32    p-value     :   &lt;0.001</span></span>
+<span><span class="co">#&gt;   df (residual)  :      30                :         </span></span>
+<span><span class="co">#&gt; ------------------------------------------------------</span></span></code></pre></div>
+<p>With a <code><a href="../../reference/via.html">via()</a></code> recalibration, the output reflects the
+chosen variant:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
+<span><span class="co">#&gt; Args : extra | group </span></span>
+<span><span class="co">#&gt;     x_vars : 1 </span></span>
+<span><span class="co">#&gt;     by_vars : 1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == T-Test · permute ============================================================ </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ============================== T-test Permutation ==============================</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ───────────────────────────────</span></span>
+<span><span class="co">#&gt;   Statistic  p-value  n_perms  </span></span>
+<span><span class="co">#&gt; ───────────────────────────────</span></span>
+<span><span class="co">#&gt;    -1.580    <span style="font-style: italic;"> 0.102</span>     999    </span></span>
+<span><span class="co">#&gt; ───────────────────────────────</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="eager-path-vs-lazy-path">Eager path vs lazy path<a class="anchor" aria-label="anchor" href="#eager-path-vs-lazy-path"></a>
+</h2>
+<p>There is also an eager path: calling
+<code>TTEST(x_by(extra, group), sleep)</code> or
+<code>LINEAR_REG(mpg ~ wt, mtcars)</code> directly skips
+<code><a href="../../reference/layout-define-base.html">define_model()</a></code>, <code><a href="../../reference/prepare-test.html">prepare_test()</a></code> /
+<code><a href="../../reference/prepare-model.html">prepare_model()</a></code>, and <code><a href="../../reference/via.html">via()</a></code> entirely.
+Internally, <code>run_stat()</code> calls <code>find_def()</code> and
+<code>inject_and_run()</code> directly against <code>base</code>; only
+the base implementation is reachable this way. Variants registered via
+<code><a href="../../reference/add-variant.html">add_variant()</a></code> or selected via <code><a href="../../reference/via.html">via()</a></code> are not
+accessible on the eager path.</p>
+<p>The eager path returns a <code>cld_exec</code> with the same slot
+structure as the lazy path, but the class hierarchy it belongs to is
+identical. This means <code><a href="../../reference/tidy.html">tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> work
+identically on both outputs.</p>
+</div>
+<div class="section level2">
+<h2 id="stage-3-retrieval">Stage 3: retrieval<a class="anchor" aria-label="anchor" href="#stage-3-retrieval"></a>
+</h2>
+<div class="section level3">
+<h3 id="tidy">
+<code>tidy()</code><a class="anchor" aria-label="anchor" href="#tidy"></a>
+</h3>
+<p><code><a href="../../reference/tidy.html">tidy()</a></code> dispatches on <code>cld_exec</code>. It tries two
+paths in order:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong><code><a href="../../reference/auto_tidy.html">auto_tidy()</a></code> (preferred).</strong> When
+<code>cld_exec@data</code> is a <code>class_stat_infer</code> subclass,
+<code><a href="../../reference/auto_tidy.html">auto_tidy()</a></code> is called on it directly. S7’s method dispatch
+handles variant-specific overrides: a variant that returns the same
+class as <code>base</code> inherits the <code><a href="../../reference/auto_tidy.html">auto_tidy()</a></code> method
+for free.</p></li>
+<li><p><strong><code><a href="../../reference/making_tidy.html">making_tidy()</a></code> registry (escape
+hatch).</strong> When <code>@data</code> is not a
+<code>class_stat_infer</code> subclass (a plain list, an S3 object,
+etc.), <code><a href="../../reference/tidy.html">tidy()</a></code> consults the registry populated by
+<code><a href="../../reference/making_tidy.html">making_tidy()</a></code> and <code><a href="../../reference/method_tidy.html">method_tidy()</a></code>. This path is
+only needed for variants that intentionally return a non-standard
+structure.</p></li>
+</ol>
+<p>In both cases the return value must be a <code>tbl_df</code> (a
+tibble). An informative error is raised if no method is found.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mtcars</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">wt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
+<span><span class="co">#&gt;   term        estimate std_error statistic  p_value</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> (Intercept)    37.3      1.88      19.9  8.24<span style="color: #949494;">e</span><span style="color: #BB0000;">-19</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> wt             -<span style="color: #BB0000;">5.34</span>     0.559     -<span style="color: #BB0000;">9.56</span> 1.29<span style="color: #949494;">e</span><span style="color: #BB0000;">-10</span></span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="display">
+<code>display()</code><a class="anchor" aria-label="anchor" href="#display"></a>
+</h3>
+<p><code><a href="../../reference/display.html">display()</a></code> on a <code>multi_exec</code> prints up to
+<code>n</code> individual model outputs from a
+<code><a href="../../reference/write_models.html">write_models()</a></code> pipeline:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        f1 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>        f2 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span>,</span>
+<span>        f3 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span> <span class="op">+</span> <span class="va">pop75</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/display.html">display</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1. f1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variable Mapper : formula </span></span>
+<span><span class="co">#&gt; Args : sr ~ 1 </span></span>
+<span><span class="co">#&gt;     left_var : 1 </span></span>
+<span><span class="co">#&gt;     right_var : 0 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Linear Regression =========================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Coefficients ----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ──────────────┬───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   term        │  estimate  std_error  statistic  p_value  </span></span>
+<span><span class="co">#&gt; ──────────────┼───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   (Intercept) │   9.671      0.634     15.263    <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt; ──────────────┴───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Model Fit -------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Warning in system("tput cols", intern = TRUE): running command 'tput cols' had</span></span>
+<span><span class="co">#&gt; status 2</span></span>
+<span><span class="co">#&gt; -----------------------------------------------------</span></span>
+<span><span class="co">#&gt;   R Squared      :    0.00    F-statistic :     NaN</span></span>
+<span><span class="co">#&gt;   Adj. R Squared :    0.00    df1         :       0</span></span>
+<span><span class="co">#&gt;   Sigma          :    4.48    df2         :      49</span></span>
+<span><span class="co">#&gt;   n              :      50    p-value     :     NaN</span></span>
+<span><span class="co">#&gt;   df (residual)  :      49                :        </span></span>
+<span><span class="co">#&gt; -----------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 2. f2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Model ======================================================================= </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variable Mapper : formula </span></span>
+<span><span class="co">#&gt; Args : sr ~ pop15 </span></span>
+<span><span class="co">#&gt;     left_var : 1 </span></span>
+<span><span class="co">#&gt;     right_var : 1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; == Linear Regression =========================================================== </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Coefficients ----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ──────────────┬───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   term        │  estimate  std_error  statistic  p_value  </span></span>
+<span><span class="co">#&gt; ──────────────┼───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;   (Intercept) │   17.497     2.280      7.675    <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt;   pop15       │   -0.223     0.063     -3.545    <span style="font-weight: bold;">&lt;0.001</span>   </span></span>
+<span><span class="co">#&gt; ──────────────┴───────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Model Fit -------------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; Warning in system("tput cols", intern = TRUE): running command 'tput cols' had</span></span>
+<span><span class="co">#&gt; status 2</span></span>
+<span><span class="co">#&gt; ------------------------------------------------------</span></span>
+<span><span class="co">#&gt;   R Squared      :    0.21    F-statistic :    12.57</span></span>
+<span><span class="co">#&gt;   Adj. R Squared :    0.19    df1         :        1</span></span>
+<span><span class="co">#&gt;   Sigma          :    4.03    df2         :       48</span></span>
+<span><span class="co">#&gt;   n              :      50    p-value     :   &lt;0.001</span></span>
+<span><span class="co">#&gt;   df (residual)  :      48                :         </span></span>
+<span><span class="co">#&gt; ------------------------------------------------------</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="anova">
+<code>anova()</code><a class="anchor" aria-label="anchor" href="#anova"></a>
+</h3>
+<p><code><a href="../../reference/anova-mod.html">anova()</a></code> is a separate generic that operates on model
+outputs rather than on <code>cld_exec</code> directly. It dispatches on
+<code>model_lazy</code>, <code>cld_exec</code>, <code>multi_lazy</code>,
+and <code>anova_lazy</code>, and always returns a
+<code>cld_anova</code>. See the <a href="../usage/anova-mod.html">ANOVA
+for Linear Models</a> article for the full walkthrough.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="the-class_stat_infer-contract">The <code>class_stat_infer</code> contract<a class="anchor" aria-label="anchor" href="#the-class_stat_infer-contract"></a>
+</h2>
+<p><code>fn</code> can return anything, but returning a
+<code>class_stat_infer</code> subclass unlocks automatic dispatch for
+both <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="../../reference/tidy.html">tidy()</a></code>. The current hierarchy
+is:</p>
+<pre><code>class_stat_infer
+    ├── anova_able
+    │       └── class_lm_object       (LINEAR_REG)
+    │       └── class_glm_object      (GLM)
+    ├── class_ttest_two               (TTEST · x_by)
+    ├── class_ttest_pairwise          (TTEST · pairwise)
+    ├── class_corr_two                (CORTEST · rel)
+    └── class_p_test                  (P_TEST)</code></pre>
+<p>A variant that reuses its def’s existing result class inherits both
+<code><a href="../../reference/auto_tidy.html">auto_tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> automatically. A
+variant that needs a genuinely different output shape can opt out by
+returning a plain structure and supplying a <code>print</code> function
+directly to <code><a href="../../reference/variant.html">variant()</a></code>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
