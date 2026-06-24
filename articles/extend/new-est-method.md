@@ -121,8 +121,13 @@ add_variant(LINEAR_REG, S7::class_formula, "weighted") %<-% variant(
     fn = function(.proc, weights = NULL) {
         fit = do.call(
             stats::lm,
-            list(formula = .proc$formula, data = .proc$data, weights = weights)
+            list(
+                formula = .proc$formula, 
+                data = .proc$data, 
+                weights = weights
+            )
         )
+        
         coef_tbl = summary(fit)$coefficients
         rss = sum(fit$residuals^2)
         df_res = fit$df.residual
@@ -154,27 +159,29 @@ cars |>
     conclude()
 ```
 
+``` fansi
 
-    == Model ======================================================================= 
+== Model ======================================================================= 
 
-    Variable Mapper : formula 
-    Args : dist ~ speed 
-        left_var : 1 
-        right_var : 1 
+Variable Mapper : formula 
+Args : dist ~ speed 
+    left_var : 1 
+    right_var : 1 
 
-    == Linear Regression · weighted ================================================ 
+== Linear Regression · weighted ================================================ 
 
-    -- Coefficients ----------------------------------------------------------------
+-- Coefficients ----------------------------------------------------------------
 
-    ──────────────┬───────────────────────────────────────────
-      term        │  estimate  std_error  statistic  p_value  
-    ──────────────┼───────────────────────────────────────────
-      (Intercept) │  -12.967     4.879     -2.658     [31m 0.011 [39m   
-      speed       │   3.633      0.345     10.521     [1m<0.001 [22m   
-    ──────────────┴───────────────────────────────────────────
+──────────────┬───────────────────────────────────────────
+  term        │  estimate  std_error  statistic  p_value  
+──────────────┼───────────────────────────────────────────
+  (Intercept) │  -12.967     4.879     -2.658     0.011   
+  speed       │   3.633      0.345     10.521    <0.001   
+──────────────┴───────────────────────────────────────────
 
 
-    -- Model Fit -------------------------------------------------------------------
+-- Model Fit -------------------------------------------------------------------
+```
 
     Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
     status 2
