@@ -183,9 +183,6 @@ Args : dist ~ speed
 -- Model Fit -------------------------------------------------------------------
 ```
 
-    Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-    status 2
-
     ------------------------------------------------------
       R Squared      :    0.65    F-statistic :    88.09
       Adj. R Squared :    0.64    df1         :        1
@@ -370,10 +367,8 @@ it first.
 follows the same `origin` contract as
 [`add_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md).
 `origin = "user"` (the default) is session-scoped and removable with
-[`remove_stat_define()`](https://s7-stats.github.io/statim/reference/add-stat-define.md).
-`origin = "package"` is for `.onLoad()` in an extension package and is
-removed automatically on unload via
-[`purge_stat_defines()`](https://s7-stats.github.io/statim/reference/purge_stat_defines.md):
+remove_stat_define()`.`origin =
+“package”`is for`.onLoad()`in an extension package and is removed automatically on unload via`purge_stat_defines()\`:
 
 ``` r
 

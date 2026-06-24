@@ -246,8 +246,6 @@ Args : dist ~ speed
 
 -- Model Fit -------------------------------------------------------------------
 </code></pre>
-<pre><code>Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-status 2</code></pre>
 <pre><code>------------------------------------------------------
   R Squared      :    0.65    F-statistic :    88.09
   Adj. R Squared :    0.64    df1         :        1
@@ -272,7 +270,7 @@ class of its left-hand side — here <code>add_variant_call</code> — to
 </h2>
 <p>The canonical example in <code><a href="../../reference/add-variant.html">?add_variant</a></code> does exactly the
 same thing for <code>TTEST</code> and <code><a href="../../reference/x_by.html">x_by()</a></code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/add-variant.html">add_variant</a></span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span> <span class="op"><a href="../../reference/modifying-assignment.html">%&lt;-%</a></span></span>
 <span>    <span class="fu"><a href="../../reference/variant.html">variant</a></span><span class="op">(</span></span>
 <span>        fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">.n</span> <span class="op">=</span> <span class="fl">1000L</span><span class="op">)</span> <span class="op">{</span></span>
@@ -305,7 +303,7 @@ default is used, evaluated in <code>fn</code>’s own environment if the
 default is an expression rather than a literal. A formal with no default
 and no supplied value is a hard error, listing every missing argument in
 one message rather than failing on the first:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/variant.html">variant</a></span><span class="op">(</span></span>
 <span>    fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">weights</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="co"># `weights` has no default</span></span>
@@ -349,7 +347,7 @@ function already handles. If you want <code><a href="../../reference/P_TEST.html
 <code><a href="../../reference/x_by.html">x_by()</a></code> input — a shape it has no built-in
 <code>stat_define</code> for — you need <code><a href="../../reference/add-stat-define.html">add_stat_define()</a></code>
 instead.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/add-stat-define.html">add_stat_define</a></span><span class="op">(</span></span>
 <span>    <span class="va">P_TEST</span>,</span>
 <span>    <span class="va">x_by</span>,</span>
@@ -377,7 +375,7 @@ classes (e.g. <code>PI</code>, <code>MU</code>) are valid in
 </h3>
 <p><code><a href="../../reference/add-stat-define.html">add_stat_define()</a></code> refuses to register a model type that
 is already handled, whether baked-in or previously registered:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># prop is baked into P_TEST</span></span>
 <span><span class="co"># Therefore, this fails</span></span>
 <span><span class="fu"><a href="../../reference/add-stat-define.html">add_stat_define</a></span><span class="op">(</span><span class="va">P_TEST</span>, <span class="va">prop</span>, impl <span class="op">=</span> <span class="fu"><a href="../../reference/agendas.html">agendas</a></span><span class="op">(</span>base <span class="op">=</span> <span class="fu"><a href="../../reference/baseline.html">baseline</a></span><span class="op">(</span>fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span><span class="op">)</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -397,10 +395,9 @@ deciding whether to <code><a href="../../reference/add-stat-define.html">remove_
 <p><code><a href="../../reference/add-stat-define.html">add_stat_define()</a></code> follows the same <code>origin</code>
 contract as <code><a href="../../reference/add-variant.html">add_variant()</a></code>. <code>origin = "user"</code>
 (the default) is session-scoped and removable with
-<code><a href="../../reference/add-stat-define.html">remove_stat_define()</a></code>. <code>origin = "package"</code> is
-for <code>.onLoad()</code> in an extension package and is removed
-automatically on unload via <code><a href="../../reference/purge_stat_defines.html">purge_stat_defines()</a></code>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+remove_stat_define()<code>.</code>origin =
+“package”<code>is for</code>.onLoad()<code>in an extension package and is removed automatically on unload via</code>purge_stat_defines()`:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># In your package's zzz.R</span></span>
 <span><span class="va">.onLoad</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">libname</span>, <span class="va">pkgname</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">statim</span><span class="fu">::</span><span class="fu"><a href="../../reference/add-stat-define.html">add_stat_define</a></span><span class="op">(</span></span>
