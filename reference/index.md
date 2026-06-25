@@ -35,6 +35,8 @@ inference
 
 - [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
   : Define a layout supplied by a Variable Mapper
+- [`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md)
+  : Prepare a lazy inference pipeline
 - [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
   : Lazily prepare a single test
 - [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)

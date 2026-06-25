@@ -1,7 +1,7 @@
 # Lazily prepare a model inference
 
-`prepare_model()` attaches a model specification to a `def_var` object,
-producing a `model_lazy` ready for optional recalibration with
+`prepare_model()` attaches a model specification to a `<def_var>`
+object, producing a `<model_lazy>` ready for optional recalibration with
 [`via()`](https://s7-stats.github.io/statim/reference/via.md) before
 being executed with
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
@@ -16,9 +16,9 @@ prepare_model(.x, .model_fn, ...)
 
 - .x:
 
-  An S7 object extension yielded by, e.g. `def_var` object from
+  An S7 object extension yielded by, e.g. `<def_var>` object from
   [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
-  or an `expanded_model` object from
+  or an `<expanded_model>` object from
   [`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md).
 
 - .model_fn:
@@ -32,7 +32,7 @@ prepare_model(.x, .model_fn, ...)
 
 ## Value
 
-A `model_lazy` S3 object.
+A `<model_lazy>` S7 object.
 
 ## See also
 

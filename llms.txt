@@ -119,7 +119,7 @@ Here’s the general anatomy of the main
         data, ...
     ) |>                                 # 1. Model definition
     # ... |>                             # Possible extensions  
-    prepare_*(<STAT_FN>) |>              # 2. Prepare method (lazy)
+    prepare(<STAT_FN>) |>                # 2. Prepare method (lazy)
     via(...) |>                          # Optional: method variant  (*)
     state_null(<expr>) |>                # Optional: null hypothesis (*)
     # ... |>                             # Possible extensions  
@@ -139,13 +139,15 @@ Explanation of the code above:
 
 2.  *Parameterization*, where the estimation process of the statistical
     inference pipeline is defined lazily. Our usual statistical
-    inference application can be either a model-based inference
-    (e.g. linear regression through
-    [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md))
-    or H-test inference (e.g. t-test through
-    [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)).
+    inference application can be a model-based inference (e.g. linear
+    regression through
+    [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)),
+    H-test inference (e.g. t-test through
+    [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)),
+    or both with just
+    [`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md).
     With that said, the execution is lazy-loaded, and only executed if
-    needed. (The `(*)` mark means they are interchangeable. )
+    needed.
 
     > [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
     > is one of the reasons why
@@ -187,7 +189,9 @@ The package is designed around three ideas:
     [statim](https://github.com/s7-stats/statim) semantics:
     piped/grammar syntax.
     [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
-    =\> `prepare_*()` =\>
+    =\>
+    [`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md)
+    =\>
     [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
     is the same shape for every inferential procedure. The `<var_id>`
     objects (`x_by`, `rel`, `pairwise`, …) describe the statistical
@@ -270,6 +274,8 @@ inference
 
 - [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
   : Define a layout supplied by a Variable Mapper
+- [`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md)
+  : Prepare a lazy inference pipeline
 - [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
   : Lazily prepare a single test
 - [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
