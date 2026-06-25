@@ -167,6 +167,15 @@ model-based inference (e.g. linear regression) or H-test inference
 <code class="sourceCode R"><span><span class="va">mtcars_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
 <span><span class="va">mtcars_lm</span> <span class="op">=</span> <span class="va">mtcars_dm</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span></span></code></pre></div>
 </li>
+<li>
+<p>Generalized <code><a href="../reference/prepare.html">prepare()</a></code> function</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
+<span><span class="va">mtcars_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sleep_tt</span> <span class="op">=</span> <span class="va">sleep_dm</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
+<span><span class="va">mtcars_lm</span> <span class="op">=</span> <span class="va">mtcars_dm</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span></span></code></pre></div>
+</li>
 </ol>
 <blockquote>
 <p>Note: <code><a href="../reference/prepare-test.html">prepare_test()</a></code> and <code><a href="../reference/prepare-model.html">prepare_model()</a></code>
@@ -185,7 +194,7 @@ analysis.</p>
 are retrieved. The primary function is <code><a href="../reference/conclude.html">conclude()</a></code>, and
 <code><a href="../reference/tidy.html">tidy()</a></code> can be chained after it when tidy output methods are
 registered.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="va">sleep_tt</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
@@ -196,11 +205,11 @@ registered.</p>
 <p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is intentionally making the syntax pipe-able.
 Since the pipeline is pipe-able, the three stages read like a
 sentence:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># t-test example</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span>                  <span class="co"># or `prepare_test()`</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -212,7 +221,7 @@ sentence:</p>
 <span><span class="co"># Linear regression example</span></span>
 <span><span class="va">mtcars</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span>             <span class="co"># or `prepare_model()`</span></span>
 <span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 11 × 5</span></span></span>
@@ -237,7 +246,7 @@ sentence:</p>
 eager form can do that. For a quick one-shot result, every test exposes
 an eager form that skips <code><a href="../reference/layout-define-base.html">define_model()</a></code> and
 <code><a href="../reference/prepare-test.html">prepare_test()</a></code> entirely:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span>, <span class="va">sleep</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
 <span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -313,7 +322,7 @@ between LHS (left-hand side) and RHS (right-hand side), but
 <code>group</code>, and it is ideal for pipelines which compares
 <code>x</code> by <code>group</code>. Moreover, you can alternatively
 use its infix operator version <code>%by%</code>.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># In a function call</span></span>
 <span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">group</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span><span class="op">)</span><span class="op">)</span></span>
@@ -331,7 +340,7 @@ use its infix operator version <code>%by%</code>.</p>
 <code>x</code> and <code>resp</code>, and it is ideal for pipelines
 which describes the relationship of <code>x</code> to
 <code>resp</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
 <p>Both <code>x</code> and <code>resp</code> accept
 <code>&lt;tidyselect&gt;</code> helpers, such as
@@ -342,7 +351,7 @@ which describes the relationship of <code>x</code> to
 selected by it generate all pairwise combinations. Use
 <code>direction</code> to regulate which pairs are kept, and it’s
 <code>"lt"</code> (less than) by default.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pairwise.html">pairwise</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span></code></pre></div>
 <p>Note: When using <code>direction</code>, the filtration is based on
 lexicographic (alphabetical) ordering. Basically,
@@ -357,11 +366,11 @@ observed count, namely the number of successes <code>x</code> out of
 <code>n</code> trials. Unlike the other model IDs, <code><a href="../reference/prop.html">prop()</a></code>
 takes scalar constants directly; no variable names or data frame is
 involved.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span>   <span class="co"># 45 successes out of 100 trials</span></span></code></pre></div>
 <p>Because the data is embedded in the model ID itself,
 <code><a href="../reference/layout-define-base.html">define_model()</a></code> does not require a data frame:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </li>
 </ol>
@@ -378,7 +387,7 @@ variable names from the current environment (global environment by
 default). If you want to avoid creating intermediate variables, use
 <code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code> for a single inline value or multiple inline codes at
 once with <code><a href="../reference/inlines.html">inlines()</a></code>:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/rel.html">rel</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/pairwise.html">pairwise</a></span><span class="op">(</span><span class="fu"><a href="../reference/inlines.html">inlines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -395,7 +404,7 @@ executes it. Any named arguments after <code>.method</code> are
 forwarded to that variant.</p>
 <p>For example, switching from a classical t-test to a permutation test
 is a single added line, with nothing else changing:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Classical</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -522,40 +531,40 @@ is, the mean extra sleep under drug 1 is greater than or equal to that
 under drug 2:</p>
 <p><span class="math display">\mu_{x|\text{group}=1} \geq
 \mu_{x|\text{group}=2}</span></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; == Model ======================================================================= </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Variable Mapper : x_by </span></span>
-<span><span class="co">#&gt; Args : extra | group </span></span>
-<span><span class="co">#&gt;     x_vars : 1 </span></span>
-<span><span class="co">#&gt;     by_vars : 1 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; == T-Test ====================================================================== </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
-<span><span class="co">#&gt;   group  estimate  t_stat    df    p_val  </span></span>
-<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
-<span><span class="co">#&gt;   group   -1.580   -1.861  17.780  <span style="color: #BB0000;">0.040</span>  </span></span>
-<span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; -- Confidence Interval ---------------------------------------------------------</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ─────────────────────────────</span></span>
-<span><span class="co">#&gt;   group  lower_95  upper_95  </span></span>
-<span><span class="co">#&gt; ─────────────────────────────</span></span>
-<span><span class="co">#&gt;   group    -Inf     -0.107   </span></span>
-<span><span class="co">#&gt; ─────────────────────────────</span></span></code></pre></div>
+<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code>
+== Model ======================================================================= 
+
+Variable Mapper : x_by 
+Args : extra | group 
+    x_vars : 1 
+    by_vars : 1 
+
+== T-Test ====================================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+──────────────────────────────────────────
+  group  estimate  t_stat    df    p_val  
+──────────────────────────────────────────
+  group   -1.580   -1.861  17.780   [31m0.040 [39m  
+──────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+  group    -Inf     -0.107   
+─────────────────────────────</code></pre>
 <!-- ## Generalization -->
 <!-- If you have an inferential statistics tasks, give this package a shot — it's updated and more modernized. Besides, it's written in S7, so type annotation is the least of your worries. And that's pretty much all you need to know when you started working with this package.  -->
 </div>

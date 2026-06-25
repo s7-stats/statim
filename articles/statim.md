@@ -89,6 +89,19 @@ Let’s try with the two common forms of statistical inference:
     mtcars_lm = mtcars_dm |> prepare_model(LINEAR_REG)
     ```
 
+3.  Generalized
+    [`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md)
+    function
+
+    ``` r
+
+    sleep_dm = define_model(sleep, extra %by% group)
+    mtcars_dm = define_model(mtcars, mpg ~ .)
+
+    sleep_tt = sleep_dm |> prepare(TTEST) |> update(.ci = 0.9)
+    mtcars_lm = mtcars_dm |> prepare(LINEAR_REG)
+    ```
+
 > Note:
 > [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
 > and
@@ -128,7 +141,7 @@ like a sentence:
 # t-test example
 sleep |> 
     define_model(extra %by% group) |> 
-    prepare_test(TTEST) |> 
+    prepare(TTEST) |>                  # or `prepare_test()`
     update(.ci = 0.9) |> 
     conclude() |> 
     tidy()
@@ -140,7 +153,7 @@ sleep |>
 # Linear regression example
 mtcars |> 
     define_model(mpg ~ .) |> 
-    prepare_model(LINEAR_REG) |> 
+    prepare(LINEAR_REG) |>             # or `prepare_model()`
     conclude() |> 
     tidy()
 #> # A tibble: 11 × 5
@@ -494,30 +507,31 @@ sleep |>
         MU(extra, group == "1") >= MU(extra, group == "2")
     ) |>
     conclude()
-#> 
-#> == Model ======================================================================= 
-#> 
-#> Variable Mapper : x_by 
-#> Args : extra | group 
-#>     x_vars : 1 
-#>     by_vars : 1 
-#> 
-#> == T-Test ====================================================================== 
-#> 
-#> -- Summary ---------------------------------------------------------------------
-#> 
-#> ──────────────────────────────────────────
-#>   group  estimate  t_stat    df    p_val  
-#> ──────────────────────────────────────────
-#>   group   -1.580   -1.861  17.780  0.040  
-#> ──────────────────────────────────────────
-#> 
-#> 
-#> -- Confidence Interval ---------------------------------------------------------
-#> 
-#> ─────────────────────────────
-#>   group  lower_95  upper_95  
-#> ─────────────────────────────
-#>   group    -Inf     -0.107   
-#> ─────────────────────────────
 ```
+
+
+    == Model ======================================================================= 
+
+    Variable Mapper : x_by 
+    Args : extra | group 
+        x_vars : 1 
+        by_vars : 1 
+
+    == T-Test ====================================================================== 
+
+    -- Summary ---------------------------------------------------------------------
+
+    ──────────────────────────────────────────
+      group  estimate  t_stat    df    p_val  
+    ──────────────────────────────────────────
+      group   -1.580   -1.861  17.780   [31m0.040 [39m  
+    ──────────────────────────────────────────
+
+
+    -- Confidence Interval ---------------------------------------------------------
+
+    ─────────────────────────────
+      group  lower_95  upper_95  
+    ─────────────────────────────
+      group    -Inf     -0.107   
+    ─────────────────────────────
