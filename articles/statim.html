@@ -99,161 +99,137 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> provides a modified approach of high-level
-statistical inference in R. It is fully declarative, built for
-statistical inference pipelines, made to be extensible and exportable.
-This package is built at top of S7, and its design inherits the
-traditional R idiom:</p>
+<p>The conventional R idiom for statistical inference is:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="sc">&lt;</span><span class="er">&lt;</span>statistical<span class="sc">-</span><span class="cf">function</span><span class="sc">&gt;</span><span class="er">&gt;</span>(<span class="sc">&lt;</span>formula<span class="sc">&gt;</span>, <span class="sc">&lt;</span>data<span class="sc">&gt;</span>)</span></code></pre></div>
-<p>But it brings that idiom into a composable, pipe-friendly and
-readable with grammar syntax — much close in spirit to
-<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> or <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>.</p>
+<p>It is concise for a single test, but it does not compose. Each
+function is its own island: a different name, different argument
+conventions, no shared way to express what hypothesis you are testing or
+to switch between estimation methods without rewriting the call
+entirely.</p>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> keeps that familiar idiom as its entry point,
+while bringing declarative, pipe-friendly grammar (much in spirit of
+<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> or <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>). The same inference
+pipeline can express a classical test or a permutation test with nothing
+else touching.</p>
+</div>
+<div class="section level2">
+<h2 id="a-complete-example">A complete example<a class="anchor" aria-label="anchor" href="#a-complete-example"></a>
+</h2>
+<p>Before explaining each piece, here is what a <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>
+pipeline looks like end to end:</p>
+<ol style="list-style-type: decimal">
+<li>
+<p>t-test</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span><span class="co">#&gt; # A tibble: 1 × 7</span></span>
+<span><span class="co">#&gt;   group estimate t_stat    df  p_val lower_90 upper_90</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 group    -1.58  -1.86  17.8 0.0794    -3.05   -0.107</span></span></code></pre>
+</li>
+<li>
+<p>Linear regression</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mtcars</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span><span class="co">#&gt; # A tibble: 11 × 5</span></span>
+<span><span class="co">#&gt;    term        estimate std_error statistic p_value</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 (Intercept)  12.3      18.7        0.657  0.518 </span></span>
+<span><span class="co">#&gt;  2 cyl          -0.111     1.05      -0.107  0.916 </span></span>
+<span><span class="co">#&gt;  3 disp          0.0133    0.0179     0.747  0.463 </span></span>
+<span><span class="co">#&gt;  4 hp           -0.0215    0.0218    -0.987  0.335 </span></span>
+<span><span class="co">#&gt;  5 drat          0.787     1.64       0.481  0.635 </span></span>
+<span><span class="co">#&gt;  6 wt           -3.72      1.89      -1.96   0.0633</span></span>
+<span><span class="co">#&gt;  7 qsec          0.821     0.731      1.12   0.274 </span></span>
+<span><span class="co">#&gt;  8 vs            0.318     2.10       0.151  0.881 </span></span>
+<span><span class="co">#&gt;  9 am            2.52      2.06       1.23   0.234 </span></span>
+<span><span class="co">#&gt; 10 gear          0.655     1.49       0.439  0.665 </span></span>
+<span><span class="co">#&gt; 11 carb         -0.199     0.829     -0.241  0.812</span></span></code></pre>
+</li>
+</ol>
+<p>Each step has one job. The pipeline reads like a sentence: define the
+model, choose the test, execute and read the output.</p>
 </div>
 <div class="section level2">
 <h2 id="general-workflow">General Workflow<a class="anchor" aria-label="anchor" href="#general-workflow"></a>
 </h2>
 <p><img src="workflow.jpg"></p>
-<p>The usual <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> workflow has three (3) stages:</p>
 <div class="section level3">
-<h3 id="i--model-definition-and-processing">i. Model definition and processing<a class="anchor" aria-label="anchor" href="#i--model-definition-and-processing"></a>
+<h3 id="i--define-the-model">i. Define the model<a class="anchor" aria-label="anchor" href="#i--define-the-model"></a>
 </h3>
-<p>The stage where you define the shape of the model to be analyzed.
-This always happens at the beginning of the pipeline. <a href="#model-id"><model_id></model_id></a> objects describe the shape of the
-inference, e.g. what variable, what grouping, what relationship, while
-functions like <code><a href="../reference/layout-define-base.html">define_model()</a></code> binds that shape to data.</p>
-<p>There are two ways to start a pipeline:</p>
-<ol style="list-style-type: lower-roman">
+<p>Every pipeline starts with <code><a href="../reference/layout-define-base.html">define_model()</a></code>, which binds a
+variable description to data. The variable description is a
+<code>&lt;var_id&gt;</code> object — <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s equivalent
+of <code>ggplot2::aes()</code>. It captures bare variable names lazily,
+exactly as <code>~</code> does, but resolves them in a consistent,
+pipeline-aware way.</p>
+<p>The two most common <code>&lt;var_id&gt;</code> objects are:</p>
+<ul>
 <li>
-<p><code><a href="../reference/layout-define-base.html">define_model()</a></code> to define one model at a time.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
-<span><span class="va">mtcars_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
-<span><span class="co"># mtcars_dm = define_model(mpg ~ ., mtcars)</span></span></code></pre></div>
-</li>
+<code>x_by(x_group)</code> / <code>x %by% group</code>: compare
+<code>x</code> across levels of <code>group</code>.</li>
 <li>
-<p><code><a href="../reference/write_models.html">write_models()</a></code> to define multiple named models at
-once.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>sleep_wm <span class="ot">=</span> <span class="fu">write_models</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    sleep,</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="at">mod1 =</span> extra <span class="sc">%by%</span> group,</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">mod2 =</span> extra <span class="sc">%by%</span> <span class="fu">c</span>(group, ID),</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="at">mod3 =</span> extra <span class="sc">~</span> <span class="dv">1</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    <span class="at">mod4 =</span> extra <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> group</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span></code></pre></div>
-</li>
-</ol>
-<p>Future updates will include transformations and model updating
-functions.</p>
-</div>
-<div class="section level3">
-<h3 id="ii--parameterization">ii. Parameterization<a class="anchor" aria-label="anchor" href="#ii--parameterization"></a>
-</h3>
-<p>This stage is always AFTER the model is defined that shapes a certain
-statistical inference pipeline to be analyzed, a stage which defines the
-estimation process of the statistical inference. It is either a
-model-based inference (e.g. linear regression) or H-test inference
-(e.g. t-test). They are lazy-loaded, and nothing is executed yet.</p>
-<p>Let’s try with the two common forms of statistical inference:</p>
-<ol style="list-style-type: decimal">
-<li>
-<p>H-test inference uses <code><a href="../reference/prepare-test.html">prepare_test()</a></code></p>
+<code>rel(x, y)</code>: describe the relationship of <code>x</code>
+to <code>y</code>.</li>
+</ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
-<span><span class="va">sleep_tt</span> <span class="op">=</span> <span class="va">sleep_dm</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></code></pre></div>
-</li>
-<li>
-<p>Model-based inference uses <code><a href="../reference/prepare-model.html">prepare_model()</a></code></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mtcars_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
-<span><span class="va">mtcars_lm</span> <span class="op">=</span> <span class="va">mtcars_dm</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span></span></code></pre></div>
-</li>
-<li>
-<p>Generalized <code><a href="../reference/prepare.html">prepare()</a></code> function</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sleep_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
-<span><span class="va">mtcars_dm</span> <span class="op">=</span> <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sleep_tt</span> <span class="op">=</span> <span class="va">sleep_dm</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="va">mtcars_lm</span> <span class="op">=</span> <span class="va">mtcars_dm</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span></span></code></pre></div>
-</li>
-</ol>
-<blockquote>
-<p>Note: <code><a href="../reference/prepare-test.html">prepare_test()</a></code> and <code><a href="../reference/prepare-model.html">prepare_model()</a></code>
-can supply extra arguments from the default (base) implementation of
-<code>&lt;STAT_FN&gt;</code> functions like <code><a href="../reference/TTEST.html">TTEST()</a></code> and
-<code><a href="../reference/LINEAR_REG.html">LINEAR_REG()</a></code>. Using <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> is totally
-optional.</p>
-</blockquote>
-<p>Later updates may include other processes, such as sensitivity
-analysis.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span>          <span class="co"># standard formula also accepted</span></span></code></pre></div>
+<p>For a full account of all built-in <code>&lt;var_id&gt;</code>
+objects and how to write your own, see the <a href="https://s7-stats.github.io/statim/articles/pointers/var_id.html"><code>&lt;var_id&gt;</code>
+objects</a> article.</p>
 </div>
 <div class="section level3">
-<h3 id="iii--execution-and-retrieval">iii. Execution and retrieval<a class="anchor" aria-label="anchor" href="#iii--execution-and-retrieval"></a>
+<h3 id="ii--choose-the-test">ii. Choose the test<a class="anchor" aria-label="anchor" href="#ii--choose-the-test"></a>
 </h3>
-<p>The lazy pipeline from stages i and ii is executed here, and results
-are retrieved. The primary function is <code><a href="../reference/conclude.html">conclude()</a></code>, and
-<code><a href="../reference/tidy.html">tidy()</a></code> can be chained after it when tidy output methods are
-registered.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>After the model is defined, <code><a href="../reference/prepare.html">prepare()</a></code> attaches a
+statistical method to the pipeline. Nothing is executed yet — the
+pipeline is lazy until <code><a href="../reference/conclude.html">conclude()</a></code> is called.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="co"># update() is optional</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span>                  </span></code></pre></div>
+<p><code><a href="../reference/prepare.html">prepare()</a></code> accepts any <code>STAT_FN</code> —
+<code>TTEST</code>, <code>LINEAR_REG</code>, <code>CORTEST</code>,
+<code>P_TEST</code>, and so on. If you prefer to be explicit,
+<code><a href="../reference/prepare-test.html">prepare_test()</a></code> and <code><a href="../reference/prepare-model.html">prepare_model()</a></code> are
+available as typed alternatives.</p>
+</div>
+<div class="section level3">
+<h3 id="iii--execute-and-read-the-output">iii. Execute and read the output<a class="anchor" aria-label="anchor" href="#iii--execute-and-read-the-output"></a>
+</h3>
+<p><code><a href="../reference/conclude.html">conclude()</a></code> runs the pipeline. Chain <code><a href="../reference/tidy.html">tidy()</a></code>
+after it to get a tibble, or <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> the object directly
+for the formatted summary.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="va">sleep_tt</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="a-complete-example">A complete example<a class="anchor" aria-label="anchor" href="#a-complete-example"></a>
-</h3>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is intentionally making the syntax pipe-able.
-Since the pipeline is pipe-able, the three stages read like a
-sentence:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># t-test example</span></span>
-<span><span class="va">sleep</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span>                  <span class="co"># or `prepare_test()`</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 7</span></span></span>
-<span><span class="co">#&gt;   group estimate t_stat    df  p_val lower_90 upper_90</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> group    -<span style="color: #BB0000;">1.58</span>  -<span style="color: #BB0000;">1.86</span>  17.8 0.079<span style="text-decoration: underline;">4</span>    -<span style="color: #BB0000;">3.05</span>   -<span style="color: #BB0000;">0.107</span></span></span>
-<span></span>
-<span><span class="co"># Linear regression example</span></span>
-<span><span class="va">mtcars</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span>             <span class="co"># or `prepare_model()`</span></span>
-<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 11 × 5</span></span></span>
-<span><span class="co">#&gt;    term        estimate std_error statistic p_value</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> (Intercept)  12.3      18.7        0.657  0.518 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> cyl          -<span style="color: #BB0000;">0.111</span>     1.05      -<span style="color: #BB0000;">0.107</span>  0.916 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> disp          0.013<span style="text-decoration: underline;">3</span>    0.017<span style="text-decoration: underline;">9</span>     0.747  0.463 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> hp           -<span style="color: #BB0000;">0.021</span><span style="color: #BB0000; text-decoration: underline;">5</span>    0.021<span style="text-decoration: underline;">8</span>    -<span style="color: #BB0000;">0.987</span>  0.335 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> drat          0.787     1.64       0.481  0.635 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> wt           -<span style="color: #BB0000;">3.72</span>      1.89      -<span style="color: #BB0000;">1.96</span>   0.063<span style="text-decoration: underline;">3</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> qsec          0.821     0.731      1.12   0.274 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> vs            0.318     2.10       0.151  0.881 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> am            2.52      2.06       1.23   0.234 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> gear          0.655     1.49       0.439  0.665 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> carb         -<span style="color: #BB0000;">0.199</span>     0.829     -<span style="color: #BB0000;">0.241</span>  0.812</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="eager-form">Eager Form<a class="anchor" aria-label="anchor" href="#eager-form"></a>
-</h3>
-<p>There are times where you do not need the full pipeline, a quick
-eager form can do that. For a quick one-shot result, every test exposes
-an eager form that skips <code><a href="../reference/layout-define-base.html">define_model()</a></code> and
-<code><a href="../reference/prepare-test.html">prepare_test()</a></code> entirely:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span>, <span class="va">sleep</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
+<div class="section level2">
+<h2 id="eager-form">Eager form<a class="anchor" aria-label="anchor" href="#eager-form"></a>
+</h2>
+<p>For a quick one-shot inference, every test exposes an eager form that
+collapses the pipeline into a single call:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span>, <span class="va">sleep</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;   group  estimate  t_stat    df    p_val  </span></span>
 <span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
-<span><span class="co">#&gt;   group   -1.580   -1.861  17.780  <span style="font-style: italic;">0.079</span>  </span></span>
+<span><span class="co">#&gt;   group   -1.580   -1.861  17.780  0.079  </span></span>
 <span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -263,29 +239,30 @@ an eager form that skips <code><a href="../reference/layout-define-base.html">de
 <span><span class="co">#&gt;   group  lower_90  upper_90  </span></span>
 <span><span class="co">#&gt; ─────────────────────────────</span></span>
 <span><span class="co">#&gt;   group   -3.053    -0.107   </span></span>
-<span><span class="co">#&gt; ─────────────────────────────</span></span>
-<span><span class="fu"><a href="../reference/LINEAR_REG.html">LINEAR_REG</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">mtcars</span><span class="op">)</span></span>
-<span><span class="co">#&gt; -- Coefficients ----------------------------------------------------------------</span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span></code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/LINEAR_REG.html">LINEAR_REG</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">mtcars</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span><span class="co">#&gt; -- Coefficients ----------------------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ──────────────┬───────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;   term        │  estimate  std_error  statistic  p_value  </span></span>
 <span><span class="co">#&gt; ──────────────┼───────────────────────────────────────────</span></span>
-<span><span class="co">#&gt;   (Intercept) │   12.303    18.718      0.657    <span style="font-style: italic;"> 0.518</span>   </span></span>
-<span><span class="co">#&gt;   cyl         │   -0.111     1.045     -0.107    <span style="font-style: italic;"> 0.916</span>   </span></span>
-<span><span class="co">#&gt;   disp        │   0.013      0.018      0.747    <span style="font-style: italic;"> 0.463</span>   </span></span>
-<span><span class="co">#&gt;   hp          │   -0.021     0.022     -0.987    <span style="font-style: italic;"> 0.335</span>   </span></span>
-<span><span class="co">#&gt;   drat        │   0.787      1.635      0.481    <span style="font-style: italic;"> 0.635</span>   </span></span>
-<span><span class="co">#&gt;   wt          │   -3.715     1.894     -1.961    <span style="font-style: italic;"> 0.063</span>   </span></span>
-<span><span class="co">#&gt;   qsec        │   0.821      0.731      1.123    <span style="font-style: italic;"> 0.274</span>   </span></span>
-<span><span class="co">#&gt;   vs          │   0.318      2.105      0.151    <span style="font-style: italic;"> 0.881</span>   </span></span>
-<span><span class="co">#&gt;   am          │   2.520      2.057      1.225    <span style="font-style: italic;"> 0.234</span>   </span></span>
-<span><span class="co">#&gt;   gear        │   0.655      1.493      0.439    <span style="font-style: italic;"> 0.665</span>   </span></span>
-<span><span class="co">#&gt;   carb        │   -0.199     0.829     -0.241    <span style="font-style: italic;"> 0.812</span>   </span></span>
+<span><span class="co">#&gt;   (Intercept) │   12.303    18.718      0.657     0.518   </span></span>
+<span><span class="co">#&gt;   cyl         │   -0.111     1.045     -0.107     0.916   </span></span>
+<span><span class="co">#&gt;   disp        │   0.013      0.018      0.747     0.463   </span></span>
+<span><span class="co">#&gt;   hp          │   -0.021     0.022     -0.987     0.335   </span></span>
+<span><span class="co">#&gt;   drat        │   0.787      1.635      0.481     0.635   </span></span>
+<span><span class="co">#&gt;   wt          │   -3.715     1.894     -1.961     0.063   </span></span>
+<span><span class="co">#&gt;   qsec        │   0.821      0.731      1.123     0.274   </span></span>
+<span><span class="co">#&gt;   vs          │   0.318      2.105      0.151     0.881   </span></span>
+<span><span class="co">#&gt;   am          │   2.520      2.057      1.225     0.234   </span></span>
+<span><span class="co">#&gt;   gear        │   0.655      1.493      0.439     0.665   </span></span>
+<span><span class="co">#&gt;   carb        │   -0.199     0.829     -0.241     0.812   </span></span>
 <span><span class="co">#&gt; ──────────────┴───────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; -- Model Fit -------------------------------------------------------------------</span></span>
-<span><span class="co">#&gt; Warning in system("tput cols", intern = TRUE): running command 'tput cols' had</span></span>
+<span><span class="co">#&gt; -- Model Fit -------------------------------------------------------------------</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Warning in system("tput cols", intern = TRUE): running command 'tput cols' had</span></span>
 <span><span class="co">#&gt; status 2</span></span>
 <span><span class="co">#&gt; ------------------------------------------------------</span></span>
 <span><span class="co">#&gt;   R Squared      :    0.87    F-statistic :    13.93</span></span>
@@ -293,124 +270,25 @@ an eager form that skips <code><a href="../reference/layout-define-base.html">de
 <span><span class="co">#&gt;   Sigma          :    2.65    df2         :       21</span></span>
 <span><span class="co">#&gt;   n              :      32    p-value     :   &lt;0.001</span></span>
 <span><span class="co">#&gt;   df (residual)  :      21                :         </span></span>
-<span><span class="co">#&gt; ------------------------------------------------------</span></span></code></pre></div>
-<p>The eager form accepts the same model ID and data arguments, pass the
-rest of arguments, and returns the same printed output. The only
-constraints the “eager form” compensates is you can’t use the rest of
-the API, such as switching between modes (recalibration) using
-<code><a href="../reference/via.html">via()</a></code> or extracting the output in a data frame structure
-with <code><a href="../reference/tidy.html">tidy()</a></code>.</p>
-</div>
+<span><span class="co">#&gt; ------------------------------------------------------</span></span></code></pre>
+<p>The eager form is equivalent to the full pipeline for simple cases.
+Use the pipeline when you need <code><a href="../reference/via.html">via()</a></code>,
+<code><a href="../reference/null-hyp.html">state_null()</a></code>, or <code><a href="../reference/tidy.html">tidy()</a></code>.</p>
 </div>
 <div class="section level2">
-<h2 id="model-id">Model IDs: Emulation of formulas<a class="anchor" aria-label="anchor" href="#model-id"></a>
+<h2 id="switching-the-estimation-method">Switching the estimation method<a class="anchor" aria-label="anchor" href="#switching-the-estimation-method"></a>
 </h2>
-<p>Now you know the usual workflow of <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, now let’s
-talk about <code>&lt;model_id&gt;</code> objects. Empirically, they are
-functions that emulate the <code>&lt;formula&gt;</code> (and its idiom)
-to describe the shape of a statistical inference. Normally, they all
-inherit from the abstract S7 class <code>&lt;model_id&gt;</code>, and
-they should be built within S7. Here, we have
-<code>&lt;formula&gt;</code> and is used to describe the relationship
-between LHS (left-hand side) and RHS (right-hand side), but
-<code>&lt;model_id&gt;</code> take it on another different level.</p>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> provides the following built-in model IDs:</p>
-<ol style="list-style-type: decimal">
-<li>
-<p><code><a href="../reference/x_by.html">x_by()</a></code>: When used, it is simply translated as
-“compare x by group”. It requires 2 main arguments: <code>x</code> and
-<code>group</code>, and it is ideal for pipelines which compares
-<code>x</code> by <code>group</code>. Moreover, you can alternatively
-use its infix operator version <code>%by%</code>.</p>
+<p><code><a href="../reference/via.html">via()</a></code> recalibrates the estimation method in a lazy
+pipeline. The model definition and test choice stay the same — only the
+method changes. Switching from a classical t-test to a permutation test
+is a single added line:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># In a function call</span></span>
-<span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">group</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># infix form</span></span>
-<span><span class="va">x</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span></span>
-<span><span class="va">x</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span><span class="op">)</span></span></code></pre></div>
-<p>Both <code>x</code> and <code>group</code> accept
-<code>&lt;tidyselect&gt;</code> helpers, such as
-<code>starts_with()</code>. Only when a data frame is supplied.</p>
-</li>
-<li>
-<p><code><a href="../reference/rel.html">rel()</a></code>: It simply reads the expression once used as
-“relationship between x and y”. It requires 2 main arguments:
-<code>x</code> and <code>resp</code>, and it is ideal for pipelines
-which describes the relationship of <code>x</code> to
-<code>resp</code>.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
-<p>Both <code>x</code> and <code>resp</code> accept
-<code>&lt;tidyselect&gt;</code> helpers, such as
-<code>starts_with()</code>. Only when a data frame is supplied.</p>
-</li>
-<li>
-<p><code><a href="../reference/pairwise.html">pairwise()</a></code>: With this function, all variables being
-selected by it generate all pairwise combinations. Use
-<code>direction</code> to regulate which pairs are kept, and it’s
-<code>"lt"</code> (less than) by default.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/pairwise.html">pairwise</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span></span></code></pre></div>
-<p>Note: When using <code>direction</code>, the filtration is based on
-lexicographic (alphabetical) ordering. Basically,
-<code>direction = "lt"</code> means “keep pairs where
-<code>name_a</code> comes before <code>name_b</code> alphabetically”.
-Also, it accepts <code>&lt;tidyselect&gt;</code> helpers if a data frame
-is given.</p>
-</li>
-<li>
-<p><code><a href="../reference/prop.html">prop()</a></code>: Use this when the data is just a single
-observed count, namely the number of successes <code>x</code> out of
-<code>n</code> trials. Unlike the other model IDs, <code><a href="../reference/prop.html">prop()</a></code>
-takes scalar constants directly; no variable names or data frame is
-involved.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span>   <span class="co"># 45 successes out of 100 trials</span></span></code></pre></div>
-<p>Because the data is embedded in the model ID itself,
-<code><a href="../reference/layout-define-base.html">define_model()</a></code> does not require a data frame:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/prop.html">prop</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</li>
-</ol>
-<p>And if you are familiar with <code>aes()</code> (aesthetics) mapper
-from <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> package, they are indeed more like mappers,
-where they capture the expression internally, instead of evaluating them
-immediately. In fact, <code>aes()</code> heavily inspires
-<code>&lt;model_id&gt;</code> with the exception of having varieties.
-Take note that <code>&lt;model_id&gt;</code> abstract S7 class must be
-carried around as you create another <code>&lt;model_id&gt;</code>
-object (see more <a href="https://s7-stats.github.io/statim/articles/pointers/model_id.html">details</a>).</p>
-<p>When no data frame is supplied, <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> looks up the
-variable names from the current environment (global environment by
-default). If you want to avoid creating intermediate variables, use
-<code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code> for a single inline value or multiple inline codes at
-once with <code><a href="../reference/inlines.html">inlines()</a></code>:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/rel.html">rel</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/pairwise.html">pairwise</a></span><span class="op">(</span><span class="fu"><a href="../reference/inlines.html">inlines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="recalibrating-the-estimation-method">Recalibrating the estimation method<a class="anchor" aria-label="anchor" href="#recalibrating-the-estimation-method"></a>
-</h2>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> has a way to recalibrate the method of
-estimation in the statistical inference pipeline. Use <code><a href="../reference/via.html">via()</a></code>
-to switch a lazy pipeline from the default estimation method to an
-alternative estimation method. It updates the specification while the
-whole grammar syntax pipeline is defused before <code><a href="../reference/conclude.html">conclude()</a></code>
-executes it. Any named arguments after <code>.method</code> are
-forwarded to that variant.</p>
-<p>For example, switching from a classical t-test to a permutation test
-is a single added line, with nothing else changing:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Classical</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
+<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; == Model ======================================================================= </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Variable Mapper : x_by </span></span>
@@ -425,7 +303,7 @@ is a single added line, with nothing else changing:</p>
 <span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
 <span><span class="co">#&gt;   group  estimate  t_stat    df    p_val  </span></span>
 <span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
-<span><span class="co">#&gt;   group   -1.580   -1.861  17.780  <span style="font-style: italic;">0.079</span>  </span></span>
+<span><span class="co">#&gt;   group   -1.580   -1.861  17.780  0.079  </span></span>
 <span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -435,15 +313,16 @@ is a single added line, with nothing else changing:</p>
 <span><span class="co">#&gt;   group  lower_95  upper_95  </span></span>
 <span><span class="co">#&gt; ─────────────────────────────</span></span>
 <span><span class="co">#&gt;   group   -3.365    0.206    </span></span>
-<span><span class="co">#&gt; ─────────────────────────────</span></span>
-<span></span>
+<span><span class="co">#&gt; ─────────────────────────────</span></span></code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co"># Permutation: one line added</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
+<span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; == Model ======================================================================= </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Variable Mapper : x_by </span></span>
@@ -461,39 +340,40 @@ is a single added line, with nothing else changing:</p>
 <span><span class="co">#&gt; ───────────────────────────────</span></span>
 <span><span class="co">#&gt;   Statistic  p-value  n_perms  </span></span>
 <span><span class="co">#&gt; ───────────────────────────────</span></span>
-<span><span class="co">#&gt;    -1.580    <span style="font-style: italic;"> 0.102</span>     999    </span></span>
-<span><span class="co">#&gt; ───────────────────────────────</span></span></code></pre></div>
+<span><span class="co">#&gt;    -1.580     0.102     999    </span></span>
+<span><span class="co">#&gt; ───────────────────────────────</span></span></code></pre>
+<p>This is the grammar argument in concrete form. The inferential intent
+does not change; only the machinery does.</p>
 </div>
 <div class="section level2">
 <h2 id="hypothesis-expressions">Hypothesis expressions<a class="anchor" aria-label="anchor" href="#hypothesis-expressions"></a>
 </h2>
-<p>One of <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s distinguishing features is the ability
-to state the null hypothesis as a mathematical expression. The
-conventional approach in R uses declarative string gotchas like
-<code>alternative = "less"</code>. While concise, this encodes only a
-direction: it does not name the population parameter being constrained
-or the value it is being tested against. You cannot read
-<code>alternative = "greater"</code> and know whether the claim is about
-a mean, a proportion, or a correlation without reading the surrounding
-context.</p>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> still supports this approach (if defined under
-<code>stat_define</code>) by updating the arguments, but
-<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> provides a recommendable approach: an explicit
-hypothesis DSL (domain specific language) built from
+<p>The conventional approach in R encodes a hypothesis as a string flag:
+<code>alternative = "greater"</code>. That tells you a direction, but
+not what parameter is being constrained or against what value. You
+cannot read <code>alternative = "greater"</code> and know whether the
+claim is about a mean, a proportion, or a correlation without reading
+the surrounding context.</p>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> provides an explicit hypothesis DSL built from
 <code>&lt;param_obj&gt;</code> objects and standard R comparison
-operators. The expression names the population parameter, the relational
-operator, and the hypothesized scalar — the same three components that
-appear in any textbook null hypothesis statement. Internally,
-<code><a href="../reference/null-hyp.html">state_null()</a></code> parses the expression, extracts those
-components, and passes them into the <code>fn</code> implementation from
-<code><a href="../reference/baseline.html">baseline()</a></code> or <code><a href="../reference/variant.html">variant()</a></code>. Any linear
-combination of parameters is accepted on either side.</p>
-<p>The supported operators are <code>==</code>, <code>!=</code>,
-<code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>,
-<code>&gt;=</code>, and <code>%=%</code> (simultaneous equality across
-multiple parameters). Here are the current built-in
-<code>&lt;param_obj&gt;</code> objects:</p>
-<ul>
+operators, in a form of algebraic expression. The expression names the
+population parameter, the relational operator, and the hypothesized
+value — the same three components in any textbook null hypothesis
+statement.</p>
+<p>The supported operators are the built-in operators in R itself:
+<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>,
+<code>&lt;=</code>, <code>&gt;=</code>. Because
+<code><a href="../reference/null-hyp.html">state_null()</a></code> captures the expression unevaluated, these
+operators are never executed as comparisons — they are just AST nodes
+that split the left and right sides of the hypothesis. Consider writing
+<code>MU(extra, group == "1") &gt;= MU(extra, group == "2")</code>
+inside <code><a href="../reference/null-hyp.html">state_null()</a></code>. This is a valid expression, and then
+the <code>&gt;=</code> operator is automatically parsed as a value
+equivalent to <code>null = "greater"</code> /
+<code>alternative = "less"</code>.</p>
+<p>Here are the current built-in <code>&lt;param_obj&gt;</code>
+objects:</p>
+<ol style="list-style-type: upper-roman">
 <li>
 <p><code><a href="../reference/MU.html">MU()</a></code>: refers to the population mean <span class="math inline">\mu</span>. It has following usages:</p>
 <ol style="list-style-type: decimal">
@@ -508,30 +388,23 @@ population mean of the variable <code>x</code> given the
 which refers to the population correlation between 2 variables —
 <code>RHO(x, y) == 0</code> simply means the true population correlation
 between <code>x</code> and <code>y</code> is 0 or <span class="math inline">\rho_{x, y} = 0</span>.</p></li>
-<li>
-<p><code><a href="../reference/PI.html">PI()</a></code>: refers to the population proportion <span class="math inline">\pi</span>. Used with <code><a href="../reference/prop.html">prop()</a></code> pipelines.
-It accepts zero or one argument:</p>
-<ol style="list-style-type: decimal">
-<li><p><code><a href="../reference/PI.html">PI()</a></code> — the population proportion of the modelled
-count, when the variable name is already encoded in the model ID via
-<code><a href="../reference/prop.html">prop()</a></code> (see <code><a href="../reference/P_TEST.html">?P_TEST</a></code>).</p></li>
-<li><p><code>PI(x)</code> — the population proportion of a named
-variable <code>x</code>, for future two-sample proportion
-tests.</p></li>
+<li><p><code><a href="../reference/PI.html">PI()</a></code>: refers to the population proportion <span class="math inline">\pi</span>. Used with <code><a href="../reference/prop.html">prop()</a></code> pipelines.
+It accepts zero or one argument:</p></li>
 </ol>
-</li>
-</ul>
+<pre><code>1.  `PI()` — the population proportion of the modelled count, when the variable name is already encoded in the model ID via `prop()` (see `?P_TEST`). 
+
+2.  `PI(x)` — the population proportion of a named variable `x`, for future two-sample proportion tests.</code></pre>
 <p>As an example, consider the built-in <code>sleep</code> dataset. It
 records the extra hours of sleep (<code>extra</code>) gained by 10
 patients under each of two drugs (<code>group</code>). A researcher
-wants to know whether drug 1 produces less additional sleep than drug 2
+wants to know whether drug 1 produces more additional sleep than drug 2
 on average.</p>
 <p>The null hypothesis is that drug 1 is at least as effective — that
 is, the mean extra sleep under drug 1 is greater than or equal to that
 under drug 2:</p>
 <p><span class="math display">\mu_{x|\text{group}=1} \geq
 \mu_{x|\text{group}=2}</span></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -539,7 +412,7 @@ under drug 2:</p>
 <span>        <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code>
+<pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
 
 Variable Mapper : x_by 
@@ -554,7 +427,7 @@ Args : extra | group
 ──────────────────────────────────────────
   group  estimate  t_stat    df    p_val  
 ──────────────────────────────────────────
-  group   -1.580   -1.861  17.780   [31m0.040 [39m  
+  group   -1.580   -1.861  17.780  <span style="color: #BB0000;">0.040</span>  
 ──────────────────────────────────────────
 
 
@@ -564,7 +437,12 @@ Args : extra | group
   group  lower_95  upper_95  
 ─────────────────────────────
   group    -Inf     -0.107   
-─────────────────────────────</code></pre>
+─────────────────────────────
+</code></pre>
+<p>Any linear combination of parameters is valid on either side. For a
+full reference on supported operators and <code>&lt;param_obj&gt;</code>
+objects, see <a href="https://s7-stats.github.io/statim/articles/pointers/hypothesis-expressions.html">What
+are {statim}’s Null Hypothesis Expressions?</a></p>
 <!-- ## Generalization -->
 <!-- If you have an inferential statistics tasks, give this package a shot — it's updated and more modernized. Besides, it's written in S7, so type annotation is the least of your worries. And that's pretty much all you need to know when you started working with this package.  -->
 </div>
