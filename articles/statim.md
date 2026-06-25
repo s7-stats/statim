@@ -332,30 +332,34 @@ parsed as a value equivalent to `null = "greater"` /
 
 Here are the current built-in `<param_obj>` objects:
 
-1.  [`MU()`](https://s7-stats.github.io/statim/reference/MU.md): refers
-    to the population mean \mu. It has following usages:
+- [`MU()`](https://s7-stats.github.io/statim/reference/MU.md): refers to
+  the population mean \mu. It has following usages:
 
-    1.  `MU(x)` which means the assumed population mean of the variable
-        `x`.
+  1.  `MU(x)` which means the assumed population mean of the variable
+      `x`.
 
-    2.  `MU(x, group == "1")` which means the assumed population mean of
-        the variable `x` given the `group` equal `"1"`.
+  2.  `MU(x, group == "1")` which means the assumed population mean of
+      the variable `x` given the `group` equal `"1"`.
 
-2.  [`RHO()`](https://s7-stats.github.io/statim/reference/RHO.md): or
-    \rho which refers to the population correlation between 2 variables
-    — `RHO(x, y) == 0` simply means the true population correlation
-    between `x` and `y` is 0 or \rho\_{x, y} = 0.
+- [`RHO()`](https://s7-stats.github.io/statim/reference/RHO.md): or \rho
+  which refers to the population correlation between 2 variables —
+  `RHO(x, y) == 0` simply means the true population correlation between
+  `x` and `y` is 0 or \rho\_{x, y} = 0.
 
-3.  [`PI()`](https://s7-stats.github.io/statim/reference/PI.md): refers
-    to the population proportion \pi. Used with
-    [`prop()`](https://s7-stats.github.io/statim/reference/prop.md)
-    pipelines. It accepts zero or one argument:
+- [`PI()`](https://s7-stats.github.io/statim/reference/PI.md): refers to
+  the population proportion \pi. Used with
+  [`prop()`](https://s7-stats.github.io/statim/reference/prop.md)
+  pipelines. It accepts zero or one argument:
 
-&nbsp;
+  1.  [`PI()`](https://s7-stats.github.io/statim/reference/PI.md) means
+      the population proportion of the modelled count, when the variable
+      name is already encoded in the model ID via
+      [`prop()`](https://s7-stats.github.io/statim/reference/prop.md)
+      (see
+      [`?P_TEST`](https://s7-stats.github.io/statim/reference/P_TEST.md)).
 
-    1.  `PI()` — the population proportion of the modelled count, when the variable name is already encoded in the model ID via `prop()` (see `?P_TEST`). 
-
-    2.  `PI(x)` — the population proportion of a named variable `x`, for future two-sample proportion tests.
+  2.  `PI(x)` means the population proportion of a named variable `x`,
+      for future two-sample proportion tests.
 
 As an example, consider the built-in `sleep` dataset. It records the
 extra hours of sleep (`extra`) gained by 10 patients under each of two

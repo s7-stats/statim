@@ -373,7 +373,7 @@ equivalent to <code>null = "greater"</code> /
 <code>alternative = "less"</code>.</p>
 <p>Here are the current built-in <code>&lt;param_obj&gt;</code>
 objects:</p>
-<ol style="list-style-type: upper-roman">
+<ul>
 <li>
 <p><code><a href="../reference/MU.html">MU()</a></code>: refers to the population mean <span class="math inline">\mu</span>. It has following usages:</p>
 <ol style="list-style-type: decimal">
@@ -388,12 +388,19 @@ population mean of the variable <code>x</code> given the
 which refers to the population correlation between 2 variables —
 <code>RHO(x, y) == 0</code> simply means the true population correlation
 between <code>x</code> and <code>y</code> is 0 or <span class="math inline">\rho_{x, y} = 0</span>.</p></li>
-<li><p><code><a href="../reference/PI.html">PI()</a></code>: refers to the population proportion <span class="math inline">\pi</span>. Used with <code><a href="../reference/prop.html">prop()</a></code> pipelines.
-It accepts zero or one argument:</p></li>
+<li>
+<p><code><a href="../reference/PI.html">PI()</a></code>: refers to the population proportion <span class="math inline">\pi</span>. Used with <code><a href="../reference/prop.html">prop()</a></code> pipelines.
+It accepts zero or one argument:</p>
+<ol style="list-style-type: decimal">
+<li><p><code><a href="../reference/PI.html">PI()</a></code> means the population proportion of the modelled
+count, when the variable name is already encoded in the model ID via
+<code><a href="../reference/prop.html">prop()</a></code> (see <code><a href="../reference/P_TEST.html">?P_TEST</a></code>).</p></li>
+<li><p><code>PI(x)</code> means the population proportion of a named
+variable <code>x</code>, for future two-sample proportion
+tests.</p></li>
 </ol>
-<pre><code>1.  `PI()` — the population proportion of the modelled count, when the variable name is already encoded in the model ID via `prop()` (see `?P_TEST`). 
-
-2.  `PI(x)` — the population proportion of a named variable `x`, for future two-sample proportion tests.</code></pre>
+</li>
+</ul>
 <p>As an example, consider the built-in <code>sleep</code> dataset. It
 records the extra hours of sleep (<code>extra</code>) gained by 10
 patients under each of two drugs (<code>group</code>). A researcher
@@ -404,7 +411,7 @@ is, the mean extra sleep under drug 1 is greater than or equal to that
 under drug 2:</p>
 <p><span class="math display">\mu_{x|\text{group}=1} \geq
 \mu_{x|\text{group}=2}</span></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
