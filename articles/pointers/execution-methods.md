@@ -21,17 +21,16 @@ describing what each stage produces and why.
 
 | Stage | Function | Produces | Executes? |
 |----|----|----|----|
-| [Stage 1: lazy spec](#stage-1-building-a-lazy-specification) | [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md) | `def_model` | No |
-| [Stage 1: lazy spec](#stage-1-building-a-lazy-specification) | [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md) | `test_lazy` | No |
-| [Stage 1: lazy spec](#stage-1-building-a-lazy-specification) | [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md) | `model_lazy` | No |
-| [Stage 1: lazy spec](#stage-1-building-a-lazy-specification) | [`via()`](https://s7-stats.github.io/statim/reference/via.md) | modified lazy object | No |
-| [Stage 2: execution](#stage-2-execution-at-conclude) | [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md) | `cld_exec` | **Yes** |
-| [Stage 3: retrieval](#stage-3-retrieval) | [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) | tibble | (reads `cld_exec@data`) |
-| [Stage 3: retrieval](#stage-3-retrieval) | [`print()`](https://rdrr.io/r/base/print.html) | side effect | (reads `cld_exec@data`) |
+| [Stage 1: layout define](#layout-define) | [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md) | `<def_var>` | No |
+| [Stage 2: parameterization](#parameterization) | [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md) | `<test_lazy>` | No |
+| [Stage 2: parameterization](#parameterization) | [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md) | `<model_lazy>` | No |
+| [Stage 2: parameterization](#parameterization) | [`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md) | `<test_lazy> / <model_lazy>` | No |
+| [Stage 2: parameterization](#parameterization) | [`via()`](https://s7-stats.github.io/statim/reference/via.md) | modified lazy object | No |
+| [Stage 3: output process](#execution-at-conclude) | [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md) | `cld_exec` | **Yes** |
+| [Stage 3: output process](#retrieve-output) | [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) | tibble | (reads `cld_exec@data`) |
+| [Stage 3: output process](#retrieve-output) | [`print()`](https://rdrr.io/r/base/print.html) | side effect | (reads `cld_exec@data`) |
 
-## Stage 1: building a lazy specification
-
-### `define_model()` produces a `def_model`
+## Stage 1: Defining the Layout
 
 [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
 is an S7 generic dispatched on its first argument. When called with a
@@ -39,14 +38,16 @@ data frame in pipe position, it dispatches on
 [`S7::class_data.frame`](https://rconsortium.github.io/S7/reference/base_s3_classes.html);
 when called with a model ID or formula first, it dispatches on the union
 of those classes.
+[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
+produces a `<def_var>` S7 object.
 
 Either way, it calls
 [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md)
-on the model ID and the data, then stores the result in a `def_model` S7
+on the model ID and the data, then stores the result in a `<def_var>` S7
 object:
 
 ``` r
-def_model(
+def_var(
     model_id = <the model ID or formula>,
     processed = <list returned by model_processor()>
 )
@@ -73,22 +74,30 @@ sleep |> define_model(x_by(extra, group))
 #>     group : <fct [20]>
 ```
 
-### `prepare_test()` and `prepare_model()` attach a specification
+## Stage 2: Parameterization
 
-The two preparation functions attach an inference specification to the
-`def_model`. They differ only in which spec class they produce:
+Three functions to attach a specification:
+[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md),
+[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md),
+and
+[`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md).
+These three functions attach an inference specification to the
+`<def_var>`. They differ only in which spec class they produce:
 
 | Preparation function       | Spec class   | Lazy object class |
 |----------------------------|--------------|-------------------|
 | `prepare_test(.test)`      | `test_spec`  | `test_lazy`       |
 | `prepare_model(.model_fn)` | `model_spec` | `model_lazy`      |
+| `prepare(.fn)`             | Either       | Either\`          |
 
-Internally, both functions call the stat function with `.model = NULL`.
-This special sentinel causes the function to return its `test_spec` or
-`model_spec` rather than running any computation, which is how
-[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
+Internally, these functions call the stat function with
+`.var_id = NULL`. This special sentinel causes the function to return
+its `test_spec` or `model_spec` rather than running any computation,
+which is how
+[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md),
+[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md),
 and
-[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
+[`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md)
 harvest the lookup table of `stat_define` objects and the function’s
 name.
 
@@ -169,32 +178,35 @@ sleep |>
 #> Args   : n = 999
 ```
 
-## Stage 2: execution at `conclude()`
+## Stage 3: Execution and output processing
+
+### `conclude()`
 
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 is the terminal step. It is an S7 generic with separate methods for
 `test_lazy` and `model_lazy`; both methods follow the same four-step
 sequence.
 
-**Step 1: find the matching `stat_define`.** `find_def()` looks up the
-`defs` list from the spec and matches on `S7::S7_class(model_id)@name`
-(or `"formula"` when the model ID is an R formula). This selects the
-right `stat_define` for the current model shape.
+1.  *Find the matching `stat_define`*, which uses `find_def()` to look
+    up the `defs` list from the spec and matches on
+    `S7::S7_class(model_id)@name` (or `"formula"` when the model ID is
+    an R formula). This selects the right `stat_define` for the current
+    model shape.
 
-**Step 2: resolve the variant implementation.** If `@recalibrate_spec`
-is non-NULL, the variant name is looked up first in `def@impl$variants`
-(built-in variants), then in the session-scoped `variant_registry`
-(variants added via
-[`add_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md)).
-If both are empty and no
-[`via()`](https://s7-stats.github.io/statim/reference/via.md) was
-called, `def@impl$base` is used.
+2.  *Resolving the variant implementation*. If `@recalibrate_spec` is
+    non-`NULL`, the variant name is looked up first in
+    `def@impl$variants` (built-in variants), then in the session-scoped
+    `variant_registry` (variants added via
+    [`add_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md)).
+    If both are empty and no
+    [`via()`](https://s7-stats.github.io/statim/reference/via.md) was
+    called, `def@impl$base` is used.
 
-**Step 3: merge arguments.** The base arguments from the spec are merged
-with any arguments supplied to
-[`via()`](https://s7-stats.github.io/statim/reference/via.md), with the
-[`via()`](https://s7-stats.github.io/statim/reference/via.md) arguments
-taking precedence:
+3.  *Merge arguments*. The base arguments from the spec are merged with
+    any arguments supplied to
+    [`via()`](https://s7-stats.github.io/statim/reference/via.md), with
+    the [`via()`](https://s7-stats.github.io/statim/reference/via.md)
+    arguments taking precedence:
 
 ``` r
 
@@ -207,11 +219,11 @@ claim was present, the `claim_translator` on the matching `stat_define`
 is also consulted here, turning the parsed hypothesis into named
 arguments injected alongside `.proc`.
 
-**Step 4: run the implementation.** `inject_and_run()` resolves each
-formal of `fn` in order: `.proc` is always the processed model output;
-every other formal is taken from `all_args` if present, or from the
-formal’s declared default otherwise. A formal with neither a supplied
-value nor a default is a hard error.
+4.  *Run the implementation*. `inject_and_run()` resolves each formal of
+    `fn` in order: `.proc` is always the processed model output; every
+    other formal is taken from `all_args` if present, or from the
+    formal’s declared default otherwise. A formal with neither a
+    supplied value nor a default is a hard error.
 
 The return value of `fn` is wrapped in a `cld_exec` S7 object:
 
@@ -229,12 +241,17 @@ cld_exec(
 )
 ```
 
+#### Examples
+
 ``` r
 
 sleep |>
     define_model(x_by(extra, group)) |>
     prepare_test(TTEST) |>
     conclude()
+```
+
+``` fansi
 #> 
 #> == Model ======================================================================= 
 #> 
@@ -269,6 +286,9 @@ mtcars |>
     define_model(mpg ~ wt) |>
     prepare_model(LINEAR_REG) |>
     conclude()
+```
+
+``` fansi
 #> 
 #> == Model ======================================================================= 
 #> 
@@ -290,16 +310,17 @@ mtcars |>
 #> 
 #> 
 #> -- Model Fit -------------------------------------------------------------------
-#> Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-#> status 2
-#> ------------------------------------------------------
-#>   R Squared      :    0.75    F-statistic :    91.38
-#>   Adj. R Squared :    0.74    df1         :        1
-#>   Sigma          :    3.05    df2         :       30
-#>   n              :      32    p-value     :   <0.001
-#>   df (residual)  :      30                :         
-#> ------------------------------------------------------
 ```
+
+    #> Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
+    #> status 2
+    #> ------------------------------------------------------
+    #>   R Squared      :    0.75    F-statistic :    91.38
+    #>   Adj. R Squared :    0.74    df1         :        1
+    #>   Sigma          :    3.05    df2         :       30
+    #>   n              :      32    p-value     :   <0.001
+    #>   df (residual)  :      30                :         
+    #> ------------------------------------------------------
 
 With a [`via()`](https://s7-stats.github.io/statim/reference/via.md)
 recalibration, the output reflects the chosen variant:
@@ -311,6 +332,9 @@ sleep |>
     prepare_test(TTEST) |>
     via("permute", n = 999L) |>
     conclude()
+```
+
+``` fansi
 #> 
 #> == Model ======================================================================= 
 #> 
@@ -333,39 +357,16 @@ sleep |>
 #> ───────────────────────────────
 ```
 
-## Eager path vs lazy path
+### Retrieval of outputs
 
-There is also an eager path: calling `TTEST(x_by(extra, group), sleep)`
-or `LINEAR_REG(mpg ~ wt, mtcars)` directly skips
-[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
-[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
-/
-[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md),
-and [`via()`](https://s7-stats.github.io/statim/reference/via.md)
-entirely. Internally, `run_stat()` calls `find_def()` and
-`inject_and_run()` directly against `base`; only the base implementation
-is reachable this way. Variants registered via
-[`add_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md)
-or selected via
-[`via()`](https://s7-stats.github.io/statim/reference/via.md) are not
-accessible on the eager path.
-
-The eager path returns a `cld_exec` with the same slot structure as the
-lazy path, but the class hierarchy it belongs to is identical. This
-means [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md)
-and [`print()`](https://rdrr.io/r/base/print.html) work identically on
-both outputs.
-
-## Stage 3: retrieval
-
-### `tidy()`
+#### `tidy()`
 
 [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md)
 dispatches on `cld_exec`. It tries two paths in order:
 
 1.  **[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
-    (preferred).** When `cld_exec@data` is a `class_stat_infer`
-    subclass,
+    (optional but preferred)**. When `cld_exec@data` is a
+    `<class_stat_infer>` subclass,
     [`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
     is called on it directly. S7’s method dispatch handles
     variant-specific overrides: a variant that returns the same class as
@@ -374,8 +375,8 @@ dispatches on `cld_exec`. It tries two paths in order:
     method for free.
 
 2.  **[`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
-    registry (escape hatch).** When `@data` is not a `class_stat_infer`
-    subclass (a plain list, an S3 object, etc.),
+    registry (escape hatch)**. When `@data` is not a
+    `<class_stat_infer>` subclass (a plain list, an S3 object, etc.),
     [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md)
     consults the registry populated by
     [`making_tidy()`](https://s7-stats.github.io/statim/reference/making_tidy.md)
@@ -384,8 +385,8 @@ dispatches on `cld_exec`. It tries two paths in order:
     This path is only needed for variants that intentionally return a
     non-standard structure.
 
-In both cases the return value must be a `tbl_df` (a tibble). An
-informative error is raised if no method is found.
+In both cases the return value must be a tibble (in `tbl_df` S3 class).
+An informative error is raised if no method is found.
 
 ``` r
 
@@ -394,6 +395,9 @@ mtcars |>
     prepare_model(LINEAR_REG) |>
     conclude() |>
     tidy()
+```
+
+``` fansi
 #> # A tibble: 2 × 5
 #>   term        estimate std_error statistic  p_value
 #>   <chr>          <dbl>     <dbl>     <dbl>    <dbl>
@@ -401,10 +405,10 @@ mtcars |>
 #> 2 wt             -5.34     0.559     -9.56 1.29e-10
 ```
 
-### `display()`
+#### `display()`
 
 [`display()`](https://s7-stats.github.io/statim/reference/display.md) on
-a `multi_exec` prints up to `n` individual model outputs from a
+a `<multi_exec>` prints up to `n` individual model outputs from a
 [`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
 pipeline:
 
@@ -419,6 +423,9 @@ LifeCycleSavings |>
     prepare_model(LINEAR_REG) |>
     conclude() |>
     display(2)
+```
+
+``` fansi
 #> 
 #> 1. f1
 #> 
@@ -441,8 +448,12 @@ LifeCycleSavings |>
 #> 
 #> 
 #> -- Model Fit -------------------------------------------------------------------
-#> Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-#> status 2
+```
+
+    #> Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
+    #> status 2
+
+``` fansi
 #> -----------------------------------------------------
 #>   R Squared      :    0.00    F-statistic :     NaN
 #>   Adj. R Squared :    0.00    df1         :       0
@@ -475,30 +486,52 @@ LifeCycleSavings |>
 #> 
 #> 
 #> -- Model Fit -------------------------------------------------------------------
-#> Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-#> status 2
-#> ------------------------------------------------------
-#>   R Squared      :    0.21    F-statistic :    12.57
-#>   Adj. R Squared :    0.19    df1         :        1
-#>   Sigma          :    4.03    df2         :       48
-#>   n              :      50    p-value     :   <0.001
-#>   df (residual)  :      48                :         
-#> ------------------------------------------------------
 ```
 
-### `anova()`
+    #> Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
+    #> status 2
+    #> ------------------------------------------------------
+    #>   R Squared      :    0.21    F-statistic :    12.57
+    #>   Adj. R Squared :    0.19    df1         :        1
+    #>   Sigma          :    4.03    df2         :       48
+    #>   n              :      50    p-value     :   <0.001
+    #>   df (residual)  :      48                :         
+    #> ------------------------------------------------------
+
+#### `anova()`
 
 [`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md) is
 a separate generic that operates on model outputs rather than on
-`cld_exec` directly. It dispatches on `model_lazy`, `cld_exec`,
-`multi_lazy`, and `anova_lazy`, and always returns a `cld_anova`. See
-the [ANOVA for Linear
+`cld_exec` directly. It dispatches on `<model_lazy>`, `<cld_exec>`,
+`<multi_lazy>`, and `<anova_lazy>`, and always returns a `<cld_anova>`.
+See the [ANOVA for Linear
 Models](https://s7-stats.github.io/statim/articles/usage/anova-mod.md)
 article for the full walkthrough.
 
-## The `class_stat_infer` contract
+## Eager path vs lazy path
 
-`fn` can return anything, but returning a `class_stat_infer` subclass
+There is also an eager path: calling `TTEST(x_by(extra, group), sleep)`
+or `LINEAR_REG(mpg ~ wt, mtcars)` directly skips
+[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
+`prepare_*()`, and
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) entirely.
+Internally, `run_stat()` calls `find_def()` and `inject_and_run()`
+directly against `base`; only the base implementation is reachable this
+way. Variants registered via
+[`add_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md)
+or selected via
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) are not
+accessible on the eager path.
+
+The eager path returns a `cld_exec` with the same slot structure as the
+lazy path, but the class hierarchy it belongs to is identical. This
+means [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md)
+and [`print()`](https://rdrr.io/r/base/print.html) work identically on
+both outputs.
+
+## The `<class_stat_infer>` contract
+
+`fn` can return anything, but returning a `<class_stat_infer>` subclass
 unlocks automatic dispatch for both
 [`print()`](https://rdrr.io/r/base/print.html) and
 [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md). The
