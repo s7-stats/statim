@@ -147,7 +147,7 @@ Explanation of the code above:
     or both with just
     [`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md).
     With that said, the execution is lazy-loaded, and only executed if
-    needed.
+    needed. (The `(*)` mark means they are interchangeable. )
 
     > [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
     > is one of the reasons why
