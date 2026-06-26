@@ -14,12 +14,13 @@ reads those slots directly, so no separate conversion step is needed.
 [statim](https://github.com/s7-stats/statim) supports two distinct ANOVA
 questions:
 
-- **Single model (Type I)**: how much does each predictor reduce
-  residual variance, in the order the terms were added? One row per
-  term, plus a Residuals row.
-- **Multiple models (incremental F or LRT)**: is the extra complexity of
-  a larger model justified over a simpler nested model? One row per
-  model.
+1.  **Single model (Type I)**: how much does each predictor reduce
+    residual variance, in the order the terms were added? One row per
+    term, plus a Residuals row.
+
+2.  **Multiple models (incremental F or LRT)**: is the extra complexity
+    of a larger model justified over a simpler nested model? One row per
+    model.
 
 Both questions are answered by the same
 [`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
@@ -27,7 +28,7 @@ generic, dispatched on whatever object you hand it.
 
 ## Single model: Type I ANOVA
 
-The pipeline follows the standard declarative grammar. Here the `cars`
+The code below follows the standard declarative grammar. Here the `cars`
 dataset is used, which ships with base R: `speed` predicts stopping
 `dist`.
 
@@ -35,7 +36,7 @@ dataset is used, which ships with base R: `speed` predicts stopping
 
 ``` r
 
-result = cars |>
+cars_lr = cars |>
     define_model(dist ~ speed) |>
     prepare_model(LINEAR_REG) |>
     conclude()
@@ -53,18 +54,21 @@ resolves that specification and returns a `cld_exec` holding a
 
 ``` r
 
-anova(result)
-#> 
-#> == ANOVA · Type I ============================================================== 
-#> 
-#> -- ANOVA Table -----------------------------------------------------------------
-#> 
-#> ─────────────────────────────────────────────────────────
-#>     term     df     ss         ms      f_value  p_value  
-#> ─────────────────────────────────────────────────────────
-#>     speed    1   21185.459  21185.459  89.567   <0.001   
-#>   Residuals  48  11353.521   236.532                     
-#> ─────────────────────────────────────────────────────────
+anova(cars_lr)
+```
+
+``` fansi
+
+== ANOVA · Type I ============================================================== 
+
+-- ANOVA Table -----------------------------------------------------------------
+
+─────────────────────────────────────────────────────────
+    term     df     ss         ms      f_value  p_value  
+─────────────────────────────────────────────────────────
+    speed    1   21185.459  21185.459  89.567   <0.001   
+  Residuals  48  11353.521   236.532                     
+─────────────────────────────────────────────────────────
 ```
 
 The returned `cld_anova` prints the full Type I table. The final row is
@@ -83,12 +87,15 @@ tibble is the coefficient table: one row per term, with columns `term`,
 
 ``` r
 
-result |> tidy()
-#> # A tibble: 2 × 5
-#>   term        estimate std_error statistic  p_value
-#>   <chr>          <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 (Intercept)   -17.6      6.76      -2.60 1.23e- 2
-#> 2 speed           3.93     0.416      9.46 1.49e-12
+cars_lr |> tidy()
+```
+
+``` fansi
+# A tibble: 2 × 5
+  term        estimate std_error statistic  p_value
+  <chr>          <dbl>     <dbl>     <dbl>    <dbl>
+1 (Intercept)   -17.6      6.76      -2.60 1.23e- 2
+2 speed           3.93     0.416      9.46 1.49e-12
 ```
 
 This is the programmatic form of the Coefficients section that
@@ -111,20 +118,23 @@ cars |>
     define_model(dist ~ speed) |>
     prepare_model(LINEAR_REG) |>
     anova()
-#> 
-#> == ANOVA · Type I ============================================================== 
-#> 
-#> -- ANOVA Table -----------------------------------------------------------------
-#> 
-#> ─────────────────────────────────────────────────────────
-#>     term     df     ss         ms      f_value  p_value  
-#> ─────────────────────────────────────────────────────────
-#>     speed    1   21185.459  21185.459  89.567   <0.001   
-#>   Residuals  48  11353.521   236.532                     
-#> ─────────────────────────────────────────────────────────
 ```
 
-The printed result is identical.
+``` fansi
+
+== ANOVA · Type I ============================================================== 
+
+-- ANOVA Table -----------------------------------------------------------------
+
+─────────────────────────────────────────────────────────
+    term     df     ss         ms      f_value  p_value  
+─────────────────────────────────────────────────────────
+    speed    1   21185.459  21185.459  89.567   <0.001   
+  Residuals  48  11353.521   236.532                     
+─────────────────────────────────────────────────────────
+```
+
+The out is identical as above.
 
 ## Multiple models: incremental F-test
 
@@ -150,19 +160,22 @@ LifeCycleSavings |>
     ) |>
     prepare_model(LINEAR_REG) |>
     anova()
-#> 
-#> == ANOVA · F =================================================================== 
-#> 
-#> -- ANOVA Table -----------------------------------------------------------------
-#> 
-#> ────────────────────────────────────────────────────────────
-#>   model   res_df  deviance  df  dev_diff  f_value  p_value  
-#> ────────────────────────────────────────────────────────────
-#>    null     49    983.628                                   
-#>    main     48    779.511   1   204.118   14.116   <0.001   
-#>   extend    47    726.168   1    53.343    3.689    0.061   
-#>    full     45    650.713   2    75.455    2.609    0.085   
-#> ────────────────────────────────────────────────────────────
+```
+
+``` fansi
+
+== ANOVA · F =================================================================== 
+
+-- ANOVA Table -----------------------------------------------------------------
+
+────────────────────────────────────────────────────────────
+  model   res_df  deviance  df  dev_diff  f_value  p_value  
+────────────────────────────────────────────────────────────
+   null     49    983.628                                   
+   main     48    779.511   1   204.118   14.116   <0.001   
+  extend    47    726.168   1    53.343    3.689    0.061   
+   full     45    650.713   2    75.455    2.609    0.085   
+────────────────────────────────────────────────────────────
 ```
 
 The first row always has `NA` test statistics because there is no
@@ -187,18 +200,21 @@ mod2 = LifeCycleSavings |> define_model(sr ~ pop15) |> prepare_model(LINEAR_REG)
 mod3 = LifeCycleSavings |> define_model(sr ~ pop15 + pop75) |> prepare_model(LINEAR_REG)
 
 anova(mod1, mod2, mod3)
-#> 
-#> == ANOVA · F =================================================================== 
-#> 
-#> -- ANOVA Table -----------------------------------------------------------------
-#> 
-#> ───────────────────────────────────────────────────────────
-#>   model  res_df  deviance  df  dev_diff  f_value  p_value  
-#> ───────────────────────────────────────────────────────────
-#>     1      49    983.628                                   
-#>     2      48    779.511   1   204.118   13.211   <0.001   
-#>     3      47    726.168   1    53.343    3.453    0.069   
-#> ───────────────────────────────────────────────────────────
+```
+
+``` fansi
+
+== ANOVA · F =================================================================== 
+
+-- ANOVA Table -----------------------------------------------------------------
+
+───────────────────────────────────────────────────────────
+  model  res_df  deviance  df  dev_diff  f_value  p_value  
+───────────────────────────────────────────────────────────
+    1      49    983.628                                   
+    2      48    779.511   1   204.118   13.211   <0.001   
+    3      47    726.168   1    53.343    3.453    0.069   
+───────────────────────────────────────────────────────────
 ```
 
 ### Passing `cld_exec` objects
@@ -213,17 +229,20 @@ exec1 = LifeCycleSavings |> define_model(sr ~ 1) |> prepare_model(LINEAR_REG) |>
 exec2 = LifeCycleSavings |> define_model(sr ~ pop15) |> prepare_model(LINEAR_REG) |> conclude()
 
 anova(exec1, exec2, test = "LRT")
-#> 
-#> == ANOVA · LRT ================================================================= 
-#> 
-#> -- ANOVA Table -----------------------------------------------------------------
-#> 
-#> ───────────────────────────────────────────────────────────────
-#>   model  res_df  deviance  df  dev_diff  chisq_value  p_value  
-#> ───────────────────────────────────────────────────────────────
-#>     1      49    983.628                                       
-#>     2      48    779.511   1   204.118     12.569     <0.001   
-#> ───────────────────────────────────────────────────────────────
+```
+
+``` fansi
+
+== ANOVA · LRT ================================================================= 
+
+-- ANOVA Table -----------------------------------------------------------------
+
+───────────────────────────────────────────────────────────────
+  model  res_df  deviance  df  dev_diff  chisq_value  p_value  
+───────────────────────────────────────────────────────────────
+    1      49    983.628                                       
+    2      48    779.511   1   204.118     12.569     <0.001   
+───────────────────────────────────────────────────────────────
 ```
 
 ## Multiple models: `conclude()` and `tidy()`
@@ -243,13 +262,16 @@ all_fits = LifeCycleSavings |>
     conclude()
 
 all_fits
-#> 
-#> ── 2 models · Linear Regression ──────────────────────────────────────────────── 
-#> 
-#> null : <cld_exec>
-#> main : <cld_exec>
-#> 
-#> Use display() to inspect individual results.
+```
+
+``` fansi
+
+── 2 models · Linear Regression ──────────────────────────────────────────────── 
+
+null : <cld_exec>
+main : <cld_exec>
+
+Use display() to inspect individual results.
 ```
 
 [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) on a
@@ -258,11 +280,14 @@ all_fits
 ``` r
 
 tidy(all_fits)
-#> # A tibble: 2 × 2
-#>   model outs            
-#>   <chr> <named list>    
-#> 1 null  <tibble [1 × 5]>
-#> 2 main  <tibble [3 × 5]>
+```
+
+``` fansi
+# A tibble: 2 × 2
+  model outs            
+  <chr> <named list>    
+1 null  <tibble [1 × 5]>
+2 main  <tibble [3 × 5]>
 ```
 
 Use
@@ -280,72 +305,81 @@ LifeCycleSavings |>
     prepare_model(LINEAR_REG) |>
     conclude() |>
     display(2)
-#> 
-#> 1. f1
-#> 
-#> == Model ======================================================================= 
-#> 
-#> Variable Mapper : formula 
-#> Args : sr ~ 1 
-#>     left_var : 1 
-#>     right_var : 0 
-#> 
-#> == Linear Regression =========================================================== 
-#> 
-#> -- Coefficients ----------------------------------------------------------------
-#> 
-#> ──────────────┬───────────────────────────────────────────
-#>   term        │  estimate  std_error  statistic  p_value  
-#> ──────────────┼───────────────────────────────────────────
-#>   (Intercept) │   9.671      0.634     15.263    <0.001   
-#> ──────────────┴───────────────────────────────────────────
-#> 
-#> 
-#> -- Model Fit -------------------------------------------------------------------
-#> Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-#> status 2
-#> -----------------------------------------------------
-#>   R Squared      :    0.00    F-statistic :     NaN
-#>   Adj. R Squared :    0.00    df1         :       0
-#>   Sigma          :    4.48    df2         :      49
-#>   n              :      50    p-value     :     NaN
-#>   df (residual)  :      49                :        
-#> -----------------------------------------------------
-#> 
-#> 
-#> 
-#> 2. f2
-#> 
-#> == Model ======================================================================= 
-#> 
-#> Variable Mapper : formula 
-#> Args : sr ~ pop15 
-#>     left_var : 1 
-#>     right_var : 1 
-#> 
-#> == Linear Regression =========================================================== 
-#> 
-#> -- Coefficients ----------------------------------------------------------------
-#> 
-#> ──────────────┬───────────────────────────────────────────
-#>   term        │  estimate  std_error  statistic  p_value  
-#> ──────────────┼───────────────────────────────────────────
-#>   (Intercept) │   17.497     2.280      7.675    <0.001   
-#>   pop15       │   -0.223     0.063     -3.545    <0.001   
-#> ──────────────┴───────────────────────────────────────────
-#> 
-#> 
-#> -- Model Fit -------------------------------------------------------------------
-#> Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
-#> status 2
-#> ------------------------------------------------------
-#>   R Squared      :    0.21    F-statistic :    12.57
-#>   Adj. R Squared :    0.19    df1         :        1
-#>   Sigma          :    4.03    df2         :       48
-#>   n              :      50    p-value     :   <0.001
-#>   df (residual)  :      48                :         
-#> ------------------------------------------------------
 ```
+
+``` fansi
+
+1. f1
+
+== Model ======================================================================= 
+
+Variable Mapper : formula 
+Args : sr ~ 1 
+    left_var : 1 
+    right_var : 0 
+
+== Linear Regression =========================================================== 
+
+-- Coefficients ----------------------------------------------------------------
+
+──────────────┬───────────────────────────────────────────
+  term        │  estimate  std_error  statistic  p_value  
+──────────────┼───────────────────────────────────────────
+  (Intercept) │   9.671      0.634     15.263    <0.001   
+──────────────┴───────────────────────────────────────────
+
+
+-- Model Fit -------------------------------------------------------------------
+```
+
+    Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
+    status 2
+
+``` fansi
+-----------------------------------------------------
+  R Squared      :    0.00    F-statistic :     NaN
+  Adj. R Squared :    0.00    df1         :       0
+  Sigma          :    4.48    df2         :      49
+  n              :      50    p-value     :     NaN
+  df (residual)  :      49                :        
+-----------------------------------------------------
+
+
+
+2. f2
+
+== Model ======================================================================= 
+
+Variable Mapper : formula 
+Args : sr ~ pop15 
+    left_var : 1 
+    right_var : 1 
+
+== Linear Regression =========================================================== 
+
+-- Coefficients ----------------------------------------------------------------
+
+──────────────┬───────────────────────────────────────────
+  term        │  estimate  std_error  statistic  p_value  
+──────────────┼───────────────────────────────────────────
+  (Intercept) │   17.497     2.280      7.675    <0.001   
+  pop15       │   -0.223     0.063     -3.545    <0.001   
+──────────────┴───────────────────────────────────────────
+
+
+-- Model Fit -------------------------------------------------------------------
+```
+
+    Warning in system("tput cols", intern = TRUE): running command 'tput cols' had
+    status 2
+
+    ------------------------------------------------------
+      R Squared      :    0.21    F-statistic :    12.57
+      Adj. R Squared :    0.19    df1         :        1
+      Sigma          :    4.03    df2         :       48
+      n              :      50    p-value     :   <0.001
+      df (residual)  :      48                :         
+    ------------------------------------------------------
 
 ## GLMs: likelihood ratio test
 
@@ -356,8 +390,8 @@ statistic instead of an F-statistic. Pass `test = "LRT"` explicitly;
 `"F"` is not meaningful for GLMs.
 
 Supply the family directly to
-[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
-— it is forwarded to every model in the pipeline:
+[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md).
+It is forwarded to every model in the pipeline:
 
 ``` r
 
@@ -369,18 +403,21 @@ mtcars |>
     ) |>
     prepare_model(GLM, family = binomial()) |>
     anova(test = "LRT")
-#> 
-#> == ANOVA · LRT ================================================================= 
-#> 
-#> -- ANOVA Table -----------------------------------------------------------------
-#> 
-#> ───────────────────────────────────────────────────────────────
-#>   model  res_df  deviance  df  dev_diff  chisq_value  p_value  
-#> ───────────────────────────────────────────────────────────────
-#>   null     31     7.719                                        
-#>   main     30     4.017    1    3.702      31.584     <0.001   
-#>   full     29     3.399    1    0.619       5.278      0.022   
-#> ───────────────────────────────────────────────────────────────
+```
+
+``` fansi
+
+== ANOVA · LRT ================================================================= 
+
+-- ANOVA Table -----------------------------------------------------------------
+
+───────────────────────────────────────────────────────────────
+  model  res_df  deviance  df  dev_diff  chisq_value  p_value  
+───────────────────────────────────────────────────────────────
+  null     31     7.719                                        
+  main     30     4.017    1    3.702      31.584     <0.001   
+  full     29     3.399    1    0.619       5.278      0.022   
+───────────────────────────────────────────────────────────────
 ```
 
 The output table has a `chisq_value` column in place of `f_value`. The
