@@ -17,7 +17,9 @@ The existing `<formula>` objects in R is often used to describe the
 relationship between variables. Depending on the implementation, if you
 have `y ~ x`, this tells you to describe the relationship of `x` to `y`.
 In case you didn’t know yet, `~` is also a function that captures the
-code to retrieve and parse its abstract syntax tree (AST).
+code to retrieve and parse its abstract syntax tree (AST). That’s not
+the whole reality, in fact, you can use `<formula>` but interpreted
+differently.
 
 `<var_id>` objects share this same lazy-capture nature — bare variable
 names like `extra` or `group` aren’t evaluated at the moment
