@@ -32,17 +32,71 @@ install.packages(c("devtools", "roxygen2", "testthat"))
 devtools::load_all()
 ```
 
+## Tooling
+
+This project enforces code style via two tools:
+
+- [Air](https://posit-dev.github.io/air/) — code formatter
+- [lintr](https://lintr.r-lib.org/) — static analysis
+
+### Install Air
+
+**macOS**
+
+``` bash
+brew install air
+```
+
+**Linux / macOS**
+
+``` bash
+curl -fsSL https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | bash
+```
+
+**Windows**
+
+``` powershell
+irm https://github.com/posit-dev/air/releases/latest/download/air-installer.ps1 | iex
+```
+
+Verify with `air --version`. For editor integration, see Air’s [editor
+guides](https://posit-dev.github.io/air/editors.html). The project root
+contains an `air.toml` — your editor will pick it up automatically.
+
+## Style Rules
+
+- Use `=` for assignment, not `<-`.
+- 4-space indentation (enforced by `air.toml`).
+
 ## Pull Request Guidelines
 
 - Keep pull requests focused and small when possible.
 - Add or update tests when behavior changes.
 - Update documentation for user-facing changes.
-- Run checks before submitting:
+- Format the project before submitting:
+
+``` bash
+air format .
+```
+
+- Check for linting issues:
+
+``` r
+
+lintr::lint_package()
+```
+
+- Run checks:
 
 ``` r
 
 devtools::check()
 ```
+
+Both `air format .` and
+[`lintr::lint_package()`](https://lintr.r-lib.org/reference/lint.html)
+must produce no errors. Every pull request runs automated checks via CI
+— unformatted code or linting violations will fail the build.
 
 ## Questions
 

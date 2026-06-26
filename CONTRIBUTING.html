@@ -83,13 +83,42 @@
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">load_all</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="tooling">Tooling<a class="anchor" aria-label="anchor" href="#tooling"></a></h2>
+<p>This project enforces code style via two tools:</p>
+<ul><li>
+<a href="https://posit-dev.github.io/air/" class="external-link">Air</a> — code formatter</li>
+<li>
+<a href="https://lintr.r-lib.org/" class="external-link">lintr</a> — static analysis</li>
+</ul><div class="section level3">
+<h3 id="install-air">Install Air<a class="anchor" aria-label="anchor" href="#install-air"></a></h3>
+<p><strong>macOS</strong></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">brew</span> install air</span></code></pre></div>
+<p><strong>Linux / macOS</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-fsSL</span> https://github.com/posit-dev/air/releases/latest/download/air-installer.sh <span class="kw">|</span> <span class="fu">bash</span></span></code></pre></div>
+<p><strong>Windows</strong></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">irm</span> https<span class="op">://</span>github<span class="op">.</span><span class="fu">com</span><span class="op">/</span>posit-dev<span class="op">/</span>air<span class="op">/</span>releases<span class="op">/</span>latest<span class="op">/</span>download<span class="op">/</span>air-installer<span class="op">.</span><span class="fu">ps1</span> <span class="op">|</span> <span class="fu">iex</span></span></code></pre></div>
+<p>Verify with <code>air --version</code>. For editor integration, see Air’s <a href="https://posit-dev.github.io/air/editors.html" class="external-link">editor guides</a>. The project root contains an <code>air.toml</code> — your editor will pick it up automatically.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="style-rules">Style Rules<a class="anchor" aria-label="anchor" href="#style-rules"></a></h2>
+<ul><li>Use <code>=</code> for assignment, not <code>&lt;-</code>.</li>
+<li>4-space indentation (enforced by <code>air.toml</code>).</li>
+</ul></div>
+<div class="section level2">
 <h2 id="pull-request-guidelines">Pull Request Guidelines<a class="anchor" aria-label="anchor" href="#pull-request-guidelines"></a></h2>
 <ul><li>Keep pull requests focused and small when possible.</li>
 <li>Add or update tests when behavior changes.</li>
 <li>Update documentation for user-facing changes.</li>
-<li>Run checks before submitting:</li>
-</ul><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<li>Format the project before submitting:</li>
+</ul><div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">air</span> format .</span></code></pre></div>
+<ul><li>Check for linting issues:</li>
+</ul><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">lintr</span><span class="fu">::</span><span class="fu"><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lint_package</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<ul><li>Run checks:</li>
+</ul><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Both <code>air format .</code> and <code><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lintr::lint_package()</a></code> must produce no errors. Every pull request runs automated checks via CI — unformatted code or linting violations will fail the build.</p>
 </div>
 <div class="section level2">
 <h2 id="questions">Questions<a class="anchor" aria-label="anchor" href="#questions"></a></h2>
