@@ -11,7 +11,8 @@ to visualize within [ggplot2](https://ggplot2.tidyverse.org) pipelines.
 The existing `<var_id>` objects from
 [statim](https://github.com/s7-stats/statim) shape the model to be
 analyzed in the statistical inference pipelines, which act like mappers,
-just like `ggplot2::aes()`.
+just like
+[`ggplot2::aes()`](https://ggplot2.tidyverse.org/reference/aes.html).
 
 The existing `<formula>` objects in R is often used to describe the
 relationship between variables. Depending on the implementation, if you
@@ -40,12 +41,13 @@ that turns the captured expressions into a list of data structures
 ## What are Variable Mappers
 
 `<var_id>` objects, or the variable mappers, are built on top of S7, and
-serve as “mappers”, similar to how `ggplot2::aes()` (aesthetic mappings)
-works. Where `aes()` maps variables to plot aesthetics (`x`, `y`,
-`colour`, …), a `<var_id>` maps variables to the roles a statistical
-model needs (e.g. a response and a grouping variable for
-[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md), or a
-predictor and a response for
+serve as “mappers”, similar to how
+[`ggplot2::aes()`](https://ggplot2.tidyverse.org/reference/aes.html)
+(aesthetic mappings) works. Where `aes()` maps variables to plot
+aesthetics (`x`, `y`, `colour`, …), a `<var_id>` maps variables to the
+roles a statistical model needs (e.g. a response and a grouping variable
+for [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md), or
+a predictor and a response for
 [`rel()`](https://s7-stats.github.io/statim/reference/rel.md)).
 [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
 then takes that mapping, resolves it via

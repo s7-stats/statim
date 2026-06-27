@@ -2,7 +2,9 @@
 
 `x_by()` (and its infix alias `%by%`) creates an `x_by` Variable Mapper
 that reads as "compare `x` by `group`". Expressions are captured
-unevaluated, similar to how `ggplot2::aes()` captures aesthetics.
+unevaluated, similar to how
+[`ggplot2::aes()`](https://ggplot2.tidyverse.org/reference/aes.html)
+captures aesthetics.
 
 ## Usage
 

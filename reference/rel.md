@@ -2,7 +2,9 @@
 
 `rel()` creates a `rel` Variable Mapper that reads as "relationship
 between `x` and `resp`". Expressions are captured unevaluated, similar
-to how `ggplot2::aes()` captures aesthetics.
+to how
+[`ggplot2::aes()`](https://ggplot2.tidyverse.org/reference/aes.html)
+captures aesthetics.
 
 ## Usage
 

@@ -2,10 +2,11 @@
 
 ### A guide on using statim R package
 
-- [New approach of hypothesis testing with
+- [Hypothesis Testing with
   {statim}](https://s7-stats.github.io/statim/articles/usage/htest.md):
 
-  A guide on using statim R package
+  A guide to running t-tests, correlation tests, and proportion tests
+  using the statim R package.
 
 - [New approach of model-based inference with
   {statim}](https://s7-stats.github.io/statim/articles/usage/model-infer.md):

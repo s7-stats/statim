@@ -85,9 +85,10 @@ Every pipeline starts with
 [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
 which binds a variable description to data. The variable description is
 a `<var_id>` object — [statim](https://github.com/s7-stats/statim)’s
-equivalent of `ggplot2::aes()`. It captures bare variable names lazily,
-exactly as `~` does, but resolves them in a consistent, pipeline-aware
-way.
+equivalent of
+[`ggplot2::aes()`](https://ggplot2.tidyverse.org/reference/aes.html). It
+captures bare variable names lazily, exactly as `~` does, but resolves
+them in a consistent, pipeline-aware way.
 
 The two most common `<var_id>` objects are:
 
