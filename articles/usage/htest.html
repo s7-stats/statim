@@ -15,9 +15,9 @@
 <link href="../../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Hypothesis Testing with {statim}">
-<meta name="description" content="A guide to running t-tests, correlation tests, and proportion tests using the statim R package.
+<meta name="description" content="A guide on performing Hypothesis testing with statim R package. With comparison.
 ">
-<meta property="og:description" content="A guide to running t-tests, correlation tests, and proportion tests using the statim R package.
+<meta property="og:description" content="A guide on performing Hypothesis testing with statim R package. With comparison.
 ">
 </head>
 <body>
@@ -785,7 +785,23 @@ sample estimates:
 </div>
 <div class="tab-pane" id="interpretation-of-the-codes-2" role="tabpanel" aria-labelledby="interpretation-of-the-codes-2-tab">
 
-<p>Pending…</p>
+<p>Both <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> and base R are leveraging high level API
+on defining the layout of the model being analyzed — the former uses
+<code><a href="../../reference/rel.html">rel()</a></code> (can also use <code>&lt;formula&gt;</code> interface)
+and the latter uses <code>&lt;formula&gt;</code> interface, except it
+follows not the <code>v ~ u</code> form, rather the <code>~ u + v</code>
+form, where <code>u</code> is a numeric vector signifying the
+independent variable while <code>v</code> is a numeric vector signifying
+the dependent variable. <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> is oddly different from
+these 2: it’s still high level except it follows the
+<code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">dplyr::select()</a></code> selection method and the operation always
+interpreted in pairwise method.</p>
+<p>As usual from <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, <code><a href="../../reference/null-hyp.html">state_null()</a></code> is
+used on <code><a href="../../reference/CORTEST.html">CORTEST()</a></code> and the only compatible
+<code>&lt;param_obj&gt;</code> is <code><a href="../../reference/RHO.html">RHO()</a></code>, which refers to
+the population correlation <span class="math inline">\rho</span> — the
+representation is algebraic form, not in <code>alternative =</code>
+gotcha.</p>
 </div>
 </div>
 </div>

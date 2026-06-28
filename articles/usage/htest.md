@@ -702,7 +702,28 @@ Two approaches:
 
 ------------------------------------------------------------------------
 
-Pending…
+Both [statim](https://github.com/s7-stats/statim) and base R are
+leveraging high level API on defining the layout of the model being
+analyzed — the former uses
+[`rel()`](https://s7-stats.github.io/statim/reference/rel.md) (can also
+use `<formula>` interface) and the latter uses `<formula>` interface,
+except it follows not the `v ~ u` form, rather the `~ u + v` form, where
+`u` is a numeric vector signifying the independent variable while `v` is
+a numeric vector signifying the dependent variable.
+[rstatix](https://rpkgs.datanovia.com/rstatix/) is oddly different from
+these 2: it’s still high level except it follows the
+[`dplyr::select()`](https://dplyr.tidyverse.org/reference/select.html)
+selection method and the operation always interpreted in pairwise
+method.
+
+As usual from [statim](https://github.com/s7-stats/statim),
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+is used on
+[`CORTEST()`](https://s7-stats.github.io/statim/reference/CORTEST.md)
+and the only compatible `<param_obj>` is
+[`RHO()`](https://s7-stats.github.io/statim/reference/RHO.md), which
+refers to the population correlation \rho — the representation is
+algebraic form, not in `alternative =` gotcha.
 
 ## Question 4
 

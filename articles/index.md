@@ -5,8 +5,8 @@
 - [Hypothesis Testing with
   {statim}](https://s7-stats.github.io/statim/articles/usage/htest.md):
 
-  A guide to running t-tests, correlation tests, and proportion tests
-  using the statim R package.
+  A guide on performing Hypothesis testing with statim R package. With
+  comparison.
 
 - [New approach of model-based inference with
   {statim}](https://s7-stats.github.io/statim/articles/usage/model-infer.md):
