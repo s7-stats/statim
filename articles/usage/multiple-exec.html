@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Multiple executions in a single line • statim</title>
+<title>Applications of multiple model layouts with `write_models()` • statim</title>
 <!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../../katex-auto.js"></script><script src="../../lightswitch.js"></script><script src="../../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -14,9 +14,11 @@
 <link href="../../deps/Fraunces-0.4.10/font.css" rel="stylesheet">
 <link href="../../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Multiple executions in a single line">
-<meta name="description" content="A guide on using statim R package">
-<meta property="og:description" content="A guide on using statim R package">
+<script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Applications of multiple model layouts with `write_models()`">
+<meta name="description" content='"A guide on using statim R package"
+'>
+<meta property="og:description" content='"A guide on using statim R package"
+'>
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -45,7 +47,7 @@
     <li><a class="dropdown-item" href="../../articles/usage/htest.html">Hypothesis Testing with {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/model-infer.html">New approach of model-based inference with {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/anova-mod.html">ANOVA for Linear models with {statim}</a></li>
-    <li><a class="dropdown-item" href="../../articles/usage/multiple-exec.html">Multiple executions in a single line</a></li>
+    <li><a class="dropdown-item" href="../../articles/usage/multiple-exec.html">Applications of multiple model layouts with `write_models()`</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Pointers of statim you need to know</h6></li>
     <li><a class="dropdown-item" href="../../articles/pointers/var_id.html">`&lt;var_id&gt;` objects</a></li>
@@ -87,7 +89,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Multiple executions in a single line</h1>
+      <h1>Applications of multiple model layouts with `write_models()`</h1>
             <h3 data-toc-skip class="subtitle">Definitive guide</h3>
             
       
@@ -97,8 +99,75 @@
 
     
     
+<div class="section level2">
+<h2 id="the-convenience-of-write_models">The Convenience of <code>write_models()</code><a class="anchor" aria-label="anchor" href="#the-convenience-of-write_models"></a>
+</h2>
+<p>The <code><a href="../../reference/write_models.html">write_models()</a></code> function is good at its job. It
+handles multiple <code>&lt;var_id&gt;</code> object layouts or mappers,
+and you can perform:</p>
+<ol style="list-style-type: decimal">
+<li>Multiple executions</li>
+<li>ANOVA models</li>
+<li>Comparison between models (soon)</li>
+</ol>
+<p>These mappers must share the same <code>&lt;STAT_FN&gt;</code>
+estimation method, else the execution will be aborted.</p>
+</div>
+<div class="section level2">
+<h2 id="how-to-load">How to load<a class="anchor" aria-label="anchor" href="#how-to-load"></a>
+</h2>
+<p>Just like this <a href="./htest.html">vignette</a>, let us use the
+usual workflow of <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s author in his daily basis on
+statistical analysis, where <a href="https://klmr.me/box/" class="external-link">box</a> is a main tool to handle
+code reusability and package imports.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
+<span>    <span class="va">statim</span><span class="op">[</span></span>
+<span>        <span class="va">write_models</span>, <span class="va">prepare</span>, <span class="va">anova</span>, <span class="va">conclude</span>, <span class="va">via</span>, </span>
+<span>        <span class="va">TTEST</span>, <span class="va">CORTEST</span>, <span class="va">LINEAR_REG</span>, </span>
+<span>        <span class="va">x_by</span>, <span class="va">rel</span>, <span class="va">pairwise</span></span>
+<span>    <span class="op">]</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">iris</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        mod1 <span class="op">=</span> <span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, <span class="va">Petal.Width</span><span class="op">)</span>, </span>
+<span>        mod2 <span class="op">=</span> <span class="fu"><a href="../../reference/pairwise.html">pairwise</a></span><span class="op">(</span><span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span></code></pre></div>
+<pre><code><span></span>
+<span><span class="op">-</span><span class="op">-</span> <span class="va">Models</span> <span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span><span class="op">-</span> </span>
+<span></span>
+<span>  <span class="va">mod1</span> <span class="op">:</span> <span class="va">Sepal.Length</span> ; <span class="va">Petal.Width</span></span>
+<span>  <span class="va">mod2</span> <span class="op">:</span> <span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span></span></code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mtcars</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        f1 <span class="op">=</span> <span class="va">mpg</span> <span class="op">~</span> <span class="fl">1</span>, </span>
+<span>        f2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">f1</span>, <span class="op">~</span> <span class="va">.</span> <span class="op">+</span> <span class="va">disp</span><span class="op">)</span>,</span>
+<span>        f3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">f2</span>, <span class="op">~</span> <span class="va">.</span> <span class="op">+</span> <span class="va">hp</span><span class="op">)</span>,</span>
+<span>        f4 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">f3</span>, <span class="op">~</span> <span class="va">.</span> <span class="op">+</span> <span class="va">drat</span><span class="op">)</span>, </span>
+<span>        f5 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">f4</span>, <span class="op">~</span> <span class="va">.</span> <span class="op">+</span> <span class="va">wt</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/anova-mod.html">anova</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+== ANOVA · F =================================================================== 
 
-  </main>
+-- ANOVA Table -----------------------------------------------------------------
+
+───────────────────────────────────────────────────────────
+  model  res_df  deviance  df  dev_diff  f_value  p_value  
+───────────────────────────────────────────────────────────
+   f1      31    1126.047                         <span style="font-style: italic;">   </span>      
+   f2      30    317.159   1   808.888   119.450  <span style="font-weight: bold;">&lt;0.001</span>   
+   f3      29    283.493   1    33.665    4.971   <span style="color: #BB0000;"> 0.034</span>   
+   f4      28    253.346   1    30.148    4.452   <span style="color: #BB0000;"> 0.044</span>   
+   f5      27    182.838   1    70.508   10.412   <span style="font-weight: bold;">&lt;0.001</span>   
+───────────────────────────────────────────────────────────
+</code></pre>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

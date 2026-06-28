@@ -18,10 +18,10 @@
 
   A guide on using statim R package
 
-- [Multiple executions in a single
-  line](https://s7-stats.github.io/statim/articles/usage/multiple-exec.md):
+- [Applications of multiple model layouts with
+  \`write_models()\`](https://s7-stats.github.io/statim/articles/usage/multiple-exec.md):
 
-  A guide on using statim R package
+  “A guide on using statim R package”
 
 ### Pointers of statim you need to know
 
