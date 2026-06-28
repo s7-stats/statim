@@ -713,7 +713,7 @@ Here, use the binomial test to address this. Among male patients, we
 want to test whether the observed rate of fasting blood sugar above 120
 mg/dL deviates from an assumed baseline of 15%.
 
-Extract the required data for this example:
+Let’s prepare the required data for this example:
 
 - `males`` ``=`` ``keep_when``(``heart``, ``sex`` ``==`` ``"Male"``)`` ``n_high_fbs`` ``=`` `[`sum`](https://rdrr.io/r/base/sum.html)`(``males``$``fbs`` ``==`` ``"High"``)`` ``n_males`` ``=`` `[`nrow`](https://rdrr.io/r/base/nrow.html)`(``males``)`
 - statim
@@ -730,8 +730,7 @@ using this package:
 
     ``` r
 
-    heart |> 
-        define_model(prop(n_high_fbs, n_males)) |> 
+    define_model(prop(n_high_fbs, n_males)) |> 
         prepare(P_TEST) |> 
         state_null(
             PI() == 0.15

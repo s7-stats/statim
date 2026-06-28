@@ -799,7 +799,7 @@ different from the population baseline of 15%?</em></p>
 <p>Here, use the binomial test to address this. Among male patients, we
 want to test whether the observed rate of fasting blood sugar above 120
 mg/dL deviates from an assumed baseline of 15%.</p>
-<p>Extract the required data for this example:</p>
+<p>Let’s prepare the required data for this example:</p>
 
 
 
@@ -826,8 +826,7 @@ ways to make this done using this package:</p>
 <li>
 <p>The piped/grammar syntax.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/prop.html">prop</a></span><span class="op">(</span><span class="va">n_high_fbs</span>, <span class="va">n_males</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/prop.html">prop</a></span><span class="op">(</span><span class="va">n_high_fbs</span>, <span class="va">n_males</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">P_TEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="../../reference/PI.html">PI</a></span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0.15</span></span>
