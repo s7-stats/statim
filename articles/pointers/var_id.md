@@ -68,6 +68,7 @@ analyze during statistical inference.
   variables.
 - `prop(x, n)`: describe a proportion test from a count `x` out of `n`
   trials.
+- `on(...)`: independently tests the selected variables.
 
 Each of these is a `var_id` subclass, and each is paired with a
 [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md)

@@ -73,6 +73,7 @@ pairwise t-test output matrix displays diagonal entries only.
 
 Other ttest-implementations:
 [`ttest-formula`](https://s7-stats.github.io/statim/reference/ttest-formula.md),
+[`ttest-on`](https://s7-stats.github.io/statim/reference/ttest-on.md),
 [`ttest-xby`](https://s7-stats.github.io/statim/reference/ttest-xby.md)
 
 ## Examples

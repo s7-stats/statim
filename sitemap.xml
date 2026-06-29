@@ -46,6 +46,7 @@
 <url><loc>https://s7-stats.github.io/statim/reference/class_lm_object.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/class_p_test.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/class_stat_infer.html</loc></url>
+<url><loc>https://s7-stats.github.io/statim/reference/class_ttest_one.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/class_ttest_pairwise.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/class_ttest_two.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/class_var_inform.html</loc></url>
@@ -62,6 +63,7 @@
 <url><loc>https://s7-stats.github.io/statim/reference/model-processor.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/modifying-assignment.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/null-hyp.html</loc></url>
+<url><loc>https://s7-stats.github.io/statim/reference/on.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/pairwise.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/param_obj.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/prepare-model.html</loc></url>
@@ -75,6 +77,7 @@
 <url><loc>https://s7-stats.github.io/statim/reference/statim.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/tidy.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/ttest-formula.html</loc></url>
+<url><loc>https://s7-stats.github.io/statim/reference/ttest-on.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/ttest-pairwise.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/ttest-xby.html</loc></url>
 <url><loc>https://s7-stats.github.io/statim/reference/update-test-lazy.html</loc></url>

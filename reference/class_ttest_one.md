@@ -1,0 +1,53 @@
+# Structured result container for one-sample t-tests
+
+An S7 class produced by
+[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md) pipelines
+using [`on()`](https://s7-stats.github.io/statim/reference/on.md) as the
+variable mapper `<var_id>`. Not constructed manually — use the pipeline
+instead.
+
+Inherits from
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md),
+so
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
+dispatches on it automatically. Downstream packages can use it as a
+`parent` in
+[`S7::new_class()`](https://rconsortium.github.io/S7/reference/new_class.html).
+
+## Details
+
+Slots (populated automatically by
+[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md)):
+
+- `term`: name of the tested variable.
+
+- `estimate`: sample mean.
+
+- `true_mu`: hypothesized mean as written in the claim. Falls back to
+  `.mu` when no
+  [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+  claim is supplied.
+
+- `statistic`: t-statistic.
+
+- `p_val`: p-value.
+
+- `lower_ci`: lower confidence bound.
+
+- `upper_ci`: upper confidence bound.
+
+- `ci_level`: confidence level, e.g. `0.95`.
+
+## Shared by variants
+
+Both `base` and `multi` return a `class_ttest_one`, so
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md)
+and [`print()`](https://rdrr.io/r/base/print.html) are inherited by
+`multi` for free.
+
+## See also
+
+[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md),
+[ttest-on](https://s7-stats.github.io/statim/reference/ttest-on.md),
+[`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md),
+[class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)

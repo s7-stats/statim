@@ -52,6 +52,10 @@ Each variable mapper `<var_id>` routes to a separate implementation. See
 the linked pages for full argument lists, variants, and result class
 details:
 
+- [`on()`](https://s7-stats.github.io/statim/reference/on.md):
+  one-sample t-test. See details from
+  [ttest-on](https://s7-stats.github.io/statim/reference/ttest-on.md).
+
 - [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md):
   two-sample or paired t-test. See details from
   [ttest-xby](https://s7-stats.github.io/statim/reference/ttest-xby.md).
@@ -78,6 +82,7 @@ Linear Statistical Models* (5th ed.). McGraw-Hill/Irwin.
 
 ## See also
 
+[ttest-on](https://s7-stats.github.io/statim/reference/ttest-on.md),
 [ttest-xby](https://s7-stats.github.io/statim/reference/ttest-xby.md),
 [ttest-pairwise](https://s7-stats.github.io/statim/reference/ttest-pairwise.md),
 [ttest-formula](https://s7-stats.github.io/statim/reference/ttest-formula.md)

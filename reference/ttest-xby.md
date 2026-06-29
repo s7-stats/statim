@@ -108,6 +108,7 @@ Linear Statistical Models* (5th ed.). McGraw-Hill/Irwin.
 
 Other ttest-implementations:
 [`ttest-formula`](https://s7-stats.github.io/statim/reference/ttest-formula.md),
+[`ttest-on`](https://s7-stats.github.io/statim/reference/ttest-on.md),
 [`ttest-pairwise`](https://s7-stats.github.io/statim/reference/ttest-pairwise.md)
 
 ## Examples

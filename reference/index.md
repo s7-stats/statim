@@ -27,6 +27,8 @@ Formula also allowed.
   : Define all pairwise variable combinations
 - [`prop()`](https://s7-stats.github.io/statim/reference/prop.md) :
   Define a proportion test model
+- [`on()`](https://s7-stats.github.io/statim/reference/on.md) : Specify
+  variables for independent testing
 
 ### Statistical Inference Parameterization
 
@@ -152,10 +154,12 @@ will be shareable
 
 - [`class_stat_infer()`](https://s7-stats.github.io/statim/reference/class_stat_infer.md)
   : Base class for all statistical result objects
-- [`class_ttest_pairwise`](https://s7-stats.github.io/statim/reference/class_ttest_pairwise.md)
-  : Structured result container for pairwise t-tests
+- [`class_ttest_one`](https://s7-stats.github.io/statim/reference/class_ttest_one.md)
+  : Structured result container for one-sample t-tests
 - [`class_ttest_two`](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
   : Structured result container for two-sample t-tests
+- [`class_ttest_pairwise`](https://s7-stats.github.io/statim/reference/class_ttest_pairwise.md)
+  : Structured result container for pairwise t-tests
 - [`class_p_test`](https://s7-stats.github.io/statim/reference/class_p_test.md)
   : Structured result container for proportion tests
 - [`class_corr_two`](https://s7-stats.github.io/statim/reference/class_corr_two.md)

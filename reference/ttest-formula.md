@@ -56,6 +56,7 @@ subclass. Otherwise, to process outputs:
 ## See also
 
 Other ttest-implementations:
+[`ttest-on`](https://s7-stats.github.io/statim/reference/ttest-on.md),
 [`ttest-pairwise`](https://s7-stats.github.io/statim/reference/ttest-pairwise.md),
 [`ttest-xby`](https://s7-stats.github.io/statim/reference/ttest-xby.md)
 
