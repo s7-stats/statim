@@ -498,48 +498,83 @@ Args : thalach | sex
 </code></pre>
 </li>
 <li>
-<p><code>&lt;formula&gt;</code></p>
+<p>Using <code><a href="../../reference/on.html">on()</a></code></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">female</span> <span class="op">=</span> <span class="va">heart</span><span class="op">$</span><span class="va">thalach</span><span class="op">[</span><span class="va">heart</span><span class="op">$</span><span class="va">sex</span> <span class="op">==</span> <span class="st">"Female"</span><span class="op">]</span></span>
+<span><span class="va">male</span> <span class="op">=</span> <span class="va">heart</span><span class="op">$</span><span class="va">thalach</span><span class="op">[</span><span class="va">heart</span><span class="op">$</span><span class="va">sex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">]</span></span>
+<span><span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/on.html">on</a></span><span class="op">(</span><span class="va">female</span>, <span class="va">male</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
-<span>        <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span> <span class="op">==</span> <span class="st">"Female"</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span></span>
+<span>        <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">female</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">male</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"two_sample"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
 
-Variable Mapper : x_by 
-Args : thalach | sex 
-    x_vars : 1 
-    by_vars : 1 
+Variable Mapper : on 
+Args : female, male 
+
+== T-Test · two_sample ========================================================= 
+
+-- Summary ---------------------------------------------------------------------
+
+────────────────────────────────────────────────────────
+        group         estimate  t_stat    df     p_val  
+────────────────────────────────────────────────────────
+  1*female + -1*male   2.164    0.818   219.790  <span style="font-style: italic;">0.414</span>  
+────────────────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+──────────────────────────────────────────
+        group         lower_95  upper_95  
+──────────────────────────────────────────
+  1*female + -1*male   -3.050    7.378    
+──────────────────────────────────────────
+</code></pre>
+</li>
+<li>
+<p><code>&lt;formula&gt;</code></p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">thalach</span> <span class="op">~</span> <span class="va">sex</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+== Model ======================================================================= 
+
+Variable Mapper : formula 
+Args : thalach ~ sex 
+    left_var : 1 
+    right_var : 1 
 
 == T-Test ====================================================================== 
 
 -- Summary ---------------------------------------------------------------------
 
-───────────────────────────────────────────
-  group  estimate  t_stat    df     p_val  
-───────────────────────────────────────────
-   sex    2.164    0.818   219.790  <span style="font-style: italic;">0.414</span>  
-───────────────────────────────────────────
+──────────────────────────────────────────────────────
+  groups     type     est_type   est   t-stat  pval   
+──────────────────────────────────────────────────────
+   sex    two sample  mu_diff   2.164  0.818   <span style="font-style: italic;">0.414</span>  
+──────────────────────────────────────────────────────
 
 
 -- Confidence Interval ---------------------------------------------------------
 
-─────────────────────────────
-  group  lower_95  upper_95  
-─────────────────────────────
-   sex    -3.050    7.378    
-─────────────────────────────
+──────────────────────────────────────────
+  groups     type     lower_95  upper_95  
+──────────────────────────────────────────
+   sex    two sample   -3.051    7.378    
+──────────────────────────────────────────
 </code></pre>
 </li>
 </ol>
 </li>
 <li>
 <p>Eager form</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span><span class="op">)</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
@@ -558,7 +593,7 @@ Args : thalach | sex
    sex    -7.378    3.050    
 ─────────────────────────────
 </code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="va">thalach</span> <span class="op">~</span> <span class="va">sex</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
@@ -584,7 +619,7 @@ Args : thalach | sex
 
 <p>This package easily addresses this with its
 <code>&lt;formula&gt;</code> interface.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">t_test</span><span class="op">(</span><span class="va">heart</span>, <span class="va">thalach</span> <span class="op">~</span> <span class="va">sex</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 1 × 8</span>
   .y.     group1 group2    n1    n2 statistic    df     p
@@ -598,7 +633,7 @@ Args : thalach | sex
 <ol style="list-style-type: decimal">
 <li>
 <p>Bare vector-supplied argument</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fast but loses the readability form</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test</a></span><span class="op">(</span></span>
 <span>    <span class="va">heart</span><span class="op">$</span><span class="va">thalach</span><span class="op">[</span><span class="va">heart</span><span class="op">$</span><span class="va">sex</span> <span class="op">==</span> <span class="st">"Female"</span><span class="op">]</span>,</span>
@@ -618,7 +653,7 @@ mean of x mean of y
 </li>
 <li>
 <p>Formula</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test</a></span><span class="op">(</span><span class="va">thalach</span> <span class="op">~</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre><code>
     Welch Two Sample t-test
@@ -646,7 +681,10 @@ mapper is another good function that declares the column <code>x</code>
 being compared by the grouping column <code>group</code>. The
 categorical groups under <code>group</code> column are used as a
 reference on population parameter <code>&lt;param_obj&gt;</code>
-objects, i.e. <code><a href="../../reference/MU.html">MU()</a></code> in this case.</p>
+objects, i.e. <code><a href="../../reference/MU.html">MU()</a></code> in this case. <code><a href="../../reference/on.html">on()</a></code> layout,
+on the other hand, is different: Especially its eager form, i.e. the
+default, requires <code>via("two_sample")</code> to switch into
+two-sample mode.</p>
 <p>As for the declaration of null hypothesis part: Both base R and
 <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> do not have an ability to declare the null
 hypothesis in algebraic form, rather they use <code>alternative =</code>
@@ -695,7 +733,7 @@ age}}=0</span></p>
 <ol style="list-style-type: lower-alpha">
 <li>
 <p>Using <code><a href="../../reference/rel.html">rel()</a></code></p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">age</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -733,7 +771,7 @@ Args : thalach ; age
 </li>
 <li>
 <p><code>&lt;formula&gt;</code></p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">thalach</span> <span class="op">~</span> <span class="va">age</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -770,7 +808,7 @@ Args : thalach ~ age
 </li>
 <li>
 <p>Eager form</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/CORTEST.html">CORTEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">age</span><span class="op">)</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
@@ -789,7 +827,7 @@ Args : thalach ~ age
   age ~ thalach   -0.489    -0.299   
 ─────────────────────────────────────
 </code></pre>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/CORTEST.html">CORTEST</a></span><span class="op">(</span><span class="va">thalach</span> <span class="op">~</span> <span class="va">age</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
@@ -815,12 +853,12 @@ Args : thalach ~ age
 
 <p>This package easily addresses this with its
 <code>&lt;formula&gt;</code> interface.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rstatix</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/rstatix/reference/cor_test.html" class="external-link">cor_test</a></span><span class="op">(</span><span class="va">heart</span>, <span class="va">age</span>, <span class="va">thalach</span><span class="op">)</span></span></code></pre></div>
-<pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 1 × 8</span>
-  var1  var2      cor statistic        p conf.low conf.high method 
-  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  
-<span style="color: #BCBCBC;">1</span> age   thalach  -<span style="color: #BB0000;">0.4</span>     -<span style="color: #BB0000;">7.54</span> 5.63<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span>   -<span style="color: #BB0000;">0.489</span>    -<span style="color: #BB0000;">0.299</span> Pearson
+<pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 1 × 9</span>
+  var1  var2      cor statistic    df        p conf.low conf.high method 
+  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  
+<span style="color: #BCBCBC;">1</span> age   thalach  -<span style="color: #BB0000;">0.4</span>     -<span style="color: #BB0000;">7.54</span>   301 5.63<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span>   -<span style="color: #BB0000;">0.489</span>    -<span style="color: #BB0000;">0.299</span> Pearson
 </code></pre>
 </div>
 <div class="tab-pane" id="base-r-2" role="tabpanel" aria-labelledby="base-r-2-tab">
@@ -829,7 +867,7 @@ Args : thalach ~ age
 <ol style="list-style-type: decimal">
 <li>
 <p>Bare vector-supplied argument</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.test.html" class="external-link">cor.test</a></span><span class="op">(</span><span class="va">heart</span><span class="op">$</span><span class="va">thalach</span>, <span class="va">heart</span><span class="op">$</span><span class="va">age</span><span class="op">)</span></span></code></pre></div>
 <pre><code>
     Pearson's product-moment correlation
@@ -845,7 +883,7 @@ sample estimates:
 </li>
 <li>
 <p>Formula</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.test.html" class="external-link">cor.test</a></span><span class="op">(</span><span class="op">~</span> <span class="va">thalach</span> <span class="op">+</span> <span class="va">age</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre><code>
     Pearson's product-moment correlation
@@ -920,7 +958,7 @@ ways to make this done using this package:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>The piped/grammar syntax.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/prop.html">prop</a></span><span class="op">(</span><span class="va">n_high_fbs</span>, <span class="va">n_males</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">P_TEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
@@ -957,7 +995,7 @@ Args : 33 / 207
 </li>
 <li>
 <p>Eager form</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/P_TEST.html">P_TEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/prop.html">prop</a></span><span class="op">(</span><span class="va">n_high_fbs</span>, <span class="va">n_males</span><span class="op">)</span>, .p <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
@@ -986,7 +1024,7 @@ Args : 33 / 207
 to <code>x</code> (number of successes) and <code>n_males</code> to
 <code>n</code> (number of trials), then set <code>p = 0.15</code> to
 test the null hypothesis.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">binom_test</span><span class="op">(</span><span class="va">n_high_fbs</span>, <span class="va">n_males</span>, p <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 1 × 6</span>
       n estimate conf.low conf.high     p p.signif
@@ -999,7 +1037,7 @@ test the null hypothesis.</p>
 <p><code>{stats}</code> standard library already has
 <code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code>. The usage is almost similar to
 <code><a href="https://rpkgs.datanovia.com/rstatix/reference/binom_test.html" class="external-link">rstatix::binom_test()</a></code>.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test</a></span><span class="op">(</span><span class="va">n_high_fbs</span>, <span class="va">n_males</span>, p <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span></span></code></pre></div>
 <pre><code>
     Exact binomial test

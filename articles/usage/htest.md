@@ -388,16 +388,19 @@ There are two ways to make this done using this package:
         ─────────────────────────────
         ```
 
-    2.  `<formula>`
+    2.  Using
+        [`on()`](https://s7-stats.github.io/statim/reference/on.md)
 
         ``` r
 
-        heart |> 
-            define_model(x_by(thalach, sex)) |> 
+        female = heart$thalach[heart$sex == "Female"]
+        male = heart$thalach[heart$sex == "Male"]
+        define_model(on(female, male)) |> 
             prepare(TTEST) |> 
             state_null(
-                MU(thalach, sex == "Female") == MU(thalach, sex == "Male")
+                MU(female) == MU(male)
             ) |> 
+            via("two_sample") |> 
             conclude()
         ```
 
@@ -405,29 +408,66 @@ There are two ways to make this done using this package:
 
         == Model ======================================================================= 
 
-        Variable Mapper : x_by 
-        Args : thalach | sex 
-            x_vars : 1 
-            by_vars : 1 
+        Variable Mapper : on 
+        Args : female, male 
+
+        == T-Test · two_sample ========================================================= 
+
+        -- Summary ---------------------------------------------------------------------
+
+        ────────────────────────────────────────────────────────
+                group         estimate  t_stat    df     p_val  
+        ────────────────────────────────────────────────────────
+          1*female + -1*male   2.164    0.818   219.790  0.414  
+        ────────────────────────────────────────────────────────
+
+
+        -- Confidence Interval ---------------------------------------------------------
+
+        ──────────────────────────────────────────
+                group         lower_95  upper_95  
+        ──────────────────────────────────────────
+          1*female + -1*male   -3.050    7.378    
+        ──────────────────────────────────────────
+        ```
+
+    3.  `<formula>`
+
+        ``` r
+
+        heart |> 
+            define_model(thalach ~ sex) |> 
+            prepare(TTEST) |> 
+            conclude()
+        ```
+
+        ``` fansi
+
+        == Model ======================================================================= 
+
+        Variable Mapper : formula 
+        Args : thalach ~ sex 
+            left_var : 1 
+            right_var : 1 
 
         == T-Test ====================================================================== 
 
         -- Summary ---------------------------------------------------------------------
 
-        ───────────────────────────────────────────
-          group  estimate  t_stat    df     p_val  
-        ───────────────────────────────────────────
-           sex    2.164    0.818   219.790  0.414  
-        ───────────────────────────────────────────
+        ──────────────────────────────────────────────────────
+          groups     type     est_type   est   t-stat  pval   
+        ──────────────────────────────────────────────────────
+           sex    two sample  mu_diff   2.164  0.818   0.414  
+        ──────────────────────────────────────────────────────
 
 
         -- Confidence Interval ---------------------------------------------------------
 
-        ─────────────────────────────
-          group  lower_95  upper_95  
-        ─────────────────────────────
-           sex    -3.050    7.378    
-        ─────────────────────────────
+        ──────────────────────────────────────────
+          groups     type     lower_95  upper_95  
+        ──────────────────────────────────────────
+           sex    two sample   -3.051    7.378    
+        ──────────────────────────────────────────
         ```
 
 2.  Eager form
@@ -551,7 +591,10 @@ compared by the grouping column `group`. The categorical groups under
 `group` column are used as a reference on population parameter
 `<param_obj>` objects,
 i.e. [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) in this
-case.
+case. [`on()`](https://s7-stats.github.io/statim/reference/on.md)
+layout, on the other hand, is different: Especially its eager form,
+i.e. the default, requires `via("two_sample")` to switch into two-sample
+mode.
 
 As for the declaration of null hypothesis part: Both base R and
 [rstatix](https://rpkgs.datanovia.com/rstatix/) do not have an ability
@@ -729,10 +772,10 @@ rstatix::cor_test(heart, age, thalach)
 ```
 
 ``` fansi
-# A tibble: 1 × 8
-  var1  var2      cor statistic        p conf.low conf.high method 
-  <chr> <chr>   <dbl>     <dbl>    <dbl>    <dbl>     <dbl> <chr>  
-1 age   thalach  -0.4     -7.54 5.63e-13   -0.489    -0.299 Pearson
+# A tibble: 1 × 9
+  var1  var2      cor statistic    df        p conf.low conf.high method 
+  <chr> <chr>   <dbl>     <dbl> <int>    <dbl>    <dbl>     <dbl> <chr>  
+1 age   thalach  -0.4     -7.54   301 5.63e-13   -0.489    -0.299 Pearson
 ```
 
 Two approaches:
