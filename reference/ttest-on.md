@@ -42,10 +42,11 @@ The following arguments are passed via `...` in
 
 - `"multi"`:
 
-  Tests multiple variables supplied via
+  Performs independent one-sample t-tests across selected variables
+  supplied via
   [`on()`](https://s7-stats.github.io/statim/reference/on.md). Accepts
-  the same `.mu`, `.alt`, `.ci` arguments as the default. `.mu` is
-  recycled across all variables or must match their count.
+  the same `.mu`, `.alt`, `.ci` arguments as the default. However, `.mu`
+  is recycled across all variables or must match their count.
 
 - `"two_sample"`:
 
@@ -58,7 +59,8 @@ The following arguments are passed via `...` in
 
 ## One-sample t-test default class
 
-By default, returns a
+Applied on the default `ttest-on` and its variant `"multi"`. By default,
+returns a
 [class_ttest_one](https://s7-stats.github.io/statim/reference/class_ttest_one.md)
 object. All variants that also return
 [class_ttest_one](https://s7-stats.github.io/statim/reference/class_ttest_one.md)
@@ -77,12 +79,12 @@ Otherwise, to process outputs:
 
 ## Two-sample t-test class
 
-`via("two_sample")` returns a
+Only applied on `via("two_sample")`. By default, it returns a
 [class_ttest_two](https://s7-stats.github.io/statim/reference/class_ttest_two.md)
 object — the same class produced by
 [ttest-xby](https://s7-stats.github.io/statim/reference/ttest-xby.md)'s
 implementation. `group` holds a synthesized label (e.g.
-`"1*oj + -1*vc"`) rather than a grouping variable name, since
+`"1*x1 + -1*x2"`) rather than a grouping variable name, since
 [`on()`](https://s7-stats.github.io/statim/reference/on.md) has no
 grouping column to name.
 
@@ -96,19 +98,19 @@ Supports [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) via
         state_null(MU(x) >= 1) |>
         conclude()
 
-Scaled claims are supported: `2 * MU(extra) == 4` tests
-`MU(extra) == 2`. `true_mu` in the output shows the right-hand scalar as
-written (`4`), while the test runs on the solved value (`2`).
+Scaled claims are supported: `2 * MU(x) == 4` tests `MU(x) == 2`.
+`true_mu` in the output shows the right-hand scalar as written (`4`),
+while the test runs on the solved value (`2`).
 
 For `two_sample`, both variables from
 [`on()`](https://s7-stats.github.io/statim/reference/on.md) must appear
 in the claim, and referenced by the same names given to (or
 auto-generated for) each variable:
 
-    define_model(on(oj, vc), <data>) |>
+    define_model(on(x1, x2), <data>) |>
         prepare_test(TTEST) |>
         via("two_sample") |>
-        state_null(MU(oj) - MU(vc) == 0) |>
+        state_null(MU(x1) - MU(x2) == 0) |>
         conclude()
 
 Arbitrary linear contrasts are supported, including scaled terms and
@@ -117,8 +119,8 @@ constants on either side:
     state_null(2 * MU(oj) + 1 == MU(vc) - 3)
 
 `estimate` always reflects the sample contrast
-(`a * mean(oj) + b * mean(vc)`) and does not change when only the
-hypothesized scalar changes — only `t_stat`, `p_val`, and where the CI
+(`a * mean(x1) + b * mean(x2)`) and does not change when only the
+hypothesized scalar changes, only `t_stat`, `p_val`, and where the CI
 sits relative to the hypothesis shift with it. This matches
 [`stats::t.test()`](https://rdrr.io/r/stats/t.test.html)'s own
 convention of reporting the same `estimate` regardless of `mu`.

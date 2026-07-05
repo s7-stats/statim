@@ -110,9 +110,9 @@ Default <code>NULL</code>, falling back to <code>.mu</code>. Not intended to be 
 
 
 <dl><dt><code>"multi"</code></dt>
-<dd><p>Tests multiple variables supplied via <code><a href="on.html">on()</a></code>. Accepts the
-same <code>.mu</code>, <code>.alt</code>, <code>.ci</code> arguments as the default. <code>.mu</code> is recycled
-across all variables or must match their count.</p></dd>
+<dd><p>Performs independent one-sample t-tests across selected variables supplied via <code><a href="on.html">on()</a></code>.
+Accepts the same <code>.mu</code>, <code>.alt</code>, <code>.ci</code> arguments as the default. However, <code>.mu</code> is
+recycled across all variables or must match their count.</p></dd>
 
 <dt><code>"two_sample"</code></dt>
 <dd><p>Compares exactly two variables supplied via <code><a href="on.html">on()</a></code>.
@@ -127,8 +127,8 @@ falling back to <code>c(1, -1)</code> in the order the variables were supplied).
     <h2 id="one-sample-t-test-default-class">One-sample t-test default class<a class="anchor" aria-label="anchor" href="#one-sample-t-test-default-class"></a></h2>
 
 
-<p>By default, returns a <a href="class_ttest_one.html">class_ttest_one</a> object. All variants that also return
-<a href="class_ttest_one.html">class_ttest_one</a> inherit <code><a href="auto_tidy.html">auto_tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> automatically. Otherwise,
+<p>Applied on the default <code>ttest-on</code> and its variant <code>"multi"</code>. By default, returns a <a href="class_ttest_one.html">class_ttest_one</a> object.
+All variants that also return <a href="class_ttest_one.html">class_ttest_one</a> inherit <code><a href="auto_tidy.html">auto_tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> automatically. Otherwise,
 to process outputs:</p><ul><li><p><code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>: Write it down through <code>print</code> from <code><a href="variant.html">variant()</a></code>.</p></li>
 <li><p><code><a href="tidy.html">tidy()</a></code>: Use <code><a href="making_tidy.html">making_tidy()</a></code> to register a tidy method if needed.</p></li>
 </ul></div>
@@ -136,9 +136,9 @@ to process outputs:</p><ul><li><p><code><a href="https://rdrr.io/r/base/print.ht
     <h2 id="two-sample-t-test-class">Two-sample t-test class<a class="anchor" aria-label="anchor" href="#two-sample-t-test-class"></a></h2>
 
 
-<p><code>via("two_sample")</code> returns a <a href="class_ttest_two.html">class_ttest_two</a> object — the same class
+<p>Only applied on <code>via("two_sample")</code>. By default, it returns a <a href="class_ttest_two.html">class_ttest_two</a> object — the same class
 produced by <a href="ttest-xby.html">ttest-xby</a>'s implementation. <code>group</code> holds a synthesized label
-(e.g. <code>"1*oj + -1*vc"</code>) rather than a grouping variable name, since <code><a href="on.html">on()</a></code>
+(e.g. <code>"1*x1 + -1*x2"</code>) rather than a grouping variable name, since <code><a href="on.html">on()</a></code>
 has no grouping column to name.</p>
     </div>
     <div class="section level2">
@@ -151,23 +151,23 @@ has no grouping column to name.</p>
     state_null(MU(x) &gt;= 1) |&gt;
     conclude()
 </code></pre><p></p></div>
-<p>Scaled claims are supported: <code>2 * MU(extra) == 4</code> tests <code>MU(extra) == 2</code>.
+<p>Scaled claims are supported: <code>2 * MU(x) == 4</code> tests <code>MU(x) == 2</code>.
 <code>true_mu</code> in the output shows the right-hand scalar as written (<code>4</code>), while
 the test runs on the solved value (<code>2</code>).</p>
 <p>For <code>two_sample</code>, both variables from <code><a href="on.html">on()</a></code> must appear in the claim, and
 referenced by the same names given to (or auto-generated for) each
 variable:</p>
-<p></p><div class="sourceCode r"><pre><code>define_model(on(oj, vc), &lt;data&gt;) |&gt;
+<p></p><div class="sourceCode r"><pre><code>define_model(on(x1, x2), &lt;data&gt;) |&gt;
     prepare_test(TTEST) |&gt;
     via("two_sample") |&gt;
-    state_null(MU(oj) - MU(vc) == 0) |&gt;
+    state_null(MU(x1) - MU(x2) == 0) |&gt;
     conclude()
 </code></pre><p></p></div>
 <p>Arbitrary linear contrasts are supported, including scaled terms and
 constants on either side:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/null-hyp.html">state_null</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">oj</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">==</span> <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">vc</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3</span><span class="op">)</span></span></code></pre><p></p></div>
-<p><code>estimate</code> always reflects the sample contrast (<code>a * mean(oj) + b * mean(vc)</code>)
-and does not change when only the hypothesized scalar changes — only
+<p><code>estimate</code> always reflects the sample contrast (<code>a * mean(x1) + b * mean(x2)</code>)
+and does not change when only the hypothesized scalar changes, only
 <code>t_stat</code>, <code>p_val</code>, and where the CI sits relative to the hypothesis shift
 with it. This matches <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code>'s own convention of reporting the
 same <code>estimate</code> regardless of <code>mu</code>.</p>
