@@ -167,6 +167,7 @@ imports double as its own dependency graph.</p>
 <span>    <span class="va">dplyr</span><span class="op">[</span>keep_when <span class="op">=</span> <span class="va">filter</span>, <span class="va">mutate</span>, <span class="va">glimpse</span><span class="op">]</span>,</span>
 <span>    <span class="va">readr</span><span class="op">[</span><span class="va">read_csv</span><span class="op">]</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>Then import the CSV file from this package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">=</span> <span class="fu">read_csv</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"heart-disease.csv"</span>, package <span class="op">=</span> <span class="st">"statim"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">mutate</span><span class="op">(</span></span>
@@ -661,8 +662,8 @@ mean in group Female   mean in group Male
 Empirically, <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, and base R
 treat “compare two groups” as something the <code>&lt;formula&gt;</code>
 already encodes, <code>thalach ~ sex</code> says everything. However,
-<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> goes beyond that with <code><a href="../../reference/on.html">on()</a></code> and
-<code><a href="../../reference/x_by.html">x_by()</a></code>. <code><a href="../../reference/x_by.html">x_by()</a></code> says the same thing, but then
+<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> goes beyond that with <code><a href="../../reference/x_by.html">x_by()</a></code> and
+<code><a href="../../reference/on.html">on()</a></code>. <code><a href="../../reference/x_by.html">x_by()</a></code> says the same thing, but then
 lets you go further: this layout has <code><a href="../../reference/null-hyp.html">state_null()</a></code>
 translation, and you can write out
 <code>MU(thalach, sex == "Female") == MU(thalach, sex == "Male)</code>

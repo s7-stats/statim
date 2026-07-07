@@ -71,6 +71,8 @@ box::use(
 )
 ```
 
+Then import the CSV file from this package:
+
 ``` r
 
 heart = read_csv(system.file("extdata", "heart-disease.csv", package = "statim")) |>
@@ -588,8 +590,8 @@ Empirically, [statim](https://github.com/s7-stats/statim),
 “compare two groups” as something the `<formula>` already encodes,
 `thalach ~ sex` says everything. However,
 [statim](https://github.com/s7-stats/statim) goes beyond that with
-[`on()`](https://s7-stats.github.io/statim/reference/on.md) and
-[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md).
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) and
+[`on()`](https://s7-stats.github.io/statim/reference/on.md).
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) says the
 same thing, but then lets you go further: this layout has
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
