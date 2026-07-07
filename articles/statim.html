@@ -450,8 +450,50 @@ Args : extra | group
 full reference on supported operators and <code>&lt;param_obj&gt;</code>
 objects, see <a href="https://s7-stats.github.io/statim/articles/pointers/hypothesis-expressions.html">What
 are {statim}’s Null Hypothesis Expressions?</a></p>
-<!-- ## Generalization -->
-<!-- If you have an inferential statistics tasks, give this package a shot — it's updated and more modernized. Besides, it's written in S7, so type annotation is the least of your worries. And that's pretty much all you need to know when you started working with this package.  -->
+</div>
+<div class="section level2">
+<h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
+</h2>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is made for few reasons:</p>
+<ol style="list-style-type: decimal">
+<li><p>Explicitness exists and enforced, because subjectively it makes
+the codes readable and maintainable. This is why the expression of null
+hypothesis inside <code><a href="../reference/null-hyp.html">state_null()</a></code> is expressed as an algebraic
+expression. Strictness on how you type the code, as well.</p></li>
+<li><p>Assuming that you are satisfied with its API design. Don’t worry,
+this package makes sure it is pretty expandable and versatile. The use
+of S7 is only used on the surface level — formal classes/objects, type
+annotations, and a bit of method dispatch. See <a href="https://s7-stats.github.io/statim/articles/#writing-statim-extensions">“Writing
+statim extensions”</a> to learn more.</p></li>
+<li><p><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> is primarily the inspiration behind this
+package, just with less layer-by-layer semantics. <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>
+comes to the second: verbs and pipes. You see functions like
+<code><a href="../reference/rel.html">rel()</a></code>? They are called <code>&lt;var_id&gt;</code> mappers,
+and they are literally <code>aes()</code> albeit it does the bare
+minimum: they are mappers that declares the layout of the statistical
+inference. For instance, when <code><a href="../reference/rel.html">rel()</a></code> is used, you basically
+tell <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> to analyze the relationship between
+<code>x</code> and <code>y</code>, then tell <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> what
+type of estimation you want to perform, and then retrieve the result you
+want to achieve.</p></li>
+<li><p>Built-in implementations are made from the common tasks R users
+do every time they use R. For example, you want to perform t-test with
+several grouping variables, and with <code>... |&gt; via("multi")</code>
+from the <code><a href="../reference/x_by.html">x_by()</a></code> layout, you are able to perform t-test
+across multiple grouping variables at once, since <code><a href="../reference/x_by.html">x_by()</a></code>
+allows to have multiple variables for each side, <code>x</code> and
+<code>group</code>, to be analyzed.</p></li>
+<li><p>This package is relatively easy to use and interactive, though
+has a bit steeper learning curve when compared to the existing packages
+like <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> — this is due to <code>&lt;var_id&gt;</code>
+mappers which changes the behavior of the statistical inference in
+<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> pipeline and S7 exist, and has tons of supporting
+documentations you can read. No need to read all of the contents unless
+you are planning to contribute. The semantics of this package is pretty
+similar to what you are gotten used to from the existing packages,
+namely the <a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a> itself.</p></li>
+</ol>
+<!-- ## Generalization --><!-- If you have an inferential statistics tasks, give this package a shot — it's updated and more modernized. Besides, it's written in S7, so type annotation is the least of your worries. And that's pretty much all you need to know when you started working with this package.  -->
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

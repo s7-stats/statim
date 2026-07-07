@@ -417,3 +417,59 @@ Any linear combination of parameters is valid on either side. For a full
 reference on supported operators and `<param_obj>` objects, see [What
 are {statim}’s Null Hypothesis
 Expressions?](https://s7-stats.github.io/statim/articles/pointers/hypothesis-expressions.html)
+
+## Conclusion
+
+[statim](https://github.com/s7-stats/statim) is made for few reasons:
+
+1.  Explicitness exists and enforced, because subjectively it makes the
+    codes readable and maintainable. This is why the expression of null
+    hypothesis inside
+    [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+    is expressed as an algebraic expression. Strictness on how you type
+    the code, as well.
+
+2.  Assuming that you are satisfied with its API design. Don’t worry,
+    this package makes sure it is pretty expandable and versatile. The
+    use of S7 is only used on the surface level — formal
+    classes/objects, type annotations, and a bit of method dispatch. See
+    [“Writing statim
+    extensions”](https://s7-stats.github.io/statim/articles/#writing-statim-extensions)
+    to learn more.
+
+3.  [ggplot2](https://ggplot2.tidyverse.org) is primarily the
+    inspiration behind this package, just with less layer-by-layer
+    semantics. [dplyr](https://dplyr.tidyverse.org) comes to the second:
+    verbs and pipes. You see functions like
+    [`rel()`](https://s7-stats.github.io/statim/reference/rel.md)? They
+    are called `<var_id>` mappers, and they are literally `aes()` albeit
+    it does the bare minimum: they are mappers that declares the layout
+    of the statistical inference. For instance, when
+    [`rel()`](https://s7-stats.github.io/statim/reference/rel.md) is
+    used, you basically tell
+    [statim](https://github.com/s7-stats/statim) to analyze the
+    relationship between `x` and `y`, then tell
+    [statim](https://github.com/s7-stats/statim) what type of estimation
+    you want to perform, and then retrieve the result you want to
+    achieve.
+
+4.  Built-in implementations are made from the common tasks R users do
+    every time they use R. For example, you want to perform t-test with
+    several grouping variables, and with `... |> via("multi")` from the
+    [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
+    layout, you are able to perform t-test across multiple grouping
+    variables at once, since
+    [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
+    allows to have multiple variables for each side, `x` and `group`, to
+    be analyzed.
+
+5.  This package is relatively easy to use and interactive, though has a
+    bit steeper learning curve when compared to the existing packages
+    like [rstatix](https://rpkgs.datanovia.com/rstatix/) — this is due
+    to `<var_id>` mappers which changes the behavior of the statistical
+    inference in [statim](https://github.com/s7-stats/statim) pipeline
+    and S7 exist, and has tons of supporting documentations you can
+    read. No need to read all of the contents unless you are planning to
+    contribute. The semantics of this package is pretty similar to what
+    you are gotten used to from the existing packages, namely the
+    [tidyverse](https://tidyverse.tidyverse.org) itself.

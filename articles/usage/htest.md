@@ -2,25 +2,31 @@
 
 ## Why this vignette exists
 
-Every R course teaches [`t.test()`](https://rdrr.io/r/stats/t.test.html)
-in week one and never revisits it. Six months later you’re staring at
-`alternative = "greater"` trying to remember whether that means your
-hypothesis or its opposite. [statim](https://github.com/s7-stats/statim)
-exists to try fix that one problem: to write the null hypothesis itself
-as an algebraic expression (e.g. `MU(x) == 120`, `RHO(x, y) == 0`),
-instead of translating it into an argument.
+`t.test(x, mu = 120)` works, but six months from now you won’t remember
+whether `mu` was the value you’re testing against or something else
+buried in the call. [statim](https://github.com/s7-stats/statim) takes a
+new approach on how statistical inference in R is done. For instance,
+[statim](https://github.com/s7-stats/statim) has another way to write
+the null hypothesis itself as an algebraic expression instead
+(e.g. `MU(x) == 120`, `RHO(x, y) == 0`), so the code declares what the
+hypothesis is, not which argument slot it lives in.
 
-Does that trade-off actually pay off? To find out, this vignette runs
-four real questions from a real dataset through
+The question is, does that actually pay off? This vignette runs four
+real questions from a real dataset through
 [statim](https://github.com/s7-stats/statim), base R, and
-[rstatix](https://rpkgs.datanovia.com/rstatix/), and doesn’t flinch from
-saying when the extra syntax isn’t worth it.
+[rstatix](https://rpkgs.datanovia.com/rstatix/), and says plainly when
+the extra syntax isn’t worth it.
 
 ### Sample Problem
 
-The dataset: 303 patients from the Cleveland Clinic (via Daniel Bourke’s
-“zero-to-mastery-ml” repo). The questions, framed as a cardiologist
-would ask them:
+The dataset: 303 patients from the Cleveland Clinic. Originally
+collected by Robert Detrano, M.D., Ph.D., and hosted at the UCI Machine
+Learning Repository (Heart Disease dataset, Cleveland subset). This copy
+was redistributed by Daniel Bourke’s “zero-to-mastery-ml” repo, and is
+bundled with this package at `inst/extdata/heart-disease.csv` so the
+vignette builds without a network call.
+
+The questions, framed as a cardiologist would ask them:
 
 1.  [Is average resting blood pressure **different from the clinical
     normal of 120 mmHg**?](#q1)
@@ -56,8 +62,7 @@ box::use(
         x_by, rel, prop, on,
         MU, RHO, PI
     ],
-    rstatix[t_test, cor_test, binom_test],
-    ggplot2[ggplot, aes, geom_segment, geom_point, geom_vline, scale_color_manual, labs, theme_minimal]
+    rstatix[t_test, cor_test, binom_test]
 )
 
 box::use(
@@ -68,7 +73,7 @@ box::use(
 
 ``` r
 
-heart = read_csv("https://raw.githubusercontent.com/mrdbourke/zero-to-mastery-ml/master/data/heart-disease.csv") |>
+heart = read_csv(system.file("extdata", "heart-disease.csv", package = "statim")) |>
     mutate(
         sex = factor(sex, levels = c(0, 1), labels = c("Female", "Male")),
         fbs = factor(fbs, levels = c(0, 1), labels = c("Normal", "High"))
@@ -82,6 +87,8 @@ heart = read_csv("https://raw.githubusercontent.com/mrdbourke/zero-to-mastery-ml
 
      [36mℹ [39m Use `spec()` to retrieve the full column specification for this data.
      [36mℹ [39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+Here’s an overview for the columns to be used:
 
 | Column     | Type       | Description                                        |
 |------------|------------|----------------------------------------------------|
@@ -105,7 +112,7 @@ This is the simplest case, so it’s worth showing every entry point once.
 
 There are two layouts to perform one-sample t-test:
 
-##### Using on()
+Using `on()`
 
 ``` r
 
@@ -166,7 +173,7 @@ TTEST(on(trestbps), heart, .mu = 120)
 ────────────────────────────────
 ```
 
-##### Using formula syntax
+Using formula syntax
 
 ``` r
 
@@ -306,7 +313,7 @@ H_0:
 
 There are three layouts to perform two-sample t-test:
 
-##### Using on()
+Using `on()`
 
 This version requires `via("two_sample")` after `prepare(TTEST)` to
 perform two-sample t-test. Since it requires `via("two_sample")`, you
@@ -317,14 +324,14 @@ can’t use its eager form/one liner code.
 female = heart$thalach[heart$sex == "Female"]
 male = heart$thalach[heart$sex == "Male"]
 
-# Requires via("two_sample") 
-# To perform two-sample t-test from on()
+# Requires via("two_sample")
+# To perform two-sample t-test with `on()` layout
 define_model(on(female, male)) |>
     prepare(TTEST) |>
-    via("two_sample") |>           
+    via("two_sample") |>
     state_null(
         MU(female) == MU(male)
-    ) |> 
+    ) |>
     conclude()
 ```
 
@@ -355,7 +362,11 @@ Args : female, male
 ──────────────────────────────────────────
 ```
 
-##### Using x_by()
+*Note: Using
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+is optional, unless the full null hypothesis expression is required.*
+
+Using `x_by()`
 
 ``` r
 
@@ -421,7 +432,11 @@ TTEST(x_by(thalach, sex), heart)
 ─────────────────────────────
 ```
 
-##### Using formula syntax
+*Note: Using
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+is optional, unless the full null hypothesis expression is required.*
+
+Using formula syntax
 
 Currently, the `<formula>` layout doesn’t have translation for
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
@@ -503,7 +518,7 @@ Two forms, but the `<formula>` interface is usually more preferred than
 the regular vector one. For the regular vector, we can use the same
 vector from the [statim](https://github.com/s7-stats/statim) section.
 
-##### Regular Vector
+Regular Vector
 
 ``` r
 
@@ -522,7 +537,7 @@ t.test(female, male)
     mean of x mean of y 
      151.1250  148.9614 
 
-##### Formula Syntax
+Formula Syntax
 
 ``` r
 
@@ -576,9 +591,15 @@ explanatory work here.
 H_0: \rho\_{\text{thalach, age}}=0 \qquad H_1: \rho\_{\text{thalach,
 age}} \neq 0
 
+### Code
+
 - statim
-- rstatix / Base R
-- Verdict
+- rstatix
+- Base R
+
+There are two layouts to perform correlation test:
+
+Using `rel()`
 
 ``` r
 
@@ -599,6 +620,73 @@ Variable Mapper : rel
 Args : thalach ; age 
     x_vars : 1 
     resp_vars : 1 
+
+== Correlation Test ============================================================ 
+
+-- Summary ---------------------------------------------------------------------
+
+───────────────────────────────────────────────────
+      pair       estimate  statistic  df   p_val   
+───────────────────────────────────────────────────
+  age ~ thalach   -0.398    -7.539    301  <0.001  
+───────────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────────────
+      pair       lower_95  upper_95  
+─────────────────────────────────────
+  age ~ thalach   -0.489    -0.299   
+─────────────────────────────────────
+```
+
+``` r
+
+CORTEST(rel(thalach, age), heart)
+```
+
+``` fansi
+-- Summary ---------------------------------------------------------------------
+
+───────────────────────────────────────────────────
+      pair       estimate  statistic  df   p_val   
+───────────────────────────────────────────────────
+  age ~ thalach   -0.398    -7.539    301  <0.001  
+───────────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────────────
+      pair       lower_95  upper_95  
+─────────────────────────────────────
+  age ~ thalach   -0.489    -0.299   
+─────────────────────────────────────
+```
+
+*Note: Using
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+is optional, unless the full null hypothesis expression is required.*
+
+Using formula syntax
+
+``` r
+
+heart |>
+    define_model(age ~ thalach) |>
+    prepare(CORTEST) |> 
+    conclude()
+```
+
+``` fansi
+
+== Model ======================================================================= 
+
+Variable Mapper : formula 
+Args : age ~ thalach 
+    left_var : 1 
+    right_var : 1 
 
 == Correlation Test ============================================================ 
 
@@ -673,15 +761,18 @@ cor.test(~ thalach + age, heart)
            cor 
     -0.3985219 
 
-Small trap worth flagging: base R’s `<formula>` here is
-`~ thalach + age`, not `thalach ~ age`. There’s no dependent variable in
-a correlation, so the usual left/right convention doesn’t mean anything,
-but it’s easy to assume it does and misread the formula.
-`{rel(thalach, age)}` sidesteps the ambiguity by just naming both
-variables. [rstatix](https://rpkgs.datanovia.com/rstatix/) sidesteps it
-differently, by borrowing
+### Verdict
+
+Small warning: base R’s `<formula>` here is `~ thalach + age`, not
+`thalach ~ age`. There’s no dependent variable in a correlation, so the
+usual left/right convention doesn’t mean anything, but it’s easy to
+assume it does and misread the formula. `{rel(thalach, age)}` sidesteps
+the ambiguity by just naming both variables.
+[rstatix](https://rpkgs.datanovia.com/rstatix/) takes some roundabout by
+borrowing
 [`dplyr::select()`](https://dplyr.tidyverse.org/reference/select.html)-style
-column picking, always pairwise.
+column picking, and the selected variable always in pairwise
+combination.
 
 Interpretation: a real, moderate negative correlation (r = -0.398, p \<
 0.001). Heart rate ceiling drops with age, as expected.
@@ -690,10 +781,24 @@ Interpretation: a real, moderate negative correlation (r = -0.398, p \<
 
 H_0: \pi=0.15 \qquad H_1: \pi\neq0.15
 
-- `males`` ``=`` ``keep_when``(``heart``, ``sex`` ``==`` ``"Male"``)`` ``n_high_fbs`` ``=`` `[`sum`](https://rdrr.io/r/base/sum.html)`(``males``$``fbs`` ``==`` ``"High"``)`` ``n_males`` ``=`` `[`nrow`](https://rdrr.io/r/base/nrow.html)`(``males``)`
+Prepare the data first
+
+``` r
+
+males = keep_when(heart, sex == "Male")
+n_high_fbs = sum(males$fbs == "High")
+n_males = nrow(males)
+```
+
+### Code
+
 - statim
-- rstatix / Base R
-- Verdict
+- rstatix
+- Base R
+
+By default,
+[`P_TEST()`](https://s7-stats.github.io/statim/reference/P_TEST.md)
+performs a binomial test.
 
 ``` r
 
@@ -758,6 +863,10 @@ P_TEST(prop(n_high_fbs, n_males), .p = 0.15)
 ──────────────────────
 ```
 
+*Note: Using
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+is optional, unless the full null hypothesis expression is required.*
+
 ``` r
 
 binom_test(n_high_fbs, n_males, p = 0.15)
@@ -787,7 +896,9 @@ binom.test(n_high_fbs, n_males, p = 0.15)
     probability of success 
                  0.1594203 
 
-No `<formula>` anywhere in this section — a proportion test is just two
+### Verdict
+
+No `<formula>` anywhere in this section. A proportion test is just two
 numbers, `x` and `n`, and all three packages treat it that way. The only
 real question is where those two numbers live: as positional arguments
 (`x, n, p =`) in base R and
@@ -800,52 +911,22 @@ worth it if you’re already committed to the pipeline for other reasons.
 Interpretation: 33 of 207 men (15.9%), not distinguishable from the 15%
 baseline (p = 0.697).
 
-## The scorecard
+## Conclusion
 
-Two of four questions came back significant. Here’s all four side by
-side, instead of another bullet list:
+[statim](https://github.com/s7-stats/statim) makes sure the simplicity
+from base R and other packages like
+[rstatix](https://rpkgs.datanovia.com/rstatix/) must exists, otherwise
+the steeper learning curve will get you. One-liner codes exist, the
+piped/grammar syntax is inherited to make sure the spirits of
+[ggplot2](https://ggplot2.tidyverse.org) and
+[dplyr](https://dplyr.tidyverse.org) exist on
+[statim](https://github.com/s7-stats/statim) space.
 
-``` r
-
-results = data.frame(
-    question = c(
-        "Resting BP vs 120 mmHg",
-        "Max HR: Male vs Female",
-        "Max HR vs age",
-        "High FBS rate vs 15%"
-    ),
-    p_value = c(0.001, 0.414, 0.001, 0.697),
-    significant = c(TRUE, FALSE, TRUE, FALSE)
-)
-results$question = factor(results$question, levels = rev(results$question))
-
-ggplot(results, aes(x = -log10(p_value), y = question, color = significant)) +
-    geom_segment(aes(x = 0, xend = -log10(p_value), y = question, yend = question), linewidth = 0.6) +
-    geom_point(size = 4) +
-    geom_vline(xintercept = -log10(0.05), linetype = "dashed", color = "grey40") +
-    scale_color_manual(values = c("TRUE" = "#c0392b", "FALSE" = "#7f8c8d"), guide = "none") +
-    labs(
-        x = expression(-log[10](p)),
-        y = NULL,
-        title = "Which of the cardiologist's questions held up?",
-        caption = "Dashed line marks p = 0.05. Bars for p < 0.001 are capped there for display."
-    ) +
-    theme_minimal(base_size = 12)
-```
-
-![](htest_files/figure-html/unnamed-chunk-17-1.png)
-
-## The honest take
-
-Base R and [rstatix](https://rpkgs.datanovia.com/rstatix/) win every
-single-question race in this vignette on raw brevity — that’s not close,
-and no amount of [statim](https://github.com/s7-stats/statim) syntax
-changes it. What changes is what happens after question four, when the
-cardiologist comes back with question thirty: the same
-`define_model() |> prepare() |> state_null() |> conclude()` shape holds
-for a one-sample test, a two-group comparison, a correlation, or a
-proportion, and the hypothesis in each case is legible on its own,
-without cross-referencing which argument means what in which function.
-That consistency is the entire bet
-[statim](https://github.com/s7-stats/statim) is making. Whether it’s a
-bet worth making depends on whether you’re writing four tests or forty.
+What this vignette can’t show you is the fifth question: a custom
+contrast, a hypothesis that isn’t a straight equality, a test family
+that doesn’t have a tidy formula shorthand yet. That’s the actual bet
+[statim](https://github.com/s7-stats/statim) is making: a consistent
+`define_model() |> prepare() |> state_null() |> conclude()` shape you
+can extend once, rather than learn a new argument convention per test.
+Four questions above are pretty straightforward and aren’t the right
+test of that bet. Judge it on the harder one.

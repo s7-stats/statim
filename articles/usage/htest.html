@@ -103,24 +103,29 @@ real clinical data</h3>
 <div class="section level2">
 <h2 id="why-this-vignette-exists">Why this vignette exists<a class="anchor" aria-label="anchor" href="#why-this-vignette-exists"></a>
 </h2>
-<p>Every R course teaches <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test()</a></code> in week one and never
-revisits it. Six months later you’re staring at
-<code>alternative = "greater"</code> trying to remember whether that
-means your hypothesis or its opposite. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> exists to
-try fix that one problem: to write the null hypothesis itself as an
-algebraic expression (e.g. <code>MU(x) == 120</code>,
-<code>RHO(x, y) == 0</code>), instead of translating it into an
-argument.</p>
-<p>Does that trade-off actually pay off? To find out, this vignette runs
-four real questions from a real dataset through <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>,
-base R, and <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, and doesn’t flinch from saying when
-the extra syntax isn’t worth it.</p>
+<p><code>t.test(x, mu = 120)</code> works, but six months from now you
+won’t remember whether <code>mu</code> was the value you’re testing
+against or something else buried in the call. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>
+takes a new approach on how statistical inference in R is done. For
+instance, <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> has another way to write the null
+hypothesis itself as an algebraic expression instead
+(e.g. <code>MU(x) == 120</code>, <code>RHO(x, y) == 0</code>), so the
+code declares what the hypothesis is, not which argument slot it lives
+in.</p>
+<p>The question is, does that actually pay off? This vignette runs four
+real questions from a real dataset through <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, base
+R, and <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, and says plainly when the extra syntax
+isn’t worth it.</p>
 <div class="section level3">
 <h3 id="sample-problem">Sample Problem<a class="anchor" aria-label="anchor" href="#sample-problem"></a>
 </h3>
-<p>The dataset: 303 patients from the Cleveland Clinic (via Daniel
-Bourke’s “zero-to-mastery-ml” repo). The questions, framed as a
-cardiologist would ask them:</p>
+<p>The dataset: 303 patients from the Cleveland Clinic. Originally
+collected by Robert Detrano, M.D., Ph.D., and hosted at the UCI Machine
+Learning Repository (Heart Disease dataset, Cleveland subset). This copy
+was redistributed by Daniel Bourke’s “zero-to-mastery-ml” repo, and is
+bundled with this package at <code>inst/extdata/heart-disease.csv</code>
+so the vignette builds without a network call.</p>
+<p>The questions, framed as a cardiologist would ask them:</p>
 <ol style="list-style-type: decimal">
 <li><a href="#q1">Is average resting blood pressure <strong>different
 from the clinical normal of 120 mmHg</strong>?</a></li>
@@ -155,8 +160,7 @@ imports double as its own dependency graph.</p>
 <span>        <span class="va">x_by</span>, <span class="va">rel</span>, <span class="va">prop</span>, <span class="va">on</span>,</span>
 <span>        <span class="va">MU</span>, <span class="va">RHO</span>, <span class="va">PI</span></span>
 <span>    <span class="op">]</span>,</span>
-<span>    <span class="va">rstatix</span><span class="op">[</span><span class="va">t_test</span>, <span class="va">cor_test</span>, <span class="va">binom_test</span><span class="op">]</span>,</span>
-<span>    <span class="va">ggplot2</span><span class="op">[</span><span class="va">ggplot</span>, <span class="va">aes</span>, <span class="va">geom_segment</span>, <span class="va">geom_point</span>, <span class="va">geom_vline</span>, <span class="va">scale_color_manual</span>, <span class="va">labs</span>, <span class="va">theme_minimal</span><span class="op">]</span></span>
+<span>    <span class="va">rstatix</span><span class="op">[</span><span class="va">t_test</span>, <span class="va">cor_test</span>, <span class="va">binom_test</span><span class="op">]</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
@@ -164,7 +168,7 @@ imports double as its own dependency graph.</p>
 <span>    <span class="va">readr</span><span class="op">[</span><span class="va">read_csv</span><span class="op">]</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">=</span> <span class="fu">read_csv</span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/mrdbourke/zero-to-mastery-ml/master/data/heart-disease.csv"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">=</span> <span class="fu">read_csv</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"heart-disease.csv"</span>, package <span class="op">=</span> <span class="st">"statim"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">mutate</span><span class="op">(</span></span>
 <span>        sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">sex</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Female"</span>, <span class="st">"Male"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>        fbs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">fbs</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Normal"</span>, <span class="st">"High"</span><span class="op">)</span><span class="op">)</span></span>
@@ -176,6 +180,7 @@ imports double as its own dependency graph.</p>
 
  [36mℹ [39m Use `spec()` to retrieve the full column specification for this data.
  [36mℹ [39m Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>Here’s an overview for the columns to be used:</p>
 <table class="table">
 <colgroup>
 <col width="15%">
@@ -238,10 +243,9 @@ once.</p>
 <div class="active  tab-pane" id="statim" role="tabpanel" aria-labelledby="statim-tab">
 
 <p>There are two layouts to perform one-sample t-test:</p>
-<div class="section level5">
-<h5 id="using-on">Using on()<a class="anchor" aria-label="anchor" href="#using-on"></a>
-</h5>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<details open><summary>
+Using <code>on()</code>
+</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/on.html">on</a></span><span class="op">(</span><span class="va">trestbps</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -290,11 +294,9 @@ Args : trestbps
   trestbps  129.641   133.607   
 ────────────────────────────────
 </code></pre>
-</div>
-<div class="section level5">
-<h5 id="using-formula-syntax">Using formula syntax<a class="anchor" aria-label="anchor" href="#using-formula-syntax"></a>
-</h5>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+</details><details><summary>
+Using formula syntax
+</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">trestbps</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -345,7 +347,7 @@ Args : trestbps ~ 1
     1     one sample  129.641   133.606   
 ──────────────────────────────────────────
 </code></pre>
-</div>
+</details>
 </div>
 <div class="tab-pane" id="rstatix" role="tabpanel" aria-labelledby="rstatix-tab">
 
@@ -423,10 +425,9 @@ know.</p>
 <div class="active  tab-pane" id="statim-1" role="tabpanel" aria-labelledby="statim-1-tab">
 
 <p>There are three layouts to perform two-sample t-test:</p>
-<div class="section level5">
-<h5 id="using-on-1">Using on()<a class="anchor" aria-label="anchor" href="#using-on-1"></a>
-</h5>
-<p>This version requires <code>via("two_sample")</code> after
+<details open><summary>
+Using <code>on()</code>
+</summary><p>This version requires <code>via("two_sample")</code> after
 <code>prepare(TTEST)</code> to perform two-sample t-test. Since it
 requires <code>via("two_sample")</code>, you can’t use its eager
 form/one liner code.</p>
@@ -434,14 +435,14 @@ form/one liner code.</p>
 <code class="sourceCode R"><span><span class="va">female</span> <span class="op">=</span> <span class="va">heart</span><span class="op">$</span><span class="va">thalach</span><span class="op">[</span><span class="va">heart</span><span class="op">$</span><span class="va">sex</span> <span class="op">==</span> <span class="st">"Female"</span><span class="op">]</span></span>
 <span><span class="va">male</span> <span class="op">=</span> <span class="va">heart</span><span class="op">$</span><span class="va">thalach</span><span class="op">[</span><span class="va">heart</span><span class="op">$</span><span class="va">sex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">]</span></span>
 <span></span>
-<span><span class="co"># Requires via("two_sample") </span></span>
-<span><span class="co"># To perform two-sample t-test from on()</span></span>
+<span><span class="co"># Requires via("two_sample")</span></span>
+<span><span class="co"># To perform two-sample t-test with `on()` layout</span></span>
 <span><span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/on.html">on</a></span><span class="op">(</span><span class="va">female</span>, <span class="va">male</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"two_sample"</span><span class="op">)</span> <span class="op">|&gt;</span>           </span>
+<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"two_sample"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">female</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">male</span><span class="op">)</span></span>
-<span>    <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
@@ -468,11 +469,11 @@ Args : female, male
   1*female + -1*male   -3.050    7.378    
 ──────────────────────────────────────────
 </code></pre>
-</div>
-<div class="section level5">
-<h5 id="using-x_by">Using x_by()<a class="anchor" aria-label="anchor" href="#using-x_by"></a>
-</h5>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p><em>Note: Using <code><a href="../../reference/null-hyp.html">state_null()</a></code> is optional, unless the
+full null hypothesis expression is required. </em></p>
+</details><details><summary>
+Using <code>x_by()</code>
+</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -526,11 +527,11 @@ Args : thalach | sex
    sex    -7.378    3.050    
 ─────────────────────────────
 </code></pre>
-</div>
-<div class="section level5">
-<h5 id="using-formula-syntax-1">Using formula syntax<a class="anchor" aria-label="anchor" href="#using-formula-syntax-1"></a>
-</h5>
-<p>Currently, the <code>&lt;formula&gt;</code> layout doesn’t have
+<p><em>Note: Using <code><a href="../../reference/null-hyp.html">state_null()</a></code> is optional, unless the
+full null hypothesis expression is required. </em></p>
+</details><details><summary>
+Using formula syntax
+</summary><p>Currently, the <code>&lt;formula&gt;</code> layout doesn’t have
 translation for <code><a href="../../reference/null-hyp.html">state_null()</a></code>.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
@@ -583,7 +584,7 @@ Args : thalach ~ sex
    sex    two sample   -3.051    7.378    
 ──────────────────────────────────────────
 </code></pre>
-</div>
+</details>
 </div>
 <div class="tab-pane" id="rstatix-1" role="tabpanel" aria-labelledby="rstatix-1-tab">
 
@@ -600,10 +601,9 @@ Args : thalach ~ sex
 <p>Two forms, but the <code>&lt;formula&gt;</code> interface is usually
 more preferred than the regular vector one. For the regular vector, we
 can use the same vector from the <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> section.</p>
-<div class="section level5">
-<h5 id="regular-vector">Regular Vector<a class="anchor" aria-label="anchor" href="#regular-vector"></a>
-</h5>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<details open><summary>
+Regular Vector
+</summary><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test</a></span><span class="op">(</span><span class="va">female</span>, <span class="va">male</span><span class="op">)</span></span></code></pre></div>
 <pre><code>
     Welch Two Sample t-test
@@ -616,11 +616,9 @@ alternative hypothesis: true difference in means is not equal to 0
 sample estimates:
 mean of x mean of y 
  151.1250  148.9614 </code></pre>
-</div>
-<div class="section level5">
-<h5 id="formula-syntax">Formula Syntax<a class="anchor" aria-label="anchor" href="#formula-syntax"></a>
-</h5>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+</details><details><summary>
+Formula Syntax
+</summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test</a></span><span class="op">(</span><span class="va">thalach</span> <span class="op">~</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre><code>
     Welch Two Sample t-test
@@ -633,7 +631,7 @@ alternative hypothesis: true difference in means between group Female and group 
 sample estimates:
 mean in group Female   mean in group Male 
             151.1250             148.9614 </code></pre>
-</div>
+</details>
 </div>
 </div>
 </div>
@@ -661,23 +659,29 @@ the hypothesis isn’t a straight group comparison anymore.</p>
 0.414</span>). Sex isn’t doing any explanatory work here.</p>
 </div>
 </div>
-<div class="section level2 tabset">
-<h2 class="tabset" id="q3">Question 3: Does max heart rate fall with age?<a class="anchor" aria-label="anchor" href="#q3"></a>
+<div class="section level2">
+<h2 id="q3">Question 3: Does max heart rate fall with age?<a class="anchor" aria-label="anchor" href="#q3"></a>
 </h2>
 <p><span class="math display">H_0: \rho_{\text{thalach, age}}=0 \qquad
 H_1: \rho_{\text{thalach, age}} \neq 0</span></p>
+<div class="section level3 tabset">
+<h3 class="tabset" id="code">Code<a class="anchor" aria-label="anchor" href="#code"></a>
+</h3>
 
 
 
-<ul class="nav nav-tabs" id="q3" role="tablist">
+<ul class="nav nav-tabs" id="code" role="tablist">
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#statim-2" id="statim-2-tab" type="button" role="tab" aria-controls="statim-2" aria-selected="true" class="active nav-link">statim</button></li>
-<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#rstatix-base-r" id="rstatix-base-r-tab" type="button" role="tab" aria-controls="rstatix-base-r" aria-selected="false" class="nav-link">rstatix / Base R</button></li>
-<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#verdict-2" id="verdict-2-tab" type="button" role="tab" aria-controls="verdict-2" aria-selected="false" class="nav-link">Verdict</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#rstatix-2" id="rstatix-2-tab" type="button" role="tab" aria-controls="rstatix-2" aria-selected="false" class="nav-link">rstatix</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#base-r-2" id="base-r-2-tab" type="button" role="tab" aria-controls="base-r-2" aria-selected="false" class="nav-link">Base R</button></li>
 </ul>
 <div class="tab-content">
 <div class="active  tab-pane" id="statim-2" role="tabpanel" aria-labelledby="statim-2-tab">
 
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<p>There are two layouts to perform correlation test:</p>
+<details open><summary>
+Using <code>rel()</code>
+</summary><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">age</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -731,17 +735,76 @@ Args : thalach ; age
   age ~ thalach   -0.489    -0.299   
 ─────────────────────────────────────
 </code></pre>
-</div>
-<div class="tab-pane" id="rstatix-base-r" role="tabpanel" aria-labelledby="rstatix-base-r-tab">
+<p><em>Note: Using <code><a href="../../reference/null-hyp.html">state_null()</a></code> is optional, unless the
+full null hypothesis expression is required. </em></p>
+</details><details><summary>
+Using formula syntax
+</summary><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">age</span> <span class="op">~</span> <span class="va">thalach</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+== Model ======================================================================= 
 
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+Variable Mapper : formula 
+Args : age ~ thalach 
+    left_var : 1 
+    right_var : 1 
+
+== Correlation Test ============================================================ 
+
+-- Summary ---------------------------------------------------------------------
+
+───────────────────────────────────────────────────
+      pair       estimate  statistic  df   p_val   
+───────────────────────────────────────────────────
+  age ~ thalach   -0.398    -7.539    301  <span style="font-weight: bold;">&lt;0.001</span>  
+───────────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────────────
+      pair       lower_95  upper_95  
+─────────────────────────────────────
+  age ~ thalach   -0.489    -0.299   
+─────────────────────────────────────
+</code></pre>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/CORTEST.html">CORTEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">age</span><span class="op">)</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
+
+───────────────────────────────────────────────────
+      pair       estimate  statistic  df   p_val   
+───────────────────────────────────────────────────
+  age ~ thalach   -0.398    -7.539    301  <span style="font-weight: bold;">&lt;0.001</span>  
+───────────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────────────
+      pair       lower_95  upper_95  
+─────────────────────────────────────
+  age ~ thalach   -0.489    -0.299   
+─────────────────────────────────────
+</code></pre>
+</details>
+</div>
+<div class="tab-pane" id="rstatix-2" role="tabpanel" aria-labelledby="rstatix-2-tab">
+
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rstatix</span><span class="fu">::</span><span class="fu"><a href="https://rpkgs.datanovia.com/rstatix/reference/cor_test.html" class="external-link">cor_test</a></span><span class="op">(</span><span class="va">heart</span>, <span class="va">age</span>, <span class="va">thalach</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 1 × 9</span>
   var1  var2      cor statistic    df        p conf.low conf.high method 
   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  
 <span style="color: #BCBCBC;">1</span> age   thalach  -<span style="color: #BB0000;">0.4</span>     -<span style="color: #BB0000;">7.54</span>   301 5.63<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span>   -<span style="color: #BB0000;">0.489</span>    -<span style="color: #BB0000;">0.299</span> Pearson
 </code></pre>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+</div>
+<div class="tab-pane" id="base-r-2" role="tabpanel" aria-labelledby="base-r-2-tab">
+
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/cor.test.html" class="external-link">cor.test</a></span><span class="op">(</span><span class="op">~</span> <span class="va">thalach</span> <span class="op">+</span> <span class="va">age</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre><code>
     Pearson's product-moment correlation
@@ -755,45 +818,50 @@ sample estimates:
        cor 
 -0.3985219 </code></pre>
 </div>
-<div class="tab-pane" id="verdict-2" role="tabpanel" aria-labelledby="verdict-2-tab">
-
-<p>Small trap worth flagging: base R’s <code>&lt;formula&gt;</code> here
-is <code>~ thalach + age</code>, not <code>thalach ~ age</code>. There’s
-no dependent variable in a correlation, so the usual left/right
-convention doesn’t mean anything, but it’s easy to assume it does and
-misread the formula. <code>{rel(thalach, age)}</code> sidesteps the
-ambiguity by just naming both variables. <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>
-sidesteps it differently, by borrowing
-<code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">dplyr::select()</a></code>-style column picking, always pairwise.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="verdict-2">Verdict<a class="anchor" aria-label="anchor" href="#verdict-2"></a>
+</h3>
+<p>Small warning: base R’s <code>&lt;formula&gt;</code> here is
+<code>~ thalach + age</code>, not <code>thalach ~ age</code>. There’s no
+dependent variable in a correlation, so the usual left/right convention
+doesn’t mean anything, but it’s easy to assume it does and misread the
+formula. <code>{rel(thalach, age)}</code> sidesteps the ambiguity by
+just naming both variables. <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> takes some roundabout
+by borrowing <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">dplyr::select()</a></code>-style column picking, and the
+selected variable always in pairwise combination.</p>
 <p>Interpretation: a real, moderate negative correlation (<span class="math inline">r = -0.398</span>, <span class="math inline">p &lt;
 0.001</span>). Heart rate ceiling drops with age, as expected.</p>
 </div>
 </div>
-</div>
-<div class="section level2 tabset">
-<h2 class="tabset" id="q4">Question 4: Is high fasting blood sugar unusually
-common in men?<a class="anchor" aria-label="anchor" href="#q4"></a>
+<div class="section level2">
+<h2 id="q4">Question 4: Is high fasting blood sugar unusually common in
+men?<a class="anchor" aria-label="anchor" href="#q4"></a>
 </h2>
-
 <p><span class="math display">H_0: \pi=0.15 \qquad H_1:
 \pi\neq0.15</span></p>
-
-
-
-<ul class="nav nav-tabs" id="q4" role="tablist">
-<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#NA" id="NA-tab" type="button" role="tab" aria-controls="NA" aria-selected="true" class="active nav-link">
+<p>Prepare the data first</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">males</span> <span class="op">=</span> <span class="fu">keep_when</span><span class="op">(</span><span class="va">heart</span>, <span class="va">sex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span></span>
 <span><span class="va">n_high_fbs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">males</span><span class="op">$</span><span class="va">fbs</span> <span class="op">==</span> <span class="st">"High"</span><span class="op">)</span></span>
-<span><span class="va">n_males</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">males</span><span class="op">)</span></span></code></button></li>
-<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#statim-3" id="statim-3-tab" type="button" role="tab" aria-controls="statim-3" aria-selected="false" class="nav-link">statim</button></li>
-<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#rstatix-base-r-1" id="rstatix-base-r-1-tab" type="button" role="tab" aria-controls="rstatix-base-r-1" aria-selected="false" class="nav-link">rstatix / Base R</button></li>
-<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#verdict-3" id="verdict-3-tab" type="button" role="tab" aria-controls="verdict-3" aria-selected="false" class="nav-link">Verdict</button></li>
+<span><span class="va">n_males</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">males</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3 tabset">
+<h3 class="tabset" id="code-1">Code<a class="anchor" aria-label="anchor" href="#code-1"></a>
+</h3>
+
+
+
+<ul class="nav nav-tabs" id="code-1" role="tablist">
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#statim-3" id="statim-3-tab" type="button" role="tab" aria-controls="statim-3" aria-selected="true" class="active nav-link">statim</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#rstatix-3" id="rstatix-3-tab" type="button" role="tab" aria-controls="rstatix-3" aria-selected="false" class="nav-link">rstatix</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#base-r-3" id="base-r-3-tab" type="button" role="tab" aria-controls="base-r-3" aria-selected="false" class="nav-link">Base R</button></li>
 </ul>
 <div class="tab-content">
-<div class="active  tab-pane" id="NA" role="tabpanel" aria-labelledby="NA-tab"></div>
-<div class="tab-pane" id="statim-3" role="tabpanel" aria-labelledby="statim-3-tab">
+<div class="active  tab-pane" id="statim-3" role="tabpanel" aria-labelledby="statim-3-tab">
 
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<p>By default, <code><a href="../../reference/P_TEST.html">P_TEST()</a></code> performs a binomial test.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/prop.html">prop</a></span><span class="op">(</span><span class="va">n_high_fbs</span>, <span class="va">n_males</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">P_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
@@ -827,7 +895,7 @@ Args : 33 / 207
    0.112     0.216    
 ──────────────────────
 </code></pre>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/P_TEST.html">P_TEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/prop.html">prop</a></span><span class="op">(</span><span class="va">n_high_fbs</span>, <span class="va">n_males</span><span class="op">)</span>, .p <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
@@ -846,17 +914,22 @@ Args : 33 / 207
    0.112     0.216    
 ──────────────────────
 </code></pre>
+<p><em>Note: Using <code><a href="../../reference/null-hyp.html">state_null()</a></code> is optional, unless the
+full null hypothesis expression is required. </em></p>
 </div>
-<div class="tab-pane" id="rstatix-base-r-1" role="tabpanel" aria-labelledby="rstatix-base-r-1-tab">
+<div class="tab-pane" id="rstatix-3" role="tabpanel" aria-labelledby="rstatix-3-tab">
 
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">binom_test</span><span class="op">(</span><span class="va">n_high_fbs</span>, <span class="va">n_males</span>, p <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 1 × 6</span>
       n estimate conf.low conf.high     p p.signif
 <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   
 <span style="color: #BCBCBC;">1</span>   207    0.159    0.112     0.217 0.697 ns      
 </code></pre>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+</div>
+<div class="tab-pane" id="base-r-3" role="tabpanel" aria-labelledby="base-r-3-tab">
+
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test</a></span><span class="op">(</span><span class="va">n_high_fbs</span>, <span class="va">n_males</span>, p <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span></span></code></pre></div>
 <pre><code>
     Exact binomial test
@@ -870,9 +943,12 @@ sample estimates:
 probability of success 
              0.1594203 </code></pre>
 </div>
-<div class="tab-pane" id="verdict-3" role="tabpanel" aria-labelledby="verdict-3-tab">
-
-<p>No <code>&lt;formula&gt;</code> anywhere in this section — a
+</div>
+</div>
+<div class="section level3">
+<h3 id="verdict-3">Verdict<a class="anchor" aria-label="anchor" href="#verdict-3"></a>
+</h3>
+<p>No <code>&lt;formula&gt;</code> anywhere in this section. A
 proportion test is just two numbers, <code>x</code> and <code>n</code>,
 and all three packages treat it that way. The only real question is
 where those two numbers live: as positional arguments
@@ -885,54 +961,22 @@ other reasons.</p>
 15% baseline (<span class="math inline">p = 0.697</span>).</p>
 </div>
 </div>
-</div>
 <div class="section level2">
-<h2 id="the-scorecard">The scorecard<a class="anchor" aria-label="anchor" href="#the-scorecard"></a>
+<h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
-<p>Two of four questions came back significant. Here’s all four side by
-side, instead of another bullet list:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">results</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    question <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>        <span class="st">"Resting BP vs 120 mmHg"</span>,</span>
-<span>        <span class="st">"Max HR: Male vs Female"</span>,</span>
-<span>        <span class="st">"Max HR vs age"</span>,</span>
-<span>        <span class="st">"High FBS rate vs 15%"</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    p_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.414</span>, <span class="fl">0.001</span>, <span class="fl">0.697</span><span class="op">)</span>,</span>
-<span>    significant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">results</span><span class="op">$</span><span class="va">question</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">question</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">question</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">results</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">p_value</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">question</span>, color <span class="op">=</span> <span class="va">significant</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_segment</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, xend <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">p_value</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">question</span>, yend <span class="op">=</span> <span class="va">question</span><span class="op">)</span>, linewidth <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_point</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_vline</span><span class="op">(</span>xintercept <span class="op">=</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="fl">0.05</span><span class="op">)</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">scale_color_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TRUE"</span> <span class="op">=</span> <span class="st">"#c0392b"</span>, <span class="st">"FALSE"</span> <span class="op">=</span> <span class="st">"#7f8c8d"</span><span class="op">)</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">labs</span><span class="op">(</span></span>
-<span>        x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="op">-</span><span class="va">log</span><span class="op">[</span><span class="fl">10</span><span class="op">]</span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>        y <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>        title <span class="op">=</span> <span class="st">"Which of the cardiologist's questions held up?"</span>,</span>
-<span>        caption <span class="op">=</span> <span class="st">"Dashed line marks p = 0.05. Bars for p &lt; 0.001 are capped there for display."</span></span>
-<span>    <span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">theme_minimal</span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></code></pre></div>
-<p><img src="htest_files/figure-html/unnamed-chunk-17-1.png" class="r-plt" alt="" width="624"></p>
-</div>
-<div class="section level2">
-<h2 id="the-honest-take">The honest take<a class="anchor" aria-label="anchor" href="#the-honest-take"></a>
-</h2>
-<p>Base R and <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> win every single-question race in
-this vignette on raw brevity — that’s not close, and no amount of
-<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> syntax changes it. What changes is what happens
-after question four, when the cardiologist comes back with question
-thirty: the same
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> makes sure the simplicity from base R and other
+packages like <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> must exists, otherwise the steeper
+learning curve will get you. One-liner codes exist, the piped/grammar
+syntax is inherited to make sure the spirits of <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>
+and <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> exist on <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> space.</p>
+<p>What this vignette can’t show you is the fifth question: a custom
+contrast, a hypothesis that isn’t a straight equality, a test family
+that doesn’t have a tidy formula shorthand yet. That’s the actual bet
+<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is making: a consistent
 <code>define_model() |&gt; prepare() |&gt; state_null() |&gt; conclude()</code>
-shape holds for a one-sample test, a two-group comparison, a
-correlation, or a proportion, and the hypothesis in each case is legible
-on its own, without cross-referencing which argument means what in which
-function. That consistency is the entire bet <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is
-making. Whether it’s a bet worth making depends on whether you’re
-writing four tests or forty.</p>
+shape you can extend once, rather than learn a new argument convention
+per test. Four questions above are pretty straightforward and aren’t the
+right test of that bet. Judge it on the harder one.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

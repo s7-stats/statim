@@ -28,20 +28,28 @@
 - [\`\<var_id\>\`
   objects](https://s7-stats.github.io/statim/articles/pointers/var_id.md):
 
-  Writing statim extensions
+  Pointers of mappers for developers
 
 - [stat_define
   objects](https://s7-stats.github.io/statim/articles/pointers/stat_define.md):
+
+  Pointers of statim’s core estimation method for developers
 
 - [What are {statim}'s Null Hypothesis
   Expressions?](https://s7-stats.github.io/statim/articles/pointers/hypothesis-expressions.md)
   :
 
+  Pointers of statim’s null hypothesis expressions for developers
+
 - [via(): Switching to different
   mode](https://s7-stats.github.io/statim/articles/pointers/recalibration-method.md):
 
+  Pointers of statim’s art of switching for developers
+
 - [Execution and Retrieval of
   Outputs](https://s7-stats.github.io/statim/articles/pointers/execution-methods.md):
+
+  Pointers of statim execution stage for developers
 
 ### Writing statim extensions
 
