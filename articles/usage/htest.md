@@ -1,66 +1,64 @@
 # Hypothesis Testing with {statim}
 
-## Brief Introduction
+## Why this vignette exists
 
-This vignette not just to showcase how
-[statim](https://github.com/s7-stats/statim) addresses the real-world
-problem involving statistical inference, this also compares
-[statim](https://github.com/s7-stats/statim) against different packages,
-namely the base R itself and
-[rstatix](https://rpkgs.datanovia.com/rstatix/).
+Every R course teaches [`t.test()`](https://rdrr.io/r/stats/t.test.html)
+in week one and never revisits it. Six months later you’re staring at
+`alternative = "greater"` trying to remember whether that means your
+hypothesis or its opposite. [statim](https://github.com/s7-stats/statim)
+exists to try fix that one problem: to write the null hypothesis itself
+as an algebraic expression (e.g. `MU(x) == 120`, `RHO(x, y) == 0`),
+instead of translating it into an argument.
 
-## The Problem
+Does that trade-off actually pay off? To find out, this vignette runs
+four real questions from a real dataset through
+[statim](https://github.com/s7-stats/statim), base R, and
+[rstatix](https://rpkgs.datanovia.com/rstatix/), and doesn’t flinch from
+saying when the extra syntax isn’t worth it.
 
-Here’s a hypothetical real world scenario: Each question maps directly
-to a standard inferential testLet’s say a cardiologist hands you a
-dataset of 303 patients from the Cleveland Clinic. She has three
-questions:
+### Sample Problem
 
-1.  Is the average resting blood pressure of patients **different from
-    the clinical normal of 120 mmHg**?
+The dataset: 303 patients from the Cleveland Clinic (via Daniel Bourke’s
+“zero-to-mastery-ml” repo). The questions, framed as a cardiologist
+would ask them:
 
-2.  Do men and women differ in their maximum heart rate achieved during
-    stress testing?
+1.  [Is average resting blood pressure **different from the clinical
+    normal of 120 mmHg**?](#q1)
+2.  [Do men and women differ in maximum heart rate achieved during
+    stress testing?](#q2)
+3.  [Is there a linear relationship between age and maximum heart
+    rate?](#q3)
+4.  [Is the proportion of male patients with fasting blood sugar **above
+    120 mg/dL** different from an assumed population baseline of
+    15%?](#q4)
 
-3.  Is there a linear relationship between age and maximum heart rate?
-
-4.  Are male patients more likely to have fasting blood sugar **above
-    120 mg/dL** than female patients?
-
-> Note: This vignette tries to evaluate the readability,
-> reproducibility, and the abundance of boilerplate codes of the chosen
-> packages here while doing it. These problems are derived from a
-> dataset from Daniel Bourke’s “zero-to-mastery-ml” GitHub repository
-> called “heart disease”.
+One-sample t-test, two-sample t-test, correlation test, one-sample
+proportion test — the four tests almost every intro stats course covers,
+run on data that actually matters.
 
 ## Setup
 
-Let us derive the usual workflow of
-[statim](https://github.com/s7-stats/statim)’s author in his daily basis
-on statistical analysis. Here, he uses [box](https://klmr.me/box/)
-package, another package import system into R, because it enforces
-explicit imports, which makes the pipeline written in R is more
-manageable. Here are the imports:
+[statim](https://github.com/s7-stats/statim)’s author reaches for
+[box](https://klmr.me/box/) day to day. It’s an R package that bring an
+another but better import system that forces every dependency to be
+declared explicitly, so a script’s imports double as its own dependency
+graph.
 
 ``` r
 
 box::use(
     stats[t.test, cor.test, binom.test],
     statim[
-        TTEST, CORTEST, P_TEST, 
+        TTEST, CORTEST, P_TEST,
         # Current grammars
-        define_model, prepare, via, state_null, conclude, 
+        define_model, prepare, via, state_null, conclude,
         # Mappers
-        x_by, rel, prop, on, 
+        x_by, rel, prop, on,
         MU, RHO, PI
     ],
-    rstatix[t_test, cor_test, binom_test]
+    rstatix[t_test, cor_test, binom_test],
+    ggplot2[ggplot, aes, geom_segment, geom_point, geom_vline, scale_color_manual, labs, theme_minimal]
 )
-```
-
-Then here are the imports for the miscellaneous things:
-
-``` r
 
 box::use(
     dplyr[keep_when = filter, mutate],
@@ -68,16 +66,11 @@ box::use(
 )
 ```
 
-Let us import `heart-disease.csv` from this
-[link](https://github.com/mrdbourke/zero-to-mastery-ml/blob/master/data/heart-disease.csv)
-using
-[`readr::read_csv()`](https://readr.tidyverse.org/reference/read_delim.html)
-
 ``` r
 
-heart = read_csv("https://raw.githubusercontent.com/mrdbourke/zero-to-mastery-ml/master/data/heart-disease.csv") |> 
+heart = read_csv("https://raw.githubusercontent.com/mrdbourke/zero-to-mastery-ml/master/data/heart-disease.csv") |>
     mutate(
-        sex = factor(sex, levels = c(0, 1), labels = c("Female", "Male")), 
+        sex = factor(sex, levels = c(0, 1), labels = c("Female", "Male")),
         fbs = factor(fbs, levels = c(0, 1), labels = c("Normal", "High"))
     )
 ```
@@ -90,8 +83,6 @@ heart = read_csv("https://raw.githubusercontent.com/mrdbourke/zero-to-mastery-ml
      [36mℹ [39m Use `spec()` to retrieve the full column specification for this data.
      [36mℹ [39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
-A quick look at the variables we care about:
-
 | Column     | Type       | Description                                        |
 |------------|------------|----------------------------------------------------|
 | `trestbps` | Continuous | Resting blood pressure (mm Hg)                     |
@@ -100,159 +91,143 @@ A quick look at the variables we care about:
 | `sex`      | Binary     | Sex (0 = Female, 1 = Male)                         |
 | `fbs`      | Binary     | Fasting blood sugar \> 120 mg/dL (0 = No, 1 = Yes) |
 
-## Question 1
+## Question 1: Is resting blood pressure elevated?
 
-> *Is the mean resting blood pressure different from 120 mmHg?*
+H_0: \mu=120 \qquad H_1: \mu\neq120
 
-The clinical reference for normal systolic blood pressure is 120 mmHg.
-We want to test whether patients in this cohort are systematically
-elevated. This is a classic one-sample t-test example.
+This is the simplest case, so it’s worth showing every entry point once.
 
-Here’s the null hypothesis we want to test:
-
-H_0: \mu=120
-
-Against:
-
-H_1: \mu\neq120
+### Codes
 
 - statim
 - rstatix
 - Base R
-- Interpretation of the codes
 
-There are two ways to make this done using this package:
+There are two layouts to perform one-sample t-test:
 
-1.  We can use either the main semantic:
+##### Using on()
 
-    1.  [`on()`](https://s7-stats.github.io/statim/reference/on.md)
+``` r
 
-        ``` r
+heart |>
+    define_model(on(trestbps)) |>
+    prepare(TTEST, .mu = 120) |>
+    conclude()
+```
 
-        heart |> 
-            define_model(on(trestbps)) |> 
-            prepare(TTEST) |> 
-            conclude()
-        ```
+``` fansi
 
-        ``` fansi
+== Model ======================================================================= 
 
-         == Model ======================================================================= 
+Variable Mapper : on 
+Args : trestbps 
 
-         Variable Mapper : on 
-         Args : trestbps 
+== T-Test ====================================================================== 
 
-         == T-Test ====================================================================== 
+-- Summary ---------------------------------------------------------------------
 
-         -- Summary ---------------------------------------------------------------------
-
-         ────────────────────────────────────────────────
-             term    estimate  true_mu  t_stat   p_val   
-         ────────────────────────────────────────────────
-           trestbps  131.624      0     130.639  <0.001  
-         ────────────────────────────────────────────────
+───────────────────────────────────────────────
+    term    estimate  true_mu  t_stat  p_val   
+───────────────────────────────────────────────
+  trestbps  131.624     120    11.537  <0.001  
+───────────────────────────────────────────────
 
 
-         -- Confidence Interval ---------------------------------------------------------
+-- Confidence Interval ---------------------------------------------------------
 
-         ────────────────────────────────
-             term    lower_95  upper_95  
-         ────────────────────────────────
-           trestbps  129.641   133.607   
-         ────────────────────────────────
-         
-        ```
+────────────────────────────────
+    term    lower_95  upper_95  
+────────────────────────────────
+  trestbps  129.641   133.607   
+────────────────────────────────
+```
 
-    2.  `<formula>`
+``` r
 
-        ``` r
+TTEST(on(trestbps), heart, .mu = 120)
+```
 
-        heart |> 
-            define_model(trestbps ~ 1) |> 
-            prepare(TTEST) |> 
-            conclude()
-        ```
+``` fansi
+-- Summary ---------------------------------------------------------------------
 
-        ``` fansi
-
-        == Model ======================================================================= 
-
-        Variable Mapper : formula 
-        Args : trestbps ~ 1 
-            left_var : 1 
-            right_var : 0 
-
-        == T-Test ====================================================================== 
-
-        -- Summary ---------------------------------------------------------------------
-
-        ──────────────────────────────────────────────────────────
-          groups     type     est_type    est    t-stat    pval   
-        ──────────────────────────────────────────────────────────
-            1     one sample     mu     131.624  130.639  <0.001  
-        ──────────────────────────────────────────────────────────
+───────────────────────────────────────────────
+    term    estimate  true_mu  t_stat  p_val   
+───────────────────────────────────────────────
+  trestbps  131.624     120    11.537  <0.001  
+───────────────────────────────────────────────
 
 
-        -- Confidence Interval ---------------------------------------------------------
+-- Confidence Interval ---------------------------------------------------------
 
-        ──────────────────────────────────────────
-          groups     type     lower_95  upper_95  
-        ──────────────────────────────────────────
-            1     one sample  129.641   133.606   
-        ──────────────────────────────────────────
-        ```
+────────────────────────────────
+    term    lower_95  upper_95  
+────────────────────────────────
+  trestbps  129.641   133.607   
+────────────────────────────────
+```
 
-2.  Or the eager form:
+##### Using formula syntax
 
-    ``` r
+``` r
 
-    TTEST(on(trestbps), heart, .mu = 120)
-    ```
+heart |>
+    define_model(trestbps ~ 1) |>
+    prepare(TTEST, .mu = 120) |>
+    conclude()
+```
 
-    ``` fansi
-    -- Summary ---------------------------------------------------------------------
+``` fansi
 
-    ───────────────────────────────────────────────
-        term    estimate  true_mu  t_stat  p_val   
-    ───────────────────────────────────────────────
-      trestbps  131.624     120    11.537  <0.001  
-    ───────────────────────────────────────────────
+== Model ======================================================================= 
 
+Variable Mapper : formula 
+Args : trestbps ~ 1 
+    left_var : 1 
+    right_var : 0 
 
-    -- Confidence Interval ---------------------------------------------------------
+== T-Test ====================================================================== 
 
-    ────────────────────────────────
-        term    lower_95  upper_95  
-    ────────────────────────────────
-      trestbps  129.641   133.607   
-    ────────────────────────────────
-    ```
+-- Summary ---------------------------------------------------------------------
 
-    ``` r
-
-    TTEST(trestbps ~ 1, heart, .mu = 120)
-    ```
-
-    ``` fansi
-    -- Summary ---------------------------------------------------------------------
-
-    ─────────────────────────────────────────────────────────
-      groups     type     est_type    est    t-stat   pval   
-    ─────────────────────────────────────────────────────────
-        1     one sample     mu     131.624  11.537  <0.001  
-    ─────────────────────────────────────────────────────────
+─────────────────────────────────────────────────────────
+  groups     type     est_type    est    t-stat   pval   
+─────────────────────────────────────────────────────────
+    1     one sample     mu     131.624  11.537  <0.001  
+─────────────────────────────────────────────────────────
 
 
-    -- Confidence Interval ---------------------------------------------------------
+-- Confidence Interval ---------------------------------------------------------
 
-    ──────────────────────────────────────────
-      groups     type     lower_95  upper_95  
-    ──────────────────────────────────────────
-        1     one sample  129.641   133.606   
-    ──────────────────────────────────────────
-    ```
+──────────────────────────────────────────
+  groups     type     lower_95  upper_95  
+──────────────────────────────────────────
+    1     one sample  129.641   133.606   
+──────────────────────────────────────────
+```
 
-This can be done with a one-liner:
+``` r
+
+TTEST(trestbps ~ 1, heart, .mu = 120)
+```
+
+``` fansi
+-- Summary ---------------------------------------------------------------------
+
+─────────────────────────────────────────────────────────
+  groups     type     est_type    est    t-stat   pval   
+─────────────────────────────────────────────────────────
+    1     one sample     mu     131.624  11.537  <0.001  
+─────────────────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+──────────────────────────────────────────
+  groups     type     lower_95  upper_95  
+──────────────────────────────────────────
+    1     one sample  129.641   133.606   
+──────────────────────────────────────────
+```
 
 ``` r
 
@@ -266,261 +241,251 @@ t_test(heart, trestbps ~ 1, mu = 120)
 1 trestbps 1      null model   303      11.5   302 9.34e-26
 ```
 
-This can be done with a one-liner, as well. But there are two
-approaches:
+``` r
 
-1.  Using a vector-supplied argument
-
-    ``` r
-
-    t.test(heart$trestbps, mu = 120)
-    ```
+t.test(heart$trestbps, mu = 120)
+```
 
 
-            One Sample t-test
+        One Sample t-test
 
-        data:  heart$trestbps
-        t = 11.537, df = 302, p-value < 2.2e-16
-        alternative hypothesis: true mean is not equal to 120
-        95 percent confidence interval:
-         129.6411 133.6065
-        sample estimates:
-        mean of x 
-         131.6238 
+    data:  heart$trestbps
+    t = 11.537, df = 302, p-value < 2.2e-16
+    alternative hypothesis: true mean is not equal to 120
+    95 percent confidence interval:
+     129.6411 133.6065
+    sample estimates:
+    mean of x 
+     131.6238 
 
-2.  A formula:
+``` r
 
-    ``` r
-
-    t.test(trestbps ~ 1, heart, mu = 120)
-    ```
+t.test(trestbps ~ 1, heart, mu = 120)
+```
 
 
-            One Sample t-test
+        One Sample t-test
 
-        data:  trestbps
-        t = 11.537, df = 302, p-value < 2.2e-16
-        alternative hypothesis: true mean is not equal to 120
-        95 percent confidence interval:
-         129.6411 133.6065
-        sample estimates:
-        mean of x 
-         131.6238 
+    data:  trestbps
+    t = 11.537, df = 302, p-value < 2.2e-16
+    alternative hypothesis: true mean is not equal to 120
+    95 percent confidence interval:
+     129.6411 133.6065
+    sample estimates:
+    mean of x 
+     131.6238 
 
-------------------------------------------------------------------------
+### Verdict
 
-All of the packages are using `<formula>` interface. This is how R
-addresses the simple problem with just one line of code — it just shows
-how high level R can be, making a problem much simpler. There’s an
-exception, [statim](https://github.com/s7-stats/statim) has an approach
-which leverages the piped/grammar syntax form, which brings a new
-approach for a readable and composable pipeline, inheriting the spirit
-of [ggplot2](https://ggplot2.tidyverse.org) semantics.
+All of the packages addresses the problem by performing one-sample
+t-test in a single line of code. However, what
+[statim](https://github.com/s7-stats/statim) buys instead is legibility
+of intent:
+[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
+[`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md),
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
+read like a sentence, and you can do more with
+[statim](https://github.com/s7-stats/statim)’s main API, whereas
+`t.test(x, mu = 120)` reads like an API you have to already know.
 
-## Question 2
+Interpretation: 131.6 mmHg average, significantly above 120 (p \<
+0.001). This cohort runs elevated.
 
-> *Do men and women achieve different maximum heart rates during stress
-> testing?*
+## Question 2: Does max heart rate differ by sex?
 
-Maximum heart rate (`thalach`) is a continuous outcome; `sex` is our
-grouping variable with two independent levels. This is addressed using
-independent two-sample t-test.
+H_0:
+\mu\_{\text{thalach}\mid\text{sex=Female}}=\mu\_{\text{thalach}\mid\text{sex=Male}}
+\qquad H_1: \mu\_{\text{thalach}\mid\text{sex=Female}} \neq
+\mu\_{\text{thalach}\mid\text{sex=Male}}
 
-Here’s the null hypothesis we want to test:
-
-H_0: \mu\_{\text{thalach}\| \text{sex=Female}}=\mu\_{\text{thalach}\|
-\text{sex=Male}}
-
-Against:
-
-H_1: \mu\_{\text{thalach}\| \text{sex=Female}} \neq
-\mu\_{\text{thalach}\| \text{sex=Male}}
+### Codes
 
 - statim
 - rstatix
 - Base R
-- Interpretation of the codes
 
-There are two ways to make this done using this package:
+There are three layouts to perform two-sample t-test:
 
-1.  The piped/grammar syntax.
+##### Using on()
 
-    1.  Using
-        [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
+This version requires `via("two_sample")` after `prepare(TTEST)` to
+perform two-sample t-test. Since it requires `via("two_sample")`, you
+can’t use its eager form/one liner code.
 
-        ``` r
+``` r
 
-        heart |> 
-            define_model(x_by(thalach, sex)) |> 
-            prepare(TTEST) |> 
-            state_null(
-                MU(thalach, sex == "Female") == MU(thalach, sex == "Male")
-            ) |> 
-            conclude()
-        ```
+female = heart$thalach[heart$sex == "Female"]
+male = heart$thalach[heart$sex == "Male"]
 
-        ``` fansi
+# Requires via("two_sample") 
+# To perform two-sample t-test from on()
+define_model(on(female, male)) |>
+    prepare(TTEST) |>
+    via("two_sample") |>           
+    state_null(
+        MU(female) == MU(male)
+    ) |> 
+    conclude()
+```
 
-        == Model ======================================================================= 
+``` fansi
 
-        Variable Mapper : x_by 
-        Args : thalach | sex 
-            x_vars : 1 
-            by_vars : 1 
+== Model ======================================================================= 
 
-        == T-Test ====================================================================== 
+Variable Mapper : on 
+Args : female, male 
 
-        -- Summary ---------------------------------------------------------------------
+== T-Test · two_sample ========================================================= 
 
-        ───────────────────────────────────────────
-          group  estimate  t_stat    df     p_val  
-        ───────────────────────────────────────────
-           sex    2.164    0.818   219.790  0.414  
-        ───────────────────────────────────────────
+-- Summary ---------------------------------------------------------------------
 
-
-        -- Confidence Interval ---------------------------------------------------------
-
-        ─────────────────────────────
-          group  lower_95  upper_95  
-        ─────────────────────────────
-           sex    -3.050    7.378    
-        ─────────────────────────────
-        ```
-
-    2.  Using
-        [`on()`](https://s7-stats.github.io/statim/reference/on.md)
-
-        ``` r
-
-        female = heart$thalach[heart$sex == "Female"]
-        male = heart$thalach[heart$sex == "Male"]
-        define_model(on(female, male)) |> 
-            prepare(TTEST) |> 
-            state_null(
-                MU(female) == MU(male)
-            ) |> 
-            via("two_sample") |> 
-            conclude()
-        ```
-
-        ``` fansi
-
-        == Model ======================================================================= 
-
-        Variable Mapper : on 
-        Args : female, male 
-
-        == T-Test · two_sample ========================================================= 
-
-        -- Summary ---------------------------------------------------------------------
-
-        ────────────────────────────────────────────────────────
-                group         estimate  t_stat    df     p_val  
-        ────────────────────────────────────────────────────────
-          1*female + -1*male   2.164    0.818   219.790  0.414  
-        ────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────
+        group         estimate  t_stat    df     p_val  
+────────────────────────────────────────────────────────
+  1*female + -1*male   2.164    0.818   219.790  0.414  
+────────────────────────────────────────────────────────
 
 
-        -- Confidence Interval ---------------------------------------------------------
+-- Confidence Interval ---------------------------------------------------------
 
-        ──────────────────────────────────────────
-                group         lower_95  upper_95  
-        ──────────────────────────────────────────
-          1*female + -1*male   -3.050    7.378    
-        ──────────────────────────────────────────
-        ```
+──────────────────────────────────────────
+        group         lower_95  upper_95  
+──────────────────────────────────────────
+  1*female + -1*male   -3.050    7.378    
+──────────────────────────────────────────
+```
 
-    3.  `<formula>`
+##### Using x_by()
 
-        ``` r
+``` r
 
-        heart |> 
-            define_model(thalach ~ sex) |> 
-            prepare(TTEST) |> 
-            conclude()
-        ```
+heart |>
+    define_model(x_by(thalach, sex)) |>
+    prepare(TTEST) |>
+    state_null(
+        MU(thalach, sex == "Female") == MU(thalach, sex == "Male")
+    ) |>
+    conclude()
+```
 
-        ``` fansi
+``` fansi
 
-        == Model ======================================================================= 
+== Model ======================================================================= 
 
-        Variable Mapper : formula 
-        Args : thalach ~ sex 
-            left_var : 1 
-            right_var : 1 
+Variable Mapper : x_by 
+Args : thalach | sex 
+    x_vars : 1 
+    by_vars : 1 
 
-        == T-Test ====================================================================== 
+== T-Test ====================================================================== 
 
-        -- Summary ---------------------------------------------------------------------
+-- Summary ---------------------------------------------------------------------
 
-        ──────────────────────────────────────────────────────
-          groups     type     est_type   est   t-stat  pval   
-        ──────────────────────────────────────────────────────
-           sex    two sample  mu_diff   2.164  0.818   0.414  
-        ──────────────────────────────────────────────────────
-
-
-        -- Confidence Interval ---------------------------------------------------------
-
-        ──────────────────────────────────────────
-          groups     type     lower_95  upper_95  
-        ──────────────────────────────────────────
-           sex    two sample   -3.051    7.378    
-        ──────────────────────────────────────────
-        ```
-
-2.  Eager form
-
-    ``` r
-
-    TTEST(x_by(thalach, sex), heart)
-    ```
-
-    ``` fansi
-    -- Summary ---------------------------------------------------------------------
-
-    ───────────────────────────────────────────
-      group  estimate  t_stat    df     p_val  
-    ───────────────────────────────────────────
-       sex    -2.164   -0.818  219.790  0.414  
-    ───────────────────────────────────────────
+───────────────────────────────────────────
+  group  estimate  t_stat    df     p_val  
+───────────────────────────────────────────
+   sex    2.164    0.818   219.790  0.414  
+───────────────────────────────────────────
 
 
-    -- Confidence Interval ---------------------------------------------------------
+-- Confidence Interval ---------------------------------------------------------
 
-    ─────────────────────────────
-      group  lower_95  upper_95  
-    ─────────────────────────────
-       sex    -7.378    3.050    
-    ─────────────────────────────
-    ```
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+   sex    -3.050    7.378    
+─────────────────────────────
+```
 
-    ``` r
+``` r
 
-    TTEST(thalach ~ sex, heart)
-    ```
+TTEST(x_by(thalach, sex), heart)
+```
 
-    ``` fansi
-    -- Summary ---------------------------------------------------------------------
+``` fansi
+-- Summary ---------------------------------------------------------------------
 
-    ──────────────────────────────────────────────────────
-      groups     type     est_type   est   t-stat  pval   
-    ──────────────────────────────────────────────────────
-       sex    two sample  mu_diff   2.164  0.818   0.414  
-    ──────────────────────────────────────────────────────
+───────────────────────────────────────────
+  group  estimate  t_stat    df     p_val  
+───────────────────────────────────────────
+   sex    -2.164   -0.818  219.790  0.414  
+───────────────────────────────────────────
 
 
-    -- Confidence Interval ---------------------------------------------------------
+-- Confidence Interval ---------------------------------------------------------
 
-    ──────────────────────────────────────────
-      groups     type     lower_95  upper_95  
-    ──────────────────────────────────────────
-       sex    two sample   -3.051    7.378    
-    ──────────────────────────────────────────
-    ```
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+   sex    -7.378    3.050    
+─────────────────────────────
+```
 
-This package easily addresses this with its `<formula>` interface.
+##### Using formula syntax
+
+Currently, the `<formula>` layout doesn’t have translation for
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md).
+
+``` r
+
+heart |>
+    define_model(thalach ~ sex) |>
+    prepare(TTEST) |>
+    conclude()
+```
+
+``` fansi
+
+== Model ======================================================================= 
+
+Variable Mapper : formula 
+Args : thalach ~ sex 
+    left_var : 1 
+    right_var : 1 
+
+== T-Test ====================================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+──────────────────────────────────────────────────────
+  groups     type     est_type   est   t-stat  pval   
+──────────────────────────────────────────────────────
+   sex    two sample  mu_diff   2.164  0.818   0.414  
+──────────────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+──────────────────────────────────────────
+  groups     type     lower_95  upper_95  
+──────────────────────────────────────────
+   sex    two sample   -3.051    7.378    
+──────────────────────────────────────────
+```
+
+``` r
+
+TTEST(thalach ~ sex, heart)
+```
+
+``` fansi
+-- Summary ---------------------------------------------------------------------
+
+──────────────────────────────────────────────────────
+  groups     type     est_type   est   t-stat  pval   
+──────────────────────────────────────────────────────
+   sex    two sample  mu_diff   2.164  0.818   0.414  
+──────────────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+──────────────────────────────────────────
+  groups     type     lower_95  upper_95  
+──────────────────────────────────────────
+   sex    two sample   -3.051    7.378    
+──────────────────────────────────────────
+```
 
 ``` r
 
@@ -534,237 +499,150 @@ t_test(heart, thalach ~ sex)
 1 thalach Female Male      96   207     0.818  220. 0.414
 ```
 
-Two approaches:
+Two forms, but the `<formula>` interface is usually more preferred than
+the regular vector one. For the regular vector, we can use the same
+vector from the [statim](https://github.com/s7-stats/statim) section.
 
-1.  Bare vector-supplied argument
+##### Regular Vector
 
-    ``` r
+``` r
 
-    # Fast but loses the readability form
-    t.test(
-        heart$thalach[heart$sex == "Female"],
-        heart$thalach[heart$sex == "Male"]
-    )
-    ```
+t.test(female, male)
+```
 
 
-            Welch Two Sample t-test
+        Welch Two Sample t-test
 
-        data:  heart$thalach[heart$sex == "Female"] and heart$thalach[heart$sex == "Male"]
-        t = 0.8178, df = 219.79, p-value = 0.4144
-        alternative hypothesis: true difference in means is not equal to 0
-        95 percent confidence interval:
-         -3.050537  7.377831
-        sample estimates:
-        mean of x mean of y 
-         151.1250  148.9614 
+    data:  female and male
+    t = 0.8178, df = 219.79, p-value = 0.4144
+    alternative hypothesis: true difference in means is not equal to 0
+    95 percent confidence interval:
+     -3.050537  7.377831
+    sample estimates:
+    mean of x mean of y 
+     151.1250  148.9614 
 
-2.  Formula
+##### Formula Syntax
 
-    ``` r
+``` r
 
-    t.test(thalach ~ sex, data = heart)
-    ```
+t.test(thalach ~ sex, data = heart)
+```
 
 
-            Welch Two Sample t-test
+        Welch Two Sample t-test
 
-        data:  thalach by sex
-        t = 0.8178, df = 219.79, p-value = 0.4144
-        alternative hypothesis: true difference in means between group Female and group Male is not equal to 0
-        95 percent confidence interval:
-         -3.050537  7.377831
-        sample estimates:
-        mean in group Female   mean in group Male 
-                    151.1250             148.9614 
+    data:  thalach by sex
+    t = 0.8178, df = 219.79, p-value = 0.4144
+    alternative hypothesis: true difference in means between group Female and group Male is not equal to 0
+    95 percent confidence interval:
+     -3.050537  7.377831
+    sample estimates:
+    mean in group Female   mean in group Male 
+                151.1250             148.9614 
 
-------------------------------------------------------------------------
+### Verdict
 
-`<formula>` object is such a good convenient tool that makes statistical
-modelling much easier. Except
-[statim](https://github.com/s7-stats/statim) has another way to shape
-the pipeline into different layout which also be able call the columns:
-a `<var_id>` mapper called
-[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md). This
-mapper is another good function that declares the column `x` being
-compared by the grouping column `group`. The categorical groups under
-`group` column are used as a reference on population parameter
-`<param_obj>` objects,
-i.e. [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) in this
-case. [`on()`](https://s7-stats.github.io/statim/reference/on.md)
-layout, on the other hand, is different: Especially its eager form,
-i.e. the default, requires `via("two_sample")` to switch into two-sample
-mode.
+This is where the two designs actually diverge, not just in syntax.
+Empirically, [statim](https://github.com/s7-stats/statim),
+[rstatix](https://rpkgs.datanovia.com/rstatix/), and base R treat
+“compare two groups” as something the `<formula>` already encodes,
+`thalach ~ sex` says everything. However,
+[statim](https://github.com/s7-stats/statim) goes beyond that with
+[`on()`](https://s7-stats.github.io/statim/reference/on.md) and
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md).
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) says the
+same thing, but then lets you go further: this layout has
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+translation, and you can write out
+`MU(thalach, sex == "Female") == MU(thalach, sex == "Male)` as an actual
+algebraic expression, group filters and all.
+[`on()`](https://s7-stats.github.io/statim/reference/on.md), on the
+other hand, has the same logic as
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) one
+except it treats the variables to be independent to each other, and its
+null hypothesis expression doesn’t use the `<sex == "Male>` `given`
+argument.
 
-As for the declaration of null hypothesis part: Both base R and
-[rstatix](https://rpkgs.datanovia.com/rstatix/) do not have an ability
-to declare the null hypothesis in algebraic form, rather they use
-`alternative =` and `mu =`. [statim](https://github.com/s7-stats/statim)
-brings this feature — declaration of null hypothesis in algebraic form.
-This is implemented so that the intent of the null hypothesis we test is
-more transparent. This is the newest feature of a declaration of the
-null hypothesis in R, only in
-[statim](https://github.com/s7-stats/statim) package.
+That’s more typing for a question this simple. It stops being “more
+typing” and starts being “the only way to say what you mean” the moment
+the hypothesis isn’t a straight group comparison anymore.
 
-## Question 3
+Interpretation: no difference (p = 0.414). Sex isn’t doing any
+explanatory work here.
 
-> *Is there a linear relationship between age and maximum heart rate?*
+## Question 3: Does max heart rate fall with age?
 
-Here, use a correlation test to address the problem. We expect an
-inverse relationship: older patients tend to have lower maximum heart
-rates. A Pearson correlation test lets us assess whether this
-relationship is statistically distinguishable from zero.
-
-Here’s the null hypothesis we want to test:
-
-H_0: \rho\_{\text{thalach, age}}=0
-
-Against:
-
-H_1: \rho\_{\text{thalach, age}} \neq 0
+H_0: \rho\_{\text{thalach, age}}=0 \qquad H_1: \rho\_{\text{thalach,
+age}} \neq 0
 
 - statim
-- rstatix
-- Base R
-- Interpretation of the codes
+- rstatix / Base R
+- Verdict
 
-There are two ways to make this done using this package:
+``` r
 
-1.  The piped/grammar syntax.
+heart |>
+    define_model(rel(thalach, age)) |>
+    prepare(CORTEST) |>
+    state_null(
+        RHO(thalach, age) == 0
+    ) |>
+    conclude()
+```
 
-    1.  Using
-        [`rel()`](https://s7-stats.github.io/statim/reference/rel.md)
+``` fansi
 
-        ``` r
+== Model ======================================================================= 
 
-        heart |> 
-            define_model(rel(thalach, age)) |> 
-            prepare(CORTEST) |> 
-            state_null(
-                RHO(thalach, age) == 0
-            ) |> 
-            conclude()
-        ```
+Variable Mapper : rel 
+Args : thalach ; age 
+    x_vars : 1 
+    resp_vars : 1 
 
-        ``` fansi
+== Correlation Test ============================================================ 
 
-        == Model ======================================================================= 
+-- Summary ---------------------------------------------------------------------
 
-        Variable Mapper : rel 
-        Args : thalach ; age 
-            x_vars : 1 
-            resp_vars : 1 
-
-        == Correlation Test ============================================================ 
-
-        -- Summary ---------------------------------------------------------------------
-
-        ───────────────────────────────────────────────────
-              pair       estimate  statistic  df   p_val   
-        ───────────────────────────────────────────────────
-          age ~ thalach   -0.398    -7.539    301  <0.001  
-        ───────────────────────────────────────────────────
+───────────────────────────────────────────────────
+      pair       estimate  statistic  df   p_val   
+───────────────────────────────────────────────────
+  age ~ thalach   -0.398    -7.539    301  <0.001  
+───────────────────────────────────────────────────
 
 
-        -- Confidence Interval ---------------------------------------------------------
+-- Confidence Interval ---------------------------------------------------------
 
-        ─────────────────────────────────────
-              pair       lower_95  upper_95  
-        ─────────────────────────────────────
-          age ~ thalach   -0.489    -0.299   
-        ─────────────────────────────────────
-        ```
+─────────────────────────────────────
+      pair       lower_95  upper_95  
+─────────────────────────────────────
+  age ~ thalach   -0.489    -0.299   
+─────────────────────────────────────
+```
 
-    2.  `<formula>`
+``` r
 
-        ``` r
+CORTEST(rel(thalach, age), heart)
+```
 
-        heart |> 
-            define_model(thalach ~ age) |> 
-            prepare(CORTEST) |> 
-            conclude()
-        ```
+``` fansi
+-- Summary ---------------------------------------------------------------------
 
-        ``` fansi
-
-        == Model ======================================================================= 
-
-        Variable Mapper : formula 
-        Args : thalach ~ age 
-            left_var : 1 
-            right_var : 1 
-
-        == Correlation Test ============================================================ 
-
-        -- Summary ---------------------------------------------------------------------
-
-        ───────────────────────────────────────────────────
-              pair       estimate  statistic  df   p_val   
-        ───────────────────────────────────────────────────
-          thalach ~ age   -0.398    -7.539    301  <0.001  
-        ───────────────────────────────────────────────────
+───────────────────────────────────────────────────
+      pair       estimate  statistic  df   p_val   
+───────────────────────────────────────────────────
+  age ~ thalach   -0.398    -7.539    301  <0.001  
+───────────────────────────────────────────────────
 
 
-        -- Confidence Interval ---------------------------------------------------------
+-- Confidence Interval ---------------------------------------------------------
 
-        ─────────────────────────────────────
-              pair       lower_95  upper_95  
-        ─────────────────────────────────────
-          thalach ~ age   -0.489    -0.299   
-        ─────────────────────────────────────
-        ```
-
-2.  Eager form
-
-    ``` r
-
-    CORTEST(rel(thalach, age), heart)
-    ```
-
-    ``` fansi
-    -- Summary ---------------------------------------------------------------------
-
-    ───────────────────────────────────────────────────
-          pair       estimate  statistic  df   p_val   
-    ───────────────────────────────────────────────────
-      age ~ thalach   -0.398    -7.539    301  <0.001  
-    ───────────────────────────────────────────────────
-
-
-    -- Confidence Interval ---------------------------------------------------------
-
-    ─────────────────────────────────────
-          pair       lower_95  upper_95  
-    ─────────────────────────────────────
-      age ~ thalach   -0.489    -0.299   
-    ─────────────────────────────────────
-    ```
-
-    ``` r
-
-    CORTEST(thalach ~ age, heart)
-    ```
-
-    ``` fansi
-    -- Summary ---------------------------------------------------------------------
-
-    ───────────────────────────────────────────────────
-          pair       estimate  statistic  df   p_val   
-    ───────────────────────────────────────────────────
-      thalach ~ age   -0.398    -7.539    301  <0.001  
-    ───────────────────────────────────────────────────
-
-
-    -- Confidence Interval ---------------------------------------------------------
-
-    ─────────────────────────────────────
-          pair       lower_95  upper_95  
-    ─────────────────────────────────────
-      thalach ~ age   -0.489    -0.299   
-    ─────────────────────────────────────
-    ```
-
-This package easily addresses this with its `<formula>` interface.
+─────────────────────────────────────
+      pair       lower_95  upper_95  
+─────────────────────────────────────
+  age ~ thalach   -0.489    -0.299   
+─────────────────────────────────────
+```
 
 ``` r
 
@@ -778,164 +656,107 @@ rstatix::cor_test(heart, age, thalach)
 1 age   thalach  -0.4     -7.54   301 5.63e-13   -0.489    -0.299 Pearson
 ```
 
-Two approaches:
+``` r
 
-1.  Bare vector-supplied argument
-
-    ``` r
-
-    cor.test(heart$thalach, heart$age)
-    ```
+cor.test(~ thalach + age, heart)
+```
 
 
-            Pearson's product-moment correlation
+        Pearson's product-moment correlation
 
-        data:  heart$thalach and heart$age
-        t = -7.5386, df = 301, p-value = 5.628e-13
-        alternative hypothesis: true correlation is not equal to 0
-        95 percent confidence interval:
-         -0.4892312 -0.2992831
-        sample estimates:
-               cor 
-        -0.3985219 
+    data:  thalach and age
+    t = -7.5386, df = 301, p-value = 5.628e-13
+    alternative hypothesis: true correlation is not equal to 0
+    95 percent confidence interval:
+     -0.4892312 -0.2992831
+    sample estimates:
+           cor 
+    -0.3985219 
 
-2.  Formula
+Small trap worth flagging: base R’s `<formula>` here is
+`~ thalach + age`, not `thalach ~ age`. There’s no dependent variable in
+a correlation, so the usual left/right convention doesn’t mean anything,
+but it’s easy to assume it does and misread the formula.
+`{rel(thalach, age)}` sidesteps the ambiguity by just naming both
+variables. [rstatix](https://rpkgs.datanovia.com/rstatix/) sidesteps it
+differently, by borrowing
+[`dplyr::select()`](https://dplyr.tidyverse.org/reference/select.html)-style
+column picking, always pairwise.
 
-    ``` r
+Interpretation: a real, moderate negative correlation (r = -0.398, p \<
+0.001). Heart rate ceiling drops with age, as expected.
 
-    cor.test(~ thalach + age, heart)
-    ```
+## Question 4: Is high fasting blood sugar unusually common in men?
 
-
-            Pearson's product-moment correlation
-
-        data:  thalach and age
-        t = -7.5386, df = 301, p-value = 5.628e-13
-        alternative hypothesis: true correlation is not equal to 0
-        95 percent confidence interval:
-         -0.4892312 -0.2992831
-        sample estimates:
-               cor 
-        -0.3985219 
-
-------------------------------------------------------------------------
-
-Both [statim](https://github.com/s7-stats/statim) and base R are
-leveraging high level API on defining the layout of the model being
-analyzed — the former uses
-[`rel()`](https://s7-stats.github.io/statim/reference/rel.md) (can also
-use `<formula>` interface) and the latter uses `<formula>` interface,
-except it follows not the `v ~ u` form, rather the `~ u + v` form, where
-`u` is a numeric vector signifying the independent variable while `v` is
-a numeric vector signifying the dependent variable.
-[rstatix](https://rpkgs.datanovia.com/rstatix/) is oddly different from
-these 2: it’s still high level except it follows the
-[`dplyr::select()`](https://dplyr.tidyverse.org/reference/select.html)
-selection method and the operation always interpreted in pairwise
-method.
-
-As usual from [statim](https://github.com/s7-stats/statim),
-[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
-is used on
-[`CORTEST()`](https://s7-stats.github.io/statim/reference/CORTEST.md)
-and the only compatible `<param_obj>` is
-[`RHO()`](https://s7-stats.github.io/statim/reference/RHO.md), which
-refers to the population correlation \rho — the representation is
-algebraic form, not in `alternative =` gotcha.
-
-## Question 4
-
-> *Is the proportion of male patients with high fasting blood sugar
-> different from the population baseline of 15%?*
-
-Here, use the binomial test to address this. Among male patients, we
-want to test whether the observed rate of fasting blood sugar above 120
-mg/dL deviates from an assumed baseline of 15%.
-
-Let’s prepare the required data for this example:
+H_0: \pi=0.15 \qquad H_1: \pi\neq0.15
 
 - `males`` ``=`` ``keep_when``(``heart``, ``sex`` ``==`` ``"Male"``)`` ``n_high_fbs`` ``=`` `[`sum`](https://rdrr.io/r/base/sum.html)`(``males``$``fbs`` ``==`` ``"High"``)`` ``n_males`` ``=`` `[`nrow`](https://rdrr.io/r/base/nrow.html)`(``males``)`
 - statim
-- rstatix
-- Base R
-- Interpretation of the codes
+- rstatix / Base R
+- Verdict
 
-Take note that the default (`base`) of
-[`P_TEST()`](https://s7-stats.github.io/statim/reference/P_TEST.md)
-always performs the binomial test. There are two ways to make this done
-using this package:
+``` r
 
-1.  The piped/grammar syntax.
+define_model(prop(n_high_fbs, n_males)) |>
+    prepare(P_TEST) |>
+    state_null(
+        PI() == 0.15
+    ) |>
+    conclude()
+```
 
-    ``` r
+``` fansi
 
-    define_model(prop(n_high_fbs, n_males)) |> 
-        prepare(P_TEST) |> 
-        state_null(
-            PI() == 0.15
-        ) |> 
-        conclude()
-    ```
+== Model ======================================================================= 
 
-    ``` fansi
+Variable Mapper : prop 
+Args : 33 / 207 
+    x : 33 
+    n : 207 
 
-    == Model ======================================================================= 
+== Proportion Test ============================================================= 
 
-    Variable Mapper : prop 
-    Args : 33 / 207 
-        x : 33 
-        n : 207 
+-- Summary ---------------------------------------------------------------------
 
-    == Proportion Test ============================================================= 
-
-    -- Summary ---------------------------------------------------------------------
-
-    ───────────────────────────────────────────────
-      x    n   true_p  estimate  statistic  p_val  
-    ───────────────────────────────────────────────
-      33  207  0.150    0.159       33      0.697  
-    ───────────────────────────────────────────────
+───────────────────────────────────────────────
+  x    n   true_p  estimate  statistic  p_val  
+───────────────────────────────────────────────
+  33  207  0.150    0.159       33      0.697  
+───────────────────────────────────────────────
 
 
-    -- Confidence Interval ---------------------------------------------------------
+-- Confidence Interval ---------------------------------------------------------
 
-    ──────────────────────
-      lower_95  upper_95  
-    ──────────────────────
-       0.112     0.216    
-    ──────────────────────
-    ```
+──────────────────────
+  lower_95  upper_95  
+──────────────────────
+   0.112     0.216    
+──────────────────────
+```
 
-2.  Eager form
+``` r
 
-    ``` r
+P_TEST(prop(n_high_fbs, n_males), .p = 0.15)
+```
 
-    P_TEST(prop(n_high_fbs, n_males), .p = 0.15)
-    ```
+``` fansi
+-- Summary ---------------------------------------------------------------------
 
-    ``` fansi
-    -- Summary ---------------------------------------------------------------------
-
-    ───────────────────────────────────────────────
-      x    n   true_p  estimate  statistic  p_val  
-    ───────────────────────────────────────────────
-      33  207  0.150    0.159       33      0.697  
-    ───────────────────────────────────────────────
+───────────────────────────────────────────────
+  x    n   true_p  estimate  statistic  p_val  
+───────────────────────────────────────────────
+  33  207  0.150    0.159       33      0.697  
+───────────────────────────────────────────────
 
 
-    -- Confidence Interval ---------------------------------------------------------
+-- Confidence Interval ---------------------------------------------------------
 
-    ──────────────────────
-      lower_95  upper_95  
-    ──────────────────────
-       0.112     0.216    
-    ──────────────────────
-    ```
-
-This package has `binom_test()` and has `x` and `n` as the first 2
-arguments. Supply `n_high_fbs` to `x` (number of successes) and
-`n_males` to `n` (number of trials), then set `p = 0.15` to test the
-null hypothesis.
+──────────────────────
+  lower_95  upper_95  
+──────────────────────
+   0.112     0.216    
+──────────────────────
+```
 
 ``` r
 
@@ -948,11 +769,6 @@ binom_test(n_high_fbs, n_males, p = 0.15)
 * <int>    <dbl>    <dbl>     <dbl> <dbl> <chr>   
 1   207    0.159    0.112     0.217 0.697 ns      
 ```
-
-`{stats}` standard library already has
-[`binom.test()`](https://rdrr.io/r/stats/binom.test.html). The usage is
-almost similar to
-[`rstatix::binom_test()`](https://rpkgs.datanovia.com/rstatix/reference/binom_test.html).
 
 ``` r
 
@@ -971,6 +787,65 @@ binom.test(n_high_fbs, n_males, p = 0.15)
     probability of success 
                  0.1594203 
 
-------------------------------------------------------------------------
+No `<formula>` anywhere in this section — a proportion test is just two
+numbers, `x` and `n`, and all three packages treat it that way. The only
+real question is where those two numbers live: as positional arguments
+(`x, n, p =`) in base R and
+[rstatix](https://rpkgs.datanovia.com/rstatix/), or wrapped in
+[`prop()`](https://s7-stats.github.io/statim/reference/prop.md) so the
+pipeline keeps the same shape it had in Questions 1-3. Neither is more
+correct; [statim](https://github.com/s7-stats/statim)’s version is only
+worth it if you’re already committed to the pipeline for other reasons.
 
-Pending…
+Interpretation: 33 of 207 men (15.9%), not distinguishable from the 15%
+baseline (p = 0.697).
+
+## The scorecard
+
+Two of four questions came back significant. Here’s all four side by
+side, instead of another bullet list:
+
+``` r
+
+results = data.frame(
+    question = c(
+        "Resting BP vs 120 mmHg",
+        "Max HR: Male vs Female",
+        "Max HR vs age",
+        "High FBS rate vs 15%"
+    ),
+    p_value = c(0.001, 0.414, 0.001, 0.697),
+    significant = c(TRUE, FALSE, TRUE, FALSE)
+)
+results$question = factor(results$question, levels = rev(results$question))
+
+ggplot(results, aes(x = -log10(p_value), y = question, color = significant)) +
+    geom_segment(aes(x = 0, xend = -log10(p_value), y = question, yend = question), linewidth = 0.6) +
+    geom_point(size = 4) +
+    geom_vline(xintercept = -log10(0.05), linetype = "dashed", color = "grey40") +
+    scale_color_manual(values = c("TRUE" = "#c0392b", "FALSE" = "#7f8c8d"), guide = "none") +
+    labs(
+        x = expression(-log[10](p)),
+        y = NULL,
+        title = "Which of the cardiologist's questions held up?",
+        caption = "Dashed line marks p = 0.05. Bars for p < 0.001 are capped there for display."
+    ) +
+    theme_minimal(base_size = 12)
+```
+
+![](htest_files/figure-html/unnamed-chunk-17-1.png)
+
+## The honest take
+
+Base R and [rstatix](https://rpkgs.datanovia.com/rstatix/) win every
+single-question race in this vignette on raw brevity — that’s not close,
+and no amount of [statim](https://github.com/s7-stats/statim) syntax
+changes it. What changes is what happens after question four, when the
+cardiologist comes back with question thirty: the same
+`define_model() |> prepare() |> state_null() |> conclude()` shape holds
+for a one-sample test, a two-group comparison, a correlation, or a
+proportion, and the hypothesis in each case is legible on its own,
+without cross-referencing which argument means what in which function.
+That consistency is the entire bet
+[statim](https://github.com/s7-stats/statim) is making. Whether it’s a
+bet worth making depends on whether you’re writing four tests or forty.

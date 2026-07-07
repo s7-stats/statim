@@ -5,8 +5,8 @@
 - [Hypothesis Testing with
   {statim}](https://s7-stats.github.io/statim/articles/usage/htest.md):
 
-  A guide on performing Hypothesis testing with statim R package. With
-  comparison.
+  A guide on performing hypothesis testing with the statim R package,
+  with a comparison against base R and rstatix.
 
 - [New approach of model-based inference with
   {statim}](https://s7-stats.github.io/statim/articles/usage/model-infer.md):
