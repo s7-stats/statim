@@ -23,7 +23,7 @@ making_tidy(obj, model_type)
   [`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md)
   or
   [`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)
-  (e.g. `TTEST`).
+  (e.g. `T_TEST`).
 
 - model_type:
 
@@ -45,7 +45,7 @@ A `making_tidy_call` object, consumed by `%<-%`.
 ``` r
 # Only needed when fn returns a non-class_stat_infer object.
 # Prefer implementing auto_tidy() on your result class instead.
-making_tidy(TTEST, x_by) %<-% method_tidy(
+making_tidy(T_TEST, x_by) %<-% method_tidy(
     default = function(.x, ...) { ... },
     boot = function(.x, ...) { ... }
 )

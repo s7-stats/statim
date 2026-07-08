@@ -263,7 +263,7 @@ including the <code>defs</code> lookup table.</li>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; -- Model Definition ------------------------------------------------------------ </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -301,7 +301,7 @@ Calling <code><a href="../../reference/via.html">via()</a></code> a second time 
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; -- Model Definition ------------------------------------------------------------ </span></span>
@@ -379,7 +379,7 @@ hard error.</li>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; == Model ======================================================================= </span></span>
@@ -447,7 +447,7 @@ chosen variant:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span><span class="co">#&gt; </span></span>
@@ -611,7 +611,7 @@ the full walkthrough.</p>
 <h2 id="eager-path-vs-lazy-path">Eager path vs lazy path<a class="anchor" aria-label="anchor" href="#eager-path-vs-lazy-path"></a>
 </h2>
 <p>There is also an eager path: calling
-<code>TTEST(x_by(extra, group), sleep)</code> or
+<code>T_TEST(x_by(extra, group), sleep)</code> or
 <code>LINEAR_REG(mpg ~ wt, mtcars)</code> directly skips
 <code><a href="../../reference/layout-define-base.html">define_model()</a></code>, <code>prepare_*()</code>, and
 <code><a href="../../reference/via.html">via()</a></code> entirely. Internally, <code>run_stat()</code> calls
@@ -635,9 +635,9 @@ current hierarchy is:</p>
     ├── anova_able
     │       └── class_lm_object       (LINEAR_REG)
     │       └── class_glm_object      (GLM)
-    ├── class_ttest_two               (TTEST · x_by)
-    ├── class_ttest_pairwise          (TTEST · pairwise)
-    ├── class_corr_two                (CORTEST · rel)
+    ├── class_ttest_two               (T_TEST · x_by)
+    ├── class_ttest_pairwise          (T_TEST · pairwise)
+    ├── class_corr_two                (COR_TEST · rel)
     └── class_p_test                  (P_TEST)</code></pre>
 <p>A variant that reuses its def’s existing result class inherits both
 <code><a href="../../reference/auto_tidy.html">auto_tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> automatically. A

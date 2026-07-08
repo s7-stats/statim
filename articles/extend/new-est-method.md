@@ -4,7 +4,7 @@
 
 [statim](https://github.com/s7-stats/statim) is designed so that writing
 a new estimation method never means forking the function the user calls.
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md),
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md),
 [`P_TEST()`](https://s7-stats.github.io/statim/reference/P_TEST.md),
 [`LINEAR_REG()`](https://s7-stats.github.io/statim/reference/LINEAR_REG.md),
 every one of them is built from the same primitives: a `stat_define` per
@@ -21,7 +21,7 @@ that neither knows nor cares what the implementation actually computes.
 Whether you’re adding a robust-regression option to
 [`LINEAR_REG()`](https://s7-stats.github.io/statim/reference/LINEAR_REG.md)
 or a trimmed-mean option to
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md), the
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md), the
 mechanism is identical, because a model-based inference function and a
 hypothesis-test function are the same kind of object underneath —
 [`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)
@@ -42,7 +42,7 @@ method” can mean, and they have different reach.
 
 1.  When you want to add another variant to a model shape that’s already
     supported. Let’s say adding a variant to a model shape
-    [`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md)
+    [`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md)
     already supports — a trimmed-mean test for
     [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
     say. This is the public, documented surface:
@@ -208,12 +208,12 @@ name.
 
 The canonical example in
 [`?add_variant`](https://s7-stats.github.io/statim/reference/add-variant.md)
-does exactly the same thing for `TTEST` and
+does exactly the same thing for `T_TEST` and
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md):
 
 ``` r
 
-add_variant(TTEST, x_by, "another_boot") %<-%
+add_variant(T_TEST, x_by, "another_boot") %<-%
     variant(
         fn = function(.proc, .n = 1000L) {
             x = .proc$x_data[[1]]

@@ -7,7 +7,7 @@ t-test. It accepts one or more grouping variables via
 ## Arguments
 
 The following arguments are passed via `...` in
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) or
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md) or
 [`via()`](https://s7-stats.github.io/statim/reference/via.md):
 
 - `.paired`:
@@ -116,7 +116,7 @@ Other ttest-implementations:
 ``` r
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 
@@ -149,7 +149,7 @@ sleep |>
 
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     via("boot", n = 2000) |>
     conclude()
 #> 
@@ -180,7 +180,7 @@ sleep |>
 # Also `%by%` is just the infixed form of `x_by()`
 sleep |>
     define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     state_null(
         2 * MU(extra, group == "1") - MU(extra, group == "2") <= 0
     ) |>

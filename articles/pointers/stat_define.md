@@ -4,7 +4,7 @@
 
 `stat_define` is an S7 object used as a unit of registration that tells
 a top-level function like
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) or
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md) or
 [`LINEAR_REG()`](https://s7-stats.github.io/statim/reference/LINEAR_REG.md)
 how to behave for one particular shape of model. “Shape of model” means
 the variable mapper `<var_id>` under `<var_id>` class:
@@ -55,12 +55,12 @@ linear_reg_def_rel = model_infer_define(
 )
 ```
 
-A top-level function such as `TTEST` or `LINEAR_REG` contains a list of
+A top-level function such as `T_TEST` or `LINEAR_REG` contains a list of
 `stat_define`, one per supported model shape, passed in as `defs`:
 
 ``` r
 
-TTEST = HTEST_FN(
+T_TEST = HTEST_FN(
     cls = "ttest",
     defs = list(
         ttest_def_two, 
@@ -82,7 +82,7 @@ LINEAR_REG = MODEL_FN(
 )
 ```
 
-When you call `TTEST(x_by(extra, group), sleep)`, the dispatcher looks
+When you call `T_TEST(x_by(extra, group), sleep)`, the dispatcher looks
 at the class of the variable mapper `<var_id>` you passed, finds the
 matching `stat_define` (i.e. `ttest_def_two` in this case), and runs
 that implementation. The exact same lookup runs when you call
@@ -94,7 +94,7 @@ registry being searched differs.
 The alternative to this registration pattern is a long `if`/`switch`
 inside the body of every top-level function, each branch hand-rolling
 its own argument handling and result wrapping. That breaks down fast:
-not just because `TTEST` alone has three model shapes, but because the
+not just because `T_TEST` alone has three model shapes, but because the
 package has two whole families of top-level function — hypothesis tests
 built with
 [`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md)
@@ -112,7 +112,7 @@ delegate to; `build_lookup()`, `find_def()`, and
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 don’t know or care whether the `stat_define` list they’re searching came
 from a test function or a model function. Adding a fourth model shape to
-`TTEST`, or a third model fit to `LINEAR_REG`, means writing one more
+`T_TEST`, or a third model fit to `LINEAR_REG`, means writing one more
 `stat_define` and adding it to that function’s `defs` — it never means
 touching the dispatcher itself.
 
@@ -159,8 +159,8 @@ stat_define(
     for `base`, plus zero or more named
     [`variant()`](https://s7-stats.github.io/statim/reference/variant.md)
     entries. `base` is what the default of top functions like
-    [`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) —
-    it runs when no
+    [`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md)
+    — it runs when no
     [`via()`](https://s7-stats.github.io/statim/reference/via.md) is
     called and is the only thing reachable on the eager path. Every `fn`
     inside, whether it computes a binomial test or fits an
@@ -296,12 +296,12 @@ mirrored pair of pipelines that differ only in name:
 | Lazy attach step | [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md) | [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md) |
 | Lazy spec class | `test_spec` | `model_spec` |
 | Lazy pipeline object | `test_lazy` | `model_lazy` |
-| Example | `TTEST`, `P_TEST` | `LINEAR_REG`, `GLM` |
+| Example | `T_TEST`, `P_TEST` | `LINEAR_REG`, `GLM` |
 
 Both pipelines converge on the same terminal generic. There are two
 paths into a `stat_define`’s `impl`, and both end at `inject_and_run()`.
 
-1.  Eager path: `TTEST(x_by(extra, group), sleep)` or
+1.  Eager path: `T_TEST(x_by(extra, group), sleep)` or
     `LINEAR_REG(rel(mpg, wt), mtcars)` calls `run_stat()`, which finds
     the matching `stat_define` via `find_def()`, processes the variable
     mapper `<var_id>` through
@@ -310,7 +310,7 @@ paths into a `stat_define`’s `impl`, and both end at `inject_and_run()`.
     this path — only `base` is reachable.
 
 2.  Lazy path:
-    `sleep |> define_model(x_by(extra, group)) |> prepare_test(TTEST) |> via("boot", n = 2000) |> conclude()`
+    `sleep |> define_model(x_by(extra, group)) |> prepare_test(T_TEST) |> via("boot", n = 2000) |> conclude()`
     and
     `mtcars |> define_model(rel(mpg, wt)) |> prepare_model(LINEAR_REG) |> conclude()`
     both defer execution until
@@ -351,9 +351,9 @@ different branches of the same hierarchy:
     class_stat_infer
         ├── anova_able
         │       └── class_lm_object       (LINEAR_REG)
-        ├── class_ttest_two               (TTEST · x_by)
-        ├── class_ttest_pairwise          (TTEST · pairwise)
-        ├── class_corr_two                (CORTEST · rel)
+        ├── class_ttest_two               (T_TEST · x_by)
+        ├── class_ttest_pairwise          (T_TEST · pairwise)
+        ├── class_corr_two                (COR_TEST · rel)
         └── class_p_test                  (P_TEST)
 
 A variant that reuses its def’s existing result class inherits
@@ -375,7 +375,7 @@ call instead.
 [`STAT_CONSTRUCTOR()`](https://s7-stats.github.io/statim/reference/STAT_CONSTRUCTOR.md)
 at the moment a top-level function is built, with no exported way to
 append a new `stat_define` to an existing function afterward. Teaching
-`TTEST` or `LINEAR_REG` a model shape it doesn’t already support means
+`T_TEST` or `LINEAR_REG` a model shape it doesn’t already support means
 editing the package source, not extending it from outside. Adding a new
 *variant* to a model shape that’s already supported is the public
 extension surface, and it doesn’t touch `defs` at all — see the [writing

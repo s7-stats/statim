@@ -101,7 +101,7 @@
 <h2 id="what-are-objects">What are <stat_define> objects?</stat_define><a class="anchor" aria-label="anchor" href="#what-are-objects"></a>
 </h2>
 <p><code>stat_define</code> is an S7 object used as a unit of
-registration that tells a top-level function like <code><a href="../../reference/TTEST.html">TTEST()</a></code>
+registration that tells a top-level function like <code><a href="../../reference/T_TEST.html">T_TEST()</a></code>
 or <code><a href="../../reference/LINEAR_REG.html">LINEAR_REG()</a></code> how to behave for one particular shape of
 model. “Shape of model” means the variable mapper
 <code>&lt;var_id&gt;</code> under <code>&lt;var_id&gt;</code> class:
@@ -136,11 +136,11 @@ objects with identical properties:</p>
 <span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    <span class="at">impl =</span> <span class="fu">agendas</span>(...),</span>
 <span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>    <span class="at">compatible_params =</span> <span class="fu">list</span>()</span>
 <span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>)</span></code></pre></div>
-<p>A top-level function such as <code>TTEST</code> or
+<p>A top-level function such as <code>T_TEST</code> or
 <code>LINEAR_REG</code> contains a list of <code>stat_define</code>, one
 per supported model shape, passed in as <code>defs</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">TTEST</span> <span class="op">=</span> <span class="fu"><a href="../../reference/HTEST_FN.html">HTEST_FN</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">T_TEST</span> <span class="op">=</span> <span class="fu"><a href="../../reference/HTEST_FN.html">HTEST_FN</a></span><span class="op">(</span></span>
 <span>    cls <span class="op">=</span> <span class="st">"ttest"</span>,</span>
 <span>    defs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>        <span class="va">ttest_def_two</span>, </span>
@@ -160,7 +160,7 @@ per supported model shape, passed in as <code>defs</code>:</p>
 <span>    <span class="op">)</span>,</span>
 <span>    .name <span class="op">=</span> <span class="st">"Linear Regression"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>When you call <code>TTEST(x_by(extra, group), sleep)</code>, the
+<p>When you call <code>T_TEST(x_by(extra, group), sleep)</code>, the
 dispatcher looks at the class of the variable mapper
 <code>&lt;var_id&gt;</code> you passed, finds the matching
 <code>stat_define</code> (i.e. <code>ttest_def_two</code> in this case),
@@ -174,7 +174,7 @@ is the registry being searched differs.</p>
 <p>The alternative to this registration pattern is a long
 <code>if</code>/<code>switch</code> inside the body of every top-level
 function, each branch hand-rolling its own argument handling and result
-wrapping. That breaks down fast: not just because <code>TTEST</code>
+wrapping. That breaks down fast: not just because <code>T_TEST</code>
 alone has three model shapes, but because the package has two whole
 families of top-level function — hypothesis tests built with
 <code><a href="../../reference/HTEST_FN.html">HTEST_FN()</a></code> and model-based inference built with
@@ -187,7 +187,7 @@ exactly once. <code><a href="../../reference/STAT_CONSTRUCTOR.html">STAT_CONSTRU
 <code><a href="../../reference/conclude.html">conclude()</a></code> don’t know or care whether the
 <code>stat_define</code> list they’re searching came from a test
 function or a model function. Adding a fourth model shape to
-<code>TTEST</code>, or a third model fit to <code>LINEAR_REG</code>,
+<code>T_TEST</code>, or a third model fit to <code>LINEAR_REG</code>,
 means writing one more <code>stat_define</code> and adding it to that
 function’s <code>defs</code> — it never means touching the dispatcher
 itself.</p>
@@ -227,7 +227,7 @@ mapper <code>&lt;var_id&gt;</code> object).</p>
 <p>An <code><a href="../../reference/agendas.html">agendas()</a></code> object: exactly one <code><a href="../../reference/baseline.html">baseline()</a></code>
 for <code>base</code>, plus zero or more named <code><a href="../../reference/variant.html">variant()</a></code>
 entries. <code>base</code> is what the default of top functions like
-<code><a href="../../reference/TTEST.html">TTEST()</a></code> — it runs when no <code><a href="../../reference/via.html">via()</a></code> is called and
+<code><a href="../../reference/T_TEST.html">T_TEST()</a></code> — it runs when no <code><a href="../../reference/via.html">via()</a></code> is called and
 is the only thing reachable on the eager path. Every <code>fn</code>
 inside, whether it computes a binomial test or fits an
 <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code>, must have <code>.proc</code> as its literal first
@@ -358,7 +358,7 @@ through a mirrored pair of pipelines that differ only in name:</p>
 <tr class="odd">
 <td>Example</td>
 <td>
-<code>TTEST</code>, <code>P_TEST</code>
+<code>T_TEST</code>, <code>P_TEST</code>
 </td>
 <td>
 <code>LINEAR_REG</code>, <code>GLM</code>
@@ -370,7 +370,7 @@ through a mirrored pair of pipelines that differ only in name:</p>
 paths into a <code>stat_define</code>’s <code>impl</code>, and both end
 at <code>inject_and_run()</code>.</p>
 <ol style="list-style-type: decimal">
-<li><p>Eager path: <code>TTEST(x_by(extra, group), sleep)</code> or
+<li><p>Eager path: <code>T_TEST(x_by(extra, group), sleep)</code> or
 <code>LINEAR_REG(rel(mpg, wt), mtcars)</code> calls
 <code>run_stat()</code>, which finds the matching
 <code>stat_define</code> via <code>find_def()</code>, processes the
@@ -379,7 +379,7 @@ variable mapper <code>&lt;var_id&gt;</code> through
 directly. There is no variant resolution on this path — only
 <code>base</code> is reachable.</p></li>
 <li><p>Lazy path:
-<code>sleep |&gt; define_model(x_by(extra, group)) |&gt; prepare_test(TTEST) |&gt; via("boot", n = 2000) |&gt; conclude()</code>
+<code>sleep |&gt; define_model(x_by(extra, group)) |&gt; prepare_test(T_TEST) |&gt; via("boot", n = 2000) |&gt; conclude()</code>
 and
 <code>mtcars |&gt; define_model(rel(mpg, wt)) |&gt; prepare_model(LINEAR_REG) |&gt; conclude()</code>
 both defer execution until <code><a href="../../reference/conclude.html">conclude()</a></code>, which has separate
@@ -412,9 +412,9 @@ different branches of the same hierarchy:</p>
 <pre><code>class_stat_infer
     ├── anova_able
     │       └── class_lm_object       (LINEAR_REG)
-    ├── class_ttest_two               (TTEST · x_by)
-    ├── class_ttest_pairwise          (TTEST · pairwise)
-    ├── class_corr_two                (CORTEST · rel)
+    ├── class_ttest_two               (T_TEST · x_by)
+    ├── class_ttest_pairwise          (T_TEST · pairwise)
+    ├── class_corr_two                (COR_TEST · rel)
     └── class_p_test                  (P_TEST)</code></pre>
 <p>A variant that reuses its def’s existing result class inherits
 <code><a href="../../reference/tidy.html">tidy()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> for free — the
@@ -432,7 +432,7 @@ class-based dispatch and supplies <code>print</code> directly on the
 <p><code>defs</code> is closed over inside
 <code><a href="../../reference/STAT_CONSTRUCTOR.html">STAT_CONSTRUCTOR()</a></code> at the moment a top-level function is
 built, with no exported way to append a new <code>stat_define</code> to
-an existing function afterward. Teaching <code>TTEST</code> or
+an existing function afterward. Teaching <code>T_TEST</code> or
 <code>LINEAR_REG</code> a model shape it doesn’t already support means
 editing the package source, not extending it from outside. Adding a new
 <em>variant</em> to a model shape that’s already supported is the public

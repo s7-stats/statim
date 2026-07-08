@@ -127,7 +127,7 @@ has already executed and the result is no longer lazy.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"boot"</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -166,14 +166,14 @@ everything is resolved together.</p>
 <h2 id="where-variant-names-come-from">Where variant names come from<a class="anchor" aria-label="anchor" href="#where-variant-names-come-from"></a>
 </h2>
 <p>A variant name like <code>"boot"</code> or <code>"permute"</code>
-from <code><a href="../../reference/TTEST.html">TTEST()</a></code> in <code>x_by</code> mode is not arbitrary. It
-has to match a name registered for that specific model type, inside the
-<code><a href="../../reference/agendas.html">agendas()</a></code> object passed to <code><a href="../../reference/stat-infer-definer.html">stat_define()</a></code> when
-the test or model was built. Two sources are checked:</p>
+from <code><a href="../../reference/T_TEST.html">T_TEST()</a></code> in <code>x_by</code> mode is not arbitrary.
+It has to match a name registered for that specific model type, inside
+the <code><a href="../../reference/agendas.html">agendas()</a></code> object passed to <code><a href="../../reference/stat-infer-definer.html">stat_define()</a></code>
+when the test or model was built. Two sources are checked:</p>
 <ol style="list-style-type: decimal">
 <li><p>The variants declared directly inside the matched
 <code><a href="../../reference/stat-infer-definer.html">stat_define()</a></code>’s <code><a href="../../reference/agendas.html">agendas()</a></code>, alongside its
-<code><a href="../../reference/baseline.html">baseline()</a></code>. This is how <code>TTEST</code> ships with
+<code><a href="../../reference/baseline.html">baseline()</a></code>. This is how <code>T_TEST</code> ships with
 <code>"boot"</code>, <code>"permute"</code>, <code>"contrast"</code>,
 and <code>"multi"</code> for <code><a href="../../reference/x_by.html">x_by()</a></code> pipelines, for
 example.</p></li>
@@ -204,14 +204,14 @@ mean different things (or simply do not exist) depending on which
 <code>&lt;var_id&gt;</code> you used in <code><a href="../../reference/layout-define-base.html">define_model()</a></code>. A
 variant registered for <code><a href="../../reference/x_by.html">x_by()</a></code> pipelines is not
 automatically available to a <code>&lt;formula&gt;</code>-based pipeline
-of the same test, even if both eventually call <code>TTEST</code>.</p>
+of the same test, even if both eventually call <code>T_TEST</code>.</p>
 <p>If you pass a method name that is not registered for the model type
 in play, <code><a href="../../reference/via.html">via()</a></code> fails immediately, before
 <code><a href="../../reference/conclude.html">conclude()</a></code> is even reached:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"not_a_real_method"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `method(via, list(statim::test_lazy, class_character))`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> No variant <span style="color: #0000BB;">"not_a_real_method"</span> registered for model type <span style="color: #0000BB;">"x_by"</span>.</span></span>
@@ -231,7 +231,7 @@ Concretely, <code><a href="../../reference/conclude.html">conclude()</a></code> 
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"boot"</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -278,7 +278,7 @@ to each <code><a href="../../reference/variant.html">variant()</a></code> indivi
 object that knows how to turn a stated claim into the arguments that one
 <code>fn</code> expects, since different estimation methods can require
 the same population-parameter claim expressed differently.
-<code>TTEST</code>’s <code><a href="../../reference/x_by.html">x_by()</a></code> implementation, for instance,
+<code>T_TEST</code>’s <code><a href="../../reference/x_by.html">x_by()</a></code> implementation, for instance,
 gives a <code>claim_parser</code> to its <code>base</code> and to
 <code>"contrast"</code>, but not to the resampling-based
 <code>"boot"</code> or <code>"permute"</code> variants, since those do
@@ -286,7 +286,7 @@ not take a hypothesized value as an argument in the first place.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">0</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -328,7 +328,7 @@ explicitly rather than silently ignoring the claim:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span><span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>

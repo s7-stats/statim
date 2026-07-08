@@ -211,7 +211,7 @@ mtcars |>
         by_am = x_by(mpg, am),
         by_vs = x_by(mpg, vs)
     ) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude()
 #> 
 #> ── 2 models · T-Test ─────────────────────────────────────────────────────────── 

@@ -14,7 +14,7 @@ Use a formula directly as the model ID to select this implementation.
 ## Arguments
 
 The following arguments are passed via `...` in
-[`CORTEST()`](https://s7-stats.github.io/statim/reference/CORTEST.md):
+[`COR_TEST()`](https://s7-stats.github.io/statim/reference/COR_TEST.md):
 
 - `.cor_type`:
 
@@ -71,7 +71,7 @@ Other cortest-implementations:
 ``` r
 cars |>
     define_model(dist ~ speed) |>
-    prepare_test(CORTEST) |>
+    prepare_test(COR_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 
@@ -105,7 +105,7 @@ cars |>
 # multiple independent variables
 mtcars |>
     define_model(mpg ~ wt + hp) |>
-    prepare_test(CORTEST) |>
+    prepare_test(COR_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 

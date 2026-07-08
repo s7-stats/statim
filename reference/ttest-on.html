@@ -87,7 +87,7 @@ variables to each other, without requiring the value/group layout
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<p>The following arguments are passed via <code>...</code> in <code><a href="TTEST.html">TTEST()</a></code> or <code><a href="via.html">via()</a></code>:</p>
+<p>The following arguments are passed via <code>...</code> in <code><a href="T_TEST.html">T_TEST()</a></code> or <code><a href="via.html">via()</a></code>:</p>
 <dl><dt><code>.mu</code></dt>
 <dd><p>Numeric. Hypothesized mean (one-sample) or mean
 difference/contrast (<code>two_sample</code>). Default <code>0</code>.</p></dd>
@@ -147,7 +147,7 @@ has no grouping column to name.</p>
 
 <p>Supports <code><a href="MU.html">MU()</a></code> via <code><a href="null-hyp.html">state_null()</a></code>:</p>
 <p></p><div class="sourceCode r"><pre><code>define_model(on(x), &lt;data&gt;) |&gt;
-    prepare_test(TTEST) |&gt;
+    prepare_test(T_TEST) |&gt;
     state_null(MU(x) &gt;= 1) |&gt;
     conclude()
 </code></pre><p></p></div>
@@ -158,7 +158,7 @@ the test runs on the solved value (<code>2</code>).</p>
 referenced by the same names given to (or auto-generated for) each
 variable:</p>
 <p></p><div class="sourceCode r"><pre><code>define_model(on(x1, x2), &lt;data&gt;) |&gt;
-    prepare_test(TTEST) |&gt;
+    prepare_test(T_TEST) |&gt;
     via("two_sample") |&gt;
     state_null(MU(x1) - MU(x2) == 0) |&gt;
     conclude()
@@ -190,7 +190,7 @@ use <code>on(&lt;single variable&gt;)</code> with the default variant instead.</
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># single variable</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="on.html">on</a></span><span class="op">(</span><span class="va">extra</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
@@ -222,7 +222,7 @@ use <code>on(&lt;single variable&gt;)</code> with the default variant instead.</
 <span class="r-in"><span><span class="co"># null hypothesis expression</span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="on.html">on</a></span><span class="op">(</span><span class="va">extra</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="null-hyp.html">state_null</a></span><span class="op">(</span><span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -255,7 +255,7 @@ use <code>on(&lt;single variable&gt;)</code> with the default variant instead.</
 <span class="r-in"><span><span class="co"># multiple variables</span></span></span>
 <span class="r-in"><span><span class="va">iris</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="on.html">on</a></span><span class="op">(</span><span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="via.html">via</a></span><span class="op">(</span><span class="st">"multi"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -296,7 +296,7 @@ use <code>on(&lt;single variable&gt;)</code> with the default variant instead.</
 <span class="r-in"><span><span class="va">oj</span> <span class="op">=</span> <span class="va">ToothGrowth</span><span class="op">$</span><span class="va">len</span><span class="op">[</span><span class="va">ToothGrowth</span><span class="op">$</span><span class="va">supp</span> <span class="op">==</span> <span class="st">"OJ"</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="on.html">on</a></span><span class="op">(</span><span class="va">vc</span>, <span class="va">oj</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="via.html">via</a></span><span class="op">(</span><span class="st">"two_sample"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -335,7 +335,7 @@ use <code>on(&lt;single variable&gt;)</code> with the default variant instead.</
 <span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span>d1 <span class="op">=</span> <span class="va">len</span><span class="op">[</span><span class="va">supp</span> <span class="op">==</span> <span class="st">"OJ"</span> <span class="op">&amp;</span> <span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span>d2 <span class="op">=</span> <span class="va">len</span><span class="op">[</span><span class="va">supp</span> <span class="op">==</span> <span class="st">"VC"</span> <span class="op">&amp;</span> <span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="via.html">via</a></span><span class="op">(</span><span class="st">"two_sample"</span>, .paired <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -368,7 +368,7 @@ use <code>on(&lt;single variable&gt;)</code> with the default variant instead.</
 <span class="r-in"><span><span class="co"># two-sample with a weighted contrast hypothesis</span></span></span>
 <span class="r-in"><span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="on.html">on</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span>oj <span class="op">=</span> <span class="va">len</span><span class="op">[</span><span class="va">supp</span> <span class="op">==</span> <span class="st">"OJ"</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span>vc <span class="op">=</span> <span class="va">len</span><span class="op">[</span><span class="va">supp</span> <span class="op">==</span> <span class="st">"VC"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="via.html">via</a></span><span class="op">(</span><span class="st">"two_sample"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="null-hyp.html">state_null</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">oj</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="MU.html">MU</a></span><span class="op">(</span><span class="va">vc</span><span class="op">)</span> <span class="op">==</span> <span class="fl">5</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>

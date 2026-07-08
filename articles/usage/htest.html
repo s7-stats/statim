@@ -153,7 +153,7 @@ imports double as its own dependency graph.</p>
 <code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
 <span>    <span class="va">stats</span><span class="op">[</span><span class="va">t.test</span>, <span class="va">cor.test</span>, <span class="va">binom.test</span><span class="op">]</span>,</span>
 <span>    <span class="va">statim</span><span class="op">[</span></span>
-<span>        <span class="va">TTEST</span>, <span class="va">CORTEST</span>, <span class="va">P_TEST</span>,</span>
+<span>        <span class="va">T_TEST</span>, <span class="va">COR_TEST</span>, <span class="va">P_TEST</span>,</span>
 <span>        <span class="co"># Current grammars</span></span>
 <span>        <span class="va">define_model</span>, <span class="va">prepare</span>, <span class="va">via</span>, <span class="va">state_null</span>, <span class="va">conclude</span>,</span>
 <span>        <span class="co"># Mappers</span></span>
@@ -268,7 +268,7 @@ Using <code>on()</code>
 </summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/on.html">on</a></span><span class="op">(</span><span class="va">trestbps</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
@@ -296,7 +296,7 @@ Args : trestbps
 ────────────────────────────────
 </code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/on.html">on</a></span><span class="op">(</span><span class="va">trestbps</span><span class="op">)</span>, <span class="va">heart</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/T_TEST.html">T_TEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/on.html">on</a></span><span class="op">(</span><span class="va">trestbps</span><span class="op">)</span>, <span class="va">heart</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
 ───────────────────────────────────────────────
@@ -319,7 +319,7 @@ Using formula syntax
 </summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">trestbps</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
@@ -349,7 +349,7 @@ Args : trestbps ~ 1
 ──────────────────────────────────────────
 </code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="va">trestbps</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">heart</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/T_TEST.html">T_TEST</a></span><span class="op">(</span><span class="va">trestbps</span> <span class="op">~</span> <span class="fl">1</span>, <span class="va">heart</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
 ─────────────────────────────────────────────────────────
@@ -448,7 +448,7 @@ know.</p>
 <details open><summary>
 Using <code>on()</code>
 </summary><p>This version requires <code>via("two_sample")</code> after
-<code>prepare(TTEST)</code> to perform two-sample t-test. Since it
+<code>prepare(T_TEST)</code> to perform two-sample t-test. Since it
 requires <code>via("two_sample")</code>, you can’t use its eager
 form/one liner code.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -458,7 +458,7 @@ form/one liner code.</p>
 <span><span class="co"># Requires via("two_sample")</span></span>
 <span><span class="co"># To perform two-sample t-test with `on()` layout</span></span>
 <span><span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/on.html">on</a></span><span class="op">(</span><span class="va">female</span>, <span class="va">male</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"two_sample"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">female</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">male</span><span class="op">)</span></span>
@@ -496,7 +496,7 @@ Using <code>x_by()</code>
 </summary><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span> <span class="op">==</span> <span class="st">"Female"</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -529,7 +529,7 @@ Args : thalach | sex
 ─────────────────────────────
 </code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span><span class="op">)</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/T_TEST.html">T_TEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span><span class="op">)</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
 ───────────────────────────────────────────
@@ -556,7 +556,7 @@ translation for <code><a href="../../reference/null-hyp.html">state_null()</a></
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">thalach</span> <span class="op">~</span> <span class="va">sex</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
@@ -586,7 +586,7 @@ Args : thalach ~ sex
 ──────────────────────────────────────────
 </code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="va">thalach</span> <span class="op">~</span> <span class="va">sex</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/T_TEST.html">T_TEST</a></span><span class="op">(</span><span class="va">thalach</span> <span class="op">~</span> <span class="va">sex</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
 ──────────────────────────────────────────────────────
@@ -704,7 +704,7 @@ Using <code>rel()</code>
 </summary><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">age</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">COR_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="../../reference/RHO.html">RHO</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">age</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -737,7 +737,7 @@ Args : thalach ; age
 ─────────────────────────────────────
 </code></pre>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/CORTEST.html">CORTEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">age</span><span class="op">)</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/COR_TEST.html">COR_TEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">age</span><span class="op">)</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
 ───────────────────────────────────────────────────
@@ -762,7 +762,7 @@ Using formula syntax
 </summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">age</span> <span class="op">~</span> <span class="va">thalach</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">CORTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">COR_TEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
@@ -792,7 +792,7 @@ Args : age ~ thalach
 ─────────────────────────────────────
 </code></pre>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/CORTEST.html">CORTEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">age</span><span class="op">)</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/COR_TEST.html">COR_TEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">age</span><span class="op">)</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
 ───────────────────────────────────────────────────

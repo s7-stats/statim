@@ -6,12 +6,12 @@
 extend the existing methods or write your own and make it extensive.
 
 Here, I plan to extend
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) with
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md) with
 another bootstrapping by simply adding another variation:
 
 ``` r
 
-add_variant(TTEST, x_by, "another_boot") %<-% variant(
+add_variant(T_TEST, x_by, "another_boot") %<-% variant(
     fn = function(.proc, .n = 1000L) {
         x = .proc$x_data[[1]]
         group_data = .proc$group_data
@@ -29,7 +29,7 @@ add_variant(TTEST, x_by, "another_boot") %<-% variant(
 another_boot_tt = 
     sleep |> 
     define_model(extra %by% group) |> 
-    prepare_test(TTEST) |> 
+    prepare_test(T_TEST) |> 
     via("another_boot") |> 
     conclude()
 
@@ -74,7 +74,7 @@ of registry:
 
 ``` r
 
-making_tidy(TTEST, x_by) %<-% method_tidy(
+making_tidy(T_TEST, x_by) %<-% method_tidy(
     another_boot = function(.x, ...) {
         dat = .x@data
         tibble::tibble(
@@ -92,11 +92,11 @@ another_boot_tt |> tidy()
 ```
 
 You can clean the
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) in
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md) in
 `x_by` model pipeline slate by simply using
 [`remove_variant()`](https://s7-stats.github.io/statim/reference/add-variant.md).
 
 ``` r
 
-remove_variant(TTEST, x_by, "another_boot")
+remove_variant(T_TEST, x_by, "another_boot")
 ```

@@ -115,7 +115,7 @@ Still nothing has been computed:
 
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare_test(TTEST)
+    prepare_test(T_TEST)
 #> 
 #> -- Model Definition ------------------------------------------------------------ 
 #> 
@@ -163,7 +163,7 @@ second time overwrites `@recalibrate_spec` in place.
 
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     via("permute", n = 999L)
 #> 
 #> -- Model Definition ------------------------------------------------------------ 
@@ -247,7 +247,7 @@ cld_exec(
 
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude()
 ```
 
@@ -329,7 +329,7 @@ recalibration, the output reflects the chosen variant:
 
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     via("permute", n = 999L) |>
     conclude()
 ```
@@ -510,7 +510,7 @@ article for the full walkthrough.
 
 ## Eager path vs lazy path
 
-There is also an eager path: calling `TTEST(x_by(extra, group), sleep)`
+There is also an eager path: calling `T_TEST(x_by(extra, group), sleep)`
 or `LINEAR_REG(mpg ~ wt, mtcars)` directly skips
 [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
 `prepare_*()`, and
@@ -541,9 +541,9 @@ current hierarchy is:
         ├── anova_able
         │       └── class_lm_object       (LINEAR_REG)
         │       └── class_glm_object      (GLM)
-        ├── class_ttest_two               (TTEST · x_by)
-        ├── class_ttest_pairwise          (TTEST · pairwise)
-        ├── class_corr_two                (CORTEST · rel)
+        ├── class_ttest_two               (T_TEST · x_by)
+        ├── class_ttest_pairwise          (T_TEST · pairwise)
+        ├── class_corr_two                (COR_TEST · rel)
         └── class_p_test                  (P_TEST)
 
 A variant that reuses its def’s existing result class inherits both

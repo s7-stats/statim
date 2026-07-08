@@ -123,7 +123,7 @@ pipeline looks like end to end:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span><span class="co">#&gt; # A tibble: 1 × 7</span></span>
@@ -162,8 +162,24 @@ model, choose the test, execute and read the output.</p>
 <h2 id="general-workflow">General Workflow<a class="anchor" aria-label="anchor" href="#general-workflow"></a>
 </h2>
 <p><img src="workflow.jpg"></p>
+<p>All you need to know is that the most usual usage of
+<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> comes with three steps. Here’s the general anatomy
+of the main <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> semantics:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Data can be piped in or passed as argument to `define_model()`</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>... <span class="sc">|&gt;</span>                                   <span class="co"># Possible extensions  </span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="fu">define_model</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>        <span class="sc">&lt;</span>var_id<span class="sc">&gt;</span>(var1, var2, ...), </span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>        data, ...</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    ) <span class="sc">|&gt;</span>                                 <span class="co"># 1. Model definition</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>    <span class="co"># ... |&gt;                             # Possible extensions  </span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="fu">prepare</span>(<span class="sc">&lt;</span>STAT_FN<span class="sc">&gt;</span>) <span class="sc">|&gt;</span>                <span class="co"># 2. Prepare method (lazy)</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="fu">via</span>(...) <span class="sc">|&gt;</span>                          <span class="co"># Optional: method variant  (*)</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="fu">state_null</span>(<span class="sc">&lt;</span>expr<span class="sc">&gt;</span>) <span class="sc">|&gt;</span>                <span class="co"># Optional: null hypothesis (*)</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    <span class="co"># ... |&gt;                             # Possible extensions  </span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    <span class="fu">conclude</span>() <span class="sc">|&gt;</span>                        <span class="co"># 3. Execute</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>    <span class="er">&lt;</span>output_handler<span class="sc">&gt;</span>()                   <span class="co"># e.g. tidy(), display()    </span></span></code></pre></div>
 <div class="section level3">
-<h3 id="i--define-the-model">i. Define the model<a class="anchor" aria-label="anchor" href="#i--define-the-model"></a>
+<h3 id="i--layout-model-definition">i. Layout Model Definition<a class="anchor" aria-label="anchor" href="#i--layout-model-definition"></a>
 </h3>
 <p>Every pipeline starts with <code><a href="../reference/layout-define-base.html">define_model()</a></code>, which binds a
 variable description to data. The variable description is a
@@ -180,7 +196,7 @@ pipeline-aware way.</p>
 <code>rel(x, y)</code>: describe the relationship of <code>x</code>
 to <code>y</code>.</li>
 </ul>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">sleep</span>, <span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">mtcars</span>, <span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span>          <span class="co"># standard formula also accepted</span></span></code></pre></div>
 <p>For a full account of all built-in <code>&lt;var_id&gt;</code>
@@ -193,14 +209,14 @@ objects</a> article.</p>
 <p>After the model is defined, <code><a href="../reference/prepare.html">prepare()</a></code> attaches a
 statistical method to the pipeline. Nothing is executed yet — the
 pipeline is lazy until <code><a href="../reference/conclude.html">conclude()</a></code> is called.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="co"># update() is optional</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>.ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span>                  </span></code></pre></div>
 <p><code><a href="../reference/prepare.html">prepare()</a></code> accepts any <code>STAT_FN</code> —
-<code>TTEST</code>, <code>LINEAR_REG</code>, <code>CORTEST</code>,
+<code>T_TEST</code>, <code>LINEAR_REG</code>, <code>COR_TEST</code>,
 <code>P_TEST</code>, and so on. If you prefer to be explicit,
 <code><a href="../reference/prepare-test.html">prepare_test()</a></code> and <code><a href="../reference/prepare-model.html">prepare_model()</a></code> are
 available as typed alternatives.</p>
@@ -211,7 +227,7 @@ available as typed alternatives.</p>
 <p><code><a href="../reference/conclude.html">conclude()</a></code> runs the pipeline. Chain <code><a href="../reference/tidy.html">tidy()</a></code>
 after it to get a tibble, or <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> the object directly
 for the formatted summary.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="va">sleep_tt</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
@@ -222,8 +238,8 @@ for the formatted summary.</p>
 </h2>
 <p>For a quick one-shot inference, every test exposes an eager form that
 collapses the pipeline into a single call:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/TTEST.html">TTEST</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span>, <span class="va">sleep</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/T_TEST.html">T_TEST</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span>, <span class="va">sleep</span>, .ci <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span><span class="co">#&gt; -- Summary ---------------------------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ──────────────────────────────────────────</span></span>
@@ -240,7 +256,7 @@ collapses the pipeline into a single call:</p>
 <span><span class="co">#&gt; ─────────────────────────────</span></span>
 <span><span class="co">#&gt;   group   -3.053    -0.107   </span></span>
 <span><span class="co">#&gt; ─────────────────────────────</span></span></code></pre>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/LINEAR_REG.html">LINEAR_REG</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">mtcars</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span><span class="co">#&gt; -- Coefficients ----------------------------------------------------------------</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -282,11 +298,11 @@ Use the pipeline when you need <code><a href="../reference/via.html">via()</a></
 pipeline. The model definition and test choice stay the same — only the
 method changes. Switching from a classical t-test to a permutation test
 is a single added line:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Classical</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; == Model ======================================================================= </span></span>
@@ -314,12 +330,12 @@ is a single added line:</p>
 <span><span class="co">#&gt; ─────────────────────────────</span></span>
 <span><span class="co">#&gt;   group   -3.365    0.206    </span></span>
 <span><span class="co">#&gt; ─────────────────────────────</span></span></code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Permutation: one line added</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span><span class="co">#&gt; </span></span>
@@ -411,10 +427,10 @@ is, the mean extra sleep under drug 1 is greater than or equal to that
 under drug 2:</p>
 <p><span class="math display">\mu_{x|\text{group}=1} \geq
 \mu_{x|\text{group}=2}</span></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"1"</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fu"><a href="../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span> <span class="op">==</span> <span class="st">"2"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>

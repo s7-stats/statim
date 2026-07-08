@@ -98,7 +98,7 @@ duration the registering package is loaded and vanish when it is unloaded.</p>
 
 <dl><dt id="arg-obj">obj<a class="anchor" aria-label="anchor" href="#arg-obj"></a></dt>
 <dd><p>A test or model function built with <code><a href="HTEST_FN.html">HTEST_FN()</a></code> or <code><a href="MODEL_FN.html">MODEL_FN()</a></code>
-(e.g. <code>TTEST</code>). Used to scope the registry key.</p></dd>
+(e.g. <code>T_TEST</code>). Used to scope the registry key.</p></dd>
 
 
 <dt id="arg-model-type">model_type<a class="anchor" aria-label="anchor" href="#arg-model-type"></a></dt>
@@ -128,7 +128,7 @@ duration the registering package is loaded and vanish when it is unloaded.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Add a bootstrap variant for x_by (user level).</span></span></span>
 <span class="r-in"><span><span class="co"># .proc$x_data[[1]] is the response vector; .proc$group_data is the</span></span></span>
 <span class="r-in"><span><span class="co"># grouping data frame. See ?model_processor for all available keys.</span></span></span>
-<span class="r-in"><span><span class="fu">add_variant</span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span> <span class="op"><a href="modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="variant.html">variant</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="fu">add_variant</span><span class="op">(</span><span class="va">T_TEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span> <span class="op"><a href="modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="variant.html">variant</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">.n</span> <span class="op">=</span> <span class="fl">1000L</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>        <span class="va">x</span> <span class="op">=</span> <span class="va">.proc</span><span class="op">$</span><span class="va">x_data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span>        <span class="va">grp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">.proc</span><span class="op">$</span><span class="va">group_data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
@@ -142,10 +142,10 @@ duration the registering package is loaded and vanish when it is unloaded.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Remove it, returning to the original slate</span></span></span>
-<span class="r-in"><span><span class="fu">remove_variant</span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">remove_variant</span><span class="op">(</span><span class="va">T_TEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Package level (inside .onLoad())</span></span></span>
-<span class="r-in"><span><span class="fu">add_variant</span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span>, origin <span class="op">=</span> <span class="st">"package"</span><span class="op">)</span> <span class="op"><a href="modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="variant.html">variant</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="fu">add_variant</span><span class="op">(</span><span class="va">T_TEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span>, origin <span class="op">=</span> <span class="st">"package"</span><span class="op">)</span> <span class="op"><a href="modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="variant.html">variant</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">.n</span> <span class="op">=</span> <span class="fl">1000L</span><span class="op">)</span> <span class="op">{</span> <span class="va">...</span> <span class="op">}</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

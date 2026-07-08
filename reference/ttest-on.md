@@ -13,7 +13,7 @@ without requiring the value/group layout
 ## Arguments
 
 The following arguments are passed via `...` in
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) or
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md) or
 [`via()`](https://s7-stats.github.io/statim/reference/via.md):
 
 - `.mu`:
@@ -94,7 +94,7 @@ Supports [`MU()`](https://s7-stats.github.io/statim/reference/MU.md) via
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md):
 
     define_model(on(x), <data>) |>
-        prepare_test(TTEST) |>
+        prepare_test(T_TEST) |>
         state_null(MU(x) >= 1) |>
         conclude()
 
@@ -108,7 +108,7 @@ in the claim, and referenced by the same names given to (or
 auto-generated for) each variable:
 
     define_model(on(x1, x2), <data>) |>
-        prepare_test(TTEST) |>
+        prepare_test(T_TEST) |>
         via("two_sample") |>
         state_null(MU(x1) - MU(x2) == 0) |>
         conclude()
@@ -147,7 +147,7 @@ Other ttest-implementations:
 # single variable
 sleep |>
     define_model(on(extra)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 
@@ -179,7 +179,7 @@ sleep |>
 # null hypothesis expression
 sleep |>
     define_model(on(extra)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     state_null(MU(extra) >= 1) |>
     conclude()
 #> 
@@ -212,7 +212,7 @@ sleep |>
 # multiple variables
 iris |>
     define_model(on(where(is.numeric))) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     via("multi") |>
     conclude()
 #> 
@@ -253,7 +253,7 @@ vc = ToothGrowth$len[ToothGrowth$supp == "VC"]
 oj = ToothGrowth$len[ToothGrowth$supp == "OJ"]
 
 define_model(on(vc, oj)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     via("two_sample") |>
     conclude()
 #> 
@@ -292,7 +292,7 @@ ToothGrowth |>
         I(d1 = len[supp == "OJ" & dose == 1]),
         I(d2 = len[supp == "VC" & dose == 1])
     ))) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     via("two_sample", .paired = TRUE) |>
     conclude()
 #> 
@@ -325,7 +325,7 @@ ToothGrowth |>
 # two-sample with a weighted contrast hypothesis
 ToothGrowth |>
     with(define_model(on(I(oj = len[supp == "OJ"]), I(vc = len[supp == "VC"])))) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     via("two_sample") |>
     state_null(2 * MU(oj) - MU(vc) == 5) |>
     conclude()

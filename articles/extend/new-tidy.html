@@ -103,10 +103,10 @@
 </h2>
 <p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is so extendable, you can extend the existing
 methods or write your own and make it extensive.</p>
-<p>Here, I plan to extend <code><a href="../../reference/TTEST.html">TTEST()</a></code> with another
+<p>Here, I plan to extend <code><a href="../../reference/T_TEST.html">T_TEST()</a></code> with another
 bootstrapping by simply adding another variation:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/add-variant.html">add_variant</a></span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span> <span class="op"><a href="../../reference/modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="../../reference/variant.html">variant</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/add-variant.html">add_variant</a></span><span class="op">(</span><span class="va">T_TEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span> <span class="op"><a href="../../reference/modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="../../reference/variant.html">variant</a></span><span class="op">(</span></span>
 <span>    fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">.n</span> <span class="op">=</span> <span class="fl">1000L</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="va">x</span> <span class="op">=</span> <span class="va">.proc</span><span class="op">$</span><span class="va">x_data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span>        <span class="va">group_data</span> <span class="op">=</span> <span class="va">.proc</span><span class="op">$</span><span class="va">group_data</span></span>
@@ -124,7 +124,7 @@ bootstrapping by simply adding another variation:</p>
 <span><span class="va">another_boot_tt</span> <span class="op">=</span> </span>
 <span>    <span class="va">sleep</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">extra</span> <span class="op"><a href="../../reference/x_by.html">%by%</a></span> <span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"another_boot"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -161,7 +161,7 @@ down by using
 <code>making_tidy(&lt;stat_fn&gt;, &lt;model_id / S7::class_formula&gt;) %&lt;-% method_tidy(...)</code>type
 of registry:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/making_tidy.html">making_tidy</a></span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span><span class="op">)</span> <span class="op"><a href="../../reference/modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="../../reference/method_tidy.html">method_tidy</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/making_tidy.html">making_tidy</a></span><span class="op">(</span><span class="va">T_TEST</span>, <span class="va">x_by</span><span class="op">)</span> <span class="op"><a href="../../reference/modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="../../reference/method_tidy.html">method_tidy</a></span><span class="op">(</span></span>
 <span>    another_boot <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.x</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="va">dat</span> <span class="op">=</span> <span class="va">.x</span><span class="op">@</span><span class="va">data</span></span>
 <span>        <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
@@ -176,10 +176,10 @@ of registry:</p>
 <span><span class="co">#&gt;       R    t0</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">1</span>000 -<span style="color: #BB0000;">1.58</span></span></span></code></pre></div>
-<p>You can clean the <code><a href="../../reference/TTEST.html">TTEST()</a></code> in <code>x_by</code> model
+<p>You can clean the <code><a href="../../reference/T_TEST.html">T_TEST()</a></code> in <code>x_by</code> model
 pipeline slate by simply using <code><a href="../../reference/add-variant.html">remove_variant()</a></code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/add-variant.html">remove_variant</a></span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/add-variant.html">remove_variant</a></span><span class="op">(</span><span class="va">T_TEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

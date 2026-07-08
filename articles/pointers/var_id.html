@@ -217,11 +217,11 @@ the dispatched functions: <code>x</code>, <code>data</code> (which is
 optional), and the unused ellipsis <code>...</code>.</p></li>
 </ol>
 <pre><code>``` r
-S7::method(model_processor, xyz) = function(x, ...) {
+S7::method(model_processor, xyz) = function(var_id, ...) {
     list(
-        x = x@x,
-        y = x@y,
-        z = x@z
+        x = var_id@x,
+        y = var_id@y,
+        z = var_id@z
     )
 }
 #&gt; Warning: model_processor(&lt;xyz&gt;) doesn't have argument `data`
@@ -290,7 +290,7 @@ inline expressions, and <code><a href="../../reference/inlines.html">inlines()</
 <code>&lt;var_id&gt;</code>, a simpler <code><a href="https://rlang.r-lib.org/reference/eval_tidy.html" class="external-link">rlang::eval_tidy()</a></code>
 is enough:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/method.html" class="external-link">method</a></span><span class="op">(</span><span class="va">model_processor</span>, <span class="va">xyz</span><span class="op">)</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">data</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/method.html" class="external-link">method</a></span><span class="op">(</span><span class="va">model_processor</span>, <span class="va">xyz</span><span class="op">)</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">var_id</span>, <span class="va">data</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">resolve</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">quo</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>            <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/eval_tidy.html" class="external-link">eval_tidy</a></span><span class="op">(</span><span class="va">quo</span><span class="op">)</span></span>
@@ -300,9 +300,9 @@ is enough:</p>
 <span>    <span class="op">}</span></span>
 <span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>        x <span class="op">=</span> <span class="fu">resolve</span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">x</span><span class="op">)</span>,</span>
-<span>        y <span class="op">=</span> <span class="fu">resolve</span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">y</span><span class="op">)</span>,</span>
-<span>        z <span class="op">=</span> <span class="fu">resolve</span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">z</span><span class="op">)</span></span>
+<span>        x <span class="op">=</span> <span class="fu">resolve</span><span class="op">(</span><span class="va">var_id</span><span class="op">@</span><span class="va">x</span><span class="op">)</span>,</span>
+<span>        y <span class="op">=</span> <span class="fu">resolve</span><span class="op">(</span><span class="va">var_id</span><span class="op">@</span><span class="va">y</span><span class="op">)</span>,</span>
+<span>        z <span class="op">=</span> <span class="fu">resolve</span><span class="op">(</span><span class="va">var_id</span><span class="op">@</span><span class="va">z</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; Overwriting method model_processor(&lt;xyz&gt;)</span></span></code></pre></div>

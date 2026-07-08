@@ -28,7 +28,7 @@ tool to handle code reusability and package imports.
 box::use(
     statim[
         write_models, prepare, anova, conclude, via, 
-        TTEST, CORTEST, LINEAR_REG, 
+        T_TEST, COR_TEST, LINEAR_REG, 
         x_by, rel, pairwise
     ]
 )

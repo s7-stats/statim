@@ -9,7 +9,7 @@ variable mapper `<var_id>` to select this implementation.
 ## Arguments
 
 The following arguments are passed via `...` in
-[`CORTEST()`](https://s7-stats.github.io/statim/reference/CORTEST.md):
+[`COR_TEST()`](https://s7-stats.github.io/statim/reference/COR_TEST.md):
 
 - `.alt`:
 
@@ -111,7 +111,7 @@ Other cortest-implementations:
 # base (Pearson)
 cars |>
     define_model(rel(speed, dist)) |>
-    prepare_test(CORTEST) |>
+    prepare_test(COR_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 
@@ -146,7 +146,7 @@ cars |>
 suppressWarnings({
     cars |>
         define_model(rel(speed, dist)) |>
-        prepare_test(CORTEST) |>
+        prepare_test(COR_TEST) |>
         via("spearman") |>
         conclude()
 })
@@ -174,7 +174,7 @@ suppressWarnings({
 suppressWarnings({
     cars |>
         define_model(rel(speed, dist)) |>
-        prepare_test(CORTEST) |>
+        prepare_test(COR_TEST) |>
         via("kendall") |>
         conclude()
 })
@@ -201,7 +201,7 @@ suppressWarnings({
 # hypothesis claim: two-sided against zero
 cars |>
     define_model(rel(speed, dist)) |>
-    prepare_test(CORTEST) |>
+    prepare_test(COR_TEST) |>
     state_null(RHO(speed, dist) == 0) |>
     conclude()
 #> 
@@ -236,7 +236,7 @@ cars |>
 # hypothesis claim: non-zero null, one-sided
 cars |>
     define_model(rel(speed, dist)) |>
-    prepare_test(CORTEST) |>
+    prepare_test(COR_TEST) |>
     state_null(RHO(speed, dist) >= 0.8) |>
     conclude()
 #> 

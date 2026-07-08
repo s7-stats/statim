@@ -6,12 +6,12 @@ Mappers.
 ## Usage
 
 ``` r
-model_processor(x, data = NULL, ...)
+model_processor(var_id, data = NULL, ...)
 ```
 
 ## Arguments
 
-- x:
+- var_id:
 
   The Variable Mappers to be extracted.
 

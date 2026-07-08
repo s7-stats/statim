@@ -24,7 +24,7 @@ prepare_test(.x, .test, ...)
 - .test:
 
   A test function such as
-  [TTEST](https://s7-stats.github.io/statim/reference/TTEST.md) that
+  [T_TEST](https://s7-stats.github.io/statim/reference/T_TEST.md) that
   carries `<test_spec>` objects when called.
 
 - ...:
@@ -46,7 +46,7 @@ A `<test_lazy>` S7 object.
 ``` r
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 

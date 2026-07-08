@@ -86,9 +86,9 @@ Verbs used to retrieve outputs in standard R’s data structure
 
 Container and an eager executioner of a prepared H-test function
 
-- [`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) :
+- [`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md) :
   T-Test
-- [`CORTEST()`](https://s7-stats.github.io/statim/reference/CORTEST.md)
+- [`COR_TEST()`](https://s7-stats.github.io/statim/reference/COR_TEST.md)
   : Correlation Test
 - [`P_TEST()`](https://s7-stats.github.io/statim/reference/P_TEST.md) :
   Proportion Test

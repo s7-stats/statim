@@ -87,7 +87,7 @@ registration needed.</p>
 
 <dl><dt id="arg-obj">obj<a class="anchor" aria-label="anchor" href="#arg-obj"></a></dt>
 <dd><p>A stat function built with <code><a href="HTEST_FN.html">HTEST_FN()</a></code> or <code><a href="MODEL_FN.html">MODEL_FN()</a></code>
-(e.g. <code>TTEST</code>).</p></dd>
+(e.g. <code>T_TEST</code>).</p></dd>
 
 
 <dt id="arg-model-type">model_type<a class="anchor" aria-label="anchor" href="#arg-model-type"></a></dt>
@@ -107,7 +107,7 @@ registration needed.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Only needed when fn returns a non-class_stat_infer object.</span></span></span>
 <span class="r-in"><span><span class="co"># Prefer implementing auto_tidy() on your result class instead.</span></span></span>
-<span class="r-in"><span><span class="fu">making_tidy</span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span><span class="op">)</span> <span class="op"><a href="modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="method_tidy.html">method_tidy</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="fu">making_tidy</span><span class="op">(</span><span class="va">T_TEST</span>, <span class="va">x_by</span><span class="op">)</span> <span class="op"><a href="modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="method_tidy.html">method_tidy</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    default <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.x</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span> <span class="va">...</span> <span class="op">}</span>,</span></span>
 <span class="r-in"><span>    boot <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.x</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span> <span class="va">...</span> <span class="op">}</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>

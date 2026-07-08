@@ -1,8 +1,8 @@
 # Structured result container for two-sample t-tests
 
 An S7 class produced by
-[CORTEST](https://s7-stats.github.io/statim/reference/CORTEST.md) using
-[`rel()`](https://s7-stats.github.io/statim/reference/rel.md) and
+[COR_TEST](https://s7-stats.github.io/statim/reference/COR_TEST.md)
+using [`rel()`](https://s7-stats.github.io/statim/reference/rel.md) and
 `<formula>` as the variable mapper `<var_id>`. Not constructed manually,
 use the "grammar interface" instead.
 
@@ -17,7 +17,7 @@ dispatches on it automatically. Downstream packages can use it as a
 ## Details
 
 Slots (populated automatically by
-[CORTEST](https://s7-stats.github.io/statim/reference/CORTEST.md)):
+[COR_TEST](https://s7-stats.github.io/statim/reference/COR_TEST.md)):
 
 - `ind_vars`: name of the independent variables.
 
@@ -47,6 +47,6 @@ and [`print()`](https://rdrr.io/r/base/print.html) for free.
 
 ## See also
 
-[CORTEST](https://s7-stats.github.io/statim/reference/CORTEST.md),
+[COR_TEST](https://s7-stats.github.io/statim/reference/COR_TEST.md),
 [`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md),
 [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)

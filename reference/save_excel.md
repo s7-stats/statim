@@ -47,13 +47,13 @@ save_excel(x, file, sheet = NULL, overwrite = NULL, ...)
 if (FALSE) { # \dontrun{
 sleep |>
     define_model(extra ~ group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude() |>
     save_excel("t-test.xlsx")
 
 iris |>
     define_model(pairwise(1:4, direction = "all")) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude() |>
     save_excel("t-test.xlsx", sheet = "t-test-pairwise")
 } # }

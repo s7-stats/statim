@@ -37,7 +37,7 @@ longer lazy.
 
 sleep |>
     define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     via("boot", n = 2000) |>
     conclude()
 #> 
@@ -83,7 +83,7 @@ is the single point where everything is resolved together.
 ## Where variant names come from
 
 A variant name like `"boot"` or `"permute"` from
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) in
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md) in
 `x_by` mode is not arbitrary. It has to match a name registered for that
 specific model type, inside the
 [`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md)
@@ -96,7 +96,7 @@ when the test or model was built. Two sources are checked:
     [`agendas()`](https://s7-stats.github.io/statim/reference/agendas.md),
     alongside its
     [`baseline()`](https://s7-stats.github.io/statim/reference/baseline.md).
-    This is how `TTEST` ships with `"boot"`, `"permute"`, `"contrast"`,
+    This is how `T_TEST` ships with `"boot"`, `"permute"`, `"contrast"`,
     and `"multi"` for
     [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
     pipelines, for example.
@@ -137,7 +137,7 @@ you used in
 A variant registered for
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
 pipelines is not automatically available to a `<formula>`-based pipeline
-of the same test, even if both eventually call `TTEST`.
+of the same test, even if both eventually call `T_TEST`.
 
 If you pass a method name that is not registered for the model type in
 play, [`via()`](https://s7-stats.github.io/statim/reference/via.md)
@@ -149,7 +149,7 @@ is even reached:
 
 sleep |>
     define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     via("not_a_real_method")
 #> Error in `method(via, list(statim::test_lazy, class_character))`:
 #> ! No variant "not_a_real_method" registered for model type "x_by".
@@ -179,7 +179,7 @@ overlap:
 
 sleep |>
     define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     update(.ci = 0.9) |>
     via("boot", n = 2000) |>
     conclude()
@@ -236,7 +236,7 @@ individually — a
 [`map_claim()`](https://s7-stats.github.io/statim/reference/map_claim.md)
 object that knows how to turn a stated claim into the arguments that one
 `fn` expects, since different estimation methods can require the same
-population-parameter claim expressed differently. `TTEST`’s
+population-parameter claim expressed differently. `T_TEST`’s
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
 implementation, for instance, gives a `claim_parser` to its `base` and
 to `"contrast"`, but not to the resampling-based `"boot"` or `"permute"`
@@ -247,7 +247,7 @@ the first place.
 
 sleep |>
     define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     state_null(
         2 * MU(extra, group == "1") - MU(extra, group == "2") <= 0
     ) |>
@@ -295,7 +295,7 @@ reports that explicitly rather than silently ignoring the claim:
 
 sleep |>
     define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     state_null(MU(extra, group == "1") == MU(extra, group == "2")) |>
     via("permute", n = 999L) |>
     conclude()

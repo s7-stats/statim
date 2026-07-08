@@ -32,7 +32,7 @@ end:
 
     sleep |>
         define_model(extra %by% group) |>
-        prepare(TTEST, .ci = 0.9) |> 
+        prepare(T_TEST, .ci = 0.9) |> 
         conclude() |>
         tidy()
     ```
@@ -79,7 +79,28 @@ model, choose the test, execute and read the output.
 
 ![](workflow.jpg)
 
-### i. Define the model
+All you need to know is that the most usual usage of
+[statim](https://github.com/s7-stats/statim) comes with three steps.
+Here’s the general anatomy of the main
+[statim](https://github.com/s7-stats/statim) semantics:
+
+``` r
+# Data can be piped in or passed as argument to `define_model()`
+... |>                                   # Possible extensions  
+    define_model(
+        <var_id>(var1, var2, ...), 
+        data, ...
+    ) |>                                 # 1. Model definition
+    # ... |>                             # Possible extensions  
+    prepare(<STAT_FN>) |>                # 2. Prepare method (lazy)
+    via(...) |>                          # Optional: method variant  (*)
+    state_null(<expr>) |>                # Optional: null hypothesis (*)
+    # ... |>                             # Possible extensions  
+    conclude() |>                        # 3. Execute
+    <output_handler>()                   # e.g. tidy(), display()    
+```
+
+### i. Layout Model Definition
 
 Every pipeline starts with
 [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
@@ -120,14 +141,14 @@ is called.
 
 sleep |>
     define_model(extra %by% group) |>
-    prepare(TTEST) |>
+    prepare(T_TEST) |>
     # update() is optional
     update(.ci = 0.9)                  
 ```
 
 [`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md)
-accepts any `STAT_FN` — `TTEST`, `LINEAR_REG`, `CORTEST`, `P_TEST`, and
-so on. If you prefer to be explicit,
+accepts any `STAT_FN` — `T_TEST`, `LINEAR_REG`, `COR_TEST`, `P_TEST`,
+and so on. If you prefer to be explicit,
 [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md)
 and
 [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)
@@ -155,7 +176,7 @@ collapses the pipeline into a single call:
 
 ``` r
 
-TTEST(extra %by% group, sleep, .ci = 0.9)
+T_TEST(extra %by% group, sleep, .ci = 0.9)
 ```
 
 ``` fansi
@@ -234,7 +255,7 @@ added line:
 # Classical
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude()
 ```
 
@@ -273,7 +294,7 @@ sleep |>
 # Permutation: one line added
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     via("permute", n = 999L) |>
     conclude()
 ```
@@ -377,7 +398,7 @@ drug 2:
 
 sleep |>
     define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     state_null(
         MU(extra, group == "1") >= MU(extra, group == "2")
     ) |>

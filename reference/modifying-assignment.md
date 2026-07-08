@@ -32,7 +32,7 @@ lhs %<-% rhs
 ## Examples
 
 ``` r
-making_tidy(TTEST, x_by) %<-% method_tidy(
+making_tidy(T_TEST, x_by) %<-% method_tidy(
     default = function(.x, ...) { ... },
     boot = function(.x, ...) { ... }
 )

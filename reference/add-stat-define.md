@@ -38,7 +38,7 @@ remove_stat_define(stat_fn, model_type)
   [`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md)
   or
   [`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)
-  (e.g. `TTEST`, `P_TEST`).
+  (e.g. `T_TEST`, `P_TEST`).
 
 - model_type:
 

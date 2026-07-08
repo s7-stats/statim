@@ -126,11 +126,11 @@ Two simple steps are required:
 &nbsp;
 
     ``` r
-    S7::method(model_processor, xyz) = function(x, ...) {
+    S7::method(model_processor, xyz) = function(var_id, ...) {
         list(
-            x = x@x,
-            y = x@y,
-            z = x@z
+            x = var_id@x,
+            y = var_id@y,
+            z = var_id@z
         )
     }
     #> Warning: model_processor(<xyz>) doesn't have argument `data`
@@ -213,7 +213,7 @@ is enough:
 
 ``` r
 
-S7::method(model_processor, xyz) = function(x, data = NULL, ...) {
+S7::method(model_processor, xyz) = function(var_id, data = NULL, ...) {
     resolve = function(quo) {
         if (is.null(data)) {
             rlang::eval_tidy(quo)
@@ -223,9 +223,9 @@ S7::method(model_processor, xyz) = function(x, data = NULL, ...) {
     }
 
     list(
-        x = resolve(x@x),
-        y = resolve(x@y),
-        z = resolve(x@z)
+        x = resolve(var_id@x),
+        y = resolve(var_id@y),
+        z = resolve(var_id@z)
     )
 }
 #> Overwriting method model_processor(<xyz>)

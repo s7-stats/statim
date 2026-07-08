@@ -37,8 +37,8 @@ A `cld_exec` S7 object with the following slots:
   [`variant()`](https://s7-stats.github.io/statim/reference/variant.md).
   Its structure depends on the implementation — see the documentation of
   the stat function (e.g.
-  [`?TTEST`](https://s7-stats.github.io/statim/reference/TTEST.md)) for
-  what to expect.
+  [`?T_TEST`](https://s7-stats.github.io/statim/reference/T_TEST.md))
+  for what to expect.
 
 - `@cld_meta`:
 
@@ -106,7 +106,7 @@ object.
 
 For example:
 
-    making_tidy(TTEST, x_by) %<-% method_tidy(
+    making_tidy(T_TEST, x_by) %<-% method_tidy(
         default = function(.x, ...) {
             dat = .x@data
             # return a tibble
@@ -127,7 +127,7 @@ For example:
 ``` r
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 
@@ -160,7 +160,7 @@ sleep |>
 
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     via("boot", n = 2000) |>
     conclude()
 #> 

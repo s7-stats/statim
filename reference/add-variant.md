@@ -30,7 +30,7 @@ remove_variant(obj, model_type, name)
   [`HTEST_FN()`](https://s7-stats.github.io/statim/reference/HTEST_FN.md)
   or
   [`MODEL_FN()`](https://s7-stats.github.io/statim/reference/MODEL_FN.md)
-  (e.g. `TTEST`). Used to scope the registry key.
+  (e.g. `T_TEST`). Used to scope the registry key.
 
 - model_type:
 
@@ -63,7 +63,7 @@ An `add_variant_call` object, consumed by `%<-%`.
 # Add a bootstrap variant for x_by (user level).
 # .proc$x_data[[1]] is the response vector; .proc$group_data is the
 # grouping data frame. See ?model_processor for all available keys.
-add_variant(TTEST, x_by, "another_boot") %<-% variant(
+add_variant(T_TEST, x_by, "another_boot") %<-% variant(
     fn = function(.proc, .n = 1000L) {
         x = .proc$x_data[[1]]
         grp = as.character(.proc$group_data[[1]])
@@ -77,10 +77,10 @@ add_variant(TTEST, x_by, "another_boot") %<-% variant(
 )
 
 # Remove it, returning to the original slate
-remove_variant(TTEST, x_by, "another_boot")
+remove_variant(T_TEST, x_by, "another_boot")
 
 # Package level (inside .onLoad())
-add_variant(TTEST, x_by, "another_boot", origin = "package") %<-% variant(
+add_variant(T_TEST, x_by, "another_boot", origin = "package") %<-% variant(
     fn = function(.proc, .n = 1000L) { ... }
 )
 ```

@@ -30,7 +30,7 @@ The modified `test_lazy` object.
 
   A hypothesis expression. It is passed after `prepare_test(...)` to
   supply the hypothesis expression, e.g.
-  `... |> prepare_test(TTEST) |> state_null(expr = MU(x) == 0)`
+  `... |> prepare_test(T_TEST) |> state_null(expr = MU(x) == 0)`
 
 ## Examples
 

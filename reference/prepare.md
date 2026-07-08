@@ -32,7 +32,7 @@ prepare(.x, .fn, ...)
   A stat function built with
   [`STAT_CONSTRUCTOR()`](https://s7-stats.github.io/statim/reference/STAT_CONSTRUCTOR.md)
   that returns a `<test_spec>` (e.g.
-  [TTEST](https://s7-stats.github.io/statim/reference/TTEST.md)) or a
+  [T_TEST](https://s7-stats.github.io/statim/reference/T_TEST.md)) or a
   `<model_spec>` (e.g.
   [LINEAR_REG](https://s7-stats.github.io/statim/reference/LINEAR_REG.md)).
 
@@ -58,7 +58,7 @@ A `<test_lazy>` object if `.fn` returns a `<test_spec>`, or a
 ``` r
 sleep |>
     define_model(x_by(extra, group)) |>
-    prepare(TTEST) |>
+    prepare(T_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 

@@ -103,7 +103,7 @@
 </h2>
 <p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is designed so that writing a new estimation
 method never means forking the function the user calls.
-<code><a href="../../reference/TTEST.html">TTEST()</a></code>, <code><a href="../../reference/P_TEST.html">P_TEST()</a></code>, <code><a href="../../reference/LINEAR_REG.html">LINEAR_REG()</a></code>,
+<code><a href="../../reference/T_TEST.html">T_TEST()</a></code>, <code><a href="../../reference/P_TEST.html">P_TEST()</a></code>, <code><a href="../../reference/LINEAR_REG.html">LINEAR_REG()</a></code>,
 every one of them is built from the same primitives: a
 <code>stat_define</code> per supported model shape, an
 <code><a href="../../reference/agendas.html">agendas()</a></code> of <code><a href="../../reference/baseline.html">baseline()</a></code> plus named
@@ -113,7 +113,7 @@ that neither knows nor cares what the implementation actually
 computes.</p>
 <p>Whether you’re adding a robust-regression option to
 <code><a href="../../reference/LINEAR_REG.html">LINEAR_REG()</a></code> or a trimmed-mean option to
-<code><a href="../../reference/TTEST.html">TTEST()</a></code>, the mechanism is identical, because a model-based
+<code><a href="../../reference/T_TEST.html">T_TEST()</a></code>, the mechanism is identical, because a model-based
 inference function and a hypothesis-test function are the same kind of
 object underneath — <code><a href="../../reference/MODEL_FN.html">MODEL_FN()</a></code> and <code><a href="../../reference/HTEST_FN.html">HTEST_FN()</a></code>
 are both thin wrappers around <code><a href="../../reference/STAT_CONSTRUCTOR.html">STAT_CONSTRUCTOR()</a></code>. This
@@ -132,7 +132,7 @@ method” can mean, and they have different reach.</p>
 <ol style="list-style-type: decimal">
 <li><p>When you want to add another variant to a model shape that’s
 already supported. Let’s say adding a variant to a model shape
-<code><a href="../../reference/TTEST.html">TTEST()</a></code> already supports — a trimmed-mean test for
+<code><a href="../../reference/T_TEST.html">T_TEST()</a></code> already supports — a trimmed-mean test for
 <code><a href="../../reference/x_by.html">x_by()</a></code>, say. This is the public, documented surface:
 <code><a href="../../reference/add-variant.html">add_variant()</a></code>, no access to internals required. The rest of
 this vignette covers it.</p></li>
@@ -269,9 +269,9 @@ class of its left-hand side — here <code>add_variant_call</code> — to
 <h2 id="worked-example-adding-a-variant-to-a-test-function">Worked example: adding a variant to a test function<a class="anchor" aria-label="anchor" href="#worked-example-adding-a-variant-to-a-test-function"></a>
 </h2>
 <p>The canonical example in <code><a href="../../reference/add-variant.html">?add_variant</a></code> does exactly the
-same thing for <code>TTEST</code> and <code><a href="../../reference/x_by.html">x_by()</a></code>:</p>
+same thing for <code>T_TEST</code> and <code><a href="../../reference/x_by.html">x_by()</a></code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/add-variant.html">add_variant</a></span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span> <span class="op"><a href="../../reference/modifying-assignment.html">%&lt;-%</a></span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/add-variant.html">add_variant</a></span><span class="op">(</span><span class="va">T_TEST</span>, <span class="va">x_by</span>, <span class="st">"another_boot"</span><span class="op">)</span> <span class="op"><a href="../../reference/modifying-assignment.html">%&lt;-%</a></span></span>
 <span>    <span class="fu"><a href="../../reference/variant.html">variant</a></span><span class="op">(</span></span>
 <span>        fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.proc</span>, <span class="va">.n</span> <span class="op">=</span> <span class="fl">1000L</span><span class="op">)</span> <span class="op">{</span></span>
 <span>            <span class="va">x</span> <span class="op">=</span> <span class="va">.proc</span><span class="op">$</span><span class="va">x_data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>

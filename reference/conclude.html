@@ -90,7 +90,7 @@ method variant, runs the implementation, and returns a <code>cld_exec</code> S7 
     <p>A <code>cld_exec</code> S7 object with the following slots:</p><dl><dt><code>@data</code></dt>
 <dd><p>The raw return value of the <code>fn</code> defined in <code><a href="baseline.html">baseline()</a></code>
 or <code><a href="variant.html">variant()</a></code>. Its structure depends on the implementation — see the
-documentation of the stat function (e.g. <code><a href="TTEST.html">?TTEST</a></code>) for what to expect.</p></dd>
+documentation of the stat function (e.g. <code><a href="T_TEST.html">?T_TEST</a></code>) for what to expect.</p></dd>
 
 <dt><code>@cld_meta</code></dt>
 <dd><p>A list of pipeline metadata:</p><dl><dt><code>$var_id</code></dt>
@@ -140,7 +140,7 @@ without writing <code>print</code> from <code><a href="baseline.html">baseline()
 a <a href="class_stat_infer.html">class_stat_infer</a> subclass. Use <code><a href="making_tidy.html">making_tidy()</a></code> only when <code>fn</code>
 intentionally returns a non-<a href="class_stat_infer.html">class_stat_infer</a> object.</p>
 <p>For example:</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/making_tidy.html">making_tidy</a></span><span class="op">(</span><span class="va">TTEST</span>, <span class="va">x_by</span><span class="op">)</span> <span class="op"><a href="../reference/modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="../reference/method_tidy.html">method_tidy</a></span><span class="op">(</span></span>
+<p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="../reference/making_tidy.html">making_tidy</a></span><span class="op">(</span><span class="va">T_TEST</span>, <span class="va">x_by</span><span class="op">)</span> <span class="op"><a href="../reference/modifying-assignment.html">%&lt;-%</a></span> <span class="fu"><a href="../reference/method_tidy.html">method_tidy</a></span><span class="op">(</span></span>
 <span>    default <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">.x</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="va">dat</span> <span class="op">=</span> <span class="va">.x</span><span class="op">@</span><span class="va">data</span></span>
 <span>        <span class="co"># return a tibble</span></span>
@@ -157,7 +157,7 @@ intentionally returns a non-<a href="class_stat_infer.html">class_stat_infer</a>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu">conclude</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> == Model ======================================================================= </span>
@@ -190,7 +190,7 @@ intentionally returns a non-<a href="class_stat_infer.html">class_stat_infer</a>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sleep</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="x_by.html">x_by</a></span><span class="op">(</span><span class="va">extra</span>, <span class="va">group</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">TTEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="via.html">via</a></span><span class="op">(</span><span class="st">"boot"</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu">conclude</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

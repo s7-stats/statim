@@ -1,8 +1,9 @@
 # Structured result container for one-sample t-tests
 
 An S7 class produced by
-[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md) pipelines
-using [`on()`](https://s7-stats.github.io/statim/reference/on.md) as the
+[T_TEST](https://s7-stats.github.io/statim/reference/T_TEST.md)
+pipelines using
+[`on()`](https://s7-stats.github.io/statim/reference/on.md) as the
 variable mapper `<var_id>`. Not constructed manually — use the pipeline
 instead.
 
@@ -17,7 +18,7 @@ dispatches on it automatically. Downstream packages can use it as a
 ## Details
 
 Slots (populated automatically by
-[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md)):
+[T_TEST](https://s7-stats.github.io/statim/reference/T_TEST.md)):
 
 - `term`: name of the tested variable.
 
@@ -47,7 +48,7 @@ and [`print()`](https://rdrr.io/r/base/print.html) are inherited by
 
 ## See also
 
-[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md),
+[T_TEST](https://s7-stats.github.io/statim/reference/T_TEST.md),
 [ttest-on](https://s7-stats.github.io/statim/reference/ttest-on.md),
 [`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md),
 [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)

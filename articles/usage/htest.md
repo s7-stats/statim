@@ -55,7 +55,7 @@ graph.
 box::use(
     stats[t.test, cor.test, binom.test],
     statim[
-        TTEST, CORTEST, P_TEST,
+        T_TEST, COR_TEST, P_TEST,
         # Current grammars
         define_model, prepare, via, state_null, conclude,
         # Mappers
@@ -144,7 +144,7 @@ Using `on()`
 
 heart |>
     define_model(on(trestbps)) |>
-    prepare(TTEST, .mu = 120) |>
+    prepare(T_TEST, .mu = 120) |>
     conclude()
 ```
 
@@ -177,7 +177,7 @@ Args : trestbps
 
 ``` r
 
-TTEST(on(trestbps), heart, .mu = 120)
+T_TEST(on(trestbps), heart, .mu = 120)
 ```
 
 ``` fansi
@@ -205,7 +205,7 @@ Using formula syntax
 
 heart |>
     define_model(trestbps ~ 1) |>
-    prepare(TTEST, .mu = 120) |>
+    prepare(T_TEST, .mu = 120) |>
     conclude()
 ```
 
@@ -240,7 +240,7 @@ Args : trestbps ~ 1
 
 ``` r
 
-TTEST(trestbps ~ 1, heart, .mu = 120)
+T_TEST(trestbps ~ 1, heart, .mu = 120)
 ```
 
 ``` fansi
@@ -341,7 +341,7 @@ There are three layouts to perform two-sample t-test:
 
 Using `on()`
 
-This version requires `via("two_sample")` after `prepare(TTEST)` to
+This version requires `via("two_sample")` after `prepare(T_TEST)` to
 perform two-sample t-test. Since it requires `via("two_sample")`, you
 can’t use its eager form/one liner code.
 
@@ -353,7 +353,7 @@ male = heart$thalach[heart$sex == "Male"]
 # Requires via("two_sample")
 # To perform two-sample t-test with `on()` layout
 define_model(on(female, male)) |>
-    prepare(TTEST) |>
+    prepare(T_TEST) |>
     via("two_sample") |>
     state_null(
         MU(female) == MU(male)
@@ -398,7 +398,7 @@ Using `x_by()`
 
 heart |>
     define_model(x_by(thalach, sex)) |>
-    prepare(TTEST) |>
+    prepare(T_TEST) |>
     state_null(
         MU(thalach, sex == "Female") == MU(thalach, sex == "Male")
     ) |>
@@ -436,7 +436,7 @@ Args : thalach | sex
 
 ``` r
 
-TTEST(x_by(thalach, sex), heart)
+T_TEST(x_by(thalach, sex), heart)
 ```
 
 ``` fansi
@@ -471,7 +471,7 @@ Currently, the `<formula>` layout doesn’t have translation for
 
 heart |>
     define_model(thalach ~ sex) |>
-    prepare(TTEST) |>
+    prepare(T_TEST) |>
     conclude()
 ```
 
@@ -506,7 +506,7 @@ Args : thalach ~ sex
 
 ``` r
 
-TTEST(thalach ~ sex, heart)
+T_TEST(thalach ~ sex, heart)
 ```
 
 ``` fansi
@@ -631,7 +631,7 @@ Using `rel()`
 
 heart |>
     define_model(rel(thalach, age)) |>
-    prepare(CORTEST) |>
+    prepare(COR_TEST) |>
     state_null(
         RHO(thalach, age) == 0
     ) |>
@@ -669,7 +669,7 @@ Args : thalach ; age
 
 ``` r
 
-CORTEST(rel(thalach, age), heart)
+COR_TEST(rel(thalach, age), heart)
 ```
 
 ``` fansi
@@ -701,7 +701,7 @@ Using formula syntax
 
 heart |>
     define_model(age ~ thalach) |>
-    prepare(CORTEST) |> 
+    prepare(COR_TEST) |> 
     conclude()
 ```
 
@@ -736,7 +736,7 @@ Args : age ~ thalach
 
 ``` r
 
-CORTEST(rel(thalach, age), heart)
+COR_TEST(rel(thalach, age), heart)
 ```
 
 ``` fansi

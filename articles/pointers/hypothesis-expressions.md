@@ -74,7 +74,7 @@ This is what backs the t-test contrast variant:
 
 sleep |>
     define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     state_null(
         # Internally, `<=` will be automatically flipped into `>` for the alternative hypothesis
         2 * MU(extra, group == "1") - MU(extra, group == "2") <= 0
@@ -125,7 +125,7 @@ the expression in, not by any property of the groups themselves.
 
 sleep |>
     define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     state_null(
         MU(extra, group == "1") - MU(extra, group == "2") <= 0
     ) |>
@@ -165,7 +165,7 @@ Args : extra | group
 
 sleep |>
     define_model(extra %by% group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     state_null(
         MU(extra, group == "2") - MU(extra, group == "1") <= 0
     ) |>
@@ -206,7 +206,7 @@ Args : extra | group
 `MU(extra, group == "1") - MU(extra, group == "2")` and
 `MU(extra, group == "2") - MU(extra, group == "1")` are the same
 hypothesis mathematically. One is just the negation of the other, but
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md)’s
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md)’s
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)
 `claim_parser` reads whichever name has coefficient `+1` as
 `.first_group`, and uses it to decide which group becomes `x` and which
@@ -236,8 +236,8 @@ makes this worth checking deliberately rather than assuming the test
 “just knows” which direction you meant.
 
 Nor is this specific to
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md) — any
-`claim_parser` that reads `names(coefs)[coefs == 1]` to pick out a
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md) —
+any `claim_parser` that reads `names(coefs)[coefs == 1]` to pick out a
 “first” term the same way inherits the same sensitivity, since
 [`claim_contrast_coefs()`](https://s7-stats.github.io/statim/reference/claim_contrast_coefs.md)
 preserves the left-to-right order terms were written in all the way

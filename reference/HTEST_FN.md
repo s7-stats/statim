@@ -2,7 +2,7 @@
 
 `HTEST_FN()` is a developer-interface constructor for user-facing test
 functions like
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md). It
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md). It
 returns a function with a consistent signature that routes to the
 correct implementation based on the variable mapper `<var_id>` and
 method variant.

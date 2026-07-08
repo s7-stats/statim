@@ -16,7 +16,7 @@ implementation.
 ## Arguments
 
 The following arguments are passed via `...` in
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md):
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md):
 
 - `.mu`:
 
@@ -65,7 +65,7 @@ Other ttest-implementations:
 ``` r
 sleep |>
     define_model(extra ~ group) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 
@@ -99,7 +99,7 @@ sleep |>
 # one-sample
 sleep |>
     define_model(extra ~ 1) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 
@@ -133,7 +133,7 @@ sleep |>
 # both in one call
 sleep |>
     define_model(extra ~ group + 1) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 

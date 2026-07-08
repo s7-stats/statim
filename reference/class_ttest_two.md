@@ -1,10 +1,11 @@
 # Structured result container for two-sample t-tests
 
 An S7 class produced by
-[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md) pipelines
-using [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) as
-the variable mapper `<var_id>`. Not constructed manually — use the
-pipeline instead.
+[T_TEST](https://s7-stats.github.io/statim/reference/T_TEST.md)
+pipelines using
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) as the
+variable mapper `<var_id>`. Not constructed manually — use the pipeline
+instead.
 
 Inherits from
 [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md),
@@ -17,7 +18,7 @@ dispatches on it automatically. Downstream packages can use it as a
 ## Details
 
 Slots (populated automatically by
-[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md)):
+[T_TEST](https://s7-stats.github.io/statim/reference/T_TEST.md)):
 
 - `group`: name of the grouping variable.
 
@@ -44,6 +45,6 @@ and [`print()`](https://rdrr.io/r/base/print.html) are inherited by
 
 ## See also
 
-[TTEST](https://s7-stats.github.io/statim/reference/TTEST.md),
+[T_TEST](https://s7-stats.github.io/statim/reference/T_TEST.md),
 [`auto_tidy()`](https://s7-stats.github.io/statim/reference/auto_tidy.md),
 [class_stat_infer](https://s7-stats.github.io/statim/reference/class_stat_infer.md)

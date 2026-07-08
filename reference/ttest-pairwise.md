@@ -11,7 +11,7 @@ as the variable mapper `<var_id>` to select this implementation.
 ## Arguments
 
 The following arguments are passed via `...` in
-[`TTEST()`](https://s7-stats.github.io/statim/reference/TTEST.md):
+[`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md):
 
 - `.paired`:
 
@@ -81,7 +81,7 @@ Other ttest-implementations:
 ``` r
 iris |>
     define_model(pairwise(Sepal.Length, Sepal.Width, Petal.Length)) |>
-    prepare_test(TTEST) |>
+    prepare_test(T_TEST) |>
     conclude()
 #> 
 #> == Model ======================================================================= 
