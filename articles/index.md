@@ -8,20 +8,15 @@
   A guide on performing hypothesis testing with the statim R package,
   with a comparison against base R and rstatix.
 
-- [New approach of model-based inference with
+- [Regression modelling with
   {statim}](https://s7-stats.github.io/statim/articles/usage/model-infer.md):
 
-  A guide on using statim R package
+  A guide on performing regression modelling with statim R package.
 
 - [ANOVA for Linear models with
   {statim}](https://s7-stats.github.io/statim/articles/usage/anova-mod.md):
 
   A guide on using statim R package
-
-- [Applications of multiple model layouts with
-  \`write_models()\`](https://s7-stats.github.io/statim/articles/usage/multiple-exec.md):
-
-  “A guide on using statim R package”
 
 ### Pointers of statim you need to know
 
