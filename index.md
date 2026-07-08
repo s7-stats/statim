@@ -6,9 +6,9 @@
 
 What does [statim](https://github.com/s7-stats/statim) mean?
 
-*statim* is a Latin word for “immediately, at once”. It’s prefix *stat*,
-as in statistics, is where the domain this package lives in. This can be
-interpreted as: you declare *what* statistical inference you want to
+*statim* is a Latin word for “immediately, at once”. Its prefix, *stat*
+(as in statistics), is where the domain this package lives in. This can
+be interpreted as: you declare *what* statistical inference you want to
 perform, then [statim](https://github.com/s7-stats/statim) immediately
 delivers *how*.
 
@@ -70,6 +70,10 @@ its main semantics that is, for example, (1) recalibrating / switching
 off into different methods from the same estimation method with
 [`via()`](https://s7-stats.github.io/statim/reference/via.md) and (2) do
 not support post-execution output manipulation.
+
+Visit
+[`vignette("statim")`](https://s7-stats.github.io/statim/articles/statim.md)
+to get started.
 
 ## Core Semantics
 
