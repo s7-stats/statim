@@ -494,3 +494,15 @@ Expressions?](https://s7-stats.github.io/statim/articles/pointers/hypothesis-exp
     contribute. The semantics of this package is pretty similar to what
     you are gotten used to from the existing packages, namely the
     [tidyverse](https://tidyverse.tidyverse.org) itself.
+
+## Learn More
+
+If you want to learn more on how to use this package, visit the
+following:
+
+1.  [Hypothesis Testing with
+    {statim}](https://s7-stats.github.io/statim/articles/usage/htest.md)
+2.  [Regression Modelling with
+    {statim}](https://s7-stats.github.io/statim/articles/usage/model-infer.md)
+3.  [ANOVA models from Linear Models with
+    {statim}](https://s7-stats.github.io/statim/articles/usage/anova-mod.md)
