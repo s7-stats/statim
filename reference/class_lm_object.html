@@ -106,6 +106,17 @@ to be populated.</p></li>
 Uses <code>@deviance</code> and <code>@df_residual</code> only; <code>x_mat</code> is not needed.</p></li>
 </ul></div>
     <div class="section level2">
+    <h2 id="predict-arguments">predict() arguments<a class="anchor" aria-label="anchor" href="#predict-arguments"></a></h2>
+
+
+<p><code><a href="predict.html">predict()</a></code> on a <code>class_lm_object</code> accepts:</p><ul><li><p><code>new_data</code>: A data frame of new predictors. <code>NULL</code> (the default)
+returns fitted values and residual-based <code>truth</code> for the training data.</p></li>
+<li><p><code>interval</code>: One of <code>"none"</code> (default), <code>"confidence"</code>, or
+<code>"prediction"</code>. Both are available for every <code>class_lm_object</code>, since
+<code>family</code> is always <code>"gaussian"</code> for OLS fits.</p></li>
+<li><p><code>level</code>: Confidence level for the interval. Default <code>0.95</code>.</p></li>
+</ul></div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="anova-mod.html">anova()</a></code>, <a href="LINEAR_REG.html">LINEAR_REG</a></p></div>
     </div>

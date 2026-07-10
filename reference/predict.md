@@ -7,7 +7,7 @@
 ## Usage
 
 ``` r
-predict
+predict(object, new_data = NULL, ...)
 ```
 
 ## Format

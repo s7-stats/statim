@@ -13,7 +13,7 @@ subclass.
 ## Usage
 
 ``` r
-auto_predict(x, ...)
+auto_predict(x, new_data = NULL, ...)
 ```
 
 ## Arguments
@@ -22,13 +22,18 @@ auto_predict(x, ...)
 
   A `class_stat_infer` subclass object, typically `cld_exec@data`.
 
-- ...:
-
-  Currently unused. Passed to the dispatched method.
-
 - new_data:
 
   A data frame. `NULL` defaults to the training data.
+
+- ...:
+
+  Passed to the dispatched method. Methods typically accept a `new_data`
+  argument (a data frame; `NULL` defaults to the training data) plus any
+  method-specific options — see the individual result class's
+  documentation (e.g.
+  [`?class_lm_object`](https://s7-stats.github.io/statim/reference/class_lm_object.md))
+  for what it accepts.
 
 ## Value
 

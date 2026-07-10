@@ -87,6 +87,14 @@ Downstream packages can use it as a <code>parent</code> in <code><a href="https:
 <li><p><code>null_logLik</code>: scalar log-likelihood of the intercept-only model.</p></li>
 <li><p><code>beta</code>: named numeric vector of coefficient estimates.</p></li>
 <li><p><code>std_beta</code>: named numeric vector of coefficient standard errors.</p></li>
+<li><p><code>fitted</code>: numeric vector of fitted values on the response scale.</p></li>
+<li><p><code>vcov</code>: variance-covariance matrix of the coefficients, e.g.
+<code>stats::vcov(fit)</code>. Required for <code><a href="predict.html">predict()</a></code> with <code>interval</code>.</p></li>
+<li><p><code>x_mat</code>: model matrix stored as a flat numeric vector via
+<code>as.numeric(stats::model.matrix(fit))</code>. Required for <code><a href="predict.html">predict()</a></code>.</p></li>
+<li><p><code>x_levels</code>: factor levels used when fitting, via
+<code>stats::.getXlevels(fit$terms, stats::model.frame(fit))</code>. Required
+for <code><a href="predict.html">predict()</a></code> on new data with factor predictors.</p></li>
 </ul><p>The following are computed automatically and do not need to be supplied:</p><ul><li><p><code>statistic</code>: per-coefficient test statistics (<code>beta / std_beta</code>).</p></li>
 <li><p><code>p_value</code>: per-coefficient two-sided p-values. Uses a z-test when
 <code>family</code> is <code>"binomial"</code> or <code>"poisson"</code> (fixed dispersion), and a
@@ -95,6 +103,19 @@ t-test against <code>df_residual</code> otherwise (estimated dispersion).</p></l
 <code>statistic</code>, <code>p_value</code>.</p></li>
 <li><p><code>fit_summary</code>: tibble with columns <code>family</code>, <code>link</code>, <code>null_deviance</code>,
 <code>deviance</code>, <code>df_residual</code>, <code>aic</code>, <code>n_obs</code>.</p></li>
+</ul></div>
+    <div class="section level2">
+    <h2 id="predict-arguments">predict() arguments<a class="anchor" aria-label="anchor" href="#predict-arguments"></a></h2>
+
+
+<p><code><a href="predict.html">predict()</a></code> on a <code>class_glm_object</code> accepts:</p><ul><li><p><code>new_data</code>: A data frame of new predictors. <code>NULL</code> (the default)
+returns fitted values and response-based <code>truth</code> for the training data.</p></li>
+<li><p><code>type</code>: One of <code>"response"</code> (default, back-transformed through the
+inverse link) or <code>"link"</code> (linear predictor scale).</p></li>
+<li><p><code>interval</code>: One of <code>"none"</code> (default) or <code>"confidence"</code>.
+Prediction intervals are not available, since GLMs have no closed-form
+analogue of OLS prediction error.</p></li>
+<li><p><code>level</code>: Confidence level for the interval. Default <code>0.95</code>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -124,7 +145,11 @@ t-test against <code>df_residual</code> otherwise (estimated dispersion).</p></l
 <span class="r-in"><span>    null_deviance <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">null.deviance</span>,</span></span>
 <span class="r-in"><span>    aic <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">aic</span>,</span></span>
 <span class="r-in"><span>    beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>    std_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span></span></span>
+<span class="r-in"><span>    std_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>    fitted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    vcov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    x_mat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    x_levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/checkMFClasses.html" class="external-link">.getXlevels</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">terms</span>, <span class="fu"><a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">obj</span><span class="op">@</span><span class="va">coefficients</span></span></span>

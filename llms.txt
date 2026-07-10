@@ -271,8 +271,8 @@ function
 
 Functions used after execution
 
-- [`predict`](https://s7-stats.github.io/statim/reference/predict.md) :
-  Predict from a concluded statistical result
+- [`predict()`](https://s7-stats.github.io/statim/reference/predict.md)
+  : Predict from a concluded statistical result
 - [`gauge()`](https://s7-stats.github.io/statim/reference/gauge.md) :
   Effect size for a concluded statistical result
 - [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) : Tidy

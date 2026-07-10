@@ -74,7 +74,7 @@ called automatically by <code><a href="predict.html">predict()</a></code> when t
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">auto_predict</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">auto_predict</span><span class="op">(</span><span class="va">x</span>, new_data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -85,12 +85,15 @@ called automatically by <code><a href="predict.html">predict()</a></code> when t
 <dd><p>A <code>class_stat_infer</code> subclass object, typically <code>cld_exec@data</code>.</p></dd>
 
 
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Currently unused. Passed to the dispatched method.</p></dd>
-
-
 <dt id="arg-new-data">new_data<a class="anchor" aria-label="anchor" href="#arg-new-data"></a></dt>
 <dd><p>A data frame. <code>NULL</code> defaults to the training data.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Passed to the dispatched method. Methods typically accept a
+<code>new_data</code> argument (a data frame; <code>NULL</code> defaults to the training
+data) plus any method-specific options — see the individual result
+class's documentation (e.g. <code><a href="class_lm_object.html">?class_lm_object</a></code>) for what it accepts.</p></dd>
 
 </dl></div>
     <div class="section level2">

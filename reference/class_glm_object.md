@@ -41,6 +41,22 @@ Constructor arguments (populated automatically by
 
 - `std_beta`: named numeric vector of coefficient standard errors.
 
+- `fitted`: numeric vector of fitted values on the response scale.
+
+- `vcov`: variance-covariance matrix of the coefficients, e.g.
+  `stats::vcov(fit)`. Required for
+  [`predict()`](https://s7-stats.github.io/statim/reference/predict.md)
+  with `interval`.
+
+- `x_mat`: model matrix stored as a flat numeric vector via
+  `as.numeric(stats::model.matrix(fit))`. Required for
+  [`predict()`](https://s7-stats.github.io/statim/reference/predict.md).
+
+- `x_levels`: factor levels used when fitting, via
+  `stats::.getXlevels(fit$terms, stats::model.frame(fit))`. Required for
+  [`predict()`](https://s7-stats.github.io/statim/reference/predict.md)
+  on new data with factor predictors.
+
 The following are computed automatically and do not need to be supplied:
 
 - `statistic`: per-coefficient test statistics (`beta / std_beta`).
@@ -54,6 +70,24 @@ The following are computed automatically and do not need to be supplied:
 
 - `fit_summary`: tibble with columns `family`, `link`, `null_deviance`,
   `deviance`, `df_residual`, `aic`, `n_obs`.
+
+## predict() arguments
+
+[`predict()`](https://s7-stats.github.io/statim/reference/predict.md) on
+a `class_glm_object` accepts:
+
+- `new_data`: A data frame of new predictors. `NULL` (the default)
+  returns fitted values and response-based `truth` for the training
+  data.
+
+- `type`: One of `"response"` (default, back-transformed through the
+  inverse link) or `"link"` (linear predictor scale).
+
+- `interval`: One of `"none"` (default) or `"confidence"`. Prediction
+  intervals are not available, since GLMs have no closed-form analogue
+  of OLS prediction error.
+
+- `level`: Confidence level for the interval. Default `0.95`.
 
 ## See also
 
@@ -84,7 +118,11 @@ obj = class_glm_object(
     null_deviance = fit$null.deviance,
     aic = fit$aic,
     beta = coef(s)[, 1],
-    std_beta = coef(s)[, 2]
+    std_beta = coef(s)[, 2],
+    fitted = unname(fit$fitted.values),
+    vcov = vcov(fit),
+    x_mat = as.numeric(model.matrix(fit)),
+    x_levels = .getXlevels(fit$terms, model.frame(fit))
 )
 
 obj@coefficients
