@@ -18,6 +18,12 @@
 
   A guide on using statim R package
 
+- [Predicting with linear models from
+  {statim}](https://s7-stats.github.io/statim/articles/usage/predict-examples.md):
+
+  A guide on performing post-hoc, featuring prediction from linear
+  models, with statim R package.
+
 ### Pointers of statim you need to know
 
 - [\`\<var_id\>\`
