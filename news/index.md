@@ -2,7 +2,9 @@
 
 ## statim (development version)
 
-- Initial development version.
+## statim 0.1.0
+
+- Initial CRAN submission.
 
 - New and much modern approach to statistical inference in R
 

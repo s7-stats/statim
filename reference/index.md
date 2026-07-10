@@ -103,6 +103,17 @@ function
 - [`GLM()`](https://s7-stats.github.io/statim/reference/GLM.md) :
   Generalized linear model
 
+### Post-hoc functions
+
+Functions used after execution
+
+- [`predict`](https://s7-stats.github.io/statim/reference/predict.md) :
+  Predict from a concluded statistical result
+- [`gauge()`](https://s7-stats.github.io/statim/reference/gauge.md) :
+  Effect size for a concluded statistical result
+- [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) : Tidy
+  a concluded statistical result
+
 ### Multiple Inline Codes
 
 Analogue to [`I()`](https://rdrr.io/r/base/AsIs.html), but only captures
@@ -110,13 +121,6 @@ the expression and accepts multiple inline codes.
 
 - [`inlines()`](https://s7-stats.github.io/statim/reference/inlines.md)
   : Inline multiple expressions in a Variable Mapper
-
-### Output renderer and saver
-
-Capture the printed output in specific formats
-
-- [`save_excel()`](https://s7-stats.github.io/statim/reference/save_excel.md)
-  : Save statistical output to Excel
 
 ## Low-level / Developer facing API
 
@@ -254,5 +258,35 @@ for following `STAT_CONSTRUCTOR` objects
   : Declare tidy methods for a stat and model type
 - [`method_tidy()`](https://s7-stats.github.io/statim/reference/method_tidy.md)
   : Declare tidy methods for a stat result
+- [`` `%<-%` ``](https://s7-stats.github.io/statim/reference/modifying-assignment.md)
+  : Apply a method_tidy to a making_tidy target
+
+### Prediction implementer
+
+Add or modify
+[`predict()`](https://s7-stats.github.io/statim/reference/predict.md)
+method for following `STAT_CONSTRUCTOR` objects
+
+- [`auto_predict()`](https://s7-stats.github.io/statim/reference/auto_predict.md)
+  : Automatically predict from a statistical result
+- [`making_predict()`](https://s7-stats.github.io/statim/reference/making_predict.md)
+  : Declare a predict method for a stat and model type
+- [`method_predict()`](https://s7-stats.github.io/statim/reference/method_predict.md)
+  : Declare predict methods for a stat result
+- [`` `%<-%` ``](https://s7-stats.github.io/statim/reference/modifying-assignment.md)
+  : Apply a method_tidy to a making_tidy target
+
+### Effect size implementer
+
+Add or modify
+[`gauge()`](https://s7-stats.github.io/statim/reference/gauge.md) method
+for following `STAT_CONSTRUCTOR` objects
+
+- [`auto_gauge()`](https://s7-stats.github.io/statim/reference/auto_gauge.md)
+  : Automatically gauge effect size from a statistical result
+- [`making_gauge()`](https://s7-stats.github.io/statim/reference/making_gauge.md)
+  : Declare a gauge method for a stat and model type
+- [`method_gauge()`](https://s7-stats.github.io/statim/reference/method_gauge.md)
+  : Declare gauge methods for a stat result
 - [`` `%<-%` ``](https://s7-stats.github.io/statim/reference/modifying-assignment.md)
   : Apply a method_tidy to a making_tidy target

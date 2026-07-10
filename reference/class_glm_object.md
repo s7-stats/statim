@@ -27,11 +27,33 @@ Constructor arguments (populated automatically by
 
 - `family`: string naming the error family, e.g. `"binomial"`.
 
-- `coefficients`: data frame with columns `term`, `estimate`,
-  `std_error`, `statistic`, `p_value`.
+- `link`: string naming the link function, e.g. `"logit"`.
 
-- `fit_summary`: data frame with columns `family`, `link`,
-  `null_deviance`, `deviance`, `df_residual`, `aic`, `n_obs`.
+- `null_deviance`: scalar deviance of the intercept-only model.
+
+- `aic`: scalar AIC.
+
+- `logLik`: scalar log-likelihood of the fitted model.
+
+- `null_logLik`: scalar log-likelihood of the intercept-only model.
+
+- `beta`: named numeric vector of coefficient estimates.
+
+- `std_beta`: named numeric vector of coefficient standard errors.
+
+The following are computed automatically and do not need to be supplied:
+
+- `statistic`: per-coefficient test statistics (`beta / std_beta`).
+
+- `p_value`: per-coefficient two-sided p-values. Uses a z-test when
+  `family` is `"binomial"` or `"poisson"` (fixed dispersion), and a
+  t-test against `df_residual` otherwise (estimated dispersion).
+
+- `coefficients`: tibble with columns `term`, `estimate`, `std_error`,
+  `statistic`, `p_value`.
+
+- `fit_summary`: tibble with columns `family`, `link`, `null_deviance`,
+  `deviance`, `df_residual`, `aic`, `n_obs`.
 
 ## See also
 
@@ -58,21 +80,23 @@ obj = class_glm_object(
     deviance = fit$deviance,
     dispersion = if (fam %in% c("binomial", "poisson")) 1 else s$dispersion,
     family = fam,
-    coefficients = tibble::tibble(
-        term = rownames(coef(s)),
-        estimate = coef(s)[, 1],
-        std_error = coef(s)[, 2],
-        statistic = coef(s)[, 3],
-        p_value = coef(s)[, 4]
-    ),
-    fit_summary = tibble::tibble(
-        family = fam,
-        link = fit$family$link,
-        null_deviance = fit$null.deviance,
-        deviance = fit$deviance,
-        df_residual = as.integer(fit$df.residual),
-        aic = fit$aic,
-        n_obs = as.integer(length(fit$residuals))
-    )
+    link = fit$family$link,
+    null_deviance = fit$null.deviance,
+    aic = fit$aic,
+    beta = coef(s)[, 1],
+    std_beta = coef(s)[, 2]
 )
+
+obj@coefficients
+#> # A tibble: 3 × 5
+#>   term        estimate std_error statistic p_value
+#>   <chr>          <dbl>     <dbl>     <dbl>   <dbl>
+#> 1 (Intercept)  18.9       7.44        2.53 0.0113 
+#> 2 wt           -8.08      3.07       -2.63 0.00843
+#> 3 hp            0.0363    0.0177      2.04 0.0409 
+obj@fit_summary
+#> # A tibble: 1 × 7
+#>   family   link  null_deviance deviance df_residual   aic n_obs
+#>   <chr>    <chr>         <dbl>    <dbl>       <int> <dbl> <int>
+#> 1 binomial logit          43.2     10.1          29  16.1    32
 ```

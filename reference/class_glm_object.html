@@ -80,10 +80,21 @@ Downstream packages can use it as a <code>parent</code> in <code><a href="https:
 <li><p><code>deviance</code>: scalar deviance.</p></li>
 <li><p><code>dispersion</code>: scalar dispersion parameter.</p></li>
 <li><p><code>family</code>: string naming the error family, e.g. <code>"binomial"</code>.</p></li>
-<li><p><code>coefficients</code>: data frame with columns <code>term</code>, <code>estimate</code>,
-<code>std_error</code>, <code>statistic</code>, <code>p_value</code>.</p></li>
-<li><p><code>fit_summary</code>: data frame with columns <code>family</code>, <code>link</code>,
-<code>null_deviance</code>, <code>deviance</code>, <code>df_residual</code>, <code>aic</code>, <code>n_obs</code>.</p></li>
+<li><p><code>link</code>: string naming the link function, e.g. <code>"logit"</code>.</p></li>
+<li><p><code>null_deviance</code>: scalar deviance of the intercept-only model.</p></li>
+<li><p><code>aic</code>: scalar AIC.</p></li>
+<li><p><code>logLik</code>: scalar log-likelihood of the fitted model.</p></li>
+<li><p><code>null_logLik</code>: scalar log-likelihood of the intercept-only model.</p></li>
+<li><p><code>beta</code>: named numeric vector of coefficient estimates.</p></li>
+<li><p><code>std_beta</code>: named numeric vector of coefficient standard errors.</p></li>
+</ul><p>The following are computed automatically and do not need to be supplied:</p><ul><li><p><code>statistic</code>: per-coefficient test statistics (<code>beta / std_beta</code>).</p></li>
+<li><p><code>p_value</code>: per-coefficient two-sided p-values. Uses a z-test when
+<code>family</code> is <code>"binomial"</code> or <code>"poisson"</code> (fixed dispersion), and a
+t-test against <code>df_residual</code> otherwise (estimated dispersion).</p></li>
+<li><p><code>coefficients</code>: tibble with columns <code>term</code>, <code>estimate</code>, <code>std_error</code>,
+<code>statistic</code>, <code>p_value</code>.</p></li>
+<li><p><code>fit_summary</code>: tibble with columns <code>family</code>, <code>link</code>, <code>null_deviance</code>,
+<code>deviance</code>, <code>df_residual</code>, <code>aic</code>, <code>n_obs</code>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -109,23 +120,25 @@ Downstream packages can use it as a <code>parent</code> in <code><a href="https:
 <span class="r-in"><span>    deviance <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">deviance</span>,</span></span>
 <span class="r-in"><span>    dispersion <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="va">fam</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"binomial"</span>, <span class="st">"poisson"</span><span class="op">)</span><span class="op">)</span> <span class="fl">1</span> <span class="kw">else</span> <span class="va">s</span><span class="op">$</span><span class="va">dispersion</span>,</span></span>
 <span class="r-in"><span>    family <span class="op">=</span> <span class="va">fam</span>,</span></span>
-<span class="r-in"><span>    coefficients <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>        term <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        estimate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>        std_error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>        statistic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>        p_value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">[</span>, <span class="fl">4</span><span class="op">]</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span>,</span></span>
-<span class="r-in"><span>    fit_summary <span class="op">=</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>        family <span class="op">=</span> <span class="va">fam</span>,</span></span>
-<span class="r-in"><span>        link <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">family</span><span class="op">$</span><span class="va">link</span>,</span></span>
-<span class="r-in"><span>        null_deviance <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">null.deviance</span>,</span></span>
-<span class="r-in"><span>        deviance <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">deviance</span>,</span></span>
-<span class="r-in"><span>        df_residual <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">df.residual</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        aic <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">aic</span>,</span></span>
-<span class="r-in"><span>        n_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">residuals</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>    link <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">family</span><span class="op">$</span><span class="va">link</span>,</span></span>
+<span class="r-in"><span>    null_deviance <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">null.deviance</span>,</span></span>
+<span class="r-in"><span>    aic <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">aic</span>,</span></span>
+<span class="r-in"><span>    beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>    std_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">obj</span><span class="op">@</span><span class="va">coefficients</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   term        estimate std_error statistic p_value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> (Intercept)  18.9       7.44        2.53 0.011<span style="text-decoration: underline;">3</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> wt           -<span style="color: #BB0000;">8.08</span>      3.07       -<span style="color: #BB0000;">2.63</span> 0.008<span style="text-decoration: underline;">43</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> hp            0.036<span style="text-decoration: underline;">3</span>    0.017<span style="text-decoration: underline;">7</span>      2.04 0.040<span style="text-decoration: underline;">9</span> </span>
+<span class="r-in"><span><span class="va">obj</span><span class="op">@</span><span class="va">fit_summary</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   family   link  null_deviance deviance df_residual   aic n_obs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> binomial logit          43.2     10.1          29  16.1    32</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
