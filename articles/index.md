@@ -24,6 +24,11 @@
   A guide on performing post-hoc, featuring prediction from linear
   models, with statim R package.
 
+- [Gauging effect size with
+  {statim}](https://s7-stats.github.io/statim/articles/usage/effect-size.md):
+
+  A guide on reporting effect size with statim R package.
+
 ### Pointers of statim you need to know
 
 - [\`\<var_id\>\`

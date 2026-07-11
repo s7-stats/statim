@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Predicting with linear models from {statim} • statim</title>
+<title>Gauging effect size with {statim} • statim</title>
 <!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../../katex-auto.js"></script><script src="../../lightswitch.js"></script><script src="../../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -14,10 +14,10 @@
 <link href="../../deps/Fraunces-0.4.10/font.css" rel="stylesheet">
 <link href="../../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Predicting with linear models from {statim}">
-<meta name="description" content="A guide on performing post-hoc, featuring prediction from linear models,  with statim R package.
+<script src="../../deps/headroom-0.11.0/headroom.min.js"></script><script src="../../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../../deps/search-1.0.0/fuse.min.js"></script><script src="../../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Gauging effect size with {statim}">
+<meta name="description" content="A guide on reporting effect size with statim R package.
 ">
-<meta property="og:description" content="A guide on performing post-hoc, featuring prediction from linear models,  with statim R package.
+<meta property="og:description" content="A guide on reporting effect size with statim R package.
 ">
 </head>
 <body>
@@ -90,13 +90,13 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Predicting with linear models from {statim}</h1>
+      <h1>Gauging effect size with {statim}</h1>
             <h3 data-toc-skip class="subtitle">A practical guide using
 real clinical data</h3>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/s7-stats/statim/blob/master/vignettes/usage/predict-examples.Rmd" class="external-link"><code>vignettes/usage/predict-examples.Rmd</code></a></small>
-      <div class="d-none name"><code>predict-examples.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/s7-stats/statim/blob/master/vignettes/usage/effect-size.Rmd" class="external-link"><code>vignettes/usage/effect-size.Rmd</code></a></small>
+      <div class="d-none name"><code>effect-size.Rmd</code></div>
     </div>
 
     
@@ -104,44 +104,42 @@ real clinical data</h3>
 <div class="section level2">
 <h2 id="rationale">Rationale<a class="anchor" aria-label="anchor" href="#rationale"></a>
 </h2>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> has a slight different approach on making
-predictions with <code><a href="../../reference/predict.html">predict()</a></code>. At its core, it’s S7, so strict
-types when making predictions is enforced. Its <a href="./model-infer.html">last vignette</a> fits two models off the
-Cleveland Clinic dataset: a linear regression predicting maximum heart
-rate from age, sex, and cholesterol, and a logistic regression (through
-<code><a href="../../reference/GLM.html">GLM()</a></code>) predicting the occurence of heart disease from age,
-cholesterol, and resting blood pressure. Both came out of the same
-<code>define_model() |&gt; prepare_model() |&gt; conclude()</code>
-syntax. This vignette picks those fits back up and asks the next
-question: now that you have a model, what does it say about a patient
-who isn’t in the dataset yet?</p>
+<p>A p-value answers one question: is this effect distinguishable from
+noise. It says nothing about whether the effect is <em>large</em>.
+Effect size is the separate quantity that answers “how big”. Use
+<code><a href="../../reference/gauge.html">gauge()</a></code> from <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> after evaluation of the
+estimation with <code><a href="../../reference/conclude.html">conclude()</a></code> to report it. This function
+reports Cohen’s <em>d</em> for a t-test, Cohen’s <em>h</em> for a
+proportion test, <span class="math inline">R^2</span> and Cohen’s <span class="math inline">f^2</span> for a regression.</p>
+<p>Same shape as <code><a href="../../reference/predict.html">predict()</a></code> and <code><a href="../../reference/tidy.html">tidy()</a></code>: one
+generic, used after <code><a href="../../reference/conclude.html">conclude()</a></code>, and dispatched on the
+<code>cld_exec</code> object from <code><a href="../../reference/conclude.html">conclude()</a></code>. When the
+result inside is a <code>class_stat_infer</code> subclass, (1)
+<code><a href="../../reference/gauge.html">gauge()</a></code> re-routes to <code><a href="../../reference/auto_gauge.html">auto_gauge()</a></code>
+automatically, or (2) a <code><a href="../../reference/making_gauge.html">making_gauge()</a></code> registry exists for
+the rare case where a variant’s <code>fn</code> returns something else.
+Nothing about calling <code><a href="../../reference/gauge.html">gauge()</a></code> changes depending on whether
+you’re holding a t-test or a GLM, only the metric name in the output
+does.</p>
 </div>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
-<p>Let us used <a href="https://klmr.me/box/" class="external-link">box</a> package, as per requested by the
-author of this package himself. The usage here does not differ from
-other vignettes (see <code><a href="../../articles/usage/htest.html">vignette("usage/htest")</a></code> and
-<code><a href="../../articles/usage/model-infer.html">vignette("usage/model-infer")</a></code>), where the qualified imports
-are explictly named.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># For the examples</span></span>
-<span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
 <span>    <span class="va">statim</span><span class="op">[</span></span>
-<span>        <span class="va">define_model</span>, <span class="va">prepare_model</span>, <span class="va">via</span>, <span class="va">conclude</span>, <span class="va">predict</span>, </span>
-<span>        <span class="va">LINEAR_REG</span>, <span class="va">GLM</span></span>
+<span>        <span class="va">define_model</span>, <span class="va">prepare</span>, <span class="va">state_null</span>, <span class="va">conclude</span>, <span class="va">gauge</span>,</span>
+<span>        <span class="va">LINEAR_REG</span>, <span class="va">GLM</span>, <span class="va">T_TEST</span>, <span class="va">P_TEST</span>,</span>
+<span>        <span class="va">x_by</span>, <span class="va">prop</span>, <span class="va">PI</span></span>
 <span>    <span class="op">]</span>,</span>
-<span>    <span class="va">stats</span><span class="op">[</span><span class="va">binomial</span><span class="op">]</span></span>
+<span>    <span class="va">stats</span><span class="op">[</span><span class="va">update</span>, <span class="va">binomial</span><span class="op">]</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># To handle the data</span></span>
 <span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
-<span>    <span class="va">readr</span><span class="op">[</span><span class="va">read_csv</span><span class="op">]</span>, </span>
 <span>    <span class="va">dplyr</span><span class="op">[</span><span class="va">mutate</span>, <span class="va">glimpse</span><span class="op">]</span>,</span>
-<span>    <span class="va">ggplot2</span><span class="op">[</span></span>
-<span>        <span class="va">ggplot</span>, <span class="va">aes</span>, <span class="va">geom_point</span>, <span class="va">geom_line</span>, <span class="va">geom_ribbon</span>, <span class="va">labs</span></span>
-<span>    <span class="op">]</span></span>
+<span>    <span class="va">readr</span><span class="op">[</span><span class="va">read_csv</span><span class="op">]</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>The example data is the same:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">=</span> </span>
 <span>    <span class="fu">read_csv</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"heart-disease.csv"</span>, package <span class="op">=</span> <span class="st">"statim"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -175,124 +173,173 @@ $ ca       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 
 $ thal     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>1<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>3<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>2<span style="color: #949494;">, </span>3…
 $ target   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> Yes<span style="color: #949494;">, </span>Yes<span style="color: #949494;">, </span>Yes<span style="color: #949494;">, </span>Yes<span style="color: #949494;">, </span>Yes<span style="color: #949494;">, </span>Yes<span style="color: #949494;">, </span>Yes<span style="color: #949494;">, </span>Yes<span style="color: #949494;">, </span>Yes<span style="color: #949494;">, </span>Yes<span style="color: #949494;">, </span>Yes<span style="color: #949494;">, </span>Yes<span style="color: #949494;">, </span>Y…
 </code></pre>
-<p>Refit the two models from the <a href="./model-infer.html">regression
-vignette</a>:</p>
+</div>
+<div class="section level2">
+<h2 id="effect-size-for-a-regression">Effect size for a regression<a class="anchor" aria-label="anchor" href="#effect-size-for-a-regression"></a>
+</h2>
+<p>Refit the two models from this <a href="./model-infer.html">vignette</a>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod1</span> <span class="op">=</span> <span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">thalach</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">chol</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mod2</span> <span class="op">=</span> <span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">target</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">chol</span> <span class="op">+</span> <span class="va">trestbps</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">GLM</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">GLM</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="predicting-from-first-model">Predicting from first model<a class="anchor" aria-label="anchor" href="#predicting-from-first-model"></a>
-</h2>
-<p>The first model refers to the first code above, namely
-<code>mod1</code>, an example of a classic linear regression. Suppose a
-clinician wants to know what <code>mod1</code> implies for one
-particular patient: 63 years old, male, cholesterol 275. That’s a single
-row, built by hand, evaluated against the fitted equation:</p>
+<p>Then extract the effect size with <code><a href="../../reference/gauge.html">gauge()</a></code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">patient</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    age <span class="op">=</span> <span class="fl">63</span>,</span>
-<span>    sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="st">"Male"</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">heart</span><span class="op">$</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    chol <span class="op">=</span> <span class="fl">275</span>,</span>
-<span>    trestbps <span class="op">=</span> <span class="fl">145</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../../reference/predict.html">predict</a></span><span class="op">(</span><span class="va">mod1</span>, new_data <span class="op">=</span> <span class="va">patient</span>, interval <span class="op">=</span> <span class="st">"confidence"</span><span class="op">)</span></span></code></pre></div>
-<pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 1 × 3</span>
-  .pred .pred_lower .pred_upper
-  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>
-<span style="color: #BCBCBC;">1</span>  140.        136.        144.
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/gauge.html">gauge</a></span><span class="op">(</span><span class="va">mod1</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 2 × 2</span>
+  metric    value
+  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>
+<span style="color: #BCBCBC;">1</span> r_squared 0.170
+<span style="color: #BCBCBC;">2</span> cohens_f2 0.204
 </code></pre>
-<p><code>interval = "confidence"</code> is simply passed to
-<code><a href="../../reference/auto_predict.html">auto_predict()</a></code> from <code>class_lm_object</code> class,
-which produces confidence interval estimates that answers “how sure is
-the model about the <em>average</em> patient with this profile”.
-<code>interval</code> has another option: <code>"prediction</code>,
-produces confidence interval estimates that answers “how sure is the
-model about <em>this one</em> patient”.</p>
+<p>For a linear model, that’s <code>r_squared</code>: The share of
+variance in <code>thalach</code> explained by age, sex, and cholesterol
+together, and <code>cohens_f2</code>, the same quantity rescaled onto
+Cohen’s small/medium/large convention (<code>r2 / (1 - r2)</code>).</p>
+<p>By <code><a href="../../reference/GLM.html">GLM()</a></code>’s default, it has no residual sum of squares in
+the OLS sense so <code><a href="../../reference/gauge.html">gauge()</a></code> reports two <span class="math inline">R^2</span>-analogues instead</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/predict.html">predict</a></span><span class="op">(</span><span class="va">mod1</span>, new_data <span class="op">=</span> <span class="va">patient</span>, interval <span class="op">=</span> <span class="st">"prediction"</span><span class="op">)</span></span></code></pre></div>
-<pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 1 × 3</span>
-  .pred .pred_lower .pred_upper
-  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>
-<span style="color: #BCBCBC;">1</span>  140.        98.7        182.
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/gauge.html">gauge</a></span><span class="op">(</span><span class="va">mod2</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 4 × 2</span>
+  metric              value
+  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>
+<span style="color: #BCBCBC;">1</span> deviance_r2        0.044<span style="text-decoration: underline;">0</span>
+<span style="color: #BCBCBC;">2</span> mcfadden_r2        0.044<span style="text-decoration: underline;">0</span>
+<span style="color: #BCBCBC;">3</span> cohens_f2_deviance 0.046<span style="text-decoration: underline;">0</span>
+<span style="color: #BCBCBC;">4</span> cohens_f2_mcfadden 0.046<span style="text-decoration: underline;">0</span>
 </code></pre>
-<p>The same operation on <code>mod2</code> reads through the inverse
-link by default, so it comes back as an implied probability rather than
-a heart-rate value:</p>
+<ul>
+<li><p><code>deviance_r2</code>, built from deviance the way
+<code>r_squared</code> is built from RSS</p></li>
+<li><p><code>mcfadden_r2</code>, comparing the fitted model’s
+log-likelihood against an intercept-only model.</p></li>
+</ul>
+<p>The figure most commonly cited alongside a logistic regression. Each
+gets its own <code>cohens_f2</code> conversion, since the two don’t
+agree closely enough to share one.</p>
+</div>
+<div class="section level2">
+<h2 id="effect-size-for-a-hypothesis-test">Effect size for a hypothesis test<a class="anchor" aria-label="anchor" href="#effect-size-for-a-hypothesis-test"></a>
+</h2>
+<div class="section level3">
+<h3 id="t-test">t-test<a class="anchor" aria-label="anchor" href="#t-test"></a>
+</h3>
+<p>The same <code><a href="../../reference/gauge.html">gauge()</a></code> call works on <code><a href="../../reference/T_TEST.html">T_TEST()</a></code> and
+<code><a href="../../reference/P_TEST.html">P_TEST()</a></code> results too. Is cholesterol different between men
+and women in this cohort?</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/predict.html">predict</a></span><span class="op">(</span><span class="va">mod2</span>, new_data <span class="op">=</span> <span class="va">patient</span>, interval <span class="op">=</span> <span class="st">"confidence"</span><span class="op">)</span></span></code></pre></div>
-<pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 1 × 3</span>
-  .pred .pred_lower .pred_upper
-  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>
-<span style="color: #BCBCBC;">1</span> 0.407       0.325       0.494
+<code class="sourceCode R"><span><span class="va">chol_by_sex</span> <span class="op">=</span> </span>
+<span>    <span class="va">heart</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">chol</span>, <span class="va">sex</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">chol_by_sex</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+== Model ======================================================================= 
+
+Variable Mapper : x_by 
+Args : chol | sex 
+    x_vars : 1 
+    by_vars : 1 
+
+== T-Test ====================================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+────────────────────────────────────────────
+  group  estimate  t_stat    df     p_val   
+────────────────────────────────────────────
+   sex   -22.012   -3.024  134.390  <span style="font-weight: bold;">&lt;0.001</span>  
+────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+   sex   -36.407    -7.617   
+─────────────────────────────
 </code></pre>
-<p><code>interval = "prediction"</code> isn’t offered for
-<code>mod2</code> at all. GLMs have no closed-form prediction error the
-way OLS does, so rather than return something that looks precise but
-isn’t, that argument value simply doesn’t exist for this model.</p>
-</div>
-<div class="section level2">
-<h2 id="a-fitted-curve-for-plotting">A fitted curve for plotting<a class="anchor" aria-label="anchor" href="#a-fitted-curve-for-plotting"></a>
-</h2>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s <code><a href="../../reference/predict.html">predict()</a></code> is strictly typed: by
-default it ensures that the output must produce a data frame. How about
-we visualize them for better interpretability?</p>
-<p>Evaluate <code>mod1</code> across a range of ages, holding the other
-predictors fixed, to draw the fitted relationship itself. This is the
-same fitted-line-with-band you’d see in any applied regression chapter,
-made by evaluating the equation at many covariate points rather than
-one:</p>
+<p>By default, <code>TTEST()</code> under <code><a href="../../reference/x_by.html">x_by()</a></code> path
+doesn’t store per-group sample sizes, so <code><a href="../../reference/auto_gauge.html">auto_gauge()</a></code>
+approximates Cohen’s <em>d</em> as <code>2 * t_stat / sqrt(df)</code>.
+It is “exact” under roughly equal group sizes, and reported as
+<code>cohens_d_approx</code> rather than <code>cohens_d</code> to flag
+the assumption.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">age_grid</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">heart</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">heart</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>, length.out <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>,</span>
-<span>    sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="st">"Male"</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">heart</span><span class="op">$</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    chol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">heart</span><span class="op">$</span><span class="va">chol</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">fitted_curve</span> <span class="op">=</span> <span class="fu"><a href="../../reference/predict.html">predict</a></span><span class="op">(</span><span class="va">mod1</span>, new_data <span class="op">=</span> <span class="va">age_grid</span>, interval <span class="op">=</span> <span class="st">"confidence"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu">mutate</span><span class="op">(</span>age <span class="op">=</span> <span class="va">age_grid</span><span class="op">$</span><span class="va">age</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">fitted_curve</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">age</span>, <span class="va">.pred</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_ribbon</span><span class="op">(</span></span>
-<span>        <span class="fu">aes</span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">.pred_lower</span>, ymax <span class="op">=</span> <span class="va">.pred_upper</span><span class="op">)</span>, </span>
-<span>        alpha <span class="op">=</span> <span class="fl">0.2</span></span>
-<span>    <span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">geom_point</span><span class="op">(</span>data <span class="op">=</span> <span class="va">heart</span>, <span class="fu">aes</span><span class="op">(</span><span class="va">age</span>, <span class="va">thalach</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">labs</span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Max heart rate"</span>, x <span class="op">=</span> <span class="st">"Age"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="predict-examples_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="672"></p>
-<p>Nothing here was held out or scored for accuracy. Every one of those
-fifty ages is a point on the same curve implied by the coefficients
-<code>mod1</code> already reported, with cholesterol pinned at its mean
-and sex pinned at “Male” so the curve isolates the effect of age
-alone.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/gauge.html">gauge</a></span><span class="op">(</span><span class="va">chol_by_sex</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 1 × 3</span>
+  group metric           value
+  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>
+<span style="color: #BCBCBC;">1</span> sex   cohens_d_approx -<span style="color: #BB0000;">0.522</span>
+</code></pre>
+<p>Optionally, you can pass <code>quiet = FALSE</code> to
+<code><a href="../../reference/gauge.html">gauge()</a></code> to print the same caveat as a message.</p>
 </div>
-<div class="section level2">
-<h2 id="on-ergonomicity">On ergonomicity<a class="anchor" aria-label="anchor" href="#on-ergonomicity"></a>
-</h2>
-<p>Base R’s <code>predict.lm</code> returns a vector, a matrix, or a
-list depending on which arguments you passed. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s
-<code><a href="../../reference/predict.html">predict()</a></code> always returns the same shape —
-<code>.pred</code>, <code>truth</code> when honest,
-<code>.pred_lower</code>/<code>.pred_upper</code> when requested — no
-matter whether it’s <code>mod1</code> or <code>mod2</code> underneath,
-or one hand-built row versus a fifty-row grid for a plot.</p>
-<p>That consistency comes from one generic, <code><a href="../../reference/auto_predict.html">auto_predict()</a></code>,
-which any package can implement once for its own result class and get
-<code><a href="../../reference/predict.html">predict()</a></code> for free — no changes to <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>
-itself required. What differs is just which arguments a model can
-honestly support: <code>interval = "prediction"</code> for
-<code>class_lm_object</code>, not for <code>class_glm_object</code>;
-<code>type</code> only for the GLM. See <code><a href="../../reference/class_lm_object.html">?class_lm_object</a></code> /
-<code><a href="../../reference/class_glm_object.html">?class_glm_object</a></code> for specifics.</p>
+<div class="section level3">
+<h3 id="proportion-test">Proportion test<a class="anchor" aria-label="anchor" href="#proportion-test"></a>
+</h3>
+<p>And what fraction of this cohort has heart disease, against a
+hypothesized 50%?</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">n_yes</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">heart</span><span class="op">$</span><span class="va">target</span> <span class="op">==</span> <span class="st">"Yes"</span><span class="op">)</span></span>
+<span><span class="va">n_total</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">heart</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">disease_rate</span> <span class="op">=</span> <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/prop.html">prop</a></span><span class="op">(</span><span class="va">n_yes</span>, <span class="va">n_total</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">P_TEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span><span class="fu"><a href="../../reference/PI.html">PI</a></span><span class="op">(</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">disease_rate</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+== Model ======================================================================= 
+
+Variable Mapper : prop 
+Args : 165 / 303 
+    x : 165 
+    n : 303 
+
+== Proportion Test ============================================================= 
+
+-- Summary ---------------------------------------------------------------------
+
+────────────────────────────────────────────────
+   x    n   true_p  estimate  statistic  p_val  
+────────────────────────────────────────────────
+  165  303  0.500    0.545       165     <span style="font-style: italic;">0.135</span>  
+────────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+──────────────────────
+  lower_95  upper_95  
+──────────────────────
+   0.487     0.602    
+──────────────────────
+</code></pre>
+<p>By default, <code><a href="../../reference/gauge.html">gauge()</a></code> for <code><a href="../../reference/P_TEST.html">P_TEST()</a></code> reports
+Cohen’s <em>h</em>, the arcsine-transformed difference between the
+observed and hypothesized proportions. The standard effect size for a
+single proportion, since raw proportion differences aren’t comparable
+across different baseline rates the way Cohen’s <em>d</em> is for
+means.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/gauge.html">gauge</a></span><span class="op">(</span><span class="va">disease_rate</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 1 × 2</span>
+  metric    value
+  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>
+<span style="color: #BCBCBC;">1</span> cohens_h 0.089<span style="text-decoration: underline;">2</span>
+</code></pre>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
