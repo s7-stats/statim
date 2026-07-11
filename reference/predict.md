@@ -7,7 +7,7 @@
 ## Usage
 
 ``` r
-predict(object, new_data = NULL, ...)
+predict(object, new_data = NULL, ..., check_type = TRUE)
 ```
 
 ## Format
@@ -29,6 +29,12 @@ An object of class `S7_external_generic` of length 4.
 - ...:
 
   Passed to the dispatched method.
+
+- check_type:
+
+  Check whether the returned output is a data frame. If `TRUE`,
+  `predict()` is enforcing the dispatched returned output to be a data
+  frame. Default is `TRUE`.
 
 ## Value
 

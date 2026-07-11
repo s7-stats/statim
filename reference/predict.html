@@ -69,7 +69,7 @@ cld_exec object produced by conclude()."></head><body>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">predict</span><span class="op">(</span><span class="va">object</span>, new_data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">predict</span><span class="op">(</span><span class="va">object</span>, new_data <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, check_type <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -91,6 +91,12 @@ cld_exec object produced by conclude()."></head><body>
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Passed to the dispatched method.</p></dd>
+
+
+<dt id="arg-check-type">check_type<a class="anchor" aria-label="anchor" href="#arg-check-type"></a></dt>
+<dd><p>Check whether the returned output is a data frame. If <code>TRUE</code>,
+<code>predict()</code> is enforcing the dispatched returned output to be a data frame. Default
+is <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
