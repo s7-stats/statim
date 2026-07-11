@@ -88,6 +88,7 @@ Downstream packages can use it as a <code>parent</code> in <code><a href="https:
 <li><p><code>null_logLik</code>: scalar log-likelihood of the intercept-only model.</p></li>
 <li><p><code>beta</code>: named numeric vector of coefficient estimates.</p></li>
 <li><p><code>std_beta</code>: named numeric vector of coefficient standard errors.</p></li>
+<li><p><code>actual</code>: numeric vector of the original values on the response scale.</p></li>
 <li><p><code>fitted</code>: numeric vector of fitted values on the response scale.</p></li>
 <li><p><code>vcov</code>: variance-covariance matrix of the coefficients, e.g.
 <code>stats::vcov(fit)</code>. Required for <code><a href="predict.html">predict()</a></code> with <code>interval</code>.</p></li>
@@ -147,6 +148,7 @@ analogue of OLS prediction error.</p></li>
 <span class="r-in"><span>    aic <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">aic</span>,</span></span>
 <span class="r-in"><span>    beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>    std_beta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>    actual <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    fitted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    vcov <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    x_mat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html" class="external-link">model.matrix</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span>,</span></span>

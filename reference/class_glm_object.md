@@ -41,6 +41,8 @@ Constructor arguments (populated automatically by
 
 - `std_beta`: named numeric vector of coefficient standard errors.
 
+- `actual`: numeric vector of the original values on the response scale.
+
 - `fitted`: numeric vector of fitted values on the response scale.
 
 - `vcov`: variance-covariance matrix of the coefficients, e.g.
@@ -119,6 +121,7 @@ obj = class_glm_object(
     aic = fit$aic,
     beta = coef(s)[, 1],
     std_beta = coef(s)[, 2],
+    actual = unname(fit$y),
     fitted = unname(fit$fitted.values),
     vcov = vcov(fit),
     x_mat = as.numeric(model.matrix(fit)),
