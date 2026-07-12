@@ -173,6 +173,36 @@ describing what each stage produces and why.</p>
 <td>side effect</td>
 <td>(reads <code>cld_exec@data</code>)</td>
 </tr>
+<tr class="odd">
+<td><a href="#multiple-executions">Multiple executions</a></td>
+<td><code><a href="../../reference/write_models.html">write_models()</a></code></td>
+<td><code>&lt;expanded_model&gt;</code></td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td><a href="#multiple-executions">Multiple executions</a></td>
+<td>
+<code><a href="../../reference/prepare-model.html">prepare_model()</a></code> / <code><a href="../../reference/prepare-test.html">prepare_test()</a></code> /
+<code><a href="../../reference/prepare.html">prepare()</a></code>
+</td>
+<td><code>&lt;multi_lazy&gt;</code></td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td><a href="#multiple-executions">Multiple executions</a></td>
+<td>
+<code><a href="../../reference/via.html">via()</a></code> / <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code>
+</td>
+<td>modified <code>&lt;multi_lazy&gt;</code>
+</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td><a href="#multiple-executions">Multiple executions</a></td>
+<td><code><a href="../../reference/conclude.html">conclude()</a></code></td>
+<td><code>&lt;multi_exec&gt;</code></td>
+<td><strong>Yes</strong></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -606,6 +636,174 @@ outputs rather than on <code>cld_exec</code> directly. It dispatches on
 and always returns a <code>&lt;cld_anova&gt;</code>. See the <a href="../usage/anova-mod.html">ANOVA for Linear Models</a> article for
 the full walkthrough.</p>
 </div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="multiple-executions">Multiple executions<a class="anchor" aria-label="anchor" href="#multiple-executions"></a>
+</h2>
+<p><code><a href="../../reference/write_models.html">write_models()</a></code> is the entry point for running the same
+stat or model across several specifications in one pipeline. It sits
+where <code><a href="../../reference/layout-define-base.html">define_model()</a></code> sits, producing an
+<code>&lt;expanded_model&gt;</code> instead of a
+<code>&lt;def_var&gt;</code>, and the rest of the pipeline follows the
+same three-verb shape with batch-aware classes at each stage.</p>
+<div class="section level3">
+<h3 id="write_models-builds-an-expanded_model">
+<code>write_models()</code> builds an
+<code>expanded_model</code><a class="anchor" aria-label="anchor" href="#write_models-builds-an-expanded_model"></a>
+</h3>
+<p><code><a href="../../reference/write_models.html">write_models()</a></code> is an S7 generic dispatched on
+<code>.data</code>. Each named argument is a quosure, evaluated in order
+against a data mask seeded from <code>.data</code>. Because each result
+is written into the mask under its own name as soon as it’s evaluated,
+later expressions can build on earlier ones with
+<code><a href="https://rdrr.io/r/stats/update.html" class="external-link">stats::update()</a></code>:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        f1 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>        f2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">f1</span>, <span class="op">~</span><span class="va">.</span> <span class="op">+</span> <span class="va">pop15</span><span class="op">)</span>,</span>
+<span>        f3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">f2</span>, <span class="op">~</span><span class="va">.</span> <span class="op">+</span> <span class="va">pop75</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Models ---------------------------------------------------------------------- </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   f1 : sr ~ 1</span></span>
+<span><span class="co">#&gt;   f2 : sr ~ pop15</span></span>
+<span><span class="co">#&gt;   f3 : sr ~ pop15 + pop75</span></span></code></pre></div>
+<p>Each resolved expression is a <code>var_id</code> (a formula, or the
+result of <code><a href="../../reference/rel.html">rel()</a></code>, <code><a href="../../reference/x_by.html">x_by()</a></code>, or any registered
+<code>var_id</code> constructor). <code><a href="../../reference/write_models.html">write_models()</a></code> runs it
+through <code><a href="../../reference/model-processor.html">model_processor()</a></code> against <code>.data</code> and
+stores it as a <code>&lt;def_var&gt;</code> — the same object
+<code><a href="../../reference/layout-define-base.html">define_model()</a></code> produces for a single model:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">expanded_model</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>    <span class="at">models =</span> <span class="sc">&lt;</span>named list of def_var<span class="sc">&gt;</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>    <span class="at">labels =</span> <span class="sc">&lt;</span><span class="fu">names</span>(...)<span class="sc">&gt;</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>)</span></code></pre></div>
+<p>Nothing has been fit yet.</p>
+</div>
+<div class="section level3">
+<h3 id="attaching-a-spec-multi_lazy">Attaching a spec: <code>&lt;multi_lazy&gt;</code><a class="anchor" aria-label="anchor" href="#attaching-a-spec-multi_lazy"></a>
+</h3>
+<p><code><a href="../../reference/prepare-model.html">prepare_model()</a></code>, <code><a href="../../reference/prepare-test.html">prepare_test()</a></code>, and
+<code><a href="../../reference/prepare.html">prepare()</a></code> each have a method for
+<code>list(expanded_model, S7::class_function)</code>. The spec is built
+once — via <code>as_model_spec()</code>, <code>as_test_spec()</code>, or
+by calling <code>.fn(.var_id = NULL)</code> — then applied to every
+<code>def_var</code> in <code>@models</code>, producing one
+<code>model_lazy</code> or <code>test_lazy</code> per model:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        f1 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>        f2 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span>,</span>
+<span>        f3 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span> <span class="op">+</span> <span class="va">pop75</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Models ---------------------------------------------------------------------- </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   f1 : sr ~ 1</span></span>
+<span><span class="co">#&gt;   f2 : sr ~ pop15</span></span>
+<span><span class="co">#&gt;   f3 : sr ~ pop15 + pop75</span></span></code></pre></div>
+<p>The result is a <code>&lt;multi_lazy&gt;</code>, carrying
+<code>@models</code> (the list of lazy objects), <code>@labels</code>,
+and <code>@args</code> (empty until <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> is used).</p>
+</div>
+<div class="section level3">
+<h3 id="via-and-update-on-multi_lazy">
+<code>via()</code> and <code>update()</code> on
+<code>multi_lazy</code><a class="anchor" aria-label="anchor" href="#via-and-update-on-multi_lazy"></a>
+</h3>
+<p><code><a href="../../reference/via.html">via()</a></code> has a method for
+<code>list(multi_lazy, S7::class_character)</code> that maps the
+single-model <code><a href="../../reference/via.html">via()</a></code> over every element of
+<code>@models</code>, so one call recalibrates the whole batch with the
+same variant and arguments:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mtcars</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        by_am <span class="op">=</span> <span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">am</span><span class="op">)</span>,</span>
+<span>        by_vs <span class="op">=</span> <span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">mpg</span>, <span class="va">vs</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-test.html">prepare_test</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"permute"</span>, n <span class="op">=</span> <span class="fl">999L</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; -- Models ---------------------------------------------------------------------- </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   by_am : mpg | am</span></span>
+<span><span class="co">#&gt;   by_vs : mpg | vs</span></span></code></pre></div>
+<p><code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> is for adjusting arguments after the fact
+rather than swapping variants. For each model it merges its
+<code>...</code> into whichever argument list is currently active —
+<code>@recalibrate_spec$args</code> if <code><a href="../../reference/via.html">via()</a></code> has been
+called, <code>@model_spec@args</code> otherwise:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m</span><span class="op">@</span><span class="va">recalibrate_spec</span><span class="op">$</span><span class="va">args</span> <span class="op">=</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/modifyList.html" class="external-link">modifyList</a></span><span class="op">(</span><span class="va">m</span><span class="op">@</span><span class="va">recalibrate_spec</span><span class="op">$</span><span class="va">args</span>, <span class="va">dots</span><span class="op">)</span></span>
+<span><span class="co"># or, when no via() was called:</span></span>
+<span><span class="va">m</span><span class="op">@</span><span class="va">model_spec</span><span class="op">@</span><span class="va">args</span> <span class="op">=</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/modifyList.html" class="external-link">modifyList</a></span><span class="op">(</span><span class="va">m</span><span class="op">@</span><span class="va">model_spec</span><span class="op">@</span><span class="va">args</span>, <span class="va">dots</span><span class="op">)</span></span></code></pre></div>
+<p>Only the named arguments supplied to <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> are
+overwritten; everything else is left as-is.</p>
+</div>
+<div class="section level3">
+<h3 id="conclude-produces-multi_exec">
+<code>conclude()</code> produces
+<code>&lt;multi_exec&gt;</code><a class="anchor" aria-label="anchor" href="#conclude-produces-multi_exec"></a>
+</h3>
+<p><code><a href="../../reference/conclude.html">conclude()</a></code> on <code>&lt;multi_lazy&gt;</code> runs the
+ordinary single-model <code><a href="../../reference/conclude.html">conclude()</a></code> over each element of
+<code>@models</code> and names the results by <code>@labels</code>:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        f1 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>        f2 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span>,</span>
+<span>        f3 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span> <span class="op">+</span> <span class="va">pop75</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── 3 models · Linear Regression ──────────────────────────────────────────────── </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; f1 : &lt;cld_exec&gt;</span></span>
+<span><span class="co">#&gt; f2 : &lt;cld_exec&gt;</span></span>
+<span><span class="co">#&gt; f3 : &lt;cld_exec&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Use display() to inspect individual results.</span></span></code></pre>
+<p>The resulting <code>&lt;multi_exec&gt;</code> stores
+<code>@results</code> (a named list of <code>cld_exec</code>),
+<code>@labels</code>, and <code>@stat_name</code> (read off the first
+result’s <code>cld_meta</code>, for display purposes only).</p>
+</div>
+<div class="section level3">
+<h3 id="tidy-on-multi_exec">
+<code>tidy()</code> on <code>&lt;multi_exec&gt;</code><a class="anchor" aria-label="anchor" href="#tidy-on-multi_exec"></a>
+</h3>
+<p><code><a href="../../reference/tidy.html">tidy()</a></code> on <code>&lt;multi_exec&gt;</code> maps the
+ordinary <code><a href="../../reference/tidy.html">tidy()</a></code> over <code>@results</code> and returns one
+row per model, with an <code>outs</code> list-column holding each
+model’s own tidy tibble:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">LifeCycleSavings</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        f1 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>        f2 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span>,</span>
+<span>        f3 <span class="op">=</span> <span class="va">sr</span> <span class="op">~</span> <span class="va">pop15</span> <span class="op">+</span> <span class="va">pop75</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span><span class="co">#&gt; # A tibble: 3 × 2</span></span>
+<span><span class="co">#&gt;   model outs            </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt; &lt;named list&gt;    </span></span>
+<span><span class="co">#&gt; 1 f1    &lt;tibble [1 × 5]&gt;</span></span>
+<span><span class="co">#&gt; 2 f2    &lt;tibble [2 × 5]&gt;</span></span>
+<span><span class="co">#&gt; 3 f3    &lt;tibble [3 × 5]&gt;</span></span></code></pre>
+<p><code><a href="../../reference/display.html">display()</a></code>, covered above under <a href="#retrieve-output">Retrieval of outputs</a>, and
+<code><a href="../../reference/anova-mod.html">anova()</a></code> are the other two ways to pull information back out
+of a <code>&lt;multi_exec&gt;</code> /
+<code>&lt;multi_lazy&gt;</code>.</p>
 </div>
 </div>
 <div class="section level2">

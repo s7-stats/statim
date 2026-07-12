@@ -29,6 +29,10 @@ describing what each stage produces and why.
 | [Stage 3: output process](#execution-at-conclude) | [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md) | `cld_exec` | **Yes** |
 | [Stage 3: output process](#retrieve-output) | [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) | tibble | (reads `cld_exec@data`) |
 | [Stage 3: output process](#retrieve-output) | [`print()`](https://rdrr.io/r/base/print.html) | side effect | (reads `cld_exec@data`) |
+| [Multiple executions](#multiple-executions) | [`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md) | `<expanded_model>` | No |
+| [Multiple executions](#multiple-executions) | [`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md) / [`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md) / [`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md) | `<multi_lazy>` | No |
+| [Multiple executions](#multiple-executions) | [`via()`](https://s7-stats.github.io/statim/reference/via.md) / [`update()`](https://rdrr.io/r/stats/update.html) | modified `<multi_lazy>` | No |
+| [Multiple executions](#multiple-executions) | [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md) | `<multi_exec>` | **Yes** |
 
 ## Stage 1: Defining the Layout
 
@@ -507,6 +511,206 @@ a separate generic that operates on model outputs rather than on
 See the [ANOVA for Linear
 Models](https://s7-stats.github.io/statim/articles/usage/anova-mod.md)
 article for the full walkthrough.
+
+## Multiple executions
+
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+is the entry point for running the same stat or model across several
+specifications in one pipeline. It sits where
+[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
+sits, producing an `<expanded_model>` instead of a `<def_var>`, and the
+rest of the pipeline follows the same three-verb shape with batch-aware
+classes at each stage.
+
+### `write_models()` builds an `expanded_model`
+
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+is an S7 generic dispatched on `.data`. Each named argument is a
+quosure, evaluated in order against a data mask seeded from `.data`.
+Because each result is written into the mask under its own name as soon
+as it’s evaluated, later expressions can build on earlier ones with
+[`stats::update()`](https://rdrr.io/r/stats/update.html):
+
+``` r
+
+LifeCycleSavings |>
+    write_models(
+        f1 = sr ~ 1,
+        f2 = update(f1, ~. + pop15),
+        f3 = update(f2, ~. + pop75)
+    )
+#> 
+#> -- Models ---------------------------------------------------------------------- 
+#> 
+#>   f1 : sr ~ 1
+#>   f2 : sr ~ pop15
+#>   f3 : sr ~ pop15 + pop75
+```
+
+Each resolved expression is a `var_id` (a formula, or the result of
+[`rel()`](https://s7-stats.github.io/statim/reference/rel.md),
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md), or any
+registered `var_id` constructor).
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+runs it through
+[`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md)
+against `.data` and stores it as a `<def_var>` — the same object
+[`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
+produces for a single model:
+
+``` r
+expanded_model(
+    models = <named list of def_var>,
+    labels = <names(...)>
+)
+```
+
+Nothing has been fit yet.
+
+### Attaching a spec: `<multi_lazy>`
+
+[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md),
+[`prepare_test()`](https://s7-stats.github.io/statim/reference/prepare-test.md),
+and
+[`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md)
+each have a method for `list(expanded_model, S7::class_function)`. The
+spec is built once — via `as_model_spec()`, `as_test_spec()`, or by
+calling `.fn(.var_id = NULL)` — then applied to every `def_var` in
+`@models`, producing one `model_lazy` or `test_lazy` per model:
+
+``` r
+
+LifeCycleSavings |>
+    write_models(
+        f1 = sr ~ 1,
+        f2 = sr ~ pop15,
+        f3 = sr ~ pop15 + pop75
+    ) |>
+    prepare_model(LINEAR_REG)
+#> 
+#> -- Models ---------------------------------------------------------------------- 
+#> 
+#>   f1 : sr ~ 1
+#>   f2 : sr ~ pop15
+#>   f3 : sr ~ pop15 + pop75
+```
+
+The result is a `<multi_lazy>`, carrying `@models` (the list of lazy
+objects), `@labels`, and `@args` (empty until
+[`update()`](https://rdrr.io/r/stats/update.html) is used).
+
+### `via()` and `update()` on `multi_lazy`
+
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) has a
+method for `list(multi_lazy, S7::class_character)` that maps the
+single-model
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) over every
+element of `@models`, so one call recalibrates the whole batch with the
+same variant and arguments:
+
+``` r
+
+mtcars |>
+    write_models(
+        by_am = x_by(mpg, am),
+        by_vs = x_by(mpg, vs)
+    ) |>
+    prepare_test(T_TEST) |>
+    via("permute", n = 999L)
+#> 
+#> -- Models ---------------------------------------------------------------------- 
+#> 
+#>   by_am : mpg | am
+#>   by_vs : mpg | vs
+```
+
+[`update()`](https://rdrr.io/r/stats/update.html) is for adjusting
+arguments after the fact rather than swapping variants. For each model
+it merges its `...` into whichever argument list is currently active —
+`@recalibrate_spec$args` if
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) has been
+called, `@model_spec@args` otherwise:
+
+``` r
+
+m@recalibrate_spec$args = utils::modifyList(m@recalibrate_spec$args, dots)
+# or, when no via() was called:
+m@model_spec@args = utils::modifyList(m@model_spec@args, dots)
+```
+
+Only the named arguments supplied to
+[`update()`](https://rdrr.io/r/stats/update.html) are overwritten;
+everything else is left as-is.
+
+### `conclude()` produces `<multi_exec>`
+
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
+on `<multi_lazy>` runs the ordinary single-model
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
+over each element of `@models` and names the results by `@labels`:
+
+``` r
+
+LifeCycleSavings |>
+    write_models(
+        f1 = sr ~ 1,
+        f2 = sr ~ pop15,
+        f3 = sr ~ pop15 + pop75
+    ) |>
+    prepare_model(LINEAR_REG) |>
+    conclude()
+```
+
+``` fansi
+#> 
+#> ── 3 models · Linear Regression ──────────────────────────────────────────────── 
+#> 
+#> f1 : <cld_exec>
+#> f2 : <cld_exec>
+#> f3 : <cld_exec>
+#> 
+#> Use display() to inspect individual results.
+```
+
+The resulting `<multi_exec>` stores `@results` (a named list of
+`cld_exec`), `@labels`, and `@stat_name` (read off the first result’s
+`cld_meta`, for display purposes only).
+
+### `tidy()` on `<multi_exec>`
+
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) on
+`<multi_exec>` maps the ordinary
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) over
+`@results` and returns one row per model, with an `outs` list-column
+holding each model’s own tidy tibble:
+
+``` r
+
+LifeCycleSavings |>
+    write_models(
+        f1 = sr ~ 1,
+        f2 = sr ~ pop15,
+        f3 = sr ~ pop15 + pop75
+    ) |>
+    prepare_model(LINEAR_REG) |>
+    conclude() |>
+    tidy()
+```
+
+``` fansi
+#> # A tibble: 3 × 2
+#>   model outs            
+#>   <chr> <named list>    
+#> 1 f1    <tibble [1 × 5]>
+#> 2 f2    <tibble [2 × 5]>
+#> 3 f3    <tibble [3 × 5]>
+```
+
+[`display()`](https://s7-stats.github.io/statim/reference/display.md),
+covered above under [Retrieval of outputs](#retrieve-output), and
+[`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
+are the other two ways to pull information back out of a `<multi_exec>`
+/ `<multi_lazy>`.
 
 ## Eager path vs lazy path
 
