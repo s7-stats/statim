@@ -58,6 +58,8 @@ box::use(
         T_TEST, COR_TEST, P_TEST,
         # Current grammars
         define_model, prepare, via, state_null, conclude,
+        # Multiple executions
+        write_models, display, 
         # Mappers
         x_by, rel, prop, on,
         MU, RHO, PI
@@ -936,6 +938,218 @@ worth it if you’re already committed to the pipeline for other reasons.
 
 Interpretation: 33 of 207 men (15.9%), not distinguishable from the 15%
 baseline (p = 0.697).
+
+## Multiple Executions
+
+Every question above ran one test through one layout.
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+lets you batch several layouts of the *same* test into a single
+pipeline, instead of writing out
+`define_model() |> prepare() |> conclude()` once per layout:
+
+``` r
+
+out = 
+    heart |>
+    write_models(
+        mod1 = on(trestbps),
+        mod2 = x_by(thalach, sex),
+        mod3 = thalach ~ sex
+    ) |>
+    prepare(T_TEST) |>
+    conclude()
+
+out
+```
+
+``` fansi
+
+── 3 models · T-Test ─────────────────────────────────────────────────────────── 
+
+mod1 : <cld_exec>
+mod2 : <cld_exec>
+mod3 : <cld_exec>
+
+Use display() to inspect individual results.
+```
+
+Each name becomes its own lazy model behind the scenes,
+`prepare(T_TEST)` attaches the same test to all three at once, and
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
+runs each independently and hands back a `<multi_exec>` —
+[`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) or
+[`display()`](https://s7-stats.github.io/statim/reference/display.md) on
+it to inspect the individual results, as covered in [Execution and
+Retrieval of
+Outputs](https://s7-stats.github.io/statim/articles/pointers/execution-methods.html#multiple-executions).
+
+``` r
+
+display(out, 2)
+```
+
+``` fansi
+
+1. mod1
+
+== Model ======================================================================= 
+
+Variable Mapper : on 
+Args : trestbps 
+
+== T-Test ====================================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+────────────────────────────────────────────────
+    term    estimate  true_mu  t_stat   p_val   
+────────────────────────────────────────────────
+  trestbps  131.624      0     130.639  <0.001  
+────────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+────────────────────────────────
+    term    lower_95  upper_95  
+────────────────────────────────
+  trestbps  129.641   133.607   
+────────────────────────────────
+
+
+
+2. mod2
+
+== Model ======================================================================= 
+
+Variable Mapper : x_by 
+Args : thalach | sex 
+    x_vars : 1 
+    by_vars : 1 
+
+== T-Test ====================================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+───────────────────────────────────────────
+  group  estimate  t_stat    df     p_val  
+───────────────────────────────────────────
+   sex    -2.164   -0.818  219.790  0.414  
+───────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+   sex    -7.378    3.050    
+─────────────────────────────
+```
+
+On a side note,
+[`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md)’s
+`...` forwards into the spec on a
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+batch too, the same way it already does on a single `<def_var>`. So
+`.mu = 120` below reaches every model in the batch whose `fn` actually
+has a `.mu` formal:
+
+``` r
+
+heart |>
+    write_models(
+        mod1 = on(trestbps),
+        mod3 = thalach ~ sex
+    ) |>
+    prepare(T_TEST, .mu = 120) |>
+    conclude()
+```
+
+``` fansi
+
+── 2 models · T-Test ─────────────────────────────────────────────────────────── 
+
+mod1 : <cld_exec>
+mod3 : <cld_exec>
+
+Use display() to inspect individual results.
+```
+
+`mod1` picks it up because its one-sample `fn` declares `.mu`; `mod3`’s
+two-sample `fn` doesn’t, so the same argument is simply ignored for that
+model rather than erroring — `inject_and_run()` only pulls from
+`all_args` what a given `fn`’s formals actually ask for, whether the
+model came from a batch or a single-model pipeline.
+
+Two things need extra care once a batch mixes layouts like this, rather
+than repeating the same layout across models.
+
+### `state_null()` doesn’t span mixed layouts
+
+Not every layout parses a stated hypothesis the same way. Recall from
+[Question 2](#q2): `x_by(thalach, sex)`’s `claim_parser` reads group
+filters straight out of the claim (`MU(thalach, sex == "Female")`),
+[`on()`](https://s7-stats.github.io/statim/reference/on.md) has no such
+filter at all, and the `<formula>` layout has no `claim_parser`
+translation of its own yet. A single
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+call attached to a
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+batch would have to mean the same thing across all three shapes at once.
+Therefore, right now,
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+isn’t wired up for `<multi_lazy>` objects.
+
+In practice, a
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+batch is for comparing layouts (or variables) against a test’s own
+default hypothesis, not for stating one numeric claim across a batch of
+differently-shaped models. If a specific hypothesis needs testing, stick
+to one `define_model() |> prepare() |> state_null() |> conclude()`
+pipeline per layout, the way Questions 1-3 do it above.
+
+### `via()` applies the same call to every model in the batch
+
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) on a
+`<multi_lazy>` doesn’t ask which model it’s talking to — the method name
+and any arguments you pass are applied to every model in the batch.
+That’s only safe when every layout present shares the same
+estimation-method vocabulary.
+[`on()`](https://s7-stats.github.io/statim/reference/on.md)’s one-sample
+t-test and
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)’s
+two-sample t-test don’t:
+[`on()`](https://s7-stats.github.io/statim/reference/on.md) needs
+`via("two_sample")` to compare two vectors (see [Question 2](#q2)’s
+first tab), while
+[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) is
+already two-sample by default and has no reason to register that variant
+at all. Mixing the two in one batch and calling
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) once means
+the variant name has to be registered, with matching arguments, for
+every model type present:
+
+``` r
+
+heart |>
+    write_models(
+        mod1 = on(trestbps),
+        mod2 = x_by(thalach, sex)
+    ) |>
+    prepare(T_TEST) |>
+    via("two_sample") |>   # registered for on(); x_by() is two-sample already and may not have it
+    conclude()
+```
+
+     [1m [33mError [39m in `method(via, list(statim::test_lazy, class_character))`: [22m
+     [1m [22m [33m! [39m No variant  [34m"two_sample" [39m registered for model type  [34m"x_by" [39m.
+     [36mℹ [39m Available variants:  [34m"contrast" [39m,  [34m"multi" [39m,  [34m"boot" [39m, and  [34m"permute" [39m.
+
+The safer default is to keep a batch to layouts that share the same
+estimation method — either all left at `base`, or all recalibrated to a
+variant every model type in the batch actually registers — and fall back
+to separate single-model pipelines the moment the variants diverge.
 
 ## Conclusion
 

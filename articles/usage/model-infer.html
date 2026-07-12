@@ -165,10 +165,12 @@ predict the presence of heart disease?</a></li>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
 <span>    <span class="va">statim</span><span class="op">[</span></span>
-<span>        <span class="va">define_model</span>, <span class="va">prepare_model</span>, <span class="va">via</span>, <span class="va">conclude</span>,</span>
+<span>        <span class="va">define_model</span>, <span class="va">prepare_model</span>, <span class="va">via</span>, <span class="va">conclude</span>, </span>
 <span>        <span class="co"># Supported models</span></span>
 <span>        <span class="va">LINEAR_REG</span>, <span class="va">GLM</span>,</span>
-<span>        <span class="va">rel</span>, <span class="va">tidy</span></span>
+<span>        <span class="va">rel</span>, <span class="va">tidy</span>,</span>
+<span>        <span class="co"># Multiple executions</span></span>
+<span>        <span class="va">write_models</span>, <span class="va">anova</span></span>
 <span>    <span class="op">]</span>,</span>
 <span>    <span class="va">stats</span><span class="op">[</span><span class="va">update</span>, <span class="va">binomial</span><span class="op">]</span></span>
 <span><span class="op">)</span></span>
@@ -595,6 +597,149 @@ in this cohort. Cholesterol and resting blood pressure don’t clear
 significance on their own once age is accounted for, an easy fact to
 miss if you eyeballed <code>chol</code> and <code>trestbps</code> in
 isolation.</p>
+</div>
+<div class="section level2">
+<h2 id="multi-exec">Multiple Executions<a class="anchor" aria-label="anchor" href="#multi-exec"></a>
+</h2>
+<p><code><a href="../../reference/write_models.html">write_models()</a></code> fits into the model-based pipeline the
+same way it does the hypothesis-testing one — see
+<code>vignette("htest", package = "statim")</code>’s own Multiple
+Executions section for the mechanics. For regression specifically, it’s
+most useful for comparing nested models: adding predictors one at a time
+and checking whether the fit earns each one.</p>
+<div class="section level3">
+<h3 id="two-layouts-one-batch">Two layouts, one batch<a class="anchor" aria-label="anchor" href="#two-layouts-one-batch"></a>
+</h3>
+<p>Question 1 showed <code>rel(age, trestbps)</code> and
+<code>trestbps ~ age</code> landing on the same fit.
+<code><a href="../../reference/write_models.html">write_models()</a></code> lets you see that side by side instead of
+running the two blocks separately:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        mod1 <span class="op">=</span> <span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">trestbps</span><span class="op">)</span>,</span>
+<span>        mod2 <span class="op">=</span> <span class="va">trestbps</span> <span class="op">~</span> <span class="va">age</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 2 × 2</span>
+  model outs            
+  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;named list&gt;</span>    
+<span style="color: #BCBCBC;">1</span> mod1  <span style="color: #949494;">&lt;tibble [2 × 5]&gt;</span>
+<span style="color: #BCBCBC;">2</span> mod2  <span style="color: #949494;">&lt;tibble [2 × 5]&gt;</span>
+</code></pre>
+</div>
+<div class="section level3">
+<h3 id="nested-models-and-anova">Nested models and <code>anova()</code><a class="anchor" aria-label="anchor" href="#nested-models-and-anova"></a>
+</h3>
+<p>Growing a formula with <code><a href="https://rdrr.io/r/stats/update.html" class="external-link">stats::update()</a></code> inside
+<code><a href="../../reference/write_models.html">write_models()</a></code> builds a batch of nested
+<code>LINEAR_REG</code> models in one pipeline, extending Question 2’s
+model one predictor at a time:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        m1 <span class="op">=</span> <span class="va">thalach</span> <span class="op">~</span> <span class="va">age</span>,</span>
+<span>        m2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">m1</span>, <span class="op">~</span><span class="va">.</span> <span class="op">+</span> <span class="va">sex</span><span class="op">)</span>,</span>
+<span>        m3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">m2</span>, <span class="op">~</span><span class="va">.</span> <span class="op">+</span> <span class="va">chol</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/tidy.html">tidy</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 3 × 2</span>
+  model outs            
+  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;named list&gt;</span>    
+<span style="color: #BCBCBC;">1</span> m1    <span style="color: #949494;">&lt;tibble [2 × 5]&gt;</span>
+<span style="color: #BCBCBC;">2</span> m2    <span style="color: #949494;">&lt;tibble [3 × 5]&gt;</span>
+<span style="color: #BCBCBC;">3</span> m3    <span style="color: #949494;">&lt;tibble [4 × 5]&gt;</span>
+</code></pre>
+<p><code><a href="../../reference/anova-mod.html">anova()</a></code> dispatches on <code>&lt;multi_lazy&gt;</code>
+directly, so the nested comparison doesn’t need <code><a href="../../reference/conclude.html">conclude()</a></code>
+first:</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        m1 <span class="op">=</span> <span class="va">thalach</span> <span class="op">~</span> <span class="va">age</span>,</span>
+<span>        m2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">m1</span>, <span class="op">~</span><span class="va">.</span> <span class="op">+</span> <span class="va">sex</span><span class="op">)</span>,</span>
+<span>        m3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">m2</span>, <span class="op">~</span><span class="va">.</span> <span class="op">+</span> <span class="va">chol</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/anova-mod.html">anova</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+== ANOVA · F =================================================================== 
+
+-- ANOVA Table -----------------------------------------------------------------
+
+─────────────────────────────────────────────────────────────
+  model  res_df   deviance   df  dev_diff  f_value  p_value  
+─────────────────────────────────────────────────────────────
+   m1     301    133279.305                         <span style="font-style: italic;">   </span>      
+   m2     300    132170.377  1   1108.928   2.521   <span style="font-style: italic;"> 0.113</span>   
+   m3     299    131545.082  1   625.295    1.421   <span style="font-style: italic;"> 0.234</span>   
+─────────────────────────────────────────────────────────────
+</code></pre>
+<p>Interpretation: consistent with Question 2, adding <code>sex</code>
+barely moves the fit, and <code>chol</code> doesn’t do much better. Age
+alone is carrying most of the explanatory weight across all three
+models.</p>
+</div>
+<div class="section level3">
+<h3 id="passing-arguments-across-a-glm-batch">Passing arguments across a <code>GLM</code> batch<a class="anchor" aria-label="anchor" href="#passing-arguments-across-a-glm-batch"></a>
+</h3>
+<p>The same nested-model idea applies to <code>GLM</code>, only now
+<code>family</code> has to reach every model in the batch.
+<code><a href="../../reference/prepare-model.html">prepare_model()</a></code>’s <code>...</code> forwards into the spec
+for a <code><a href="../../reference/write_models.html">write_models()</a></code> batch, so
+<code>family = binomial()</code> doesn’t need a separate
+<code><a href="https://rdrr.io/r/stats/update.html" class="external-link">update()</a></code> step:</p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        g1 <span class="op">=</span> <span class="va">target</span> <span class="op">~</span> <span class="va">age</span>,</span>
+<span>        g2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">g1</span>, <span class="op">~</span><span class="va">.</span> <span class="op">+</span> <span class="va">chol</span><span class="op">)</span>,</span>
+<span>        g3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">g2</span>, <span class="op">~</span><span class="va">.</span> <span class="op">+</span> <span class="va">trestbps</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">GLM</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/anova-mod.html">anova</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code> [1m [22m [33m! [39m F-test is only valid for Gaussian models.
+ [36mℹ [39m Switching to LRT for family  [34m"binomial" [39m.</code></pre>
+<pre class="fansi fansi-output"><code>
+== ANOVA · LRT ================================================================= 
+
+-- ANOVA Table -----------------------------------------------------------------
+
+───────────────────────────────────────────────────────────────
+  model  res_df  deviance  df  dev_diff  chisq_value  p_value  
+───────────────────────────────────────────────────────────────
+   g1     301    401.861                              <span style="font-style: italic;">   </span>      
+   g2     300    401.394   1    0.468       0.468     <span style="font-style: italic;"> 0.494</span>   
+   g3     299    399.254   1    2.139       2.139     <span style="font-style: italic;"> 0.144</span>   
+───────────────────────────────────────────────────────────────
+</code></pre>
+<p>Interpretation: age alone already does most of the work in Question
+3’s model; adding <code>chol</code> and <code>trestbps</code> doesn’t
+buy much more explanatory power, matching what Question 3’s single model
+showed once all three predictors were already in.</p>
+</div>
+<div class="section level3">
+<h3 id="via-still-applies-uniformly">
+<code>via()</code> still applies uniformly<a class="anchor" aria-label="anchor" href="#via-still-applies-uniformly"></a>
+</h3>
+<p>The same caution <code>vignette("htest", package = "statim")</code>
+covers carries over here: <code><a href="../../reference/via.html">via()</a></code> on a
+<code>&lt;multi_lazy&gt;</code> sends the same method name and arguments
+to every model in the batch, and a variant name is only ever registered
+for one model type at a time (<code><a href="../../reference/rel.html">rel()</a></code>’s registry and
+<code>&lt;formula&gt;</code>’s registry are checked separately — see the
+“Where variant names come from” section of
+<code>vignette("recalibration-method", package = "statim")</code>). A
+batch that mixes <code><a href="../../reference/rel.html">rel()</a></code> and <code>&lt;formula&gt;</code>
+layouts, like the one at the top of this section, needs any variant
+passed through <code><a href="../../reference/via.html">via()</a></code> to be registered for both shapes, or
+<code><a href="../../reference/via.html">via()</a></code> fails for whichever model in the batch doesn’t have
+it, before <code><a href="../../reference/conclude.html">conclude()</a></code> is even reached.</p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -44,10 +44,12 @@ The questions:
 
 box::use(
     statim[
-        define_model, prepare_model, via, conclude,
+        define_model, prepare_model, via, conclude, 
         # Supported models
         LINEAR_REG, GLM,
-        rel, tidy
+        rel, tidy,
+        # Multiple executions
+        write_models, anova
     ],
     stats[update, binomial]
 )
@@ -563,3 +565,173 @@ here, older patients face higher odds of a positive diagnosis in this
 cohort. Cholesterol and resting blood pressure don’t clear significance
 on their own once age is accounted for, an easy fact to miss if you
 eyeballed `chol` and `trestbps` in isolation.
+
+## Multiple Executions
+
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+fits into the model-based pipeline the same way it does the
+hypothesis-testing one — see `vignette("htest", package = "statim")`’s
+own Multiple Executions section for the mechanics. For regression
+specifically, it’s most useful for comparing nested models: adding
+predictors one at a time and checking whether the fit earns each one.
+
+### Two layouts, one batch
+
+Question 1 showed `rel(age, trestbps)` and `trestbps ~ age` landing on
+the same fit.
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+lets you see that side by side instead of running the two blocks
+separately:
+
+``` r
+
+heart |>
+    write_models(
+        mod1 = rel(age, trestbps),
+        mod2 = trestbps ~ age
+    ) |>
+    prepare_model(LINEAR_REG) |>
+    conclude() |>
+    tidy()
+```
+
+``` fansi
+# A tibble: 2 × 2
+  model outs            
+  <chr> <named list>    
+1 mod1  <tibble [2 × 5]>
+2 mod2  <tibble [2 × 5]>
+```
+
+### Nested models and `anova()`
+
+Growing a formula with
+[`stats::update()`](https://rdrr.io/r/stats/update.html) inside
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+builds a batch of nested `LINEAR_REG` models in one pipeline, extending
+Question 2’s model one predictor at a time:
+
+``` r
+
+heart |>
+    write_models(
+        m1 = thalach ~ age,
+        m2 = update(m1, ~. + sex),
+        m3 = update(m2, ~. + chol)
+    ) |>
+    prepare_model(LINEAR_REG) |>
+    conclude() |>
+    tidy()
+```
+
+``` fansi
+# A tibble: 3 × 2
+  model outs            
+  <chr> <named list>    
+1 m1    <tibble [2 × 5]>
+2 m2    <tibble [3 × 5]>
+3 m3    <tibble [4 × 5]>
+```
+
+[`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
+dispatches on `<multi_lazy>` directly, so the nested comparison doesn’t
+need
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
+first:
+
+``` r
+
+heart |>
+    write_models(
+        m1 = thalach ~ age,
+        m2 = update(m1, ~. + sex),
+        m3 = update(m2, ~. + chol)
+    ) |>
+    prepare_model(LINEAR_REG) |>
+    anova()
+```
+
+``` fansi
+
+== ANOVA · F =================================================================== 
+
+-- ANOVA Table -----------------------------------------------------------------
+
+─────────────────────────────────────────────────────────────
+  model  res_df   deviance   df  dev_diff  f_value  p_value  
+─────────────────────────────────────────────────────────────
+   m1     301    133279.305                                  
+   m2     300    132170.377  1   1108.928   2.521    0.113   
+   m3     299    131545.082  1   625.295    1.421    0.234   
+─────────────────────────────────────────────────────────────
+```
+
+Interpretation: consistent with Question 2, adding `sex` barely moves
+the fit, and `chol` doesn’t do much better. Age alone is carrying most
+of the explanatory weight across all three models.
+
+### Passing arguments across a `GLM` batch
+
+The same nested-model idea applies to `GLM`, only now `family` has to
+reach every model in the batch.
+[`prepare_model()`](https://s7-stats.github.io/statim/reference/prepare-model.md)’s
+`...` forwards into the spec for a
+[`write_models()`](https://s7-stats.github.io/statim/reference/write_models.md)
+batch, so `family = binomial()` doesn’t need a separate
+[`update()`](https://rdrr.io/r/stats/update.html) step:
+
+``` r
+
+heart |>
+    write_models(
+        g1 = target ~ age,
+        g2 = update(g1, ~. + chol),
+        g3 = update(g2, ~. + trestbps)
+    ) |>
+    prepare_model(GLM, family = binomial()) |>
+    anova()
+```
+
+     [1m [22m [33m! [39m F-test is only valid for Gaussian models.
+     [36mℹ [39m Switching to LRT for family  [34m"binomial" [39m.
+
+``` fansi
+
+== ANOVA · LRT ================================================================= 
+
+-- ANOVA Table -----------------------------------------------------------------
+
+───────────────────────────────────────────────────────────────
+  model  res_df  deviance  df  dev_diff  chisq_value  p_value  
+───────────────────────────────────────────────────────────────
+   g1     301    401.861                                       
+   g2     300    401.394   1    0.468       0.468      0.494   
+   g3     299    399.254   1    2.139       2.139      0.144   
+───────────────────────────────────────────────────────────────
+```
+
+Interpretation: age alone already does most of the work in Question 3’s
+model; adding `chol` and `trestbps` doesn’t buy much more explanatory
+power, matching what Question 3’s single model showed once all three
+predictors were already in.
+
+### `via()` still applies uniformly
+
+The same caution `vignette("htest", package = "statim")` covers carries
+over here: [`via()`](https://s7-stats.github.io/statim/reference/via.md)
+on a `<multi_lazy>` sends the same method name and arguments to every
+model in the batch, and a variant name is only ever registered for one
+model type at a time
+([`rel()`](https://s7-stats.github.io/statim/reference/rel.md)’s
+registry and `<formula>`’s registry are checked separately — see the
+“Where variant names come from” section of
+`vignette("recalibration-method", package = "statim")`). A batch that
+mixes [`rel()`](https://s7-stats.github.io/statim/reference/rel.md) and
+`<formula>` layouts, like the one at the top of this section, needs any
+variant passed through
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) to be
+registered for both shapes, or
+[`via()`](https://s7-stats.github.io/statim/reference/via.md) fails for
+whichever model in the batch doesn’t have it, before
+[`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
+is even reached.

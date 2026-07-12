@@ -157,6 +157,8 @@ imports double as its own dependency graph.</p>
 <span>        <span class="va">T_TEST</span>, <span class="va">COR_TEST</span>, <span class="va">P_TEST</span>,</span>
 <span>        <span class="co"># Current grammars</span></span>
 <span>        <span class="va">define_model</span>, <span class="va">prepare</span>, <span class="va">via</span>, <span class="va">state_null</span>, <span class="va">conclude</span>,</span>
+<span>        <span class="co"># Multiple executions</span></span>
+<span>        <span class="va">write_models</span>, <span class="va">display</span>, </span>
 <span>        <span class="co"># Mappers</span></span>
 <span>        <span class="va">x_by</span>, <span class="va">rel</span>, <span class="va">prop</span>, <span class="va">on</span>,</span>
 <span>        <span class="va">MU</span>, <span class="va">RHO</span>, <span class="va">PI</span></span>
@@ -980,6 +982,187 @@ version is only worth it if you’re already committed to the pipeline for
 other reasons.</p>
 <p>Interpretation: 33 of 207 men (15.9%), not distinguishable from the
 15% baseline (<span class="math inline">p = 0.697</span>).</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="multi-exec">Multiple Executions<a class="anchor" aria-label="anchor" href="#multi-exec"></a>
+</h2>
+<p>Every question above ran one test through one layout.
+<code><a href="../../reference/write_models.html">write_models()</a></code> lets you batch several layouts of the
+<em>same</em> test into a single pipeline, instead of writing out
+<code>define_model() |&gt; prepare() |&gt; conclude()</code> once per
+layout:</p>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> </span>
+<span>    <span class="va">heart</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        mod1 <span class="op">=</span> <span class="fu"><a href="../../reference/on.html">on</a></span><span class="op">(</span><span class="va">trestbps</span><span class="op">)</span>,</span>
+<span>        mod2 <span class="op">=</span> <span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span><span class="op">)</span>,</span>
+<span>        mod3 <span class="op">=</span> <span class="va">thalach</span> <span class="op">~</span> <span class="va">sex</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">out</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+── 3 models · T-Test ─────────────────────────────────────────────────────────── 
+
+mod1 : &lt;cld_exec&gt;
+mod2 : &lt;cld_exec&gt;
+mod3 : &lt;cld_exec&gt;
+
+<span style="color: #555555;">Use display() to inspect individual results.</span>
+</code></pre>
+<p>Each name becomes its own lazy model behind the scenes,
+<code>prepare(T_TEST)</code> attaches the same test to all three at
+once, and <code><a href="../../reference/conclude.html">conclude()</a></code> runs each independently and hands back
+a <code>&lt;multi_exec&gt;</code> — <code><a href="../../reference/tidy.html">tidy()</a></code> or
+<code><a href="../../reference/display.html">display()</a></code> on it to inspect the individual results, as
+covered in <a href="../pointers/execution-methods.html#multiple-executions">Execution
+and Retrieval of Outputs</a>.</p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/display.html">display</a></span><span class="op">(</span><span class="va">out</span>, <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+1. mod1
+
+== Model ======================================================================= 
+
+Variable Mapper : on 
+Args : trestbps 
+
+== T-Test ====================================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+────────────────────────────────────────────────
+    term    estimate  true_mu  t_stat   p_val   
+────────────────────────────────────────────────
+  trestbps  131.624      0     130.639  <span style="font-weight: bold;">&lt;0.001</span>  
+────────────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+────────────────────────────────
+    term    lower_95  upper_95  
+────────────────────────────────
+  trestbps  129.641   133.607   
+────────────────────────────────
+
+
+
+2. mod2
+
+== Model ======================================================================= 
+
+Variable Mapper : x_by 
+Args : thalach | sex 
+    x_vars : 1 
+    by_vars : 1 
+
+== T-Test ====================================================================== 
+
+-- Summary ---------------------------------------------------------------------
+
+───────────────────────────────────────────
+  group  estimate  t_stat    df     p_val  
+───────────────────────────────────────────
+   sex    -2.164   -0.818  219.790  <span style="font-style: italic;">0.414</span>  
+───────────────────────────────────────────
+
+
+-- Confidence Interval ---------------------------------------------------------
+
+─────────────────────────────
+  group  lower_95  upper_95  
+─────────────────────────────
+   sex    -7.378    3.050    
+─────────────────────────────
+</code></pre>
+<p>On a side note, <code><a href="../../reference/prepare.html">prepare()</a></code>’s <code>...</code> forwards
+into the spec on a <code><a href="../../reference/write_models.html">write_models()</a></code> batch too, the same way
+it already does on a single <code>&lt;def_var&gt;</code>. So
+<code>.mu = 120</code> below reaches every model in the batch whose
+<code>fn</code> actually has a <code>.mu</code> formal:</p>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        mod1 <span class="op">=</span> <span class="fu"><a href="../../reference/on.html">on</a></span><span class="op">(</span><span class="va">trestbps</span><span class="op">)</span>,</span>
+<span>        mod3 <span class="op">=</span> <span class="va">thalach</span> <span class="op">~</span> <span class="va">sex</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre class="fansi fansi-output"><code>
+── 2 models · T-Test ─────────────────────────────────────────────────────────── 
+
+mod1 : &lt;cld_exec&gt;
+mod3 : &lt;cld_exec&gt;
+
+<span style="color: #555555;">Use display() to inspect individual results.</span>
+</code></pre>
+<p><code>mod1</code> picks it up because its one-sample <code>fn</code>
+declares <code>.mu</code>; <code>mod3</code>’s two-sample
+<code>fn</code> doesn’t, so the same argument is simply ignored for that
+model rather than erroring — <code>inject_and_run()</code> only pulls
+from <code>all_args</code> what a given <code>fn</code>’s formals
+actually ask for, whether the model came from a batch or a single-model
+pipeline.</p>
+<p>Two things need extra care once a batch mixes layouts like this,
+rather than repeating the same layout across models.</p>
+<div class="section level3">
+<h3 id="state_null-doesnt-span-mixed-layouts">
+<code>state_null()</code> doesn’t span mixed layouts<a class="anchor" aria-label="anchor" href="#state_null-doesnt-span-mixed-layouts"></a>
+</h3>
+<p>Not every layout parses a stated hypothesis the same way. Recall from
+<a href="#q2">Question 2</a>: <code>x_by(thalach, sex)</code>’s
+<code>claim_parser</code> reads group filters straight out of the claim
+(<code>MU(thalach, sex == "Female")</code>), <code><a href="../../reference/on.html">on()</a></code> has no
+such filter at all, and the <code>&lt;formula&gt;</code> layout has no
+<code>claim_parser</code> translation of its own yet. A single
+<code><a href="../../reference/null-hyp.html">state_null()</a></code> call attached to a <code><a href="../../reference/write_models.html">write_models()</a></code>
+batch would have to mean the same thing across all three shapes at once.
+Therefore, right now, <code><a href="../../reference/null-hyp.html">state_null()</a></code> isn’t wired up for
+<code>&lt;multi_lazy&gt;</code> objects.</p>
+<p>In practice, a <code><a href="../../reference/write_models.html">write_models()</a></code> batch is for comparing
+layouts (or variables) against a test’s own default hypothesis, not for
+stating one numeric claim across a batch of differently-shaped models.
+If a specific hypothesis needs testing, stick to one
+<code>define_model() |&gt; prepare() |&gt; state_null() |&gt; conclude()</code>
+pipeline per layout, the way Questions 1-3 do it above.</p>
+</div>
+<div class="section level3">
+<h3 id="via-applies-the-same-call-to-every-model-in-the-batch">
+<code>via()</code> applies the same call to every model in the
+batch<a class="anchor" aria-label="anchor" href="#via-applies-the-same-call-to-every-model-in-the-batch"></a>
+</h3>
+<p><code><a href="../../reference/via.html">via()</a></code> on a <code>&lt;multi_lazy&gt;</code> doesn’t ask
+which model it’s talking to — the method name and any arguments you pass
+are applied to every model in the batch. That’s only safe when every
+layout present shares the same estimation-method vocabulary.
+<code><a href="../../reference/on.html">on()</a></code>’s one-sample t-test and <code><a href="../../reference/x_by.html">x_by()</a></code>’s
+two-sample t-test don’t: <code><a href="../../reference/on.html">on()</a></code> needs
+<code>via("two_sample")</code> to compare two vectors (see <a href="#q2">Question 2</a>’s first tab), while <code><a href="../../reference/x_by.html">x_by()</a></code> is
+already two-sample by default and has no reason to register that variant
+at all. Mixing the two in one batch and calling <code><a href="../../reference/via.html">via()</a></code> once
+means the variant name has to be registered, with matching arguments,
+for every model type present:</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
+<span>        mod1 <span class="op">=</span> <span class="fu"><a href="../../reference/on.html">on</a></span><span class="op">(</span><span class="va">trestbps</span><span class="op">)</span>,</span>
+<span>        mod2 <span class="op">=</span> <span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"two_sample"</span><span class="op">)</span> <span class="op">|&gt;</span>   <span class="co"># registered for on(); x_by() is two-sample already and may not have it</span></span>
+<span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code> [1m [33mError [39m in `method(via, list(statim::test_lazy, class_character))`: [22m
+ [1m [22m [33m! [39m No variant  [34m"two_sample" [39m registered for model type  [34m"x_by" [39m.
+ [36mℹ [39m Available variants:  [34m"contrast" [39m,  [34m"multi" [39m,  [34m"boot" [39m, and  [34m"permute" [39m.</code></pre>
+<p>The safer default is to keep a batch to layouts that share the same
+estimation method — either all left at <code>base</code>, or all
+recalibrated to a variant every model type in the batch actually
+registers — and fall back to separate single-model pipelines the moment
+the variants diverge.</p>
 </div>
 </div>
 <div class="section level2">
