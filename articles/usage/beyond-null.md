@@ -1,6 +1,6 @@
 # Beyond Equality: Custom Hypotheses with {statim}
 
-## Why this vignette exists
+## Rationale
 
 `vignette("htest", package = "statim")` covers the plain case: is one
 mean different from a fixed value, are two means different from each
@@ -76,6 +76,55 @@ it:
 
 data(ToothGrowth)
 ```
+
+## A look at the data
+
+Both questions below hinge on the size of the OJ-VC gap, so it’s worth
+seeing that gap before testing it.
+
+``` r
+
+box::use(
+    dplyr[group_by, summarise, n]
+)
+
+ToothGrowth |>
+    group_by(supp) |>
+    summarise(
+        n = n(),
+        mean = mean(len),
+        sd = sd(len)
+    )
+```
+
+``` fansi
+# A tibble: 2 × 4
+  supp      n  mean    sd
+  <fct> <int> <dbl> <dbl>
+1 OJ       30  20.7  6.61
+2 VC       30  17.0  8.27
+```
+
+Let us check the distribution with density overlay — a lighter
+alternative to the Q-Q plot for eyeballing shape:
+
+``` r
+
+box::use(
+    ggplot2[ggplot, aes, geom_density, labs, theme_minimal]
+)
+
+ggplot(ToothGrowth, aes(len, fill = supp)) +
+    geom_density(alpha = 0.4) +
+    labs(
+        x = "Tooth length",
+        y = "Density",
+        title = "Distribution of tooth length by delivery method"
+    ) +
+    theme_minimal()
+```
+
+![](beyond-null_files/figure-html/unnamed-chunk-4-1.png)
 
 ## Question 1: Does OJ beat VC by more than 2 units?
 
