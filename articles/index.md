@@ -13,6 +13,11 @@
 
   A guide on performing regression modelling with statim R package.
 
+- [Beyond Equality: Custom Hypotheses with
+  {statim}](https://s7-stats.github.io/statim/articles/usage/beyond-null.md):
+
+  A guide on stating and testing custom null hypotheses.
+
 - [ANOVA for Linear models with
   {statim}](https://s7-stats.github.io/statim/articles/usage/anova-mod.md):
 

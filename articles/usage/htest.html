@@ -46,6 +46,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>A guide on using statim R package</h6></li>
     <li><a class="dropdown-item" href="../../articles/usage/htest.html">Hypothesis Testing with {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/model-infer.html">Regression modelling with {statim}</a></li>
+    <li><a class="dropdown-item" href="../../articles/usage/beyond-null.html">Beyond Equality: Custom Hypotheses with {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/anova-mod.html">ANOVA for Linear models with {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/predict-examples.html">Predicting with linear models from {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/effect-size.html">Gauging effect size with {statim}</a></li>
@@ -68,6 +69,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
 <li><a class="dropdown-item" href="../../articles/usage/htest.html">Hypothesis Testing</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/model-infer.html">Regression Modelling</a></li>
+    <li><a class="dropdown-item" href="../../articles/usage/beyond-null.html">Beyond Equality: Custom Hypotheses with {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/effect-size.html">Effect Size</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/predict-examples.html">Prediction from Regression Models</a></li>
   </ul>
@@ -113,19 +115,28 @@ real clinical data</h3>
 <div class="section level2">
 <h2 id="why-this-vignette-exists">Why this vignette exists<a class="anchor" aria-label="anchor" href="#why-this-vignette-exists"></a>
 </h2>
-<p><code>t.test(x, mu = 120)</code> works, but six months from now you
-won’t remember whether <code>mu</code> was the value you’re testing
-against or something else buried in the call. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>
-takes a new approach on how statistical inference in R is done. For
-instance, <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> has another way to write the null
-hypothesis itself as an algebraic expression instead
-(e.g. <code>MU(x) == 120</code>, <code>RHO(x, y) == 0</code>), so the
-code declares what the hypothesis is, not which argument slot it lives
-in.</p>
-<p>The question is, does that actually pay off? This vignette runs four
-real questions from a real dataset through <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, base
-R, and <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, and says plainly when the extra syntax
-isn’t worth it.</p>
+<p>While <code>t.test(x, alternative = "less")</code> works and is
+simple, there are times you won’t remember the intent of the function
+call, e.g. which side of the inequality “less” refers to:</p>
+<ul>
+<li>Is <code>x</code> hypothesized to be less than <code>mu</code>, or
+<code>mu</code> less than <code>x</code>?</li>
+</ul>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> takes a different approach on how statistical
+inference in R is done. For instance, <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> has another
+way to write the null hypothesis itself as an algebraic expression
+instead (e.g. <code>MU(x) &lt; 120</code>, <code>RHO(x, y) == 0</code>),
+so the code declares what the null hypothesis is, direction included,
+rather than which argument slot lives in.</p>
+<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is fully declarative, mainly through
+piped/grammar sementics like <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>, including on how
+you declare the estimation method in a statistical inference you want to
+perform. The question is, does that actually pay off?</p>
+<p>This vignette runs four real questions from a real dataset through
+<a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, base R, and <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, and is honest
+about where the extra syntax doesn’t earn its keep. These four are the
+straightforward cases; the harder one, where the syntax stops being
+optional, is covered in the Conclusion below.</p>
 <div class="section level3">
 <h3 id="sample-problem">Sample Problem<a class="anchor" aria-label="anchor" href="#sample-problem"></a>
 </h3>
@@ -147,9 +158,8 @@ heart rate?</a></li>
 sugar <strong>above 120 mg/dL</strong> different from an assumed
 population baseline of 15%?</a></li>
 </ol>
-<p>One-sample t-test, two-sample t-test, correlation test, one-sample
-proportion test — the four tests almost every intro stats course covers,
-run on data that actually matters.</p>
+<p>They are answered by: one-sample t-test, two-sample t-test,
+correlation test, one-sample proportion test, respectively.</p>
 </div>
 </div>
 <div class="section level2">
@@ -167,9 +177,10 @@ imports double as its own dependency graph.</p>
 <span>        <span class="co"># Current grammars</span></span>
 <span>        <span class="va">define_model</span>, <span class="va">prepare</span>, <span class="va">via</span>, <span class="va">state_null</span>, <span class="va">conclude</span>,</span>
 <span>        <span class="co"># Multiple executions</span></span>
-<span>        <span class="va">write_models</span>, <span class="va">display</span>, </span>
+<span>        <span class="va">write_models</span>, <span class="va">display</span>,</span>
 <span>        <span class="co"># Mappers</span></span>
 <span>        <span class="va">x_by</span>, <span class="va">rel</span>, <span class="va">prop</span>, <span class="va">on</span>,</span>
+<span>        <span class="co"># "Parameters" object callers</span></span>
 <span>        <span class="va">MU</span>, <span class="va">RHO</span>, <span class="va">PI</span></span>
 <span>    <span class="op">]</span>,</span>
 <span>    <span class="va">rstatix</span><span class="op">[</span><span class="va">t_test</span>, <span class="va">cor_test</span>, <span class="va">binom_test</span><span class="op">]</span></span>
@@ -332,6 +343,7 @@ Using formula syntax
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">trestbps</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span>, .mu <span class="op">=</span> <span class="fl">120</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="co"># update(.mu = 120) |&gt; </span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
@@ -431,7 +443,9 @@ buys instead is legibility of intent: <code><a href="../../reference/layout-defi
 <code><a href="../../reference/prepare.html">prepare()</a></code>, <code><a href="../../reference/conclude.html">conclude()</a></code> read like a sentence,
 and you can do more with <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s main API, whereas
 <code>t.test(x, mu = 120)</code> reads like an API you have to already
-know.</p>
+know. And also, <code>ttest-on</code> can utilize
+<code><a href="../../reference/null-hyp.html">state_null()</a></code>, it is not covered for the reason being the
+usage is not too different on declaring <code>.mu</code>.</p>
 <p>Interpretation: 131.6 mmHg average, significantly above 120 (<span class="math inline">p &lt; 0.001</span>). This cohort runs elevated.</p>
 </div>
 </div>
@@ -675,15 +689,20 @@ Empirically, <a href="https://github.com/s7-stats/statim" class="external-link">
 treat “compare two groups” as something the <code>&lt;formula&gt;</code>
 already encodes, <code>thalach ~ sex</code> says everything. However,
 <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> goes beyond that with <code><a href="../../reference/x_by.html">x_by()</a></code> and
-<code><a href="../../reference/on.html">on()</a></code>. <code><a href="../../reference/x_by.html">x_by()</a></code> says the same thing, but then
-lets you go further: this layout has <code><a href="../../reference/null-hyp.html">state_null()</a></code>
-translation, and you can write out
-<code>MU(thalach, sex == "Female") == MU(thalach, sex == "Male)</code>
-as an actual algebraic expression, group filters and all.
+<code><a href="../../reference/on.html">on()</a></code>. `</p>
+<ul>
+<li>
+<code><a href="../../reference/x_by.html">x_by()</a></code> says the same thing, but then lets you go
+further: this layout has <code><a href="../../reference/null-hyp.html">state_null()</a></code> translation, and you
+can write out
+<code>MU(thalach, sex == "Female") == MU(thalach, sex == "Male")</code>
+as an actual algebraic expression, group filters and all.</li>
+<li>
 <code><a href="../../reference/on.html">on()</a></code>, on the other hand, has the same logic as
-<code><a href="../../reference/x_by.html">x_by()</a></code> one except it treats the variables to be independent
+<code><a href="../../reference/x_by.html">x_by()</a></code>’s except it treats the variables to be independent
 to each other, and its null hypothesis expression doesn’t use the
-<code>&lt;sex == "Male&gt;</code> <code>given</code> argument.</p>
+<code>&lt;sex == "Male"&gt;</code> <code>given</code> argument.</li>
+</ul>
 <p>That’s more typing for a question this simple. It stops being “more
 typing” and starts being “the only way to say what you mean” the moment
 the hypothesis isn’t a straight group comparison anymore.</p>
@@ -774,7 +793,7 @@ Using formula syntax
 </summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">age</span> <span class="op">~</span> <span class="va">thalach</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">COR_TEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">COR_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
@@ -804,7 +823,7 @@ Args : age ~ thalach
 ─────────────────────────────────────
 </code></pre>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../../reference/COR_TEST.html">COR_TEST</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">age</span><span class="op">)</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../../reference/COR_TEST.html">COR_TEST</a></span><span class="op">(</span><span class="va">age</span> <span class="op">~</span> <span class="va">thalach</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Summary ---------------------------------------------------------------------
 
 ───────────────────────────────────────────────────
@@ -1002,7 +1021,7 @@ other reasons.</p>
 <code>define_model() |&gt; prepare() |&gt; conclude()</code> once per
 layout:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span> </span>
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">=</span></span>
 <span>    <span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/write_models.html">write_models</a></span><span class="op">(</span></span>
 <span>        mod1 <span class="op">=</span> <span class="fu"><a href="../../reference/on.html">on</a></span><span class="op">(</span><span class="va">trestbps</span><span class="op">)</span>,</span>
@@ -1025,7 +1044,7 @@ mod3 : &lt;cld_exec&gt;
 <p>Each name becomes its own lazy model behind the scenes,
 <code>prepare(T_TEST)</code> attaches the same test to all three at
 once, and <code><a href="../../reference/conclude.html">conclude()</a></code> runs each independently and hands back
-a <code>&lt;multi_exec&gt;</code> — <code><a href="../../reference/tidy.html">tidy()</a></code> or
+a <code>&lt;multi_exec&gt;</code>: <code><a href="../../reference/tidy.html">tidy()</a></code> or
 <code><a href="../../reference/display.html">display()</a></code> on it to inspect the individual results, as
 covered in <a href="../pointers/execution-methods.html#multiple-executions">Execution
 and Retrieval of Outputs</a>.</p>
@@ -1189,7 +1208,9 @@ that doesn’t have a tidy formula shorthand yet. That’s the actual bet
 <code>define_model() |&gt; prepare() |&gt; state_null() |&gt; conclude()</code>
 shape you can extend once, rather than learn a new argument convention
 per test. Four questions above are pretty straightforward and aren’t the
-right test of that bet. Judge it on the harder one.</p>
+right test of that bet. Judge it on the harder one. If you wanna know
+what’s beyond testing the equality in the null hypothesis, there’s a
+dedicated <a href="./beyond-null.html">example</a> for that.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -1202,7 +1223,7 @@ right test of that bet. Judge it on the harder one.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>. Visit my <a href="https://s7-stats.com" class="external-link">blog</a> for more content.</p>
+  <p>Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>.</p>
 </div>
 
     </footer>

@@ -46,6 +46,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>A guide on using statim R package</h6></li>
     <li><a class="dropdown-item" href="../../articles/usage/htest.html">Hypothesis Testing with {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/model-infer.html">Regression modelling with {statim}</a></li>
+    <li><a class="dropdown-item" href="../../articles/usage/beyond-null.html">Beyond Equality: Custom Hypotheses with {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/anova-mod.html">ANOVA for Linear models with {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/predict-examples.html">Predicting with linear models from {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/effect-size.html">Gauging effect size with {statim}</a></li>
@@ -68,6 +69,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-examples">
 <li><a class="dropdown-item" href="../../articles/usage/htest.html">Hypothesis Testing</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/model-infer.html">Regression Modelling</a></li>
+    <li><a class="dropdown-item" href="../../articles/usage/beyond-null.html">Beyond Equality: Custom Hypotheses with {statim}</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/effect-size.html">Effect Size</a></li>
     <li><a class="dropdown-item" href="../../articles/usage/predict-examples.html">Prediction from Regression Models</a></li>
   </ul>
@@ -125,8 +127,8 @@ it <code>LINEAR_REG</code> or <code>GLM</code> instead. Same
 to need a regression instead of a t-test, the pipeline you already wrote
 doesn’t change shape, only the <code>&lt;STAT_FN&gt;</code> swapped
 in.</p>
-<p>Three questions from the same dataset, run as regressions instead of
-hypothesis tests.</p>
+<p>Three questions from the same dataset, run as regression models
+instead of hypothesis tests.</p>
 <div class="section level3">
 <h3 id="sample-problem">Sample Problem<a class="anchor" aria-label="anchor" href="#sample-problem"></a>
 </h3>
@@ -544,7 +546,7 @@ loaded execution before <code><a href="../../reference/conclude.html">conclude()
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">target</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">chol</span> <span class="op">+</span> <span class="va">trestbps</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">GLM</span><span class="op">)</span> <span class="op">|&gt;</span>             <span class="co"># or prepare_model(GLM, family = binomial())</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">GLM</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># or prepare_model(GLM, family = binomial())</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
@@ -577,7 +579,7 @@ Args : target ~ age + chol + trestbps
   binomial  logit     417.638     399.254       299      407.254   303   
 ─────────────────────────────────────────────────────────────────────────
 </code></pre>
-<p>Or you can just use their one-liner version:</p>
+<p>Or you can just use its one-liner version:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/GLM.html">GLM</a></span><span class="op">(</span><span class="va">target</span> <span class="op">~</span> <span class="va">age</span> <span class="op">+</span> <span class="va">chol</span> <span class="op">+</span> <span class="va">trestbps</span>, <span class="va">heart</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>-- Coefficients ----------------------------------------------------------------
@@ -761,7 +763,7 @@ it, before <code><a href="../../reference/conclude.html">conclude()</a></code> i
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>. Visit my <a href="https://s7-stats.com" class="external-link">blog</a> for more content.</p>
+  <p>Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>.</p>
 </div>
 
     </footer>

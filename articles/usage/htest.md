@@ -2,20 +2,32 @@
 
 ## Why this vignette exists
 
-`t.test(x, mu = 120)` works, but six months from now you won’t remember
-whether `mu` was the value you’re testing against or something else
-buried in the call. [statim](https://github.com/s7-stats/statim) takes a
-new approach on how statistical inference in R is done. For instance,
+While `t.test(x, alternative = "less")` works and is simple, there are
+times you won’t remember the intent of the function call, e.g. which
+side of the inequality “less” refers to:
+
+- Is `x` hypothesized to be less than `mu`, or `mu` less than `x`?
+
+[statim](https://github.com/s7-stats/statim) takes a different approach
+on how statistical inference in R is done. For instance,
 [statim](https://github.com/s7-stats/statim) has another way to write
 the null hypothesis itself as an algebraic expression instead
-(e.g. `MU(x) == 120`, `RHO(x, y) == 0`), so the code declares what the
-hypothesis is, not which argument slot it lives in.
+(e.g. `MU(x) < 120`, `RHO(x, y) == 0`), so the code declares what the
+null hypothesis is, direction included, rather than which argument slot
+lives in.
 
-The question is, does that actually pay off? This vignette runs four
-real questions from a real dataset through
+[statim](https://github.com/s7-stats/statim) is fully declarative,
+mainly through piped/grammar sementics like
+[ggplot2](https://ggplot2.tidyverse.org), including on how you declare
+the estimation method in a statistical inference you want to perform.
+The question is, does that actually pay off?
+
+This vignette runs four real questions from a real dataset through
 [statim](https://github.com/s7-stats/statim), base R, and
-[rstatix](https://rpkgs.datanovia.com/rstatix/), and says plainly when
-the extra syntax isn’t worth it.
+[rstatix](https://rpkgs.datanovia.com/rstatix/), and is honest about
+where the extra syntax doesn’t earn its keep. These four are the
+straightforward cases; the harder one, where the syntax stops being
+optional, is covered in the Conclusion below.
 
 ### Sample Problem
 
@@ -38,9 +50,8 @@ The questions, framed as a cardiologist would ask them:
     120 mg/dL** different from an assumed population baseline of
     15%?](#q4)
 
-One-sample t-test, two-sample t-test, correlation test, one-sample
-proportion test — the four tests almost every intro stats course covers,
-run on data that actually matters.
+They are answered by: one-sample t-test, two-sample t-test, correlation
+test, one-sample proportion test, respectively.
 
 ## Setup
 
@@ -59,9 +70,10 @@ box::use(
         # Current grammars
         define_model, prepare, via, state_null, conclude,
         # Multiple executions
-        write_models, display, 
+        write_models, display,
         # Mappers
         x_by, rel, prop, on,
+        # "Parameters" object callers
         MU, RHO, PI
     ],
     rstatix[t_test, cor_test, binom_test]
@@ -208,6 +220,7 @@ Using formula syntax
 heart |>
     define_model(trestbps ~ 1) |>
     prepare(T_TEST, .mu = 120) |>
+    # update(.mu = 120) |> 
     conclude()
 ```
 
@@ -321,7 +334,11 @@ of intent:
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 read like a sentence, and you can do more with
 [statim](https://github.com/s7-stats/statim)’s main API, whereas
-`t.test(x, mu = 120)` reads like an API you have to already know.
+`t.test(x, mu = 120)` reads like an API you have to already know. And
+also, `ttest-on` can utilize
+[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md),
+it is not covered for the reason being the usage is not too different on
+declaring `.mu`.
 
 Interpretation: 131.6 mmHg average, significantly above 120 (p \<
 0.001). This cohort runs elevated.
@@ -593,19 +610,20 @@ Empirically, [statim](https://github.com/s7-stats/statim),
 `thalach ~ sex` says everything. However,
 [statim](https://github.com/s7-stats/statim) goes beyond that with
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) and
-[`on()`](https://s7-stats.github.io/statim/reference/on.md).
-[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) says the
-same thing, but then lets you go further: this layout has
-[`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
-translation, and you can write out
-`MU(thalach, sex == "Female") == MU(thalach, sex == "Male)` as an actual
-algebraic expression, group filters and all.
-[`on()`](https://s7-stats.github.io/statim/reference/on.md), on the
-other hand, has the same logic as
-[`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) one
-except it treats the variables to be independent to each other, and its
-null hypothesis expression doesn’t use the `<sex == "Male>` `given`
-argument.
+[`on()`](https://s7-stats.github.io/statim/reference/on.md). \`
+
+- [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) says
+  the same thing, but then lets you go further: this layout has
+  [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
+  translation, and you can write out
+  `MU(thalach, sex == "Female") == MU(thalach, sex == "Male")` as an
+  actual algebraic expression, group filters and all.
+- [`on()`](https://s7-stats.github.io/statim/reference/on.md), on the
+  other hand, has the same logic as
+  [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md)’s
+  except it treats the variables to be independent to each other, and
+  its null hypothesis expression doesn’t use the `<sex == "Male">`
+  `given` argument.
 
 That’s more typing for a question this simple. It stops being “more
 typing” and starts being “the only way to say what you mean” the moment
@@ -703,7 +721,7 @@ Using formula syntax
 
 heart |>
     define_model(age ~ thalach) |>
-    prepare(COR_TEST) |> 
+    prepare(COR_TEST) |>
     conclude()
 ```
 
@@ -738,7 +756,7 @@ Args : age ~ thalach
 
 ``` r
 
-COR_TEST(rel(thalach, age), heart)
+COR_TEST(age ~ thalach, heart)
 ```
 
 ``` fansi
@@ -949,7 +967,7 @@ pipeline, instead of writing out
 
 ``` r
 
-out = 
+out =
     heart |>
     write_models(
         mod1 = on(trestbps),
@@ -976,7 +994,7 @@ Use display() to inspect individual results.
 Each name becomes its own lazy model behind the scenes,
 `prepare(T_TEST)` attaches the same test to all three at once, and
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
-runs each independently and hands back a `<multi_exec>` —
+runs each independently and hands back a `<multi_exec>`:
 [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md) or
 [`display()`](https://s7-stats.github.io/statim/reference/display.md) on
 it to inspect the individual results, as covered in [Execution and
@@ -1169,4 +1187,7 @@ that doesn’t have a tidy formula shorthand yet. That’s the actual bet
 `define_model() |> prepare() |> state_null() |> conclude()` shape you
 can extend once, rather than learn a new argument convention per test.
 Four questions above are pretty straightforward and aren’t the right
-test of that bet. Judge it on the harder one.
+test of that bet. Judge it on the harder one. If you wanna know what’s
+beyond testing the equality in the null hypothesis, there’s a dedicated
+[example](https://s7-stats.github.io/statim/articles/usage/beyond-null.md)
+for that.

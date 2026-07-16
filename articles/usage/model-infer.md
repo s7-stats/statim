@@ -16,8 +16,8 @@ at the end. If a hypothesis question turns out to need a regression
 instead of a t-test, the pipeline you already wrote doesn’t change
 shape, only the `<STAT_FN>` swapped in.
 
-Three questions from the same dataset, run as regressions instead of
-hypothesis tests.
+Three questions from the same dataset, run as regression models instead
+of hypothesis tests.
 
 ### Sample Problem
 
@@ -494,7 +494,7 @@ runs it:
 
 heart |>
     define_model(target ~ age + chol + trestbps) |>
-    prepare_model(GLM) |>             # or prepare_model(GLM, family = binomial())
+    prepare_model(GLM) |> # or prepare_model(GLM, family = binomial())
     update(family = binomial()) |>
     conclude()
 ```
@@ -531,7 +531,7 @@ Args : target ~ age + chol + trestbps
 ─────────────────────────────────────────────────────────────────────────
 ```
 
-Or you can just use their one-liner version:
+Or you can just use its one-liner version:
 
 ``` r
 

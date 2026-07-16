@@ -3,6 +3,7 @@ pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   usage/anova-mod: usage/anova-mod.html
+  usage/beyond-null: usage/beyond-null.html
   usage/effect-size: usage/effect-size.html
   pointers/execution-methods: pointers/execution-methods.html
   usage/htest: usage/htest.html
@@ -15,7 +16,7 @@ articles:
   pointers/stat_define: pointers/stat_define.html
   statim: statim.html
   pointers/var_id: pointers/var_id.html
-last_built: 2026-07-16T05:19Z
+last_built: 2026-07-16T11:00Z
 urls:
   reference: https://s7-stats.github.io/statim/reference
   article: https://s7-stats.github.io/statim/articles
