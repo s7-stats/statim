@@ -376,8 +376,9 @@ Interpretation:
 **Question:** Is the OJ–VC gap at least 20% of the overall average tooth
 length?
 
-H_0: 2\cdot\mu\_{\text{OJ}} - \mu\_{\text{VC}} \leq 0 \qquad H_1:
-2\cdot\mu\_{\text{OJ}} - \mu\_{\text{VC}} \> 0
+H_0: \mu\_{\text{OJ}} - \mu\_{\text{VC}} \leq 0.20 \times
+\bar{x}\_{\text{overall}} \qquad H_1: \mu\_{\text{OJ}} -
+\mu\_{\text{VC}} \> 0.20 \times \bar{x}\_{\text{overall}}
 
 Just like 1, except its two-sample test (or even a fixed-threshold
 contrast) only uses static values. Here we use a data-driven threshold
