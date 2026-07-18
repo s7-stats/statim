@@ -166,16 +166,17 @@ The built-in `<var_id>` objects
 [`rel()`](https://s7-stats.github.io/statim/reference/rel.md),
 [`pairwise()`](https://s7-stats.github.io/statim/reference/pairwise.md))
 instead capture *unevaluated* expressions with
-[`rlang::enquo()`](https://rdrr.io/pkg/rlang/man/enquo.html), so that
-bare variable names can be resolved later against a `data` frame
+[`rlang::enquo()`](https://rlang.r-lib.org/reference/enquo.html), so
+that bare variable names can be resolved later against a `data` frame
 supplied to
 [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
 or against the calling environment if `data` is omitted.
 
 If your `<var_id>` needs this “lazy” behavior — e.g. accepting bare
 column names like `x_by(extra, group)` does — capture each argument with
-[`rlang::enquo()`](https://rdrr.io/pkg/rlang/man/enquo.html) in a custom
-`constructor`, and store the resulting quosure as the property value:
+[`rlang::enquo()`](https://rlang.r-lib.org/reference/enquo.html) in a
+custom `constructor`, and store the resulting quosure as the property
+value:
 
 ``` r
 
@@ -207,8 +208,8 @@ for the built-in `<var_id>` objects, handling bare names,
 [`I()`](https://rdrr.io/r/base/AsIs.html) inline expressions, and
 [`inlines()`](https://s7-stats.github.io/statim/reference/inlines.md).
 But for a first custom `<var_id>`, a simpler
-[`rlang::eval_tidy()`](https://rdrr.io/pkg/rlang/man/eval_tidy.html) is
-enough:
+[`rlang::eval_tidy()`](https://rlang.r-lib.org/reference/eval_tidy.html)
+is enough:
 
 ``` r
 
@@ -302,8 +303,8 @@ To write a new `<var_id>` object:
 3.  If the `<var_id>` should capture bare variable names lazily
     (recommended for anything that will be paired with a `data` frame),
     use a custom `constructor` that wraps each argument with
-    [`rlang::enquo()`](https://rdrr.io/pkg/rlang/man/enquo.html), and
-    resolve the quosures inside
+    [`rlang::enquo()`](https://rlang.r-lib.org/reference/enquo.html),
+    and resolve the quosures inside
     [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md).
 4.  Optionally, register a
     [`var_id_info()`](https://s7-stats.github.io/statim/reference/var_id_info.md)

@@ -266,13 +266,13 @@ a value in <code><a href="https://rdrr.io/r/base/environment.html" class="extern
 <p>The built-in <code>&lt;var_id&gt;</code> objects
 (<code><a href="../../reference/x_by.html">x_by()</a></code>, <code><a href="../../reference/rel.html">rel()</a></code>, <code><a href="../../reference/pairwise.html">pairwise()</a></code>)
 instead capture <em>unevaluated</em> expressions with
-<code><a href="https://rdrr.io/pkg/rlang/man/enquo.html" class="external-link">rlang::enquo()</a></code>, so that bare variable names can be resolved
+<code><a href="https://rlang.r-lib.org/reference/enquo.html" class="external-link">rlang::enquo()</a></code>, so that bare variable names can be resolved
 later against a <code>data</code> frame supplied to
 <code><a href="../../reference/layout-define-base.html">define_model()</a></code>, or against the calling environment if
 <code>data</code> is omitted.</p>
 <p>If your <code>&lt;var_id&gt;</code> needs this “lazy” behavior —
 e.g. accepting bare column names like <code>x_by(extra, group)</code>
-does — capture each argument with <code><a href="https://rdrr.io/pkg/rlang/man/enquo.html" class="external-link">rlang::enquo()</a></code> in a
+does — capture each argument with <code><a href="https://rlang.r-lib.org/reference/enquo.html" class="external-link">rlang::enquo()</a></code> in a
 custom <code>constructor</code>, and store the resulting quosure as the
 property value:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -287,9 +287,9 @@ property value:</p>
 <span>    constructor <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">z</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/new_class.html" class="external-link">new_object</a></span><span class="op">(</span></span>
 <span>            <span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/S7_object.html" class="external-link">S7_object</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>            x <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rlang/man/enquo.html" class="external-link">enquo</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
-<span>            y <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rlang/man/enquo.html" class="external-link">enquo</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>,</span>
-<span>            z <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rlang/man/enquo.html" class="external-link">enquo</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
+<span>            x <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/enquo.html" class="external-link">enquo</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,</span>
+<span>            y <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/enquo.html" class="external-link">enquo</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>,</span>
+<span>            z <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/enquo.html" class="external-link">enquo</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
 <span>        <span class="op">)</span></span>
 <span>    <span class="op">}</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -299,15 +299,15 @@ property value:</p>
 exactly this for the built-in <code>&lt;var_id&gt;</code> objects,
 handling bare names, <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> selections, <code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code>
 inline expressions, and <code><a href="../../reference/inlines.html">inlines()</a></code>. But for a first custom
-<code>&lt;var_id&gt;</code>, a simpler <code><a href="https://rdrr.io/pkg/rlang/man/eval_tidy.html" class="external-link">rlang::eval_tidy()</a></code>
+<code>&lt;var_id&gt;</code>, a simpler <code><a href="https://rlang.r-lib.org/reference/eval_tidy.html" class="external-link">rlang::eval_tidy()</a></code>
 is enough:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/method.html" class="external-link">method</a></span><span class="op">(</span><span class="va">model_processor</span>, <span class="va">xyz</span><span class="op">)</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">var_id</span>, <span class="va">data</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">resolve</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">quo</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>            <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rlang/man/eval_tidy.html" class="external-link">eval_tidy</a></span><span class="op">(</span><span class="va">quo</span><span class="op">)</span></span>
+<span>            <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/eval_tidy.html" class="external-link">eval_tidy</a></span><span class="op">(</span><span class="va">quo</span><span class="op">)</span></span>
 <span>        <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>            <span class="va">data</span><span class="op">[[</span><span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rlang/man/as_label.html" class="external-link">as_label</a></span><span class="op">(</span><span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rlang/man/quosure-tools.html" class="external-link">quo_get_expr</a></span><span class="op">(</span><span class="va">quo</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
+<span>            <span class="va">data</span><span class="op">[[</span><span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/as_label.html" class="external-link">as_label</a></span><span class="op">(</span><span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/quosure-tools.html" class="external-link">quo_get_expr</a></span><span class="op">(</span><span class="va">quo</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
 <span>        <span class="op">}</span></span>
 <span>    <span class="op">}</span></span>
 <span></span>
@@ -343,9 +343,9 @@ extra metadata in <code>other_info</code>, and variable previews in
 <span>    <span class="fu"><a href="../../reference/class_var_inform.html">class_var_inform</a></span><span class="op">(</span></span>
 <span>        var_id <span class="op">=</span> <span class="va">.var_id</span>,</span>
 <span>        args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
-<span>            <span class="st">"x = "</span>, <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rlang/man/as_label.html" class="external-link">as_label</a></span><span class="op">(</span><span class="va">.var_id</span><span class="op">@</span><span class="va">x</span><span class="op">)</span>,</span>
-<span>            <span class="st">", y = "</span>, <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rlang/man/as_label.html" class="external-link">as_label</a></span><span class="op">(</span><span class="va">.var_id</span><span class="op">@</span><span class="va">y</span><span class="op">)</span>,</span>
-<span>            <span class="st">", z = "</span>, <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rlang/man/as_label.html" class="external-link">as_label</a></span><span class="op">(</span><span class="va">.var_id</span><span class="op">@</span><span class="va">z</span><span class="op">)</span></span>
+<span>            <span class="st">"x = "</span>, <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/as_label.html" class="external-link">as_label</a></span><span class="op">(</span><span class="va">.var_id</span><span class="op">@</span><span class="va">x</span><span class="op">)</span>,</span>
+<span>            <span class="st">", y = "</span>, <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/as_label.html" class="external-link">as_label</a></span><span class="op">(</span><span class="va">.var_id</span><span class="op">@</span><span class="va">y</span><span class="op">)</span>,</span>
+<span>            <span class="st">", z = "</span>, <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/as_label.html" class="external-link">as_label</a></span><span class="op">(</span><span class="va">.var_id</span><span class="op">@</span><span class="va">z</span><span class="op">)</span></span>
 <span>        <span class="op">)</span>,</span>
 <span>        other_info <span class="op">=</span> <span class="va">other_info</span>,</span>
 <span>        vars <span class="op">=</span> <span class="va">vars</span>,</span>
@@ -381,7 +381,7 @@ This is the only required step, and it’s what
 <li>If the <code>&lt;var_id&gt;</code> should capture bare variable
 names lazily (recommended for anything that will be paired with a
 <code>data</code> frame), use a custom <code>constructor</code> that
-wraps each argument with <code><a href="https://rdrr.io/pkg/rlang/man/enquo.html" class="external-link">rlang::enquo()</a></code>, and resolve the
+wraps each argument with <code><a href="https://rlang.r-lib.org/reference/enquo.html" class="external-link">rlang::enquo()</a></code>, and resolve the
 quosures inside <code><a href="../../reference/model-processor.html">model_processor()</a></code>.</li>
 <li>Optionally, register a <code><a href="../../reference/var_id_info.html">var_id_info()</a></code> method for a
 friendlier <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> summary, returning a

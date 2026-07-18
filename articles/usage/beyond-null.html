@@ -130,12 +130,25 @@ order in that expression matters.</p>
 <p>Kutner, Nachtsheim, Neter, and Li’s <em>Applied Linear Statistical
 Models</em> poses a different kind of question throughout its inference
 chapters: not “are these equal,” but “is a specific weighted combination
-of these parameters above, below, or at some threshold.” That’s a linear
-contrast, and <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> supports it through
-<code>via("contrast")</code> on the <code><a href="../../reference/x_by.html">x_by()</a></code> layout,
-accepting arbitrary weights (<code>.w</code>) and a comparison value
-(<code>.mu</code>) rather than the fixed <code>+1</code>/<code>-1</code>
-split a plain two-sample test assumes.</p>
+of these parameters above, below, or at some threshold.” Two things can
+vary in that question, and they don’t cost the same:</p>
+<ul>
+<li>
+<strong>The comparison value.</strong> <code><a href="../../reference/x_by.html">x_by()</a></code>’s base
+two-sample path already reads the comparison value straight out of
+<code><a href="../../reference/null-hyp.html">state_null()</a></code>’s claim. <code>MU(a) - MU(b) &lt;= 3</code>
+runs on the ordinary two-sample path — no extra step.</li>
+<li>
+<strong>The weights.</strong> <code>via("contrast")</code> is the
+only path in <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> that accepts weights other than the
+implicit <code>+1</code>/<code>-1</code> split, computing a genuine
+Welch-Satterthwaite linear contrast (<code>.w</code>) rather than a
+plain mean difference.</li>
+</ul>
+<p>Showcase 2 below is the one place in this vignette where the weights
+actually depart from <code>±1</code>. That’s the one place
+<code>via("contrast")</code> is required — Showcases 1 and 3 stay on the
+base path.</p>
 <p>This vignette isn’t reproducing a specific textbook problem. The
 book’s own contrast examples mostly involve three or more groups (its
 ANOVA chapters, already covered by
@@ -143,7 +156,7 @@ ANOVA chapters, already covered by
 <code>TTEST</code>’s <code><a href="../../reference/x_by.html">x_by()</a></code>’s <code>contrast</code> variant
 is built for exactly two. What it does share with the book is the
 <em>question type</em>: a weighted, non-zero-threshold claim instead of
-a plain equality. The two questions below work that question type
+a plain equality. The three showcases below work that question type
 through <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, using the same Welch-Satterthwaite
 machinery the book’s contrast tests are built on.</p>
 </div>
@@ -165,17 +178,17 @@ beyond loading it:</p>
 <div class="section level2">
 <h2 id="a-look-at-the-data">A look at the data<a class="anchor" aria-label="anchor" href="#a-look-at-the-data"></a>
 </h2>
-<p>Both questions below hinge on the size of the OJ-VC gap, so it’s
+<p>All three showcases below hinge on the size of the OJ-VC gap, so it’s
 worth seeing that gap before testing it. Let’s start with stratified
 summaries (uncover interactions early):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
-<span>    <span class="va">dplyr</span><span class="op">[</span><span class="va">mutate</span>, <span class="va">group_by</span>, <span class="va">summarise</span>, <span class="va">n</span><span class="op">]</span>,</span>
+<span>    <span class="va">dplyr</span><span class="op">[</span><span class="va">mutate</span>, <span class="va">group_by</span>, <span class="va">summarise</span>, <span class="va">filter</span>, <span class="va">n</span><span class="op">]</span>,</span>
 <span>    <span class="va">forcats</span><span class="op">[</span><span class="va">as_factor</span><span class="op">]</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">mutate</span><span class="op">(</span>dose <span class="op">=</span> <span class="fu">as_factor</span><span class="op">(</span><span class="va">dose</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>dose <span class="op">=</span> <span class="fu">as_factor</span><span class="op">(</span><span class="va">dose</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">group_by</span><span class="op">(</span><span class="va">supp</span>, <span class="va">dose</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">summarise</span><span class="op">(</span></span>
 <span>        n <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span>,</span>
@@ -200,8 +213,8 @@ Click here to open
 <code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
 <span>    <span class="va">ggplot2</span><span class="op">[</span></span>
 <span>        <span class="va">ggplot</span>, <span class="va">aes</span>, <span class="va">labs</span>, <span class="va">theme_minimal</span>, <span class="va">theme</span>, <span class="va">element_blank</span>,</span>
-<span>        <span class="va">geom_jitter</span>, <span class="va">position_jitter</span>, <span class="va">element_text</span>, <span class="va">element_line</span>, </span>
-<span>        <span class="va">element_rect</span>, <span class="va">margin</span>, <span class="va">scale_fill_manual</span>, <span class="va">scale_colour_manual</span>, </span>
+<span>        <span class="va">geom_jitter</span>, <span class="va">position_jitter</span>, <span class="va">element_text</span>, <span class="va">element_line</span>,</span>
+<span>        <span class="va">element_rect</span>, <span class="va">margin</span>, <span class="va">scale_fill_manual</span>, <span class="va">scale_colour_manual</span>,</span>
 <span>        <span class="va">coord_flip</span>, <span class="va">scale_y_continuous</span></span>
 <span>    <span class="op">]</span>,</span>
 <span>    <span class="va">ggdist</span><span class="op">[</span><span class="va">stat_halfeye</span>, <span class="va">stat_interval</span>, <span class="va">stat_dots</span><span class="op">]</span>,</span>
@@ -221,11 +234,31 @@ Click here to open
 <span></span>
 <span><span class="va">subtitle_text</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Distribution, uncertainty, and raw values for tooth growth by dose and supplement "</span>,</span>
-<span>    <span class="st">"&lt;br&gt;"</span>, </span>
+<span>    <span class="st">"&lt;br&gt;"</span>,</span>
 <span>    <span class="st">"**Supplement:** "</span>,</span>
 <span>    <span class="st">"&lt;span style='color:#B34A44;'&gt;**Orange Juice (OJ)**&lt;/span&gt; | "</span>,</span>
 <span>    <span class="st">"&lt;span style='color:#4E7C74;'&gt;**Ascorbic Acid (VC)**&lt;/span&gt;"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">theme_growth</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">subtitle_colour</span> <span class="op">=</span> <span class="st">"grey40"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu">theme_minimal</span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span>, base_family <span class="op">=</span> <span class="st">"Lumanosimo"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>        <span class="fu">theme</span><span class="op">(</span></span>
+<span>            legend.position <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>            plot.background <span class="op">=</span> <span class="fu">element_rect</span><span class="op">(</span>colour <span class="op">=</span> <span class="cn">NA</span>, fill <span class="op">=</span> <span class="va">bg_color</span><span class="op">)</span>,</span>
+<span>            plot.title.position <span class="op">=</span> <span class="st">"plot"</span>,</span>
+<span>            plot.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,</span>
+<span>            plot.subtitle <span class="op">=</span> <span class="fu">element_markdown</span><span class="op">(</span></span>
+<span>                colour <span class="op">=</span> <span class="va">subtitle_colour</span>, size <span class="op">=</span> <span class="fl">13</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>                family <span class="op">=</span> <span class="st">"Snowburst One"</span>,</span>
+<span>                lineheight <span class="op">=</span> <span class="fl">1.3</span>,</span>
+<span>                margin <span class="op">=</span> <span class="fu">margin</span><span class="op">(</span>t <span class="op">=</span> <span class="fl">6</span>, b <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
+<span>            <span class="op">)</span>,</span>
+<span>            panel.grid <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>            panel.grid.major.x <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.15</span>, colour <span class="op">=</span> <span class="st">"grey80"</span><span class="op">)</span>,</span>
+<span>            axis.text.y <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>            plot.margin <span class="op">=</span> <span class="fu">margin</span><span class="op">(</span><span class="fl">10</span>, <span class="fl">12</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span>        <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 </details><ol style="list-style-type: decimal">
 <li>
 <p>Distribution between <code>OJ</code> and <code>VC</code></p>
@@ -254,23 +287,7 @@ Click here to open
 <span>        x <span class="op">=</span> <span class="st">"Supplement"</span>,</span>
 <span>        y <span class="op">=</span> <span class="st">"Tooth Length"</span></span>
 <span>    <span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">theme_minimal</span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span>, base_family <span class="op">=</span> <span class="st">"Lumanosimo"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">theme</span><span class="op">(</span></span>
-<span>        legend.position <span class="op">=</span> <span class="st">"none"</span>,</span>
-<span>        plot.background <span class="op">=</span> <span class="fu">element_rect</span><span class="op">(</span>colour <span class="op">=</span> <span class="cn">NA</span>, fill <span class="op">=</span> <span class="va">bg_color</span><span class="op">)</span>,</span>
-<span>        plot.title.position <span class="op">=</span> <span class="st">"plot"</span>,</span>
-<span>        plot.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,</span>
-<span>        plot.subtitle <span class="op">=</span> <span class="fu">element_markdown</span><span class="op">(</span></span>
-<span>            colour <span class="op">=</span> <span class="st">"grey40"</span>, size <span class="op">=</span> <span class="fl">13</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>            family <span class="op">=</span> <span class="st">"Snowburst One"</span>,</span>
-<span>            lineheight <span class="op">=</span> <span class="fl">1.3</span>,</span>
-<span>            margin <span class="op">=</span> <span class="fu">margin</span><span class="op">(</span>t <span class="op">=</span> <span class="fl">6</span>, b <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
-<span>        <span class="op">)</span>,</span>
-<span>        panel.grid <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span>,</span>
-<span>        panel.grid.major.x <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.15</span>, colour <span class="op">=</span> <span class="st">"grey80"</span><span class="op">)</span>,</span>
-<span>        axis.text.y <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
-<span>        plot.margin <span class="op">=</span> <span class="fu">margin</span><span class="op">(</span><span class="fl">10</span>, <span class="fl">12</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu">theme_growth</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="beyond-null_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="768"></p>
 </li>
 <li>
@@ -304,32 +321,39 @@ Click here to open
 <span>        x <span class="op">=</span> <span class="st">"Dose (mg/day)"</span>,</span>
 <span>        y <span class="op">=</span> <span class="st">"Tooth Length"</span></span>
 <span>    <span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">theme_minimal</span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">12</span>, base_family <span class="op">=</span> <span class="st">"Lumanosimo"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu">theme</span><span class="op">(</span></span>
-<span>        legend.position <span class="op">=</span> <span class="st">"none"</span>,</span>
-<span>        plot.background <span class="op">=</span> <span class="fu">element_rect</span><span class="op">(</span>colour <span class="op">=</span> <span class="cn">NA</span>, fill <span class="op">=</span> <span class="va">bg_color</span><span class="op">)</span>,</span>
-<span>        plot.title.position <span class="op">=</span> <span class="st">"plot"</span>,</span>
-<span>        plot.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span>, size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,</span>
-<span>        plot.subtitle <span class="op">=</span> <span class="fu">element_markdown</span><span class="op">(</span></span>
-<span>            colour <span class="op">=</span> <span class="st">"#1D2128"</span>, size <span class="op">=</span> <span class="fl">13</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>            family <span class="op">=</span> <span class="st">"Snowburst One"</span>,</span>
-<span>            lineheight <span class="op">=</span> <span class="fl">1.3</span>,</span>
-<span>            margin <span class="op">=</span> <span class="fu">margin</span><span class="op">(</span>t <span class="op">=</span> <span class="fl">6</span>, b <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
-<span>        <span class="op">)</span>,</span>
-<span>        panel.grid <span class="op">=</span> <span class="fu">element_blank</span><span class="op">(</span><span class="op">)</span>,</span>
-<span>        panel.grid.major.x <span class="op">=</span> <span class="fu">element_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.15</span>, colour <span class="op">=</span> <span class="st">"grey80"</span><span class="op">)</span>,</span>
-<span>        axis.text.y <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
-<span>        plot.margin <span class="op">=</span> <span class="fu">margin</span><span class="op">(</span><span class="fl">10</span>, <span class="fl">12</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span></code></pre></div>
+<span>    <span class="fu">theme_growth</span><span class="op">(</span>subtitle_colour <span class="op">=</span> <span class="st">"#1D2128"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="beyond-null_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="768"></p>
 </li>
 </ol>
+<div class="section level3">
+<h3 id="conditioning-on-dose">Conditioning on dose<a class="anchor" aria-label="anchor" href="#conditioning-on-dose"></a>
+</h3>
+<p>The stratified summary and the plot above agree on something the
+marginal number hides: the OJ-VC gap is not constant across
+<code>dose</code>. It runs about 5.25 units at 0.5 mg/day, close to its
+widest at 5.93 units at 1 mg/day, and collapses to -0.08 units —
+indistinguishable from zero — at 2 mg/day. Pooling across
+<code>dose</code>, as a plain two-sample test does, blends a real effect
+at the two lower doses with a null effect at the highest one. That
+pooled test puts the marginal gap at 3.70 units and fails to clear a
+3-unit bar (p <span class="math inline">\approx</span> 0.36) — a
+conclusion that dissolves once dose enters the picture.</p>
+<p>The three showcases below work within <code>dose == 1</code>, the
+middle level, where the gap is close to its largest and far from the
+point where OJ and VC converge. This keeps the worked examples honest
+about what the data actually support at a fixed dose, rather than
+testing a pooled average that no individual dose exhibits. A full
+treatment of the dose effect itself — whether it’s a genuine effect, an
+interaction with <code>supp</code>, or well-modelled as a factor — is an
+ANOVA question, not a two-sample one; see
+<code>vignette("anova-mod", package = "statim")</code>.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="showcase-1-clinically-meaningful-superiority">Showcase 1: Clinically Meaningful Superiority<a class="anchor" aria-label="anchor" href="#showcase-1-clinically-meaningful-superiority"></a>
 </h2>
-<p><strong>Question:</strong> Does OJ outperform VC by more than 3 units
-(a practically relevant margin)?</p>
+<p><strong>Question:</strong> At 1 mg/day, does OJ outperform VC by more
+than 3 units (a practically relevant margin)?</p>
 <p><span class="math display">H_0: \mu_{\text{OJ}} - \mu_{\text{VC}}
 \leq 3 \qquad H_1: \mu_{\text{OJ}} - \mu_{\text{VC}} &gt; 3</span></p>
 <p>A plain two-sample test only asks whether the two means differ at
@@ -337,16 +361,17 @@ all. A textbook question is sharper: is OJ’s advantage over VC big
 enough to matter, not just big enough to be non-zero. Stating
 <code>3</code> as the comparison value, rather than <code>0</code>, is
 what turns this into a genuine contrast rather than a relabeled equality
-test.</p>
+test. The weights are still the default <code>±1</code> split, so this
+stays on the base two-sample path — no <code>via("contrast")</code>
+needed.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span> <span class="op">==</span> <span class="st">"OJ"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span> <span class="op">==</span> <span class="st">"VC"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">3</span></span>
-<span>    <span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="co"># This is not needed, unless a weighted "parameter" is present</span></span>
-<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"contrast"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
@@ -356,14 +381,14 @@ Args : len | supp
     x_vars : 1 
     by_vars : 1 
 
-== T-Test · contrast =========================================================== 
+== T-Test ====================================================================== 
 
 -- Summary ---------------------------------------------------------------------
 
 ──────────────────────────────────────────
   group  estimate  t_stat    df    p_val  
 ──────────────────────────────────────────
-  supp    3.700    0.362   55.310  <span style="font-style: italic;">0.359</span>  
+  supp    5.930    1.993   15.360  <span style="color: #BB0000;">0.032</span>  
 ──────────────────────────────────────────
 
 
@@ -372,29 +397,31 @@ Args : len | supp
 ─────────────────────────────
   group  lower_95  upper_95  
 ─────────────────────────────
-  supp    0.468      Inf     
+  supp    3.356      Inf     
 ─────────────────────────────
 </code></pre>
 <p>Interpretation:</p>
 <ul>
-<li>The estimated OJ-VC gap is 3.70, a little above the 3-unit bar, but
-<code>t_stat</code> (0.362) and <code>p_val</code> (0.359) are testing
-the gap <em>against</em> that bar, not against zero. At <span class="math inline">\alpha = 0.05</span>, <code>p_val</code> is too
-large to reject <span class="math inline">H_0</span>: there isn’t enough
-evidence that OJ beats VC by more than 3 units. The one-sided 95% lower
-bound of 0.468 makes the same point — the true gap could plausibly be
-well under 3.</li>
+<li>At <code>dose == 1</code>, the estimated OJ-VC gap is 5.93,
+comfortably above the 3-unit bar. <code>t_stat</code> (1.9926) and
+<code>p_val</code> (0.0322) test that gap against 3, not against zero.
+At <span class="math inline">\alpha = 0.05</span>, that’s enough to
+reject <span class="math inline">H_0</span>: within this dose, OJ’s
+advantage isn’t just present, it exceeds 3 units. The one-sided 95%
+lower bound of 3.3562 makes the same point — the true gap is unlikely to
+sit at or below the 3-unit bar. Conditioning on dose recovered an effect
+the marginal test above couldn’t see.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="showcase-2-weighted-dominance">Showcase 2: Weighted Dominance<a class="anchor" aria-label="anchor" href="#showcase-2-weighted-dominance"></a>
 </h2>
-<p><strong>Question:</strong> Does <em>twice</em> the mean under OJ
-still substantially exceed the VC mean?</p>
+<p><strong>Question:</strong> At 1 mg/day, does <em>twice</em> the mean
+under OJ still substantially exceed the VC mean?</p>
 <p><span class="math display">H_0: 2\cdot\mu_{\text{OJ}} -
 \mu_{\text{VC}} \leq 0 \qquad H_1: 2\cdot\mu_{\text{OJ}} -
 \mu_{\text{VC}} &gt; 0</span></p>
-<p>Unlike 1, the two sides here carry different weights:</p>
+<p>Unlike Showcase 1, the two sides here carry different weights:</p>
 <ul>
 <li><p><code>2</code> on one group</p></li>
 <li><p><code>1</code> on the other</p></li>
@@ -402,14 +429,19 @@ still substantially exceed the VC mean?</p>
 <p>So this isn’t a rescaled version of the same claim. There’s no way to
 hand base R’s <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test()</a></code> a coefficient per group; the
 comparison has to be pre-computed by hand before the call. Here the
-coefficients live directly in the claim:</p>
+coefficients live directly in the claim — and because they aren’t
+<code>±1</code>, this is the one showcase in this vignette where
+<code>via("contrast")</code> is required. Drop it and the base path’s
+claim parser rejects the claim outright, since it only accepts a
+<code>-1</code>/<code>+1</code> split.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
-<span>        <span class="co"># If no coefficient </span></span>
-<span>        <span class="co"># it is hidden and </span></span>
+<span>        <span class="co"># If no coefficient</span></span>
+<span>        <span class="co"># it is hidden and</span></span>
 <span>        <span class="co"># it contains a coefficient of 1</span></span>
 <span>        <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span> <span class="op">==</span> <span class="st">"OJ"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span> <span class="op">==</span> <span class="st">"VC"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">0</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -430,7 +462,7 @@ Args : len | supp
 ───────────────────────────────────────────
   group  estimate  t_stat    df    p_val   
 ───────────────────────────────────────────
-  supp    24.363   8.563   48.690  <span style="font-weight: bold;">&lt;0.001</span>  
+  supp    28.630   11.019  10.840  <span style="font-weight: bold;">&lt;0.001</span>  
 ───────────────────────────────────────────
 
 
@@ -439,50 +471,64 @@ Args : len | supp
 ─────────────────────────────
   group  lower_95  upper_95  
 ─────────────────────────────
-  supp    19.593     Inf     
+  supp    23.958     Inf     
 ─────────────────────────────
 </code></pre>
 <p>Interpretation:</p>
 <ul>
 <li>
-<code>estimate</code> (24.363) is <span class="math inline">2 \cdot
+<code>estimate</code> (28.63) is <span class="math inline">2 \cdot
 \bar{x}_{\text{OJ}} - \bar{x}_{\text{VC}}</span> itself, since
 <code>.mu</code> is 0 here. <code>p_val</code> is below
 <code>0.001</code>, so <span class="math inline">H_0</span> is rejected:
 twice OJ’s mean does not fall short of VC’s — it’s well above it. The
-95% lower bound of 19.593 says the same thing, since it sits nowhere
+95% lower bound of 23.9576 says the same thing, since it sits nowhere
 near 0.</li>
 </ul>
+<p>A caveat worth stating plainly: weights of <code>2, -1</code> sum to
+<code>1</code>, not <code>0</code>, so this isn’t a contrast in the
+strict ANOVA sense — it isn’t location-invariant. Shift the origin of
+the measurement scale and <code>2 * MU(OJ) - MU(VC)</code> changes value
+even though the relationship between OJ and VC hasn’t. Tooth length has
+a genuine zero (<code>len = 0</code> means no measurable growth), so the
+weighting isn’t arbitrary here, but the same expression on a scale
+without a true zero — Celsius temperature, say — would give a different
+answer depending on where you happened to put <code>0</code>. Reach for
+<code>via("contrast")</code> when you actually need weights other than
+<code>±1</code>; don’t reach for non-zero-sum weights by default just
+because the machinery allows it.</p>
 </div>
 <div class="section level2">
 <h2 id="showcase-3-dynamic-threshold">Showcase 3: Dynamic Threshold<a class="anchor" aria-label="anchor" href="#showcase-3-dynamic-threshold"></a>
 </h2>
-<p><strong>Question:</strong> Is the OJ–VC gap at least 20% of the
-overall average tooth length?</p>
+<p><strong>Question:</strong> At 1 mg/day, is the OJ-VC gap at least 20%
+of the overall (all-dose) average tooth length?</p>
 <p><span class="math display">H_0: \mu_{\text{OJ}} - \mu_{\text{VC}}
 \leq 0.20 \times \bar{x}_{\text{overall}} \qquad H_1: \mu_{\text{OJ}} -
 \mu_{\text{VC}} &gt; 0.20 \times \bar{x}_{\text{overall}}</span></p>
-<p>Just like 1, except its two-sample test (or even a fixed-threshold
-contrast) only uses static values. Here we use a data-driven threshold
-computed from the dataset itself. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> resolves
-variables from the environment inside <code><a href="../../reference/null-hyp.html">state_null()</a></code>, so you
-can build flexible, context-aware hypotheses without pre-creating
-columns or hard-coding numbers.</p>
+<p>Just like Showcase 1, except the comparison value isn’t a number
+chosen in advance — it’s a data-driven threshold computed from the
+dataset itself. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> resolves variables from the
+environment inside <code><a href="../../reference/null-hyp.html">state_null()</a></code>, so you can build flexible,
+context-aware hypotheses without pre-creating columns or hard-coding
+numbers. The weights are still <code>±1</code>, so — as in Showcase 1 —
+this stays on the base path; no <code>via("contrast")</code> call.</p>
+<p><code>overall_avg</code> below is computed from the <em>full</em>
+dataset, all three doses, not the <code>dose == 1</code> subset under
+test — it’s meant as an absolute benchmark on the tooth-length scale,
+not a property of this particular dose.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">overall_avg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ToothGrowth</span><span class="op">$</span><span class="va">len</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
-<span>        <span class="co"># An outside variable `overall_avg` is still </span></span>
+<span>        <span class="co"># An outside variable `overall_avg` is still</span></span>
 <span>        <span class="co"># looked up by `state_null()`</span></span>
 <span>        <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span> <span class="op">==</span> <span class="st">"OJ"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span> <span class="op">==</span> <span class="st">"VC"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">0.20</span> <span class="op">*</span> <span class="va">overall_avg</span></span>
-<span>    <span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="co"># Again, the "parameters" are not weighted, </span></span>
-<span>    <span class="co"># so this is unnecessary step</span></span>
-<span>    <span class="co"># Unless you want to</span></span>
-<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"contrast"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
@@ -492,14 +538,14 @@ Args : len | supp
     x_vars : 1 
     by_vars : 1 
 
-== T-Test · contrast =========================================================== 
+== T-Test ====================================================================== 
 
 -- Summary ---------------------------------------------------------------------
 
 ──────────────────────────────────────────
   group  estimate  t_stat    df    p_val  
 ──────────────────────────────────────────
-  supp    3.700    -0.032  55.310  <span style="font-style: italic;">0.513</span>  
+  supp    5.930    1.474   15.360  <span style="font-style: italic;">0.080</span>  
 ──────────────────────────────────────────
 
 
@@ -508,21 +554,32 @@ Args : len | supp
 ─────────────────────────────
   group  lower_95  upper_95  
 ─────────────────────────────
-  supp    0.468      Inf     
+  supp    3.356      Inf     
 ─────────────────────────────
 </code></pre>
 <p>Interpretation:</p>
 <ul>
-<li><p>The estimated OJ-VC gap is 3.70. The dynamic threshold (20% of
-the overall mean) is approximately 3.77, so the observed difference
-falls just short of the bar</p></li>
-<li><p><code>t_stat</code> (<span class="math inline">\approx</span>
--0.032) and <code>p_val</code> (0.513) test the gap against this
-data-driven value. At <span class="math inline">\alpha = 0.05</span>,
-<code>p_val</code> is too large to reject <span class="math inline">H_0</span>: there isn’t enough evidence that the
-true gap exceeds 20% of the overall average tooth length. The one-sided
-95% lower bound of 0.468 supports the same conclusion: the advantage
-could plausibly be smaller than our relative threshold.</p></li>
+<li><p>The estimated OJ-VC gap at <code>dose == 1</code> is 5.93, the
+same estimate as Showcase 1 — both showcases test the identical subset
+and the identical difference, just against different bars. The dynamic
+threshold (20% of the overall average) is about 3.7627, higher than
+Showcase 1’s fixed 3-unit bar. <code>t_stat</code> (<span class="math inline">\approx</span> 1.4739) and <code>p_val</code> (<span class="math inline">\approx</span> 0.0804) test the gap against this
+stricter value. At <span class="math inline">\alpha = 0.05</span>,
+that’s not quite enough to reject <span class="math inline">H_0</span>.</p></li>
+<li><p>Showcase 1 and Showcase 3 report the <em>same</em> confidence
+interval, <code>(3.3562, Inf)</code>. That’s not a copy-paste artifact:
+the interval describes the plausible range for the gap itself, which
+doesn’t depend on which threshold you’re testing it against. What
+differs is where each threshold sits relative to that interval — 3 falls
+below the lower bound (so Showcase 1 rejects), 3.7627 falls above it (so
+Showcase 3 doesn’t). Same evidence, different bar, different conclusion
+— which is the entire point of a threshold test.</p></li>
+<li><p>One footnote: <code>overall_avg</code> is itself estimated from
+this sample, then treated as fixed once computed. That’s fine for a
+worked example, but a fully rigorous treatment would need to account for
+the extra uncertainty in estimating the threshold before testing against
+it — the interval above reflects sampling uncertainty in the gap only,
+not in the benchmark.</p></li>
 </ul>
 </div>
 <div class="section level2">
