@@ -183,7 +183,7 @@ worth seeing that gap before testing it. Let’s start with stratified
 summaries (uncover interactions early):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
-<span>    <span class="va">dplyr</span><span class="op">[</span><span class="va">mutate</span>, <span class="va">group_by</span>, <span class="va">summarise</span>, <span class="va">filter</span>, <span class="va">n</span><span class="op">]</span>,</span>
+<span>    <span class="va">dplyr</span><span class="op">[</span><span class="va">mutate</span>, <span class="va">group_by</span>, <span class="va">summarise</span>, keep_when <span class="op">=</span> <span class="va">filter</span>, <span class="va">n</span><span class="op">]</span>,</span>
 <span>    <span class="va">forcats</span><span class="op">[</span><span class="va">as_factor</span><span class="op">]</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -194,6 +194,7 @@ summaries (uncover interactions early):</p>
 <span>        n <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>        mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">len</span><span class="op">)</span>,</span>
 <span>        sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">len</span><span class="op">)</span>,</span>
+<span>        </span>
 <span>        .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 6 × 5</span>
@@ -331,19 +332,19 @@ Click here to open
 <p>The stratified summary and the plot above agree on something the
 marginal number hides: the OJ-VC gap is not constant across
 <code>dose</code>. It runs about 5.25 units at 0.5 mg/day, close to its
-widest at 5.93 units at 1 mg/day, and collapses to -0.08 units —
-indistinguishable from zero — at 2 mg/day. Pooling across
+widest at 5.93 units at 1 mg/day, and collapses to -0.08 units
+(indistinguishable from zero — at 2 mg/day). Pooling across
 <code>dose</code>, as a plain two-sample test does, blends a real effect
 at the two lower doses with a null effect at the highest one. That
 pooled test puts the marginal gap at 3.70 units and fails to clear a
-3-unit bar (p <span class="math inline">\approx</span> 0.36) — a
+3-unit bar (p <span class="math inline">\approx</span> 0.36), a
 conclusion that dissolves once dose enters the picture.</p>
 <p>The three showcases below work within <code>dose == 1</code>, the
 middle level, where the gap is close to its largest and far from the
 point where OJ and VC converge. This keeps the worked examples honest
 about what the data actually support at a fixed dose, rather than
 testing a pooled average that no individual dose exhibits. A full
-treatment of the dose effect itself — whether it’s a genuine effect, an
+treatment of the dose effect itself, whether it’s a genuine effect, an
 interaction with <code>supp</code>, or well-modelled as a factor — is an
 ANOVA question, not a two-sample one; see
 <code>vignette("anova-mod", package = "statim")</code>.</p>
@@ -361,12 +362,13 @@ all. A textbook question is sharper: is OJ’s advantage over VC big
 enough to matter, not just big enough to be non-zero. Stating
 <code>3</code> as the comparison value, rather than <code>0</code>, is
 what turns this into a genuine contrast rather than a relabeled equality
-test. The weights are still the default <code>±1</code> split, so this
-stays on the base two-sample path — no <code>via("contrast")</code>
-needed.</p>
+test. The weights are still the default <span class="math inline">\pm
+1</span> split, so this stays on the base two-sample path (this is valid
+on <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code>, thus no <code>via("contrast")</code>
+needed, with an exemption of you wanted to do it).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">keep_when</span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
@@ -408,7 +410,7 @@ comfortably above the 3-unit bar. <code>t_stat</code> (1.9926) and
 At <span class="math inline">\alpha = 0.05</span>, that’s enough to
 reject <span class="math inline">H_0</span>: within this dose, OJ’s
 advantage isn’t just present, it exceeds 3 units. The one-sided 95%
-lower bound of 3.3562 makes the same point — the true gap is unlikely to
+lower bound of 3.3562 makes the same point. The true gap is unlikely to
 sit at or below the 3-unit bar. Conditioning on dose recovered an effect
 the marginal test above couldn’t see.</li>
 </ul>
@@ -426,22 +428,22 @@ under OJ still substantially exceed the VC mean?</p>
 <li><p><code>2</code> on one group</p></li>
 <li><p><code>1</code> on the other</p></li>
 </ul>
-<p>So this isn’t a rescaled version of the same claim. There’s no way to
-hand base R’s <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test()</a></code> a coefficient per group; the
-comparison has to be pre-computed by hand before the call. Here the
-coefficients live directly in the claim — and because they aren’t
-<code>±1</code>, this is the one showcase in this vignette where
-<code>via("contrast")</code> is required. Drop it and the base path’s
-claim parser rejects the claim outright, since it only accepts a
-<code>-1</code>/<code>+1</code> split.</p>
+<p>So this isn’t a rescaled version of the same null hypothesis. There’s
+no way to hand base R’s <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">t.test()</a></code> a coefficient per group;
+the comparison has to be pre-computed by hand before the call. Here the
+coefficients live directly in the null hypothesis, and because they
+aren’t <span class="math inline">\pm 1</span>, this is the one showcase
+in this vignette where <code>via("contrast")</code> is required. Drop it
+and the base path’s claim parser rejects the claim outright, since it
+only accepts a <code>-1</code>/<code>+1</code> split.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">keep_when</span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
 <span>        <span class="co"># If no coefficient</span></span>
-<span>        <span class="co"># it is hidden and</span></span>
+<span>        <span class="co"># it is hidden and </span></span>
 <span>        <span class="co"># it contains a coefficient of 1</span></span>
 <span>        <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span> <span class="op">==</span> <span class="st">"OJ"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span> <span class="op">==</span> <span class="st">"VC"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">0</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -481,22 +483,23 @@ Args : len | supp
 \bar{x}_{\text{OJ}} - \bar{x}_{\text{VC}}</span> itself, since
 <code>.mu</code> is 0 here. <code>p_val</code> is below
 <code>0.001</code>, so <span class="math inline">H_0</span> is rejected:
-twice OJ’s mean does not fall short of VC’s — it’s well above it. The
-95% lower bound of 23.9576 says the same thing, since it sits nowhere
-near 0.</li>
+twice OJ’s mean does not fall short of VC’s, in fact, it’s well above
+it. The 95% lower bound of 23.9576 says the same thing, since it sits
+nowhere near 0.</li>
 </ul>
 <p>A caveat worth stating plainly: weights of <code>2, -1</code> sum to
 <code>1</code>, not <code>0</code>, so this isn’t a contrast in the
 strict ANOVA sense — it isn’t location-invariant. Shift the origin of
 the measurement scale and <code>2 * MU(OJ) - MU(VC)</code> changes value
-even though the relationship between OJ and VC hasn’t. Tooth length has
-a genuine zero (<code>len = 0</code> means no measurable growth), so the
-weighting isn’t arbitrary here, but the same expression on a scale
-without a true zero — Celsius temperature, say — would give a different
-answer depending on where you happened to put <code>0</code>. Reach for
-<code>via("contrast")</code> when you actually need weights other than
-<code>±1</code>; don’t reach for non-zero-sum weights by default just
-because the machinery allows it.</p>
+even though the relationship between OJ and VC hasn’t.</p>
+<p>Tooth length has a genuine zero (<code>len = 0</code> means no
+measurable growth), so the weighting isn’t arbitrary here, but the same
+expression on a scale without a true zero (Celsius temperature, say)
+would give a different answer depending on where you happened to put
+<code>0</code>. Reach for <code>via("contrast")</code> when you actually
+need weights other than <span class="math inline">\pm 1</span>; don’t
+reach for non-zero-sum weights by default just because the machinery
+allows it.</p>
 </div>
 <div class="section level2">
 <h2 id="showcase-3-dynamic-threshold">Showcase 3: Dynamic Threshold<a class="anchor" aria-label="anchor" href="#showcase-3-dynamic-threshold"></a>
@@ -511,17 +514,18 @@ chosen in advance — it’s a data-driven threshold computed from the
 dataset itself. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> resolves variables from the
 environment inside <code><a href="../../reference/null-hyp.html">state_null()</a></code>, so you can build flexible,
 context-aware hypotheses without pre-creating columns or hard-coding
-numbers. The weights are still <code>±1</code>, so — as in Showcase 1 —
-this stays on the base path; no <code>via("contrast")</code> call.</p>
+numbers. The weights are still <span class="math inline">\pm 1</span>,
+so, as in Showcase 1, this stays on the base path where no
+<code>via("contrast")</code> call is needed.</p>
 <p><code>overall_avg</code> below is computed from the <em>full</em>
 dataset, all three doses, not the <code>dose == 1</code> subset under
-test — it’s meant as an absolute benchmark on the tooth-length scale,
-not a property of this particular dose.</p>
+test. It’s meant as an absolute benchmark on the tooth-length scale, not
+a property of this particular dose.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">overall_avg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ToothGrowth</span><span class="op">$</span><span class="va">len</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">overall_avg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ToothGrowth</span><span class="op">$</span><span class="va">len</span><span class="op">)</span> <span class="co"># 18.8133</span></span>
 <span></span>
 <span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">keep_when</span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/null-hyp.html">state_null</a></span><span class="op">(</span></span>
@@ -560,25 +564,26 @@ Args : len | supp
 <p>Interpretation:</p>
 <ul>
 <li><p>The estimated OJ-VC gap at <code>dose == 1</code> is 5.93, the
-same estimate as Showcase 1 — both showcases test the identical subset
+same estimate as Showcase 1. Both showcases test the identical subset
 and the identical difference, just against different bars. The dynamic
 threshold (20% of the overall average) is about 3.7627, higher than
 Showcase 1’s fixed 3-unit bar. <code>t_stat</code> (<span class="math inline">\approx</span> 1.4739) and <code>p_val</code> (<span class="math inline">\approx</span> 0.0804) test the gap against this
 stricter value. At <span class="math inline">\alpha = 0.05</span>,
 that’s not quite enough to reject <span class="math inline">H_0</span>.</p></li>
 <li><p>Showcase 1 and Showcase 3 report the <em>same</em> confidence
-interval, <code>(3.3562, Inf)</code>. That’s not a copy-paste artifact:
-the interval describes the plausible range for the gap itself, which
-doesn’t depend on which threshold you’re testing it against. What
-differs is where each threshold sits relative to that interval — 3 falls
-below the lower bound (so Showcase 1 rejects), 3.7627 falls above it (so
-Showcase 3 doesn’t). Same evidence, different bar, different conclusion
-— which is the entire point of a threshold test.</p></li>
+interval, <span class="math inline">(3.3562, \infty)</span>. That’s not
+a “copy-paste” dogma: the interval describes the plausible range for the
+gap itself, which doesn’t depend on which threshold you’re testing it
+against. What differs is where each threshold sits relative to that
+interval. 3 falls below the lower bound (so Showcase 1 rejects), 3.7627
+falls above it (so Showcase 3 doesn’t). Same evidence, different bar,
+different conclusion — which is the entire point of a threshold
+test.</p></li>
 <li><p>One footnote: <code>overall_avg</code> is itself estimated from
 this sample, then treated as fixed once computed. That’s fine for a
 worked example, but a fully rigorous treatment would need to account for
 the extra uncertainty in estimating the threshold before testing against
-it — the interval above reflects sampling uncertainty in the gap only,
+it. The interval above reflects sampling uncertainty in the gap only,
 not in the benchmark.</p></li>
 </ul>
 </div>

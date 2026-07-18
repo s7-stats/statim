@@ -81,7 +81,7 @@ summaries (uncover interactions early):
 ``` r
 
 box::use(
-    dplyr[mutate, group_by, summarise, filter, n],
+    dplyr[mutate, group_by, summarise, keep_when = filter, n],
     forcats[as_factor]
 )
 
@@ -92,6 +92,7 @@ ToothGrowth |>
         n = n(),
         mean = mean(len),
         sd = sd(len),
+        
         .groups = "drop"
     )
 ```
@@ -240,11 +241,11 @@ theme_growth = function(subtitle_colour = "grey40") {
 The stratified summary and the plot above agree on something the
 marginal number hides: the OJ-VC gap is not constant across `dose`. It
 runs about 5.25 units at 0.5 mg/day, close to its widest at 5.93 units
-at 1 mg/day, and collapses to -0.08 units — indistinguishable from zero
-— at 2 mg/day. Pooling across `dose`, as a plain two-sample test does,
+at 1 mg/day, and collapses to -0.08 units (indistinguishable from zero —
+at 2 mg/day). Pooling across `dose`, as a plain two-sample test does,
 blends a real effect at the two lower doses with a null effect at the
 highest one. That pooled test puts the marginal gap at 3.70 units and
-fails to clear a 3-unit bar (p \approx 0.36) — a conclusion that
+fails to clear a 3-unit bar (p \approx 0.36), a conclusion that
 dissolves once dose enters the picture.
 
 The three showcases below work within `dose == 1`, the middle level,
@@ -252,7 +253,7 @@ where the gap is close to its largest and far from the point where OJ
 and VC converge. This keeps the worked examples honest about what the
 data actually support at a fixed dose, rather than testing a pooled
 average that no individual dose exhibits. A full treatment of the dose
-effect itself — whether it’s a genuine effect, an interaction with
+effect itself, whether it’s a genuine effect, an interaction with
 `supp`, or well-modelled as a factor — is an ANOVA question, not a
 two-sample one; see `vignette("anova-mod", package = "statim")`.
 
@@ -269,13 +270,15 @@ textbook question is sharper: is OJ’s advantage over VC big enough to
 matter, not just big enough to be non-zero. Stating `3` as the
 comparison value, rather than `0`, is what turns this into a genuine
 contrast rather than a relabeled equality test. The weights are still
-the default `±1` split, so this stays on the base two-sample path — no
-`via("contrast")` needed.
+the default \pm 1 split, so this stays on the base two-sample path (this
+is valid on [`stats::t.test()`](https://rdrr.io/r/stats/t.test.html),
+thus no `via("contrast")` needed, with an exemption of you wanted to do
+it).
 
 ``` r
 
 ToothGrowth |>
-    filter(dose == 1) |>
+    keep_when(dose == 1) |>
     define_model(x_by(len, supp)) |>
     prepare(T_TEST) |>
     state_null(
@@ -319,8 +322,8 @@ Interpretation:
   3-unit bar. `t_stat` (1.9926) and `p_val` (0.0322) test that gap
   against 3, not against zero. At \alpha = 0.05, that’s enough to reject
   H_0: within this dose, OJ’s advantage isn’t just present, it exceeds 3
-  units. The one-sided 95% lower bound of 3.3562 makes the same point —
-  the true gap is unlikely to sit at or below the 3-unit bar.
+  units. The one-sided 95% lower bound of 3.3562 makes the same point.
+  The true gap is unlikely to sit at or below the 3-unit bar.
   Conditioning on dose recovered an effect the marginal test above
   couldn’t see.
 
@@ -338,24 +341,24 @@ Unlike Showcase 1, the two sides here carry different weights:
 
 - `1` on the other
 
-So this isn’t a rescaled version of the same claim. There’s no way to
-hand base R’s [`t.test()`](https://rdrr.io/r/stats/t.test.html) a
+So this isn’t a rescaled version of the same null hypothesis. There’s no
+way to hand base R’s [`t.test()`](https://rdrr.io/r/stats/t.test.html) a
 coefficient per group; the comparison has to be pre-computed by hand
-before the call. Here the coefficients live directly in the claim — and
-because they aren’t `±1`, this is the one showcase in this vignette
-where `via("contrast")` is required. Drop it and the base path’s claim
-parser rejects the claim outright, since it only accepts a `-1`/`+1`
-split.
+before the call. Here the coefficients live directly in the null
+hypothesis, and because they aren’t \pm 1, this is the one showcase in
+this vignette where `via("contrast")` is required. Drop it and the base
+path’s claim parser rejects the claim outright, since it only accepts a
+`-1`/`+1` split.
 
 ``` r
 
 ToothGrowth |>
-    filter(dose == 1) |>
+    keep_when(dose == 1) |>
     define_model(x_by(len, supp)) |>
     prepare(T_TEST) |>
     state_null(
         # If no coefficient
-        # it is hidden and
+        # it is hidden and 
         # it contains a coefficient of 1
         2 * MU(len, supp == "OJ") - MU(len, supp == "VC") <= 0
     ) |>
@@ -397,20 +400,22 @@ Interpretation:
 - `estimate` (28.63) is 2 \cdot \bar{x}\_{\text{OJ}} -
   \bar{x}\_{\text{VC}} itself, since `.mu` is 0 here. `p_val` is below
   `0.001`, so H_0 is rejected: twice OJ’s mean does not fall short of
-  VC’s — it’s well above it. The 95% lower bound of 23.9576 says the
-  same thing, since it sits nowhere near 0.
+  VC’s, in fact, it’s well above it. The 95% lower bound of 23.9576 says
+  the same thing, since it sits nowhere near 0.
 
 A caveat worth stating plainly: weights of `2, -1` sum to `1`, not `0`,
 so this isn’t a contrast in the strict ANOVA sense — it isn’t
 location-invariant. Shift the origin of the measurement scale and
 `2 * MU(OJ) - MU(VC)` changes value even though the relationship between
-OJ and VC hasn’t. Tooth length has a genuine zero (`len = 0` means no
-measurable growth), so the weighting isn’t arbitrary here, but the same
-expression on a scale without a true zero — Celsius temperature, say —
-would give a different answer depending on where you happened to put
-`0`. Reach for `via("contrast")` when you actually need weights other
-than `±1`; don’t reach for non-zero-sum weights by default just because
-the machinery allows it.
+OJ and VC hasn’t.
+
+Tooth length has a genuine zero (`len = 0` means no measurable growth),
+so the weighting isn’t arbitrary here, but the same expression on a
+scale without a true zero (Celsius temperature, say) would give a
+different answer depending on where you happened to put `0`. Reach for
+`via("contrast")` when you actually need weights other than \pm 1; don’t
+reach for non-zero-sum weights by default just because the machinery
+allows it.
 
 ## Showcase 3: Dynamic Threshold
 
@@ -427,20 +432,21 @@ itself. [statim](https://github.com/s7-stats/statim) resolves variables
 from the environment inside
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md),
 so you can build flexible, context-aware hypotheses without pre-creating
-columns or hard-coding numbers. The weights are still `±1`, so — as in
-Showcase 1 — this stays on the base path; no `via("contrast")` call.
+columns or hard-coding numbers. The weights are still \pm 1, so, as in
+Showcase 1, this stays on the base path where no `via("contrast")` call
+is needed.
 
 `overall_avg` below is computed from the *full* dataset, all three
-doses, not the `dose == 1` subset under test — it’s meant as an absolute
+doses, not the `dose == 1` subset under test. It’s meant as an absolute
 benchmark on the tooth-length scale, not a property of this particular
 dose.
 
 ``` r
 
-overall_avg = mean(ToothGrowth$len)
+overall_avg = mean(ToothGrowth$len) # 18.8133
 
 ToothGrowth |>
-    filter(dose == 1) |>
+    keep_when(dose == 1) |>
     define_model(x_by(len, supp)) |>
     prepare(T_TEST) |>
     state_null(
@@ -483,28 +489,28 @@ Args : len | supp
 Interpretation:
 
 - The estimated OJ-VC gap at `dose == 1` is 5.93, the same estimate as
-  Showcase 1 — both showcases test the identical subset and the
-  identical difference, just against different bars. The dynamic
-  threshold (20% of the overall average) is about 3.7627, higher than
-  Showcase 1’s fixed 3-unit bar. `t_stat` (\approx 1.4739) and `p_val`
-  (\approx 0.0804) test the gap against this stricter value. At \alpha =
-  0.05, that’s not quite enough to reject H_0.
+  Showcase 1. Both showcases test the identical subset and the identical
+  difference, just against different bars. The dynamic threshold (20% of
+  the overall average) is about 3.7627, higher than Showcase 1’s fixed
+  3-unit bar. `t_stat` (\approx 1.4739) and `p_val` (\approx 0.0804)
+  test the gap against this stricter value. At \alpha = 0.05, that’s not
+  quite enough to reject H_0.
 
 - Showcase 1 and Showcase 3 report the *same* confidence interval,
-  `(3.3562, Inf)`. That’s not a copy-paste artifact: the interval
+  (3.3562, \infty). That’s not a “copy-paste” dogma: the interval
   describes the plausible range for the gap itself, which doesn’t depend
   on which threshold you’re testing it against. What differs is where
-  each threshold sits relative to that interval — 3 falls below the
-  lower bound (so Showcase 1 rejects), 3.7627 falls above it (so
-  Showcase 3 doesn’t). Same evidence, different bar, different
-  conclusion — which is the entire point of a threshold test.
+  each threshold sits relative to that interval. 3 falls below the lower
+  bound (so Showcase 1 rejects), 3.7627 falls above it (so Showcase 3
+  doesn’t). Same evidence, different bar, different conclusion — which
+  is the entire point of a threshold test.
 
 - One footnote: `overall_avg` is itself estimated from this sample, then
   treated as fixed once computed. That’s fine for a worked example, but
   a fully rigorous treatment would need to account for the extra
-  uncertainty in estimating the threshold before testing against it —
-  the interval above reflects sampling uncertainty in the gap only, not
-  in the benchmark.
+  uncertainty in estimating the threshold before testing against it. The
+  interval above reflects sampling uncertainty in the gap only, not in
+  the benchmark.
 
 ## References
 
