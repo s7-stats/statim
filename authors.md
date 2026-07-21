@@ -19,5 +19,5 @@ Statistical Inference https://s7-stats.github.io/statim
       title = {{statim}: A Declarative Interface for Statistical Inference},
       author = {Joshua Marie and Antoine Soetewey},
       year = {2026},
-      note = {R package version 0.0.0.9000},
+      note = {R package version 0.1.0},
     }
