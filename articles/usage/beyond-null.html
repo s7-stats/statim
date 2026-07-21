@@ -145,7 +145,7 @@ two-sample path already reads the comparison value straight out of
 runs on the ordinary two-sample path — no extra step.</li>
 <li>
 <strong>The weights.</strong> <code>via("contrast")</code> is the
-only path in <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> that accepts weights other than the
+only path in <a href="https://s7-stats.github.io/statim/">statim</a> that accepts weights other than the
 implicit <code>+1</code>/<code>-1</code> split, computing a genuine
 Welch-Satterthwaite linear contrast (<code>.w</code>) rather than a
 plain mean difference.</li>
@@ -162,7 +162,7 @@ ANOVA chapters, already covered by
 is built for exactly two. What it does share with the book is the
 <em>question type</em>: a weighted, non-zero-threshold claim instead of
 a plain equality. The three showcases below work that question type
-through <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, using the same Welch-Satterthwaite
+through <a href="https://s7-stats.github.io/statim/">statim</a>, using the same Welch-Satterthwaite
 machinery the book’s contrast tests are built on.</p>
 </div>
 <div class="section level2">
@@ -516,7 +516,7 @@ of the overall (all-dose) average tooth length?</p>
 \mu_{\text{VC}} &gt; 0.20 \times \bar{x}_{\text{overall}}</span></p>
 <p>Just like Showcase 1, except the comparison value isn’t a number
 chosen in advance — it’s a data-driven threshold computed from the
-dataset itself. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> resolves variables from the
+dataset itself. <a href="https://s7-stats.github.io/statim/">statim</a> resolves variables from the
 environment inside <code><a href="../../reference/null-hyp.html">state_null()</a></code>, so you can build flexible,
 context-aware hypotheses without pre-creating columns or hard-coding
 numbers. The weights are still <span class="math inline">\pm 1</span>,

@@ -6,7 +6,7 @@ A p-value answers one question: is this effect distinguishable from
 noise. It says nothing about whether the effect is *large*. Effect size
 is the separate quantity that answers “how big”. Use
 [`gauge()`](https://s7-stats.github.io/statim/reference/gauge.md) from
-[statim](https://github.com/s7-stats/statim) after evaluation of the
+[statim](https://s7-stats.github.io/statim/) after evaluation of the
 estimation with
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 to report it. This function reports Cohen’s *d* for a t-test, Cohen’s

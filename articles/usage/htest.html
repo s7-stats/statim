@@ -118,7 +118,7 @@ real clinical data</h3>
     
     
 <div class="section level2">
-<h2 id="why-this-vignette-exists">Why this vignette exists<a class="anchor" aria-label="anchor" href="#why-this-vignette-exists"></a>
+<h2 id="rationale">Rationale<a class="anchor" aria-label="anchor" href="#rationale"></a>
 </h2>
 <p>While <code>t.test(x, alternative = "less")</code> works and is
 simple, there are times you won’t remember the intent of the function
@@ -127,21 +127,22 @@ call, e.g. which side of the inequality “less” refers to:</p>
 <li>Is <code>x</code> hypothesized to be less than <code>mu</code>, or
 <code>mu</code> less than <code>x</code>?</li>
 </ul>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> takes a different approach on how statistical
-inference in R is done. For instance, <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> has another
+<p><a href="https://s7-stats.github.io/statim/">statim</a> takes a different approach on how statistical
+inference in R is done. For instance, <a href="https://s7-stats.github.io/statim/">statim</a> has another
 way to write the null hypothesis itself as an algebraic expression
 instead (e.g. <code>MU(x) &lt; 120</code>, <code>RHO(x, y) == 0</code>),
 so the code declares what the null hypothesis is, direction included,
 rather than which argument slot lives in.</p>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is fully declarative, mainly through
+<p><a href="https://s7-stats.github.io/statim/">statim</a> is fully declarative, mainly through
 piped/grammar sementics like <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>, including on how
 you declare the estimation method in a statistical inference you want to
 perform. The question is, does that actually pay off?</p>
-<p>This vignette runs four real questions from a real dataset through
-<a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, base R, and <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, and is honest
-about where the extra syntax doesn’t earn its keep. These four are the
-straightforward cases; the harder one, where the syntax stops being
-optional, is covered in the Conclusion below.</p>
+<p>This vignette is a showcase of <a href="https://s7-stats.github.io/statim/">statim</a> which runs four
+questions from a real dataset through <a href="https://s7-stats.github.io/statim/">statim</a>, base R, and
+<a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, and is honest about where the extra syntax
+doesn’t earn its keep. These four are the straightforward cases; the
+harder one, where the syntax stops being optional, is covered in the
+Conclusion below.</p>
 <div class="section level3">
 <h3 id="sample-problem">Sample Problem<a class="anchor" aria-label="anchor" href="#sample-problem"></a>
 </h3>
@@ -170,7 +171,7 @@ correlation test, one-sample proportion test, respectively.</p>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s author reaches for <a href="https://klmr.me/box/" class="external-link">box</a> day to
+<p><a href="https://s7-stats.github.io/statim/">statim</a>’s author reaches for <a href="https://klmr.me/box/" class="external-link">box</a> day to
 day. It’s an R package that bring an another but better import system
 that forces every dependency to be declared explicitly, so a script’s
 imports double as its own dependency graph.</p>
@@ -443,10 +444,10 @@ mean of x
 <h3 id="verdict">Verdict<a class="anchor" aria-label="anchor" href="#verdict"></a>
 </h3>
 <p>All of the packages addresses the problem by performing one-sample
-t-test in a single line of code. However, what <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>
+t-test in a single line of code. However, what <a href="https://s7-stats.github.io/statim/">statim</a>
 buys instead is legibility of intent: <code><a href="../../reference/layout-define-base.html">define_model()</a></code>,
 <code><a href="../../reference/prepare.html">prepare()</a></code>, <code><a href="../../reference/conclude.html">conclude()</a></code> read like a sentence,
-and you can do more with <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s main API, whereas
+and you can do more with <a href="https://s7-stats.github.io/statim/">statim</a>’s main API, whereas
 <code>t.test(x, mu = 120)</code> reads like an API you have to already
 know. And also, <code>ttest-on</code> can utilize
 <code><a href="../../reference/null-hyp.html">state_null()</a></code>, it is not covered for the reason being the
@@ -651,7 +652,7 @@ Args : thalach ~ sex
 
 <p>Two forms, but the <code>&lt;formula&gt;</code> interface is usually
 more preferred than the regular vector one. For the regular vector, we
-can use the same vector from the <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> section.</p>
+can use the same vector from the <a href="https://s7-stats.github.io/statim/">statim</a> section.</p>
 <details open><summary>
 Regular Vector
 </summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
@@ -690,10 +691,10 @@ mean in group Female   mean in group Male
 <h3 id="verdict-1">Verdict<a class="anchor" aria-label="anchor" href="#verdict-1"></a>
 </h3>
 <p>This is where the two designs actually diverge, not just in syntax.
-Empirically, <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, and base R
+Empirically, <a href="https://s7-stats.github.io/statim/">statim</a>, <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, and base R
 treat “compare two groups” as something the <code>&lt;formula&gt;</code>
 already encodes, <code>thalach ~ sex</code> says everything. However,
-<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> goes beyond that with <code><a href="../../reference/x_by.html">x_by()</a></code> and
+<a href="https://s7-stats.github.io/statim/">statim</a> goes beyond that with <code><a href="../../reference/x_by.html">x_by()</a></code> and
 <code><a href="../../reference/on.html">on()</a></code>. `</p>
 <ul>
 <li>
@@ -1010,7 +1011,7 @@ and all three packages treat it that way. The only real question is
 where those two numbers live: as positional arguments
 (<code>x, n, p =</code>) in base R and <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, or
 wrapped in <code><a href="../../reference/prop.html">prop()</a></code> so the pipeline keeps the same shape it
-had in Questions 1-3. Neither is more correct; <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s
+had in Questions 1-3. Neither is more correct; <a href="https://s7-stats.github.io/statim/">statim</a>’s
 version is only worth it if you’re already committed to the pipeline for
 other reasons.</p>
 <p>Interpretation: 33 of 207 men (15.9%), not distinguishable from the
@@ -1201,15 +1202,15 @@ the variants diverge.</p>
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> makes sure the simplicity from base R and other
+<p><a href="https://s7-stats.github.io/statim/">statim</a> makes sure the simplicity from base R and other
 packages like <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> must exists, otherwise the steeper
 learning curve will get you. One-liner codes exist, the piped/grammar
 syntax is inherited to make sure the spirits of <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>
-and <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> exist on <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> space.</p>
+and <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> exist on <a href="https://s7-stats.github.io/statim/">statim</a> space.</p>
 <p>What this vignette can’t show you is the fifth question: a custom
 contrast, a hypothesis that isn’t a straight equality, a test family
 that doesn’t have a tidy formula shorthand yet. That’s the actual bet
-<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is making: a consistent
+<a href="https://s7-stats.github.io/statim/">statim</a> is making: a consistent
 <code>define_model() |&gt; prepare() |&gt; state_null() |&gt; conclude()</code>
 shape you can extend once, rather than learn a new argument convention
 per test. Four questions above are pretty straightforward and aren’t the

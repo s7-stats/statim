@@ -2,7 +2,7 @@
 
 ## Rationale
 
-[statim](https://github.com/s7-stats/statim) is so extendable, you can
+[statim](https://s7-stats.github.io/statim/) is so extendable, you can
 extend the existing methods or write your own and make it extensive.
 
 Here, I plan to extend
@@ -56,11 +56,11 @@ another_boot_tt
 #> Calculations and Intervals on Original Scale
 ```
 
-[statim](https://github.com/s7-stats/statim) has built-in output [S7
+[statim](https://s7-stats.github.io/statim/) has built-in output [S7
 classes](https://joshuamarie.com/statim/reference/index.html#base-statistical-inference-output-class)
 support, which you can use them to register your own method into that
 specific class in order to be automatically processed into
-[statim](https://github.com/s7-stats/statim) internals, like extracting
+[statim](https://s7-stats.github.io/statim/) internals, like extracting
 your output in tibble format with
 [`tidy()`](https://s7-stats.github.io/statim/reference/tidy.md).
 Otherwise, you must register them by your own.

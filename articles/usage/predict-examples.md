@@ -2,7 +2,7 @@
 
 ## Rationale
 
-[statim](https://github.com/s7-stats/statim) has a slight different
+[statim](https://s7-stats.github.io/statim/) has a slight different
 approach on making predictions with
 [`predict()`](https://s7-stats.github.io/statim/reference/predict.md).
 At its core, it’s S7, so strict types when making predictions is
@@ -177,7 +177,7 @@ doesn’t exist for this model.
 
 ## A fitted curve for plotting
 
-[statim](https://github.com/s7-stats/statim)’s
+[statim](https://s7-stats.github.io/statim/)’s
 [`predict()`](https://s7-stats.github.io/statim/reference/predict.md) is
 strictly typed: by default it ensures that the output must produce a
 data frame. How about we visualize them for better interpretability?
@@ -219,7 +219,7 @@ pinned at “Male” so the curve isolates the effect of age alone.
 
 Base R’s `predict.lm` returns a vector, a matrix, or a list depending on
 which arguments you passed.
-[statim](https://github.com/s7-stats/statim)’s
+[statim](https://s7-stats.github.io/statim/)’s
 [`predict()`](https://s7-stats.github.io/statim/reference/predict.md)
 always returns the same shape — `.pred`, `truth` when honest,
 `.pred_lower`/`.pred_upper` when requested — no matter whether it’s
@@ -230,7 +230,7 @@ That consistency comes from one generic,
 [`auto_predict()`](https://s7-stats.github.io/statim/reference/auto_predict.md),
 which any package can implement once for its own result class and get
 [`predict()`](https://s7-stats.github.io/statim/reference/predict.md)
-for free — no changes to [statim](https://github.com/s7-stats/statim)
+for free — no changes to [statim](https://s7-stats.github.io/statim/)
 itself required. What differs is just which arguments a model can
 honestly support: `interval = "prediction"` for `class_lm_object`, not
 for `class_glm_object`; `type` only for the GLM. See

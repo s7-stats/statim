@@ -30,7 +30,7 @@ that question, and they don’t cost the same:
   claim. `MU(a) - MU(b) <= 3` runs on the ordinary two-sample path — no
   extra step.
 - **The weights.** `via("contrast")` is the only path in
-  [statim](https://github.com/s7-stats/statim) that accepts weights
+  [statim](https://s7-stats.github.io/statim/) that accepts weights
   other than the implicit `+1`/`-1` split, computing a genuine
   Welch-Satterthwaite linear contrast (`.w`) rather than a plain mean
   difference.
@@ -47,7 +47,7 @@ chapters, already covered by
 `contrast` variant is built for exactly two. What it does share with the
 book is the *question type*: a weighted, non-zero-threshold claim
 instead of a plain equality. The three showcases below work that
-question type through [statim](https://github.com/s7-stats/statim),
+question type through [statim](https://s7-stats.github.io/statim/),
 using the same Welch-Satterthwaite machinery the book’s contrast tests
 are built on.
 
@@ -428,7 +428,7 @@ H_0: \mu\_{\text{OJ}} - \mu\_{\text{VC}} \leq 0.20 \times
 
 Just like Showcase 1, except the comparison value isn’t a number chosen
 in advance — it’s a data-driven threshold computed from the dataset
-itself. [statim](https://github.com/s7-stats/statim) resolves variables
+itself. [statim](https://s7-stats.github.io/statim/) resolves variables
 from the environment inside
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md),
 so you can build flexible, context-aware hypotheses without pre-creating

@@ -112,15 +112,15 @@
 <div class="section level2">
 <h2 id="package-overview-simple-fun-fact">Package Overview: Simple Fun Fact<a class="anchor" aria-label="anchor" href="#package-overview-simple-fun-fact"></a>
 </h2>
-<p>What does <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> mean?</p>
-<p><em>statim</em> is a Latin word for “immediately, at once”. Its prefix, <em>stat</em> (as in statistics), is where the domain this package lives in. This can be interpreted as: you declare <em>what</em> statistical inference you want to perform, then <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> immediately delivers <em>how</em>.</p>
+<p>What does <a href="https://s7-stats.github.io/statim/">statim</a> mean?</p>
+<p><em>statim</em> is a Latin word for “immediately, at once”. Its prefix, <em>stat</em> (as in statistics), is where the domain this package lives in. This can be interpreted as: you declare <em>what</em> statistical inference you want to perform, then <a href="https://s7-stats.github.io/statim/">statim</a> immediately delivers <em>how</em>.</p>
 </div>
 <div class="section level2">
 <h2 id="why-statim">Why statim?<a class="anchor" aria-label="anchor" href="#why-statim"></a>
 </h2>
 <p>R has a dedicated rich ecosystem in statistics. Statistical inference in general is served by an assortment of disconnected functions: the functions you’re looking for may exist but they are scattered across different packages.</p>
-<p>R gained a grammar for graphics (<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>), and one for data manipulation (<a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>). And then there’s <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, an attempt to re-imagine the “grammar of statistical inference” from the ground up. The core idea of <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> in general is it’s fully declarative, and that any inferential procedure can be described in <a href="https://s7-stats.github.io/statim/articles/statim.html">three steps</a>.</p>
-<p>What makes <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> <em>composable</em> for statistical workflows is the <em>verbs</em> and the <em>accessibility</em> of the methods you’re looking for. For example, you want to write a t-test pipeline, and you want to use the classical one and then the permutation method. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> lets you do that with <code>via("&lt;method_name&gt;")</code>, and while you can use t-test from <code>default</code> (classical), you can access its permutation method through <code>... |&gt; via("permute")</code> with one line of code only. You won’t need you to do a lot of work (which sometimes require rewriting your code), just a single addition to the syntax.</p>
+<p>R gained a grammar for graphics (<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>), and one for data manipulation (<a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>). And then there’s <a href="https://s7-stats.github.io/statim/">statim</a>, an attempt to re-imagine the “grammar of statistical inference” from the ground up. The core idea of <a href="https://s7-stats.github.io/statim/">statim</a> in general is it’s fully declarative, and that any inferential procedure can be described in <a href="https://s7-stats.github.io/statim/articles/statim.html">three steps</a>.</p>
+<p>What makes <a href="https://s7-stats.github.io/statim/">statim</a> <em>composable</em> for statistical workflows is the <em>verbs</em> and the <em>accessibility</em> of the methods you’re looking for. For example, you want to write a t-test pipeline, and you want to use the classical one and then the permutation method. <a href="https://s7-stats.github.io/statim/">statim</a> lets you do that with <code>via("&lt;method_name&gt;")</code>, and while you can use t-test from <code>default</code> (classical), you can access its permutation method through <code>... |&gt; via("permute")</code> with one line of code only. You won’t need you to do a lot of work (which sometimes require rewriting your code), just a single addition to the syntax.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Classical t-test</span></span>
 <span><span class="va">sleep</span> <span class="op">|&gt;</span> </span>
@@ -148,14 +148,14 @@
 </h2>
 <p>The package is designed around three ideas:</p>
 <ol style="list-style-type: decimal">
-<li><p><strong>Composability</strong>: the simplest way to write <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> has two forms: the eager form and the grammar/piped syntax form. The eager form skips the verbs and cannot be recalibrated, only skips to the output. On the other hand, the grammar/piped syntax form relies on verbs and lazy loading, which comes with the recalibration of the estimation method with a single <code><a href="reference/via.html">via()</a></code> call, and the execution of the lazy-loaded pipeline with <code><a href="reference/conclude.html">conclude()</a></code>.</p></li>
+<li><p><strong>Composability</strong>: the simplest way to write <a href="https://s7-stats.github.io/statim/">statim</a> has two forms: the eager form and the grammar/piped syntax form. The eager form skips the verbs and cannot be recalibrated, only skips to the output. On the other hand, the grammar/piped syntax form relies on verbs and lazy loading, which comes with the recalibration of the estimation method with a single <code><a href="reference/via.html">via()</a></code> call, and the execution of the lazy-loaded pipeline with <code><a href="reference/conclude.html">conclude()</a></code>.</p></li>
 <li>
-<p><strong>A shared grammar</strong>: Only applied on the main <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> semantics: piped/grammar syntax. <code><a href="reference/layout-define-base.html">define_model()</a></code> =&gt; <code><a href="reference/prepare.html">prepare()</a></code> =&gt; <code><a href="reference/conclude.html">conclude()</a></code> is the same shape for every inferential procedure. The <code>&lt;var_id&gt;</code> objects (<code>x_by</code>, <code>rel</code>, <code>pairwise</code>, …) describe the statistical structure of the problem; the verbs stay constant.</p>
+<p><strong>A shared grammar</strong>: Only applied on the main <a href="https://s7-stats.github.io/statim/">statim</a> semantics: piped/grammar syntax. <code><a href="reference/layout-define-base.html">define_model()</a></code> =&gt; <code><a href="reference/prepare.html">prepare()</a></code> =&gt; <code><a href="reference/conclude.html">conclude()</a></code> is the same shape for every inferential procedure. The <code>&lt;var_id&gt;</code> objects (<code>x_by</code>, <code>rel</code>, <code>pairwise</code>, …) describe the statistical structure of the problem; the verbs stay constant.</p>
 <blockquote>
 <p>Eager forms (<code><a href="reference/T_TEST.html">T_TEST()</a></code>, <code><a href="reference/COR_TEST.html">COR_TEST()</a></code>, …) provide a shortcut when the full pipeline (in a form of piped syntax that reads like a sentence) is not needed.</p>
 </blockquote>
 </li>
-<li><p><strong>Extensible by design</strong>: the <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> pipeline is extensible. For instance, if you want to write new estimation method, an implementation is through filling up the <code><a href="reference/stat-infer-definer.html">stat_define()</a></code> object (then store it within list of <code>defs</code> from <code><a href="reference/STAT_CONSTRUCTOR.html">STAT_CONSTRUCTOR()</a></code> functions, saved as <code>&lt;STAT_FN&gt;</code>), then <code><a href="reference/baseline.html">baseline()</a></code> to write the default form of <code>&lt;STAT_FN&gt;</code> and <code><a href="reference/variant.html">variant()</a></code> to extend the current <code>&lt;STAT_FN&gt;</code> form (only be accessed with <code><a href="reference/via.html">via()</a></code> only). With these, you can bring your own engine, your own method, your own implementation, or use them to extend the current ones.</p></li>
+<li><p><strong>Extensible by design</strong>: the <a href="https://s7-stats.github.io/statim/">statim</a> pipeline is extensible. For instance, if you want to write new estimation method, an implementation is through filling up the <code><a href="reference/stat-infer-definer.html">stat_define()</a></code> object (then store it within list of <code>defs</code> from <code><a href="reference/STAT_CONSTRUCTOR.html">STAT_CONSTRUCTOR()</a></code> functions, saved as <code>&lt;STAT_FN&gt;</code>), then <code><a href="reference/baseline.html">baseline()</a></code> to write the default form of <code>&lt;STAT_FN&gt;</code> and <code><a href="reference/variant.html">variant()</a></code> to extend the current <code>&lt;STAT_FN&gt;</code> form (only be accessed with <code><a href="reference/via.html">via()</a></code> only). With these, you can bring your own engine, your own method, your own implementation, or use them to extend the current ones.</p></li>
 </ol>
 </div>
 <div class="section level2">
@@ -180,7 +180,7 @@
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
 </h2>
-<p>We are sincerely grateful for contributions; they are beneficial for the project and for us as maintainers. Please read <a href="CONTRIBUTING.html">CONTRIBUTING.md</a> for development setup, pull request guidelines, and workflow notes.</p>
+<p>We are sincerely grateful for contributions; they are beneficial for the project and for us as maintainers. Please read <a href="https://github.com/s7-stats/statim/blob/master/.github/CONTRIBUTING.md" class="external-link">CONTRIBUTING.md</a> for development setup, pull request guidelines, and workflow notes.</p>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
@@ -192,7 +192,7 @@
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/s7-stats/statim/" class="external-link">Browse source code</a></li>
-<li><a href="https://s7-stats.github.io/statim,%20https://github.com/s7-stats/statim/issues">Report a bug</a></li>
+<li><a href="https://github.com/s7-stats/statim/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 

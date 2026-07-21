@@ -269,7 +269,7 @@ LINEAR_REG(trestbps ~ age, heart)
 Both layouts land on the same fit. `rel(age, trestbps)` reads “the
 relationship between age and trestbps”; the formula reads “trestbps
 explained by age.” Pick whichever one your eyes parse faster,
-[statim](https://github.com/s7-stats/statim) doesn’t care which you use.
+[statim](https://s7-stats.github.io/statim/) doesn’t care which you use.
 
 Interpretation: each additional year of age adds a little over half an
 mmHg to resting blood pressure on average, and the slope is significant

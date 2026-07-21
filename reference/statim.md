@@ -12,6 +12,8 @@ registering custom estimation methods.
 
 Useful links:
 
+- <https://s7-stats.github.io/statim/>
+
 - <https://github.com/s7-stats/statim>
 
 - Report bugs at <https://github.com/s7-stats/statim/issues>

@@ -4,12 +4,12 @@
 
 ## Package Overview: Simple Fun Fact
 
-What does [statim](https://github.com/s7-stats/statim) mean?
+What does [statim](https://s7-stats.github.io/statim/) mean?
 
 *statim* is a Latin word for “immediately, at once”. Its prefix, *stat*
 (as in statistics), is where the domain this package lives in. This can
 be interpreted as: you declare *what* statistical inference you want to
-perform, then [statim](https://github.com/s7-stats/statim) immediately
+perform, then [statim](https://s7-stats.github.io/statim/) immediately
 delivers *how*.
 
 ## Why statim?
@@ -22,17 +22,17 @@ different packages.
 R gained a grammar for graphics
 ([ggplot2](https://ggplot2.tidyverse.org)), and one for data
 manipulation ([dplyr](https://dplyr.tidyverse.org)). And then there’s
-[statim](https://github.com/s7-stats/statim), an attempt to re-imagine
+[statim](https://s7-stats.github.io/statim/), an attempt to re-imagine
 the “grammar of statistical inference” from the ground up. The core idea
-of [statim](https://github.com/s7-stats/statim) in general is it’s fully
+of [statim](https://s7-stats.github.io/statim/) in general is it’s fully
 declarative, and that any inferential procedure can be described in
 [three steps](https://s7-stats.github.io/statim/articles/statim.html).
 
-What makes [statim](https://github.com/s7-stats/statim) *composable* for
+What makes [statim](https://s7-stats.github.io/statim/) *composable* for
 statistical workflows is the *verbs* and the *accessibility* of the
 methods you’re looking for. For example, you want to write a t-test
 pipeline, and you want to use the classical one and then the permutation
-method. [statim](https://github.com/s7-stats/statim) lets you do that
+method. [statim](https://s7-stats.github.io/statim/) lets you do that
 with `via("<method_name>")`, and while you can use t-test from `default`
 (classical), you can access its permutation method through
 `... |> via("permute")` with one line of code only. You won’t need you
@@ -81,7 +81,7 @@ to get started.
 The package is designed around three ideas:
 
 1.  **Composability**: the simplest way to write
-    [statim](https://github.com/s7-stats/statim) has two forms: the
+    [statim](https://s7-stats.github.io/statim/) has two forms: the
     eager form and the grammar/piped syntax form. The eager form skips
     the verbs and cannot be recalibrated, only skips to the output. On
     the other hand, the grammar/piped syntax form relies on verbs and
@@ -92,7 +92,7 @@ The package is designed around three ideas:
     [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md).
 
 2.  **A shared grammar**: Only applied on the main
-    [statim](https://github.com/s7-stats/statim) semantics:
+    [statim](https://s7-stats.github.io/statim/) semantics:
     piped/grammar syntax.
     [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
     =\>
@@ -110,7 +110,7 @@ The package is designed around three ideas:
     > syntax that reads like a sentence) is not needed.
 
 3.  **Extensible by design**: the
-    [statim](https://github.com/s7-stats/statim) pipeline is extensible.
+    [statim](https://s7-stats.github.io/statim/) pipeline is extensible.
     For instance, if you want to write new estimation method, an
     implementation is through filling up the
     [`stat_define()`](https://s7-stats.github.io/statim/reference/stat-infer-definer.md)
@@ -153,8 +153,8 @@ MIT + file LICENSE
 
 We are sincerely grateful for contributions; they are beneficial for the
 project and for us as maintainers. Please read
-[CONTRIBUTING.md](https://s7-stats.github.io/statim/CONTRIBUTING.md) for
-development setup, pull request guidelines, and workflow notes.
+[CONTRIBUTING.md](https://github.com/s7-stats/statim/blob/master/.github/CONTRIBUTING.md)
+for development setup, pull request guidelines, and workflow notes.
 
 ## Code of Conduct
 

@@ -68,10 +68,10 @@ everything else inherits automatically:
 The built-in hierarchy is:
 
     class_stat_infer
-        ├── anova_able
-        │       └── class_lm_object
-        └── <your-own-output-class>
-                └── <your-own-subclass>
+        |-- anova_able
+        |       `-- class_lm_object
+        `-- <your-own-output-class>
+                `-- <your-own-subclass>
 
 Downstream packages can extend the hierarchy further by using any
 `class_stat_infer` subclass as a `parent` in

@@ -117,7 +117,7 @@
 <div class="section level2">
 <h2 id="what-inference-am-i-declaring">What inference am I declaring?<a class="anchor" aria-label="anchor" href="#what-inference-am-i-declaring"></a>
 </h2>
-<p>When you fit a linear model with <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, the model is
+<p>When you fit a linear model with <a href="https://s7-stats.github.io/statim/">statim</a>, the model is
 a <code>class_lm_object</code> stored inside a <code>cld_exec</code>.
 Because <code>class_lm_object</code> inherits from
 <code>anova_able</code>, every fitted model knows how to participate in
@@ -125,7 +125,7 @@ an ANOVA comparison: it carries the residual degrees of freedom, the
 residual sum of squares, the model matrix, and the error family.
 <code><a href="../../reference/anova-mod.html">anova()</a></code> reads those slots directly, so no separate
 conversion step is needed.</p>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> supports two distinct ANOVA questions:</p>
+<p><a href="https://s7-stats.github.io/statim/">statim</a> supports two distinct ANOVA questions:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Single model (Type I)</strong>: how much does each
 predictor reduce residual variance, in the order the terms were added?

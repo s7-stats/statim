@@ -1,6 +1,6 @@
 # Hypothesis Testing with {statim}
 
-## Why this vignette exists
+## Rationale
 
 While `t.test(x, alternative = "less")` works and is simple, there are
 times you won’t remember the intent of the function call, e.g. which
@@ -8,22 +8,24 @@ side of the inequality “less” refers to:
 
 - Is `x` hypothesized to be less than `mu`, or `mu` less than `x`?
 
-[statim](https://github.com/s7-stats/statim) takes a different approach
+[statim](https://s7-stats.github.io/statim/) takes a different approach
 on how statistical inference in R is done. For instance,
-[statim](https://github.com/s7-stats/statim) has another way to write
+[statim](https://s7-stats.github.io/statim/) has another way to write
 the null hypothesis itself as an algebraic expression instead
 (e.g. `MU(x) < 120`, `RHO(x, y) == 0`), so the code declares what the
 null hypothesis is, direction included, rather than which argument slot
 lives in.
 
-[statim](https://github.com/s7-stats/statim) is fully declarative,
+[statim](https://s7-stats.github.io/statim/) is fully declarative,
 mainly through piped/grammar sementics like
 [ggplot2](https://ggplot2.tidyverse.org), including on how you declare
 the estimation method in a statistical inference you want to perform.
 The question is, does that actually pay off?
 
-This vignette runs four real questions from a real dataset through
-[statim](https://github.com/s7-stats/statim), base R, and
+This vignette is a showcase of
+[statim](https://s7-stats.github.io/statim/) which runs four questions
+from a real dataset through
+[statim](https://s7-stats.github.io/statim/), base R, and
 [rstatix](https://rpkgs.datanovia.com/rstatix/), and is honest about
 where the extra syntax doesn’t earn its keep. These four are the
 straightforward cases; the harder one, where the syntax stops being
@@ -55,7 +57,7 @@ test, one-sample proportion test, respectively.
 
 ## Setup
 
-[statim](https://github.com/s7-stats/statim)’s author reaches for
+[statim](https://s7-stats.github.io/statim/)’s author reaches for
 [box](https://klmr.me/box/) day to day. It’s an R package that bring an
 another but better import system that forces every dependency to be
 declared explicitly, so a script’s imports double as its own dependency
@@ -327,13 +329,13 @@ t.test(trestbps ~ 1, heart, mu = 120)
 
 All of the packages addresses the problem by performing one-sample
 t-test in a single line of code. However, what
-[statim](https://github.com/s7-stats/statim) buys instead is legibility
+[statim](https://s7-stats.github.io/statim/) buys instead is legibility
 of intent:
 [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
 [`prepare()`](https://s7-stats.github.io/statim/reference/prepare.md),
 [`conclude()`](https://s7-stats.github.io/statim/reference/conclude.md)
 read like a sentence, and you can do more with
-[statim](https://github.com/s7-stats/statim)’s main API, whereas
+[statim](https://s7-stats.github.io/statim/)’s main API, whereas
 `t.test(x, mu = 120)` reads like an API you have to already know. And
 also, `ttest-on` can utilize
 [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md),
@@ -561,7 +563,7 @@ t_test(heart, thalach ~ sex)
 
 Two forms, but the `<formula>` interface is usually more preferred than
 the regular vector one. For the regular vector, we can use the same
-vector from the [statim](https://github.com/s7-stats/statim) section.
+vector from the [statim](https://s7-stats.github.io/statim/) section.
 
 Regular Vector
 
@@ -604,11 +606,11 @@ t.test(thalach ~ sex, data = heart)
 ### Verdict
 
 This is where the two designs actually diverge, not just in syntax.
-Empirically, [statim](https://github.com/s7-stats/statim),
+Empirically, [statim](https://s7-stats.github.io/statim/),
 [rstatix](https://rpkgs.datanovia.com/rstatix/), and base R treat
 “compare two groups” as something the `<formula>` already encodes,
 `thalach ~ sex` says everything. However,
-[statim](https://github.com/s7-stats/statim) goes beyond that with
+[statim](https://s7-stats.github.io/statim/) goes beyond that with
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md) and
 [`on()`](https://s7-stats.github.io/statim/reference/on.md). \`
 
@@ -951,7 +953,7 @@ real question is where those two numbers live: as positional arguments
 [rstatix](https://rpkgs.datanovia.com/rstatix/), or wrapped in
 [`prop()`](https://s7-stats.github.io/statim/reference/prop.md) so the
 pipeline keeps the same shape it had in Questions 1-3. Neither is more
-correct; [statim](https://github.com/s7-stats/statim)’s version is only
+correct; [statim](https://s7-stats.github.io/statim/)’s version is only
 worth it if you’re already committed to the pipeline for other reasons.
 
 Interpretation: 33 of 207 men (15.9%), not distinguishable from the 15%
@@ -1171,19 +1173,19 @@ to separate single-model pipelines the moment the variants diverge.
 
 ## Conclusion
 
-[statim](https://github.com/s7-stats/statim) makes sure the simplicity
+[statim](https://s7-stats.github.io/statim/) makes sure the simplicity
 from base R and other packages like
 [rstatix](https://rpkgs.datanovia.com/rstatix/) must exists, otherwise
 the steeper learning curve will get you. One-liner codes exist, the
 piped/grammar syntax is inherited to make sure the spirits of
 [ggplot2](https://ggplot2.tidyverse.org) and
 [dplyr](https://dplyr.tidyverse.org) exist on
-[statim](https://github.com/s7-stats/statim) space.
+[statim](https://s7-stats.github.io/statim/) space.
 
 What this vignette can’t show you is the fifth question: a custom
 contrast, a hypothesis that isn’t a straight equality, a test family
 that doesn’t have a tidy formula shorthand yet. That’s the actual bet
-[statim](https://github.com/s7-stats/statim) is making: a consistent
+[statim](https://s7-stats.github.io/statim/) is making: a consistent
 `define_model() |> prepare() |> state_null() |> conclude()` shape you
 can extend once, rather than learn a new argument convention per test.
 Four questions above are pretty straightforward and aren’t the right

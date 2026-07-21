@@ -4,7 +4,7 @@
 
 It may sound complex, but it’s easy and intuitive. It is meant to mirror
 what you’d read and already write under a hypothesis heading in a
-statistics textbook. [statim](https://github.com/s7-stats/statim) leans
+statistics textbook. [statim](https://s7-stats.github.io/statim/) leans
 on syntactic sugar and a small embedded DSL (domain-specific language)
 to do this, and the closest existing analogue in R is `join_by()` from
 [dplyr](https://dplyr.tidyverse.org): a join condition like `x == y` is
@@ -278,7 +278,7 @@ only the multi-parameter path explains why.
 If two terms for the same parameter happen to cancel inside a contrast —
 writing `MU(x, a) - MU(x, a)`, say — the coefficient resolves to zero
 rather than silently vanishing, and
-[statim](https://github.com/s7-stats/statim) warns about it instead of
+[statim](https://s7-stats.github.io/statim/) warns about it instead of
 quietly dropping the term, since a zero coefficient is far more often a
 typo than an intentional contrast. The same duplicate in a
 single-parameter claim never reaches that logic at all:

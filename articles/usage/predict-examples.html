@@ -120,7 +120,7 @@ real clinical data</h3>
 <div class="section level2">
 <h2 id="rationale">Rationale<a class="anchor" aria-label="anchor" href="#rationale"></a>
 </h2>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> has a slight different approach on making
+<p><a href="https://s7-stats.github.io/statim/">statim</a> has a slight different approach on making
 predictions with <code><a href="../../reference/predict.html">predict()</a></code>. At its core, it’s S7, so strict
 types when making predictions is enforced. Its <a href="./model-infer.html">last vignette</a> fits two models off the
 Cleveland Clinic dataset: a linear regression predicting maximum heart
@@ -258,7 +258,7 @@ isn’t, that argument value simply doesn’t exist for this model.</p>
 <div class="section level2">
 <h2 id="a-fitted-curve-for-plotting">A fitted curve for plotting<a class="anchor" aria-label="anchor" href="#a-fitted-curve-for-plotting"></a>
 </h2>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s <code><a href="../../reference/predict.html">predict()</a></code> is strictly typed: by
+<p><a href="https://s7-stats.github.io/statim/">statim</a>’s <code><a href="../../reference/predict.html">predict()</a></code> is strictly typed: by
 default it ensures that the output must produce a data frame. How about
 we visualize them for better interpretability?</p>
 <p>Evaluate <code>mod1</code> across a range of ages, holding the other
@@ -295,7 +295,7 @@ alone.</p>
 <h2 id="on-ergonomicity">On ergonomicity<a class="anchor" aria-label="anchor" href="#on-ergonomicity"></a>
 </h2>
 <p>Base R’s <code>predict.lm</code> returns a vector, a matrix, or a
-list depending on which arguments you passed. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s
+list depending on which arguments you passed. <a href="https://s7-stats.github.io/statim/">statim</a>’s
 <code><a href="../../reference/predict.html">predict()</a></code> always returns the same shape —
 <code>.pred</code>, <code>truth</code> when honest,
 <code>.pred_lower</code>/<code>.pred_upper</code> when requested — no
@@ -303,7 +303,7 @@ matter whether it’s <code>mod1</code> or <code>mod2</code> underneath,
 or one hand-built row versus a fifty-row grid for a plot.</p>
 <p>That consistency comes from one generic, <code><a href="../../reference/auto_predict.html">auto_predict()</a></code>,
 which any package can implement once for its own result class and get
-<code><a href="../../reference/predict.html">predict()</a></code> for free — no changes to <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>
+<code><a href="../../reference/predict.html">predict()</a></code> for free — no changes to <a href="https://s7-stats.github.io/statim/">statim</a>
 itself required. What differs is just which arguments a model can
 honestly support: <code>interval = "prediction"</code> for
 <code>class_lm_object</code>, not for <code>class_glm_object</code>;

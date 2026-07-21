@@ -13,7 +13,7 @@ is its own island: a different name, different argument conventions, no
 shared way to express what hypothesis you are testing or to switch
 between estimation methods without rewriting the call entirely.
 
-[statim](https://github.com/s7-stats/statim) keeps that familiar idiom
+[statim](https://s7-stats.github.io/statim/) keeps that familiar idiom
 as its entry point, while bringing declarative, pipe-friendly grammar
 (much in spirit of [ggplot2](https://ggplot2.tidyverse.org) or
 [dplyr](https://dplyr.tidyverse.org)). The same inference pipeline can
@@ -23,7 +23,7 @@ touching.
 ## A complete example
 
 Before explaining each piece, here is what a
-[statim](https://github.com/s7-stats/statim) pipeline looks like end to
+[statim](https://s7-stats.github.io/statim/) pipeline looks like end to
 end:
 
 1.  t-test
@@ -80,9 +80,9 @@ model, choose the test, execute and read the output.
 ![](workflow.jpg)
 
 All you need to know is that the most usual usage of
-[statim](https://github.com/s7-stats/statim) comes with three steps.
+[statim](https://s7-stats.github.io/statim/) comes with three steps.
 Here’s the general anatomy of the main
-[statim](https://github.com/s7-stats/statim) semantics:
+[statim](https://s7-stats.github.io/statim/) semantics:
 
 ``` r
 # Data can be piped in or passed as argument to `define_model()`
@@ -105,7 +105,7 @@ Here’s the general anatomy of the main
 Every pipeline starts with
 [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md),
 which binds a variable description to data. The variable description is
-a `<var_id>` object — [statim](https://github.com/s7-stats/statim)’s
+a `<var_id>` object — [statim](https://s7-stats.github.io/statim/)’s
 equivalent of
 [`ggplot2::aes()`](https://ggplot2.tidyverse.org/reference/aes.html). It
 captures bare variable names lazily, exactly as `~` does, but resolves
@@ -333,7 +333,7 @@ parameter is being constrained or against what value. You cannot read
 `alternative = "greater"` and know whether the claim is about a mean, a
 proportion, or a correlation without reading the surrounding context.
 
-[statim](https://github.com/s7-stats/statim) provides an explicit
+[statim](https://s7-stats.github.io/statim/) provides an explicit
 hypothesis DSL built from `<param_obj>` objects and standard R
 comparison operators, in a form of algebraic expression. The expression
 names the population parameter, the relational operator, and the
@@ -441,11 +441,11 @@ Expressions?](https://s7-stats.github.io/statim/articles/pointers/hypothesis-exp
 
 ## Conclusion
 
-[statim](https://github.com/s7-stats/statim) is made for few reasons:
+[statim](https://s7-stats.github.io/statim/) is made for few reasons:
 
-1.  Explicitness exists and enforced, because subjectively it makes the
-    codes readable and maintainable. This is why the expression of null
-    hypothesis inside
+1.  Explicitness exists and is enforced, because subjectively it makes
+    the codes readable and maintainable. This is why the expression of
+    null hypothesis inside
     [`state_null()`](https://s7-stats.github.io/statim/reference/null-hyp.md)
     is expressed as an algebraic expression. Strictness on how you type
     the code, as well.
@@ -468,9 +468,9 @@ Expressions?](https://s7-stats.github.io/statim/articles/pointers/hypothesis-exp
     of the statistical inference. For instance, when
     [`rel()`](https://s7-stats.github.io/statim/reference/rel.md) is
     used, you basically tell
-    [statim](https://github.com/s7-stats/statim) to analyze the
+    [statim](https://s7-stats.github.io/statim/) to analyze the
     relationship between `x` and `y`, then tell
-    [statim](https://github.com/s7-stats/statim) what type of estimation
+    [statim](https://s7-stats.github.io/statim/) what type of estimation
     you want to perform, and then retrieve the result you want to
     achieve.
 
@@ -486,9 +486,9 @@ Expressions?](https://s7-stats.github.io/statim/articles/pointers/hypothesis-exp
 
 5.  This package is relatively easy to use and interactive, though has a
     bit steeper learning curve when compared to the existing packages
-    like [rstatix](https://rpkgs.datanovia.com/rstatix/) — this is due
-    to `<var_id>` mappers which changes the behavior of the statistical
-    inference in [statim](https://github.com/s7-stats/statim) pipeline
+    like [rstatix](https://rpkgs.datanovia.com/rstatix/). This is due to
+    `<var_id>` mappers which changes the behavior of how the statistical
+    inference in [statim](https://s7-stats.github.io/statim/) is done
     and S7 exist, and has tons of supporting documentations you can
     read. No need to read all of the contents unless you are planning to
     contribute. The semantics of this package is pretty similar to what
@@ -501,8 +501,8 @@ If you want to learn more on how to use this package, visit the
 following:
 
 1.  [Hypothesis Testing with
-    {statim}](https://s7-stats.github.io/statim/articles/usage/htest.md)
+    {statim}](https://s7-stats.github.io/statim/articles/usage/htest.html)
 2.  [Regression Modelling with
-    {statim}](https://s7-stats.github.io/statim/articles/usage/model-infer.md)
+    {statim}](https://s7-stats.github.io/statim/articles/usage/model-infer.html)
 3.  [ANOVA models from Linear Models with
-    {statim}](https://s7-stats.github.io/statim/articles/usage/anova-mod.md)
+    {statim}](https://s7-stats.github.io/statim/articles/usage/anova-mod.html)

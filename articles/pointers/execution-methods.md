@@ -2,7 +2,7 @@
 
 ## Rationale
 
-[statim](https://github.com/s7-stats/statim) separates *declaring* a
+[statim](https://s7-stats.github.io/statim/) separates *declaring* a
 statistical analysis from *running* it. Everything up to (and including)
 [`via()`](https://s7-stats.github.io/statim/reference/via.md) builds a
 lazy specification.

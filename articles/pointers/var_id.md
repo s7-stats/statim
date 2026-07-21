@@ -9,7 +9,7 @@ objects. In fact, [ggplot2](https://ggplot2.tidyverse.org) doesn’t fully
 manifest `<formula>` objects to describe the shape of the model you want
 to visualize within [ggplot2](https://ggplot2.tidyverse.org) pipelines.
 The existing `<var_id>` objects from
-[statim](https://github.com/s7-stats/statim) shape the model to be
+[statim](https://s7-stats.github.io/statim/) shape the model to be
 analyzed in the statistical inference pipelines, which act like mappers,
 just like
 [`ggplot2::aes()`](https://ggplot2.tidyverse.org/reference/aes.html).
@@ -36,7 +36,7 @@ while a `<var_id>` is always resolved the same way, through
 [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
 that turns the captured expressions into a list of data structures
 (usually data frames), ready for the rest of the
-[statim](https://github.com/s7-stats/statim) pipeline.
+[statim](https://s7-stats.github.io/statim/) pipeline.
 
 ## What are Variable Mappers
 
@@ -57,7 +57,7 @@ inference pipeline operates on.
 
 ## Existing objects
 
-[statim](https://github.com/s7-stats/statim) has built-in `<var_id>`
+[statim](https://s7-stats.github.io/statim/) has built-in `<var_id>`
 objects you can use to describe the shape of the model you want to
 analyze during statistical inference.
 
@@ -314,7 +314,7 @@ To write a new `<var_id>` object:
 
 With these in place, your new `<var_id>` works seamlessly with
 [`define_model()`](https://s7-stats.github.io/statim/reference/layout-define-base.md)
-and the rest of the [statim](https://github.com/s7-stats/statim)
+and the rest of the [statim](https://s7-stats.github.io/statim/)
 pipeline — exactly like
 [`x_by()`](https://s7-stats.github.io/statim/reference/x_by.md),
 [`rel()`](https://s7-stats.github.io/statim/reference/rel.md),

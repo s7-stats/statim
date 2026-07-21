@@ -3,7 +3,7 @@
 ## What inference am I declaring?
 
 When you fit a linear model with
-[statim](https://github.com/s7-stats/statim), the model is a
+[statim](https://s7-stats.github.io/statim/), the model is a
 `class_lm_object` stored inside a `cld_exec`. Because `class_lm_object`
 inherits from `anova_able`, every fitted model knows how to participate
 in an ANOVA comparison: it carries the residual degrees of freedom, the
@@ -11,7 +11,7 @@ residual sum of squares, the model matrix, and the error family.
 [`anova()`](https://s7-stats.github.io/statim/reference/anova-mod.md)
 reads those slots directly, so no separate conversion step is needed.
 
-[statim](https://github.com/s7-stats/statim) supports two distinct ANOVA
+[statim](https://s7-stats.github.io/statim/) supports two distinct ANOVA
 questions:
 
 1.  **Single model (Type I)**: how much does each predictor reduce

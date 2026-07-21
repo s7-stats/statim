@@ -120,7 +120,7 @@ Explanation</h3>
 </h2>
 <p>It may sound complex, but it’s easy and intuitive. It is meant to
 mirror what you’d read and already write under a hypothesis heading in a
-statistics textbook. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> leans on syntactic sugar and
+statistics textbook. <a href="https://s7-stats.github.io/statim/">statim</a> leans on syntactic sugar and
 a small embedded DSL (domain-specific language) to do this, and the
 closest existing analogue in R is <code>join_by()</code> from
 <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>: a join condition like <code>x == y</code> is never
@@ -376,7 +376,7 @@ parser did catch it, but only the multi-parameter path explains why.</p>
 <p>If two terms for the same parameter happen to cancel inside a
 contrast — writing <code>MU(x, a) - MU(x, a)</code>, say — the
 coefficient resolves to zero rather than silently vanishing, and
-<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> warns about it instead of quietly dropping the
+<a href="https://s7-stats.github.io/statim/">statim</a> warns about it instead of quietly dropping the
 term, since a zero coefficient is far more often a typo than an
 intentional contrast. The same duplicate in a single-parameter claim
 never reaches that logic at all: <code><a href="../../reference/claim_scalar.html">claim_scalar()</a></code> counts it

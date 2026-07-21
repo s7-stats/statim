@@ -16,7 +16,7 @@ Without [`via()`](https://s7-stats.github.io/statim/reference/via.md),
 switching between them would normally mean reaching for a different
 function entirely, or threading a string flag through `...` and hoping
 the implementation underneath understands it.
-[statim](https://github.com/s7-stats/statim) instead treats the
+[statim](https://s7-stats.github.io/statim/) instead treats the
 estimation method as something you are *switching the mode* within the
 lazy-loaded pipeline, while the model definition, the data, and (if
 present) the hypothesis claim stay untouched.

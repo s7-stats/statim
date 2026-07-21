@@ -31,8 +31,6 @@ variant(fn, print = NULL, claim_parser = NULL)
   Try run this to explore the structure:
   `names(model_processor(<var_id>, <data>))`.
 
-    
-
   Additional named arguments are user-supplied statistical parameters
   (e.g. `.mu`, `.ci`). See
   [`model_processor()`](https://s7-stats.github.io/statim/reference/model-processor.md)

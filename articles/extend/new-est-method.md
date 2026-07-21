@@ -2,7 +2,7 @@
 
 ## Rationale
 
-[statim](https://github.com/s7-stats/statim) is designed so that writing
+[statim](https://s7-stats.github.io/statim/) is designed so that writing
 a new estimation method never means forking the function the user calls.
 [`T_TEST()`](https://s7-stats.github.io/statim/reference/T_TEST.md),
 [`P_TEST()`](https://s7-stats.github.io/statim/reference/P_TEST.md),

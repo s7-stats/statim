@@ -123,7 +123,7 @@ function is its own island: a different name, different argument
 conventions, no shared way to express what hypothesis you are testing or
 to switch between estimation methods without rewriting the call
 entirely.</p>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> keeps that familiar idiom as its entry point,
+<p><a href="https://s7-stats.github.io/statim/">statim</a> keeps that familiar idiom as its entry point,
 while bringing declarative, pipe-friendly grammar (much in spirit of
 <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> or <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>). The same inference
 pipeline can express a classical test or a permutation test with nothing
@@ -132,7 +132,7 @@ else touching.</p>
 <div class="section level2">
 <h2 id="a-complete-example">A complete example<a class="anchor" aria-label="anchor" href="#a-complete-example"></a>
 </h2>
-<p>Before explaining each piece, here is what a <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>
+<p>Before explaining each piece, here is what a <a href="https://s7-stats.github.io/statim/">statim</a>
 pipeline looks like end to end:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -180,8 +180,8 @@ model, choose the test, execute and read the output.</p>
 </h2>
 <p><img src="workflow.jpg"></p>
 <p>All you need to know is that the most usual usage of
-<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> comes with three steps. Here’s the general anatomy
-of the main <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> semantics:</p>
+<a href="https://s7-stats.github.io/statim/">statim</a> comes with three steps. Here’s the general anatomy
+of the main <a href="https://s7-stats.github.io/statim/">statim</a> semantics:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Data can be piped in or passed as argument to `define_model()`</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>... <span class="sc">|&gt;</span>                                   <span class="co"># Possible extensions  </span></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="fu">define_model</span>(</span>
@@ -200,7 +200,7 @@ of the main <a href="https://github.com/s7-stats/statim" class="external-link">s
 </h3>
 <p>Every pipeline starts with <code><a href="../reference/layout-define-base.html">define_model()</a></code>, which binds a
 variable description to data. The variable description is a
-<code>&lt;var_id&gt;</code> object — <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>’s equivalent
+<code>&lt;var_id&gt;</code> object — <a href="https://s7-stats.github.io/statim/">statim</a>’s equivalent
 of <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">ggplot2::aes()</a></code>. It captures bare variable names lazily,
 exactly as <code>~</code> does, but resolves them in a consistent,
 pipeline-aware way.</p>
@@ -387,7 +387,7 @@ not what parameter is being constrained or against what value. You
 cannot read <code>alternative = "greater"</code> and know whether the
 claim is about a mean, a proportion, or a correlation without reading
 the surrounding context.</p>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> provides an explicit hypothesis DSL built from
+<p><a href="https://s7-stats.github.io/statim/">statim</a> provides an explicit hypothesis DSL built from
 <code>&lt;param_obj&gt;</code> objects and standard R comparison
 operators, in a form of algebraic expression. The expression names the
 population parameter, the relational operator, and the hypothesized
@@ -487,12 +487,13 @@ are {statim}’s Null Hypothesis Expressions?</a></p>
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
-<p><a href="https://github.com/s7-stats/statim" class="external-link">statim</a> is made for few reasons:</p>
+<p><a href="https://s7-stats.github.io/statim/">statim</a> is made for few reasons:</p>
 <ol style="list-style-type: decimal">
-<li><p>Explicitness exists and enforced, because subjectively it makes
-the codes readable and maintainable. This is why the expression of null
-hypothesis inside <code><a href="../reference/null-hyp.html">state_null()</a></code> is expressed as an algebraic
-expression. Strictness on how you type the code, as well.</p></li>
+<li><p>Explicitness exists and is enforced, because subjectively it
+makes the codes readable and maintainable. This is why the expression of
+null hypothesis inside <code><a href="../reference/null-hyp.html">state_null()</a></code> is expressed as an
+algebraic expression. Strictness on how you type the code, as
+well.</p></li>
 <li><p>Assuming that you are satisfied with its API design. Don’t worry,
 this package makes sure it is pretty expandable and versatile. The use
 of S7 is only used on the surface level — formal classes/objects, type
@@ -505,8 +506,8 @@ comes to the second: verbs and pipes. You see functions like
 and they are literally <code>aes()</code> albeit it does the bare
 minimum: they are mappers that declares the layout of the statistical
 inference. For instance, when <code><a href="../reference/rel.html">rel()</a></code> is used, you basically
-tell <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> to analyze the relationship between
-<code>x</code> and <code>y</code>, then tell <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> what
+tell <a href="https://s7-stats.github.io/statim/">statim</a> to analyze the relationship between
+<code>x</code> and <code>y</code>, then tell <a href="https://s7-stats.github.io/statim/">statim</a> what
 type of estimation you want to perform, and then retrieve the result you
 want to achieve.</p></li>
 <li><p>Built-in implementations are made from the common tasks R users
@@ -518,9 +519,9 @@ allows to have multiple variables for each side, <code>x</code> and
 <code>group</code>, to be analyzed.</p></li>
 <li><p>This package is relatively easy to use and interactive, though
 has a bit steeper learning curve when compared to the existing packages
-like <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> — this is due to <code>&lt;var_id&gt;</code>
-mappers which changes the behavior of the statistical inference in
-<a href="https://github.com/s7-stats/statim" class="external-link">statim</a> pipeline and S7 exist, and has tons of supporting
+like <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>. This is due to <code>&lt;var_id&gt;</code>
+mappers which changes the behavior of how the statistical inference in
+<a href="https://s7-stats.github.io/statim/">statim</a> is done and S7 exist, and has tons of supporting
 documentations you can read. No need to read all of the contents unless
 you are planning to contribute. The semantics of this package is pretty
 similar to what you are gotten used to from the existing packages,
@@ -533,12 +534,12 @@ namely the <a href="https://tidyverse.tidyverse.org" class="external-link">tidyv
 <p>If you want to learn more on how to use this package, visit the
 following:</p>
 <ol style="list-style-type: decimal">
-<li><a href="./usage/htest.html">Hypothesis Testing with
-{statim}</a></li>
-<li><a href="./usage/model-infer.html">Regression Modelling with
-{statim}</a></li>
-<li><a href="./usage/anova-mod.html">ANOVA models from Linear Models
-with {statim}</a></li>
+<li><a href="https://s7-stats.github.io/statim/articles/usage/htest.html">Hypothesis
+Testing with {statim}</a></li>
+<li><a href="https://s7-stats.github.io/statim/articles/usage/model-infer.html">Regression
+Modelling with {statim}</a></li>
+<li><a href="https://s7-stats.github.io/statim/articles/usage/anova-mod.html">ANOVA
+models from Linear Models with {statim}</a></li>
 </ol>
 <!-- ## Generalization --><!-- If you have an inferential statistics tasks, give this package a shot — it's updated and more modernized. Besides, it's written in S7, so type annotation is the least of your worries. And that's pretty much all you need to know when you started working with this package.  -->
 </div>
