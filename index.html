@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>statim • A Declarative Interface for Statistical Inference • statim</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="katex-auto.js"></script><script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
@@ -19,6 +24,7 @@
 ">
 <meta property="og:description" content="A declarative interface and a re-imagination of &quot;grammar of statistical inference&quot; framework in a package, mixing with 'ggplot2' / 'tidyverse' paradigm.
 ">
+<meta property="og:image" content="https://s7-stats.github.io/statim/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -96,8 +102,10 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="statim-">statim <img src="reference/figures/logo.png" align="right" height="139"><a class="anchor" aria-label="anchor" href="#statim-"></a>
-</h1></div>
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="statim-">statim <a class="anchor" aria-label="anchor" href="#statim-"></a>
+</h1>
+</div>
 <!-- badges: start -->
 
 <p><strong>A Declarative Interface for Statistical Inference</strong></p>
@@ -110,7 +118,7 @@
 <div class="section level2">
 <h2 id="why-statim">Why statim?<a class="anchor" aria-label="anchor" href="#why-statim"></a>
 </h2>
-<p>R has a rich statistical ecosystem. Statistical inference in general is served by an assortment of disconnected functions: the functions you’re looking for may exist but they are scattered across different packages.</p>
+<p>R has a dedicated rich ecosystem in statistics. Statistical inference in general is served by an assortment of disconnected functions: the functions you’re looking for may exist but they are scattered across different packages.</p>
 <p>R gained a grammar for graphics (<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>), and one for data manipulation (<a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a>). And then there’s <a href="https://github.com/s7-stats/statim" class="external-link">statim</a>, an attempt to re-imagine the “grammar of statistical inference” from the ground up. The core idea of <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> in general is it’s fully declarative, and that any inferential procedure can be described in <a href="https://s7-stats.github.io/statim/articles/statim.html">three steps</a>.</p>
 <p>What makes <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> <em>composable</em> for statistical workflows is the <em>verbs</em> and the <em>accessibility</em> of the methods you’re looking for. For example, you want to write a t-test pipeline, and you want to use the classical one and then the permutation method. <a href="https://github.com/s7-stats/statim" class="external-link">statim</a> lets you do that with <code>via("&lt;method_name&gt;")</code>, and while you can use t-test from <code>default</code> (classical), you can access its permutation method through <code>... |&gt; via("permute")</code> with one line of code only. You won’t need you to do a lot of work (which sometimes require rewriting your code), just a single addition to the syntax.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
