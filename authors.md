@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/s7-stats/statim/blob/v0.1.0/inst/CITATION)
+[`inst/CITATION`](https://github.com/s7-stats/statim/blob/master/inst/CITATION)
 
 Marie, Joshua et al. (2026). statim: A Declarative Interface for
 Statistical Inference https://s7-stats.github.io/statim
