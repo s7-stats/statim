@@ -23,33 +23,33 @@ not “are these equal,” but “is a specific weighted combination of these
 parameters above, below, or at some threshold.” Two things can vary in
 that question, and they don’t cost the same:
 
-- **The comparison value.**
-  [`x_by()`](https://s7-stats.github.io/statim/dev/reference/x_by.md)’s
-  base two-sample path already reads the comparison value straight out
-  of
-  [`state_null()`](https://s7-stats.github.io/statim/dev/reference/null-hyp.md)’s
-  claim. `MU(a) - MU(b) <= 3` runs on the ordinary two-sample path — no
-  extra step.
-- **The weights.** `via("contrast")` is the only path in
-  [statim](https://s7-stats.github.io/statim/) that accepts weights
-  other than the implicit `+1`/`-1` split, computing a genuine
-  Welch-Satterthwaite linear contrast (`.w`) rather than a plain mean
-  difference.
+1.  [`x_by()`](https://s7-stats.github.io/statim/dev/reference/x_by.md)’s
+    base two-sample path already reads the comparison value straight out
+    of
+    [`state_null()`](https://s7-stats.github.io/statim/dev/reference/null-hyp.md)’s
+    claim. `MU(a) - MU(b) <= 3` runs on the ordinary two-sample path —
+    no extra steps are needed.
+2.  `via(..., "contrast")` is the only path in `ttest-xby` from
+    [statim](https://s7-stats.github.io/statim/) that accepts weights
+    other than the implicit `+1`/`-1` split, computing the test
+    statistic derived from Welch-Satterthwaite equation rather than a
+    plain mean difference.
 
 Showcase 2 below is the one place in this vignette where the weights
-actually depart from `±1`. That’s the one place `via("contrast")` is
-required — Showcases 1 and 3 stay on the base path.
+actually depart from \pm 1. That’s the one place where `via("contrast")`
+is required. The rests, Showcases 1 and 3, stay on the default (base)
+path.
 
-This vignette isn’t reproducing a specific textbook problem. The book’s
-own contrast examples mostly involve three or more groups (its ANOVA
-chapters, already covered by
+Disclosure: This vignette isn’t reproducing a specific textbook problem.
+The book’s own contrast examples mostly involve three or more groups
+(its ANOVA chapters, already covered by
 `vignette("anova-mod", package = "statim")`), while `TTEST`’s
 [`x_by()`](https://s7-stats.github.io/statim/dev/reference/x_by.md)’s
 `contrast` variant is built for exactly two. What it does share with the
-book is the *question type*: a weighted, non-zero-threshold claim
-instead of a plain equality. The three showcases below work that
-question type through [statim](https://s7-stats.github.io/statim/),
-using the same Welch-Satterthwaite machinery the book’s contrast tests
+book is the *question type*: a weighted, non-zero-threshold null
+hypothesis instead of a plain equality. The three showcases below work
+that question type through [statim](https://s7-stats.github.io/statim/),
+using the same Welch-Satterthwaite machinery the book’s “contrast tests”
 are built on.
 
 ## Setup
@@ -66,7 +66,7 @@ box::use(
 ```
 
 `ToothGrowth` ships with R, so no import step is needed beyond loading
-it:
+it through:
 
 ``` r
 
@@ -76,14 +76,39 @@ data(ToothGrowth)
 ## A look at the data
 
 All three showcases below hinge on the size of the OJ-VC gap, so it’s
-worth seeing that gap before testing it. Let’s start with stratified
-summaries (uncover interactions early):
+worth seeing that gap before testing it. Let’s start by computing the
+mean by supplement type (`supp`):
+
+``` r
+
+box::use(
+    dplyr[mutate, summarise, keep_when = filter, n],
+    forcats[as_factor],
+    stats[sd], 
+)
+
+ToothGrowth |>
+    mutate(dose = as_factor(dose)) |>
+    summarise(
+        n = n(),
+        mean = mean(len),
+        sd = sd(len),
+        .by = supp
+    )
+```
+
+      supp  n     mean       sd
+    1   VC 30 16.96333 8.266029
+    2   OJ 30 20.66333 6.605561
+
+Then the stratified summaries (uncover interactions early):
 
 ``` r
 
 box::use(
     dplyr[mutate, group_by, summarise, keep_when = filter, n],
-    forcats[as_factor]
+    forcats[as_factor],
+    stats[sd], 
 )
 
 ToothGrowth |>
@@ -93,7 +118,6 @@ ToothGrowth |>
         n = n(),
         mean = mean(len),
         sd = sd(len),
-        
         .groups = "drop"
     )
 ```
@@ -167,75 +191,76 @@ theme_growth = function(subtitle_colour = "grey40") {
 }
 ```
 
-1.  Distribution between `OJ` and `VC`
+### Plots
 
-    ``` r
+- 1\. Distribution between `OJ` and `VC`
+- 2\. Separated by `dose`
 
-    ggplot(ToothGrowth, aes(x = supp, y = len, fill = supp, colour = supp)) +
-        stat_halfeye(
-            alpha = 0.5,
-            .width = c(0.5, 0.95),
-            point_interval = "median_qi",
-            justification = -0.25,
-            width = 0.55
-        ) +
-        geom_jitter(
-            position = position_jitter(width = 0.08, height = 0, seed = 1),
-            size = 2.2,
-            alpha = 0.55,
-            show.legend = FALSE
-        ) +
-        scale_fill_manual(values = supp_colors, guide = "none") +
-        scale_colour_manual(values = supp_colors, guide = "none") +
-        scale_y_continuous(breaks = seq(0, 35, 10)) +
-        coord_flip() +
-        labs(
-            title = toupper("Same juice, different clouds"),
-            subtitle = subtitle_text,
-            x = "Supplement",
-            y = "Tooth Length"
-        ) +
-        theme_growth()
-    ```
+``` r
 
-    ![](beyond-null_files/figure-html/unnamed-chunk-5-1.png)
+ggplot(ToothGrowth, aes(x = supp, y = len, fill = supp, colour = supp)) +
+    stat_halfeye(
+        alpha = 0.5,
+        .width = c(0.5, 0.95),
+        point_interval = "median_qi",
+        justification = -0.25,
+        width = 0.55
+    ) +
+    geom_jitter(
+        position = position_jitter(width = 0.08, height = 0, seed = 1),
+        size = 2.2,
+        alpha = 0.55,
+        show.legend = FALSE
+    ) +
+    scale_fill_manual(values = supp_colors, guide = "none") +
+    scale_colour_manual(values = supp_colors, guide = "none") +
+    scale_y_continuous(breaks = seq(0, 35, 10)) +
+    coord_flip() +
+    labs(
+        title = toupper("Same juice, different clouds"),
+        subtitle = subtitle_text,
+        x = "Supplement",
+        y = "Tooth Length"
+    ) +
+    theme_growth()
+```
 
-2.  Separated by `dose`
+![](beyond-null_files/figure-html/unnamed-chunk-6-1.png)
 
-    ``` r
+``` r
 
-    ggplot(ToothGrowth, aes(x = factor(dose), y = len, fill = supp, colour = supp)) +
-        stat_halfeye(
-            aes(fill = supp),
-            alpha = 0.5,
-            position = "dodge",
-            .width = c(0.5, 0.95),
-            point_interval = "median_qi",
-            justification = -0.15,
-            width = 0.9
-        ) +
-        stat_dots(
-            aes(fill = supp),
-            side = "bottom",
-            justification = 1.05,
-            binwidth = NA,
-            dotsize = 0.8,
-            position = "dodge"
-        ) +
-        scale_fill_manual(values = supp_colors, guide = "none") +
-        scale_colour_manual(values = supp_colors, guide = "none") +
-        scale_y_continuous(breaks = seq(0, 35, 10)) +
-        coord_flip() +
-        labs(
-            title = toupper("Same juice, different clouds"),
-            subtitle = subtitle_text,
-            x = "Dose (mg/day)",
-            y = "Tooth Length"
-        ) +
-        theme_growth(subtitle_colour = "#1D2128")
-    ```
+ggplot(ToothGrowth, aes(x = factor(dose), y = len, fill = supp, colour = supp)) +
+    stat_halfeye(
+        aes(fill = supp),
+        alpha = 0.5,
+        position = "dodge",
+        .width = c(0.5, 0.95),
+        point_interval = "median_qi",
+        justification = -0.15,
+        width = 0.9
+    ) +
+    stat_dots(
+        aes(fill = supp),
+        side = "bottom",
+        justification = 1.05,
+        binwidth = NA,
+        dotsize = 0.8,
+        position = "dodge"
+    ) +
+    scale_fill_manual(values = supp_colors, guide = "none") +
+    scale_colour_manual(values = supp_colors, guide = "none") +
+    scale_y_continuous(breaks = seq(0, 35, 10)) +
+    coord_flip() +
+    labs(
+        title = toupper("Same juice, different clouds"),
+        subtitle = subtitle_text,
+        x = "Dose (mg/day)",
+        y = "Tooth Length"
+    ) +
+    theme_growth(subtitle_colour = "#1D2128")
+```
 
-    ![](beyond-null_files/figure-html/unnamed-chunk-6-1.png)
+![](beyond-null_files/figure-html/unnamed-chunk-7-1.png)
 
 ### Conditioning on dose
 

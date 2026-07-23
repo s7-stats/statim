@@ -2,19 +2,22 @@
 
 ## Rationale
 
-`vignette("htest", package = "statim")` covered the other half of
-[`prepare()`](https://s7-stats.github.io/statim/dev/reference/prepare.md):
-[`prepare_test()`](https://s7-stats.github.io/statim/dev/reference/prepare-test.md),
-feeding `T_TEST`, `COR_TEST`, and `P_TEST` into the same
-`define_model() |> prepare() |> conclude()` shape. This vignette covers
-the model-based half,
+[statim](https://s7-stats.github.io/statim/) already covered the
+hypothesis testing using this package in this
+[vignette](https://s7-stats.github.io/statim/dev/articles/usage/htest.md).
+This vignette covers the hypothesis testing based on *regression
+models*.
+[`prepare()`](https://s7-stats.github.io/statim/dev/reference/prepare.md)
+is still used to initialize the parameterization of the inference stage,
+but the other one,
 [`prepare_model()`](https://s7-stats.github.io/statim/dev/reference/prepare-model.md),
-which takes the exact same shape and feeds it `LINEAR_REG` or `GLM`
-instead. Same `<var_id>` mappers, same verbs, same
+has the same functionality but more safely typed and feeds it
+`LINEAR_REG` or `GLM` instead. Same `<var_id>` mappers, same verbs, same
 [`conclude()`](https://s7-stats.github.io/statim/dev/reference/conclude.md)
 at the end. If a hypothesis question turns out to need a regression
-instead of a t-test, the pipeline you already wrote doesn’t change
-shape, only the `<STAT_FN>` swapped in.
+instead of a t-test, the syntax on the main semantic you already wrote
+doesn’t change shape, thus the pipeline doesn’t change, only the
+`<STAT_FN>` swapped in and/or the given during the “definition” stage.
 
 Three questions from the same dataset, run as regression models instead
 of hypothesis tests.
@@ -40,29 +43,37 @@ The questions:
 
 ## Setup
 
+The setup is pretty much the same as the setup section from [“Hypothesis
+Testing”](https://s7-stats.github.io/statim/dev/articles/usage/htest.md)
+vignette, where [box](https://klmr.me/box/) is used to load the imports,
+and the
+[`readr::read_csv()`](https://readr.tidyverse.org/reference/read_delim.html)
+is preferred to import the CSV file.
+
 ``` r
 
 box::use(
     statim[
-        define_model, prepare_model, via, conclude, 
+        define_model, prepare, prepare_model, conclude, 
         # Supported models
         LINEAR_REG, GLM,
+        # Miscellaneous functions
         rel, tidy,
         # Multiple executions
         write_models, anova
     ],
-    stats[update, binomial]
-)
-
-box::use(
-    dplyr[mutate, glimpse],
-    readr[read_csv]
+    stats[update, binomial],
 )
 ```
 
 Then import the CSV file from this package:
 
 ``` r
+
+box::use(
+    dplyr[mutate, glimpse],
+    readr[read_csv],
+)
 
 heart = 
     read_csv(system.file("extdata", "heart-disease.csv", package = "statim")) |>
@@ -118,7 +129,7 @@ Using `rel()`
 
 heart |>
     define_model(rel(age, trestbps)) |>
-    prepare_model(LINEAR_REG) |>
+    prepare(LINEAR_REG) |>
     conclude()
 ```
 
@@ -195,7 +206,7 @@ Using formula syntax
 
 heart |>
     define_model(trestbps ~ age) |>
-    prepare_model(LINEAR_REG) |>
+    prepare(LINEAR_REG) |>
     conclude()
 ```
 
@@ -336,6 +347,12 @@ Args : age, sex, chol ; thalach
       n              :     303    p-value     :   <0.001
       df (residual)  :     299                :         
     ------------------------------------------------------
+
+> Note:
+> [`prepare_model()`](https://s7-stats.github.io/statim/dev/reference/prepare-model.md)
+> has the same functionality as
+> [`prepare()`](https://s7-stats.github.io/statim/dev/reference/prepare.md)
+> but designed to be safely typed for regression models.
 
 You can use its one-liner version:
 

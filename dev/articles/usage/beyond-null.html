@@ -138,33 +138,34 @@ Models</em> poses a different kind of question throughout its inference
 chapters: not “are these equal,” but “is a specific weighted combination
 of these parameters above, below, or at some threshold.” Two things can
 vary in that question, and they don’t cost the same:</p>
-<ul>
+<ol style="list-style-type: decimal">
 <li>
-<strong>The comparison value.</strong> <code><a href="../../reference/x_by.html">x_by()</a></code>’s base
-two-sample path already reads the comparison value straight out of
-<code><a href="../../reference/null-hyp.html">state_null()</a></code>’s claim. <code>MU(a) - MU(b) &lt;= 3</code>
-runs on the ordinary two-sample path — no extra step.</li>
+<code><a href="../../reference/x_by.html">x_by()</a></code>’s base two-sample path already reads the
+comparison value straight out of <code><a href="../../reference/null-hyp.html">state_null()</a></code>’s claim.
+<code>MU(a) - MU(b) &lt;= 3</code> runs on the ordinary two-sample path
+— no extra steps are needed.</li>
 <li>
-<strong>The weights.</strong> <code>via("contrast")</code> is the
-only path in <a href="https://s7-stats.github.io/statim/">statim</a> that accepts weights other than the
-implicit <code>+1</code>/<code>-1</code> split, computing a genuine
-Welch-Satterthwaite linear contrast (<code>.w</code>) rather than a
-plain mean difference.</li>
-</ul>
+<code>via(..., "contrast")</code> is the only path in
+<code>ttest-xby</code> from <a href="https://s7-stats.github.io/statim/">statim</a> that accepts weights
+other than the implicit <code>+1</code>/<code>-1</code> split, computing
+the test statistic derived from Welch-Satterthwaite equation rather than
+a plain mean difference.</li>
+</ol>
 <p>Showcase 2 below is the one place in this vignette where the weights
-actually depart from <code>±1</code>. That’s the one place
-<code>via("contrast")</code> is required — Showcases 1 and 3 stay on the
-base path.</p>
-<p>This vignette isn’t reproducing a specific textbook problem. The
-book’s own contrast examples mostly involve three or more groups (its
-ANOVA chapters, already covered by
+actually depart from <span class="math inline">\pm 1</span>. That’s the
+one place where <code>via("contrast")</code> is required. The rests,
+Showcases 1 and 3, stay on the default (base) path.</p>
+<p>Disclosure: This vignette isn’t reproducing a specific textbook
+problem. The book’s own contrast examples mostly involve three or more
+groups (its ANOVA chapters, already covered by
 <code>vignette("anova-mod", package = "statim")</code>), while
 <code>TTEST</code>’s <code><a href="../../reference/x_by.html">x_by()</a></code>’s <code>contrast</code> variant
 is built for exactly two. What it does share with the book is the
-<em>question type</em>: a weighted, non-zero-threshold claim instead of
-a plain equality. The three showcases below work that question type
-through <a href="https://s7-stats.github.io/statim/">statim</a>, using the same Welch-Satterthwaite
-machinery the book’s contrast tests are built on.</p>
+<em>question type</em>: a weighted, non-zero-threshold null hypothesis
+instead of a plain equality. The three showcases below work that
+question type through <a href="https://s7-stats.github.io/statim/">statim</a>, using the same
+Welch-Satterthwaite machinery the book’s “contrast tests” are built
+on.</p>
 </div>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
@@ -177,7 +178,7 @@ machinery the book’s contrast tests are built on.</p>
 <span>    <span class="op">]</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><code>ToothGrowth</code> ships with R, so no import step is needed
-beyond loading it:</p>
+beyond loading it through:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ToothGrowth</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -185,12 +186,32 @@ beyond loading it:</p>
 <h2 id="a-look-at-the-data">A look at the data<a class="anchor" aria-label="anchor" href="#a-look-at-the-data"></a>
 </h2>
 <p>All three showcases below hinge on the size of the OJ-VC gap, so it’s
-worth seeing that gap before testing it. Let’s start with stratified
-summaries (uncover interactions early):</p>
+worth seeing that gap before testing it. Let’s start by computing the
+mean by supplement type (<code>supp</code>):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
+<span>    <span class="va">dplyr</span><span class="op">[</span><span class="va">mutate</span>, <span class="va">summarise</span>, keep_when <span class="op">=</span> <span class="va">filter</span>, <span class="va">n</span><span class="op">]</span>,</span>
+<span>    <span class="va">forcats</span><span class="op">[</span><span class="va">as_factor</span><span class="op">]</span>,</span>
+<span>    <span class="va">stats</span><span class="op">[</span><span class="va">sd</span><span class="op">]</span>, </span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mutate</span><span class="op">(</span>dose <span class="op">=</span> <span class="fu">as_factor</span><span class="op">(</span><span class="va">dose</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">summarise</span><span class="op">(</span></span>
+<span>        n <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>        mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">len</span><span class="op">)</span>,</span>
+<span>        sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">len</span><span class="op">)</span>,</span>
+<span>        .by <span class="op">=</span> <span class="va">supp</span></span>
+<span>    <span class="op">)</span></span></code></pre></div>
+<pre><code>  supp  n     mean       sd
+1   VC 30 16.96333 8.266029
+2   OJ 30 20.66333 6.605561</code></pre>
+<p>Then the stratified summaries (uncover interactions early):</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
 <span>    <span class="va">dplyr</span><span class="op">[</span><span class="va">mutate</span>, <span class="va">group_by</span>, <span class="va">summarise</span>, keep_when <span class="op">=</span> <span class="va">filter</span>, <span class="va">n</span><span class="op">]</span>,</span>
-<span>    <span class="va">forcats</span><span class="op">[</span><span class="va">as_factor</span><span class="op">]</span></span>
+<span>    <span class="va">forcats</span><span class="op">[</span><span class="va">as_factor</span><span class="op">]</span>,</span>
+<span>    <span class="va">stats</span><span class="op">[</span><span class="va">sd</span><span class="op">]</span>, </span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
@@ -200,7 +221,6 @@ summaries (uncover interactions early):</p>
 <span>        n <span class="op">=</span> <span class="fu">n</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>        mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">len</span><span class="op">)</span>,</span>
 <span>        sd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">len</span><span class="op">)</span>,</span>
-<span>        </span>
 <span>        .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>    <span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code><span style="color: #949494;"># A tibble: 6 × 5</span>
@@ -216,7 +236,7 @@ summaries (uncover interactions early):</p>
 <p>Let us check the distribution:</p>
 <details><summary>
 Click here to open
-</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
 <span>    <span class="va">ggplot2</span><span class="op">[</span></span>
 <span>        <span class="va">ggplot</span>, <span class="va">aes</span>, <span class="va">labs</span>, <span class="va">theme_minimal</span>, <span class="va">theme</span>, <span class="va">element_blank</span>,</span>
@@ -266,10 +286,19 @@ Click here to open
 <span>            plot.margin <span class="op">=</span> <span class="fu">margin</span><span class="op">(</span><span class="fl">10</span>, <span class="fl">12</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span>        <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-</details><ol style="list-style-type: decimal">
-<li>
-<p>Distribution between <code>OJ</code> and <code>VC</code></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+</details><div class="section level3 tabset">
+<h3 class="tabset" id="plots">Plots<a class="anchor" aria-label="anchor" href="#plots"></a>
+</h3>
+
+
+<ul class="nav nav-tabs" id="plots" role="tablist">
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#distribution-between-oj-and-vc" id="distribution-between-oj-and-vc-tab" type="button" role="tab" aria-controls="distribution-between-oj-and-vc" aria-selected="true" class="active nav-link">1. Distribution between <code>OJ</code> and <code>VC</code></button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#separated-by-dose" id="separated-by-dose-tab" type="button" role="tab" aria-controls="separated-by-dose" aria-selected="false" class="nav-link">2. Separated by <code>dose</code></button></li>
+</ul>
+<div class="tab-content">
+<div class="active  tab-pane" id="distribution-between-oj-and-vc" role="tabpanel" aria-labelledby="distribution-between-oj-and-vc-tab">
+
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">ToothGrowth</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">supp</span>, y <span class="op">=</span> <span class="va">len</span>, fill <span class="op">=</span> <span class="va">supp</span>, colour <span class="op">=</span> <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">stat_halfeye</span><span class="op">(</span></span>
 <span>        alpha <span class="op">=</span> <span class="fl">0.5</span>,</span>
@@ -295,11 +324,11 @@ Click here to open
 <span>        y <span class="op">=</span> <span class="st">"Tooth Length"</span></span>
 <span>    <span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">theme_growth</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="beyond-null_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="768"></p>
-</li>
-<li>
-<p>Separated by <code>dose</code></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p><img src="beyond-null_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+<div class="tab-pane" id="separated-by-dose" role="tabpanel" aria-labelledby="separated-by-dose-tab">
+
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">ToothGrowth</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">dose</span><span class="op">)</span>, y <span class="op">=</span> <span class="va">len</span>, fill <span class="op">=</span> <span class="va">supp</span>, colour <span class="op">=</span> <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">stat_halfeye</span><span class="op">(</span></span>
 <span>        <span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="va">supp</span><span class="op">)</span>,</span>
@@ -329,9 +358,10 @@ Click here to open
 <span>        y <span class="op">=</span> <span class="st">"Tooth Length"</span></span>
 <span>    <span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">theme_growth</span><span class="op">(</span>subtitle_colour <span class="op">=</span> <span class="st">"#1D2128"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="beyond-null_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="768"></p>
-</li>
-</ol>
+<p><img src="beyond-null_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="768"></p>
+</div>
+</div>
+</div>
 <div class="section level3">
 <h3 id="conditioning-on-dose">Conditioning on dose<a class="anchor" aria-label="anchor" href="#conditioning-on-dose"></a>
 </h3>
@@ -372,7 +402,7 @@ test. The weights are still the default <span class="math inline">\pm
 1</span> split, so this stays on the base two-sample path (this is valid
 on <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code>, thus no <code>via("contrast")</code>
 needed, with an exemption of you wanted to do it).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">keep_when</span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -442,7 +472,7 @@ aren’t <span class="math inline">\pm 1</span>, this is the one showcase
 in this vignette where <code>via("contrast")</code> is required. Drop it
 and the base path’s claim parser rejects the claim outright, since it
 only accepts a <code>-1</code>/<code>+1</code> split.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">keep_when</span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -527,7 +557,7 @@ so, as in Showcase 1, this stays on the base path where no
 dataset, all three doses, not the <code>dose == 1</code> subset under
 test. It’s meant as an absolute benchmark on the tooth-length scale, not
 a property of this particular dose.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">overall_avg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ToothGrowth</span><span class="op">$</span><span class="va">len</span><span class="op">)</span> <span class="co"># 18.8133</span></span>
 <span></span>
 <span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>

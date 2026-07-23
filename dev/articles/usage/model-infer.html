@@ -121,18 +121,19 @@ real clinical data</h3>
 <div class="section level2">
 <h2 id="rationale">Rationale<a class="anchor" aria-label="anchor" href="#rationale"></a>
 </h2>
-<p><code>vignette("htest", package = "statim")</code> covered the other
-half of <code><a href="../../reference/prepare.html">prepare()</a></code>: <code><a href="../../reference/prepare-test.html">prepare_test()</a></code>, feeding
-<code>T_TEST</code>, <code>COR_TEST</code>, and <code>P_TEST</code> into
-the same <code>define_model() |&gt; prepare() |&gt; conclude()</code>
-shape. This vignette covers the model-based half,
-<code><a href="../../reference/prepare-model.html">prepare_model()</a></code>, which takes the exact same shape and feeds
-it <code>LINEAR_REG</code> or <code>GLM</code> instead. Same
+<p><a href="https://s7-stats.github.io/statim/">statim</a> already covered the hypothesis testing using
+this package in this <a href="./htest.html">vignette</a>. This vignette
+covers the hypothesis testing based on <em>regression models</em>.
+<code><a href="../../reference/prepare.html">prepare()</a></code> is still used to initialize the parameterization
+of the inference stage, but the other one, <code><a href="../../reference/prepare-model.html">prepare_model()</a></code>,
+has the same functionality but more safely typed and feeds it
+<code>LINEAR_REG</code> or <code>GLM</code> instead. Same
 <code>&lt;var_id&gt;</code> mappers, same verbs, same
 <code><a href="../../reference/conclude.html">conclude()</a></code> at the end. If a hypothesis question turns out
-to need a regression instead of a t-test, the pipeline you already wrote
-doesn’t change shape, only the <code>&lt;STAT_FN&gt;</code> swapped
-in.</p>
+to need a regression instead of a t-test, the syntax on the main
+semantic you already wrote doesn’t change shape, thus the pipeline
+doesn’t change, only the <code>&lt;STAT_FN&gt;</code> swapped in and/or
+the given during the “definition” stage.</p>
 <p>Three questions from the same dataset, run as regression models
 instead of hypothesis tests.</p>
 <div class="section level3">
@@ -179,26 +180,30 @@ predict the presence of heart disease?</a></li>
 <div class="section level2">
 <h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
 </h2>
+<p>The setup is pretty much the same as the setup section from <a href="./htest.html">“Hypothesis Testing”</a> vignette, where
+<a href="https://klmr.me/box/" class="external-link">box</a> is used to load the imports, and the
+<code><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">readr::read_csv()</a></code> is preferred to import the CSV file.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
 <span>    <span class="va">statim</span><span class="op">[</span></span>
-<span>        <span class="va">define_model</span>, <span class="va">prepare_model</span>, <span class="va">via</span>, <span class="va">conclude</span>, </span>
+<span>        <span class="va">define_model</span>, <span class="va">prepare</span>, <span class="va">prepare_model</span>, <span class="va">conclude</span>, </span>
 <span>        <span class="co"># Supported models</span></span>
 <span>        <span class="va">LINEAR_REG</span>, <span class="va">GLM</span>,</span>
+<span>        <span class="co"># Miscellaneous functions</span></span>
 <span>        <span class="va">rel</span>, <span class="va">tidy</span>,</span>
 <span>        <span class="co"># Multiple executions</span></span>
 <span>        <span class="va">write_models</span>, <span class="va">anova</span></span>
 <span>    <span class="op">]</span>,</span>
-<span>    <span class="va">stats</span><span class="op">[</span><span class="va">update</span>, <span class="va">binomial</span><span class="op">]</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
-<span>    <span class="va">dplyr</span><span class="op">[</span><span class="va">mutate</span>, <span class="va">glimpse</span><span class="op">]</span>,</span>
-<span>    <span class="va">readr</span><span class="op">[</span><span class="va">read_csv</span><span class="op">]</span></span>
+<span>    <span class="va">stats</span><span class="op">[</span><span class="va">update</span>, <span class="va">binomial</span><span class="op">]</span>,</span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Then import the CSV file from this package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">heart</span> <span class="op">=</span> </span>
+<code class="sourceCode R"><span><span class="fu">box</span><span class="fu">::</span><span class="fu"><a href="https://klmr.me/box/reference/use.html" class="external-link">use</a></span><span class="op">(</span></span>
+<span>    <span class="va">dplyr</span><span class="op">[</span><span class="va">mutate</span>, <span class="va">glimpse</span><span class="op">]</span>,</span>
+<span>    <span class="va">readr</span><span class="op">[</span><span class="va">read_csv</span><span class="op">]</span>,</span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">heart</span> <span class="op">=</span> </span>
 <span>    <span class="fu">read_csv</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"heart-disease.csv"</span>, package <span class="op">=</span> <span class="st">"statim"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">mutate</span><span class="op">(</span></span>
 <span>        sex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">sex</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Female"</span>, <span class="st">"Male"</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -244,7 +249,7 @@ Using <code>rel()</code>
 </summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">trestbps</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
@@ -306,7 +311,7 @@ Using formula syntax
 </summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">heart</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">trestbps</span> <span class="op">~</span> <span class="va">age</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/prepare-model.html">prepare_model</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">LINEAR_REG</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre class="fansi fansi-output"><code>
 == Model ======================================================================= 
@@ -427,6 +432,11 @@ status 2</code></pre>
   n              :     303    p-value     :   &lt;0.001
   df (residual)  :     299                :         
 ------------------------------------------------------</code></pre>
+<blockquote>
+<p>Note: <code><a href="../../reference/prepare-model.html">prepare_model()</a></code> has the same functionality as
+<code><a href="../../reference/prepare.html">prepare()</a></code> but designed to be safely typed for regression
+models.</p>
+</blockquote>
 <p>You can use its one-liner version:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/LINEAR_REG.html">LINEAR_REG</a></span><span class="op">(</span><span class="fu"><a href="../../reference/rel.html">rel</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">sex</span>, <span class="va">chol</span><span class="op">)</span>, <span class="va">thalach</span><span class="op">)</span>, <span class="va">heart</span><span class="op">)</span></span></code></pre></div>
