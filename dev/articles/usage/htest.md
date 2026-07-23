@@ -328,19 +328,19 @@ t.test(trestbps ~ 1, heart, mu = 120)
 ### Verdict
 
 All of the packages addresses the problem by performing one-sample
-t-test in a single line of code. However, what
-[statim](https://s7-stats.github.io/statim/) buys instead is legibility
-of intent:
+t-test in a single line of code — it’s good since it is easy,
+nonetheless. However, what [statim](https://s7-stats.github.io/statim/)
+buys instead is legibility of intent:
 [`define_model()`](https://s7-stats.github.io/statim/dev/reference/layout-define-base.md),
 [`prepare()`](https://s7-stats.github.io/statim/dev/reference/prepare.md),
 [`conclude()`](https://s7-stats.github.io/statim/dev/reference/conclude.md)
-read like a sentence, and you can do more with
+— chain them and it reads like a sentence, and you can do more with
 [statim](https://s7-stats.github.io/statim/)’s main API, whereas
 `t.test(x, mu = 120)` reads like an API you have to already know. And
 also, `ttest-on` can utilize
 [`state_null()`](https://s7-stats.github.io/statim/dev/reference/null-hyp.md),
-it is not covered for the reason being the usage is not too different on
-declaring `.mu`.
+but it is not covered for the reason being the usage is not too
+different on declaring `.mu` argument.
 
 Interpretation: 131.6 mmHg average, significantly above 120 (p \<
 0.001). This cohort runs elevated.
@@ -610,26 +610,33 @@ Empirically, [statim](https://s7-stats.github.io/statim/),
 [rstatix](https://rpkgs.datanovia.com/rstatix/), and base R treat
 “compare two groups” as something the `<formula>` already encodes,
 `thalach ~ sex` says everything. However,
-[statim](https://s7-stats.github.io/statim/) goes beyond that with
+[statim](https://s7-stats.github.io/statim/) goes beyond that with the
+occurence of
 [`x_by()`](https://s7-stats.github.io/statim/dev/reference/x_by.md) and
-[`on()`](https://s7-stats.github.io/statim/dev/reference/on.md). \`
+[`on()`](https://s7-stats.github.io/statim/dev/reference/on.md).
 
 - [`x_by()`](https://s7-stats.github.io/statim/dev/reference/x_by.md)
   says the same thing, but then lets you go further: this layout has
   [`state_null()`](https://s7-stats.github.io/statim/dev/reference/null-hyp.md)
   translation, and you can write out
   `MU(thalach, sex == "Female") == MU(thalach, sex == "Male")` as an
-  actual algebraic expression, group filters and all.
+  actual algebraic expression, group filters and all. There’s an infix
+  version `%by%` (e.g. `thalach %by% sex`) which combines the depiction
+  of formula syntax and the logic of
+  [`x_by()`](https://s7-stats.github.io/statim/dev/reference/x_by.md).
 - [`on()`](https://s7-stats.github.io/statim/dev/reference/on.md), on
-  the other hand, has the same logic as
-  [`x_by()`](https://s7-stats.github.io/statim/dev/reference/x_by.md)’s
-  except it treats the variables to be independent to each other, and
-  its null hypothesis expression doesn’t use the `<sex == "Male">`
-  `given` argument.
+  the other hand, is another form of `<var_id>` mapper as
+  [`x_by()`](https://s7-stats.github.io/statim/dev/reference/x_by.md).
+  It treats the variables to be independent to each other, and its null
+  hypothesis expression doesn’t use the `<sex == "Male">` `given`
+  argument, rather something like `MU(female) == MU(male)`.
 
-That’s more typing for a question this simple. It stops being “more
-typing” and starts being “the only way to say what you mean” the moment
-the hypothesis isn’t a straight group comparison anymore.
+[statim](https://s7-stats.github.io/statim/) has more “typing” for a
+question this simple. But “more typing” has more “signal” and has less
+“noise” (i.e. this package intends to strengthen the signal to noise
+ratio to conduct hypothesis testing), and starts becoming convenient for
+an actual null hypothesis testing, i.e. the moment the hypothesis isn’t
+a straight group comparison anymore.
 
 Interpretation: no difference (p = 0.414). Sex isn’t doing any
 explanatory work here.
@@ -811,16 +818,16 @@ cor.test(~ thalach + age, heart)
 
 ### Verdict
 
-Small warning: base R’s `<formula>` here is `~ thalach + age`, not
-`thalach ~ age`. There’s no dependent variable in a correlation, so the
-usual left/right convention doesn’t mean anything, but it’s easy to
-assume it does and misread the formula. `{rel(thalach, age)}` sidesteps
-the ambiguity by just naming both variables.
-[rstatix](https://rpkgs.datanovia.com/rstatix/) takes some roundabout by
-borrowing
+Small warning: the convention of base R’s `<formula>` here is
+`~ thalach + age`, not `thalach ~ age`. There’s no dependent variable in
+a correlation, so the usual left/right convention doesn’t mean anything,
+but it’s easy to assume it does and misread the formula. Consequently,
+`{rel(thalach, age)}` sidesteps the ambiguity by just naming both
+variables. [rstatix](https://rpkgs.datanovia.com/rstatix/) takes some
+roundabout by borrowing
 [`dplyr::select()`](https://dplyr.tidyverse.org/reference/select.html)-style
-column picking, and the selected variable always in pairwise
-combination.
+column picking, and the selected variables always parsed in pairwise
+combination (*Note: all the combinations themselves*).
 
 Interpretation: a real, moderate negative correlation (r = -0.398, p \<
 0.001). Heart rate ceiling drops with age, as expected.
@@ -829,7 +836,10 @@ Interpretation: a real, moderate negative correlation (r = -0.398, p \<
 
 H_0: \pi=0.15 \qquad H_1: \pi\neq0.15
 
-Prepare the data first
+Take note that all of the packages require “constants” (at least for now
+for [statim](https://s7-stats.github.io/statim/)) as givens, namely the
+number of successes (`n_high_fbs`) and the number of observations
+(`n_males`). Let us prepare the data first:
 
 ``` r
 
@@ -913,7 +923,9 @@ P_TEST(prop(n_high_fbs, n_males), .p = 0.15)
 
 *Note: Using
 [`state_null()`](https://s7-stats.github.io/statim/dev/reference/null-hyp.md)
-is optional, unless the full null hypothesis expression is required.*
+here highly is optional, as you can just supply `.p` argument, unless
+either the full null hypothesis expression is required or you want to be
+explicit.*
 
 ``` r
 
@@ -946,7 +958,8 @@ binom.test(n_high_fbs, n_males, p = 0.15)
 
 ### Verdict
 
-No `<formula>` anywhere in this section. A proportion test is just two
+No `<formula>` anywhere in this section because the givens are
+“constants”, not assigned in “variables”. A proportion test is just two
 numbers, `x` and `n`, and all three packages treat it that way. The only
 real question is where those two numbers live: as positional arguments
 (`x, n, p =`) in base R and
@@ -954,8 +967,8 @@ real question is where those two numbers live: as positional arguments
 [`prop()`](https://s7-stats.github.io/statim/dev/reference/prop.md) so
 the pipeline keeps the same shape it had in Questions 1-3. Neither is
 more correct; [statim](https://s7-stats.github.io/statim/)’s version is
-only worth it if you’re already committed to the pipeline for other
-reasons.
+considered to be only worth it if you’re already committed to the
+pipeline for other reasons.
 
 Interpretation: 33 of 207 men (15.9%), not distinguishable from the 15%
 baseline (p = 0.697).
@@ -963,6 +976,7 @@ baseline (p = 0.697).
 ## Multiple Executions
 
 Every question above ran one test through one layout.
+[statim](https://s7-stats.github.io/statim/) has another way:
 [`write_models()`](https://s7-stats.github.io/statim/dev/reference/write_models.md)
 lets you batch several layouts of the *same* test into a single
 pipeline, instead of writing out
@@ -1159,7 +1173,10 @@ heart |>
         mod2 = x_by(thalach, sex)
     ) |>
     prepare(T_TEST) |>
-    via("two_sample") |>   # registered for on(); x_by() is two-sample already and may not have it
+    # registered for on(); 
+    # x_by() is two-sample already and 
+    # it does not have it
+    via("two_sample") |>   
     conclude()
 ```
 
@@ -1168,29 +1185,34 @@ heart |>
      [36mℹ [39m Available variants:  [34m"contrast" [39m,  [34m"multi" [39m,  [34m"boot" [39m, and  [34m"permute" [39m.
 
 The safer default is to keep a batch to layouts that share the same
-estimation method — either all left at `base`, or all recalibrated to a
-variant every model type in the batch actually registers — and fall back
-to separate single-model pipelines the moment the variants diverge.
+estimation method: either all left at `base`, or all recalibrated to a
+variant every model type in the batch actually registers, and then fall
+back to separate single-model pipelines the moment the variants diverge.
 
 ## Conclusion
 
-[statim](https://s7-stats.github.io/statim/) makes sure the simplicity
-from base R and other packages like
-[rstatix](https://rpkgs.datanovia.com/rstatix/) must exists, otherwise
+[statim](https://s7-stats.github.io/statim/) is a high-level package for
+statistical inference, particularly hypothesis testing, because of the
+abstractions similar to [ggplot2](https://ggplot2.tidyverse.org). It
+also makes sure the simplicity from base R and other packages like
+[rstatix](https://rpkgs.datanovia.com/rstatix/) is carried, otherwise
 the steeper learning curve will get you. One-liner codes exist, the
 piped/grammar syntax is inherited to make sure the spirits of
 [ggplot2](https://ggplot2.tidyverse.org) and
 [dplyr](https://dplyr.tidyverse.org) exist on
 [statim](https://s7-stats.github.io/statim/) space.
 
-What this vignette can’t show you is the fifth question: a custom
-contrast, a hypothesis that isn’t a straight equality, a test family
-that doesn’t have a tidy formula shorthand yet. That’s the actual bet
+What this vignette hasn’t shown: null hypotheses that aren’t
+conventional as you saw on most books, e.g. testing 3 \mu_x =2\mu_y.
+This vignette shows the actual bet
 [statim](https://s7-stats.github.io/statim/) is making: a consistent
 `define_model() |> prepare() |> state_null() |> conclude()` shape you
-can extend once, rather than learn a new argument convention per test.
-Four questions above are pretty straightforward and aren’t the right
-test of that bet. Judge it on the harder one. If you wanna know what’s
-beyond testing the equality in the null hypothesis, there’s a dedicated
+can extend once, rather than learn a new argument (or a new type of
+syntax) convention per test. Four questions above are pretty
+straightforward and [statim](https://s7-stats.github.io/statim/) has
+strong “flavor” for those questions that simple, so rather ubiquitously
+they aren’t the right test of that bet. You can make difference on the
+more complex ones. If you wanna know what’s beyond testing the equality
+in the null hypothesis, there’s a dedicated
 [example](https://s7-stats.github.io/statim/dev/articles/usage/beyond-null.md)
 for that.

@@ -473,7 +473,11 @@ Expressions?](https://s7-stats.github.io/statim/articles/pointers/hypothesis-exp
     relationship between `x` and `y`, then tell
     [statim](https://s7-stats.github.io/statim/) what type of estimation
     you want to perform, and then retrieve the result you want to
-    achieve.
+    achieve. One package that is so similar to
+    [statim](https://s7-stats.github.io/statim/) is the
+    [infer](https://github.com/tidymodels/infer) package. The convention
+    of the syntax are similar, but the logic and intent are different to
+    each other, so they are an apple to orange comparison.
 
 4.  Built-in implementations are made from the common tasks R users do
     every time they use R. For example, you want to perform t-test with

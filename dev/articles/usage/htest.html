@@ -445,14 +445,16 @@ mean of x
 <h3 id="verdict">Verdict<a class="anchor" aria-label="anchor" href="#verdict"></a>
 </h3>
 <p>All of the packages addresses the problem by performing one-sample
-t-test in a single line of code. However, what <a href="https://s7-stats.github.io/statim/">statim</a>
-buys instead is legibility of intent: <code><a href="../../reference/layout-define-base.html">define_model()</a></code>,
-<code><a href="../../reference/prepare.html">prepare()</a></code>, <code><a href="../../reference/conclude.html">conclude()</a></code> read like a sentence,
-and you can do more with <a href="https://s7-stats.github.io/statim/">statim</a>’s main API, whereas
-<code>t.test(x, mu = 120)</code> reads like an API you have to already
-know. And also, <code>ttest-on</code> can utilize
-<code><a href="../../reference/null-hyp.html">state_null()</a></code>, it is not covered for the reason being the
-usage is not too different on declaring <code>.mu</code>.</p>
+t-test in a single line of code — it’s good since it is easy,
+nonetheless. However, what <a href="https://s7-stats.github.io/statim/">statim</a> buys instead is
+legibility of intent: <code><a href="../../reference/layout-define-base.html">define_model()</a></code>,
+<code><a href="../../reference/prepare.html">prepare()</a></code>, <code><a href="../../reference/conclude.html">conclude()</a></code> — chain them and it
+reads like a sentence, and you can do more with <a href="https://s7-stats.github.io/statim/">statim</a>’s
+main API, whereas <code>t.test(x, mu = 120)</code> reads like an API you
+have to already know. And also, <code>ttest-on</code> can utilize
+<code><a href="../../reference/null-hyp.html">state_null()</a></code>, but it is not covered for the reason being
+the usage is not too different on declaring <code>.mu</code>
+argument.</p>
 <p>Interpretation: 131.6 mmHg average, significantly above 120 (<span class="math inline">p &lt; 0.001</span>). This cohort runs elevated.</p>
 </div>
 </div>
@@ -695,24 +697,32 @@ mean in group Female   mean in group Male
 Empirically, <a href="https://s7-stats.github.io/statim/">statim</a>, <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, and base R
 treat “compare two groups” as something the <code>&lt;formula&gt;</code>
 already encodes, <code>thalach ~ sex</code> says everything. However,
-<a href="https://s7-stats.github.io/statim/">statim</a> goes beyond that with <code><a href="../../reference/x_by.html">x_by()</a></code> and
-<code><a href="../../reference/on.html">on()</a></code>. `</p>
+<a href="https://s7-stats.github.io/statim/">statim</a> goes beyond that with the occurence of
+<code><a href="../../reference/x_by.html">x_by()</a></code> and <code><a href="../../reference/on.html">on()</a></code>.</p>
 <ul>
 <li>
 <code><a href="../../reference/x_by.html">x_by()</a></code> says the same thing, but then lets you go
 further: this layout has <code><a href="../../reference/null-hyp.html">state_null()</a></code> translation, and you
 can write out
 <code>MU(thalach, sex == "Female") == MU(thalach, sex == "Male")</code>
-as an actual algebraic expression, group filters and all.</li>
+as an actual algebraic expression, group filters and all. There’s an
+infix version <code>%by%</code> (e.g. <code>thalach %by% sex</code>)
+which combines the depiction of formula syntax and the logic of
+<code><a href="../../reference/x_by.html">x_by()</a></code>.</li>
 <li>
-<code><a href="../../reference/on.html">on()</a></code>, on the other hand, has the same logic as
-<code><a href="../../reference/x_by.html">x_by()</a></code>’s except it treats the variables to be independent
-to each other, and its null hypothesis expression doesn’t use the
-<code>&lt;sex == "Male"&gt;</code> <code>given</code> argument.</li>
+<code><a href="../../reference/on.html">on()</a></code>, on the other hand, is another form of
+<code>&lt;var_id&gt;</code> mapper as <code><a href="../../reference/x_by.html">x_by()</a></code>. It treats the
+variables to be independent to each other, and its null hypothesis
+expression doesn’t use the <code>&lt;sex == "Male"&gt;</code>
+<code>given</code> argument, rather something like
+<code>MU(female) == MU(male)</code>.</li>
 </ul>
-<p>That’s more typing for a question this simple. It stops being “more
-typing” and starts being “the only way to say what you mean” the moment
-the hypothesis isn’t a straight group comparison anymore.</p>
+<p><a href="https://s7-stats.github.io/statim/">statim</a> has more “typing” for a question this simple.
+But “more typing” has more “signal” and has less “noise” (i.e. this
+package intends to strengthen the signal to noise ratio to conduct
+hypothesis testing), and starts becoming convenient for an actual null
+hypothesis testing, i.e. the moment the hypothesis isn’t a straight
+group comparison anymore.</p>
 <p>Interpretation: no difference (<span class="math inline">p =
 0.414</span>). Sex isn’t doing any explanatory work here.</p>
 </div>
@@ -881,14 +891,16 @@ sample estimates:
 <div class="section level3">
 <h3 id="verdict-2">Verdict<a class="anchor" aria-label="anchor" href="#verdict-2"></a>
 </h3>
-<p>Small warning: base R’s <code>&lt;formula&gt;</code> here is
-<code>~ thalach + age</code>, not <code>thalach ~ age</code>. There’s no
-dependent variable in a correlation, so the usual left/right convention
-doesn’t mean anything, but it’s easy to assume it does and misread the
-formula. <code>{rel(thalach, age)}</code> sidesteps the ambiguity by
-just naming both variables. <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> takes some roundabout
-by borrowing <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">dplyr::select()</a></code>-style column picking, and the
-selected variable always in pairwise combination.</p>
+<p>Small warning: the convention of base R’s
+<code>&lt;formula&gt;</code> here is <code>~ thalach + age</code>, not
+<code>thalach ~ age</code>. There’s no dependent variable in a
+correlation, so the usual left/right convention doesn’t mean anything,
+but it’s easy to assume it does and misread the formula. Consequently,
+<code>{rel(thalach, age)}</code> sidesteps the ambiguity by just naming
+both variables. <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> takes some roundabout by
+borrowing <code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">dplyr::select()</a></code>-style column picking, and the
+selected variables always parsed in pairwise combination (<em>Note: all
+the combinations themselves</em>).</p>
 <p>Interpretation: a real, moderate negative correlation (<span class="math inline">r = -0.398</span>, <span class="math inline">p &lt;
 0.001</span>). Heart rate ceiling drops with age, as expected.</p>
 </div>
@@ -899,7 +911,10 @@ men?<a class="anchor" aria-label="anchor" href="#q4"></a>
 </h2>
 <p><span class="math display">H_0: \pi=0.15 \qquad H_1:
 \pi\neq0.15</span></p>
-<p>Prepare the data first</p>
+<p>Take note that all of the packages require “constants” (at least for
+now for <a href="https://s7-stats.github.io/statim/">statim</a>) as givens, namely the number of successes
+(<code>n_high_fbs</code>) and the number of observations
+(<code>n_males</code>). Let us prepare the data first:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">males</span> <span class="op">=</span> <span class="fu">keep_when</span><span class="op">(</span><span class="va">heart</span>, <span class="va">sex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span></span>
 <span><span class="va">n_high_fbs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">males</span><span class="op">$</span><span class="va">fbs</span> <span class="op">==</span> <span class="st">"High"</span><span class="op">)</span></span>
@@ -972,8 +987,10 @@ Args : 33 / 207
    0.112     0.216    
 ──────────────────────
 </code></pre>
-<p><em>Note: Using <code><a href="../../reference/null-hyp.html">state_null()</a></code> is optional, unless the
-full null hypothesis expression is required. </em></p>
+<p><em>Note: Using <code><a href="../../reference/null-hyp.html">state_null()</a></code> here highly is optional, as
+you can just supply <code>.p</code> argument, unless either the full
+null hypothesis expression is required or you want to be explicit.
+</em></p>
 </div>
 <div class="tab-pane" id="rstatix-3" role="tabpanel" aria-labelledby="rstatix-3-tab">
 
@@ -1006,15 +1023,15 @@ probability of success
 <div class="section level3">
 <h3 id="verdict-3">Verdict<a class="anchor" aria-label="anchor" href="#verdict-3"></a>
 </h3>
-<p>No <code>&lt;formula&gt;</code> anywhere in this section. A
-proportion test is just two numbers, <code>x</code> and <code>n</code>,
-and all three packages treat it that way. The only real question is
-where those two numbers live: as positional arguments
-(<code>x, n, p =</code>) in base R and <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, or
-wrapped in <code><a href="../../reference/prop.html">prop()</a></code> so the pipeline keeps the same shape it
-had in Questions 1-3. Neither is more correct; <a href="https://s7-stats.github.io/statim/">statim</a>’s
-version is only worth it if you’re already committed to the pipeline for
-other reasons.</p>
+<p>No <code>&lt;formula&gt;</code> anywhere in this section because the
+givens are “constants”, not assigned in “variables”. A proportion test
+is just two numbers, <code>x</code> and <code>n</code>, and all three
+packages treat it that way. The only real question is where those two
+numbers live: as positional arguments (<code>x, n, p =</code>) in base R
+and <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a>, or wrapped in <code><a href="../../reference/prop.html">prop()</a></code> so the
+pipeline keeps the same shape it had in Questions 1-3. Neither is more
+correct; <a href="https://s7-stats.github.io/statim/">statim</a>’s version is considered to be only worth
+it if you’re already committed to the pipeline for other reasons.</p>
 <p>Interpretation: 33 of 207 men (15.9%), not distinguishable from the
 15% baseline (<span class="math inline">p = 0.697</span>).</p>
 </div>
@@ -1023,8 +1040,9 @@ other reasons.</p>
 <h2 id="multi-exec">Multiple Executions<a class="anchor" aria-label="anchor" href="#multi-exec"></a>
 </h2>
 <p>Every question above ran one test through one layout.
-<code><a href="../../reference/write_models.html">write_models()</a></code> lets you batch several layouts of the
-<em>same</em> test into a single pipeline, instead of writing out
+<a href="https://s7-stats.github.io/statim/">statim</a> has another way: <code><a href="../../reference/write_models.html">write_models()</a></code> lets
+you batch several layouts of the <em>same</em> test into a single
+pipeline, instead of writing out
 <code>define_model() |&gt; prepare() |&gt; conclude()</code> once per
 layout:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
@@ -1188,36 +1206,44 @@ for every model type present:</p>
 <span>        mod2 <span class="op">=</span> <span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">thalach</span>, <span class="va">sex</span><span class="op">)</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"two_sample"</span><span class="op">)</span> <span class="op">|&gt;</span>   <span class="co"># registered for on(); x_by() is two-sample already and may not have it</span></span>
+<span>    <span class="co"># registered for on(); </span></span>
+<span>    <span class="co"># x_by() is two-sample already and </span></span>
+<span>    <span class="co"># it does not have it</span></span>
+<span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"two_sample"</span><span class="op">)</span> <span class="op">|&gt;</span>   </span>
 <span>    <span class="fu"><a href="../../reference/conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code> [1m [33mError [39m in `method(via, list(statim::test_lazy, class_character))`: [22m
  [1m [22m [33m! [39m No variant  [34m"two_sample" [39m registered for model type  [34m"x_by" [39m.
  [36mℹ [39m Available variants:  [34m"contrast" [39m,  [34m"multi" [39m,  [34m"boot" [39m, and  [34m"permute" [39m.</code></pre>
 <p>The safer default is to keep a batch to layouts that share the same
-estimation method — either all left at <code>base</code>, or all
+estimation method: either all left at <code>base</code>, or all
 recalibrated to a variant every model type in the batch actually
-registers — and fall back to separate single-model pipelines the moment
-the variants diverge.</p>
+registers, and then fall back to separate single-model pipelines the
+moment the variants diverge.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
-<p><a href="https://s7-stats.github.io/statim/">statim</a> makes sure the simplicity from base R and other
-packages like <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> must exists, otherwise the steeper
-learning curve will get you. One-liner codes exist, the piped/grammar
-syntax is inherited to make sure the spirits of <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>
-and <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> exist on <a href="https://s7-stats.github.io/statim/">statim</a> space.</p>
-<p>What this vignette can’t show you is the fifth question: a custom
-contrast, a hypothesis that isn’t a straight equality, a test family
-that doesn’t have a tidy formula shorthand yet. That’s the actual bet
-<a href="https://s7-stats.github.io/statim/">statim</a> is making: a consistent
+<p><a href="https://s7-stats.github.io/statim/">statim</a> is a high-level package for statistical
+inference, particularly hypothesis testing, because of the abstractions
+similar to <a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a>. It also makes sure the simplicity
+from base R and other packages like <a href="https://rpkgs.datanovia.com/rstatix/" class="external-link">rstatix</a> is carried,
+otherwise the steeper learning curve will get you. One-liner codes
+exist, the piped/grammar syntax is inherited to make sure the spirits of
+<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> and <a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a> exist on
+<a href="https://s7-stats.github.io/statim/">statim</a> space.</p>
+<p>What this vignette hasn’t shown: null hypotheses that aren’t
+conventional as you saw on most books, e.g. testing <span class="math inline">3 \mu_x =2\mu_y</span>. This vignette shows the
+actual bet <a href="https://s7-stats.github.io/statim/">statim</a> is making: a consistent
 <code>define_model() |&gt; prepare() |&gt; state_null() |&gt; conclude()</code>
-shape you can extend once, rather than learn a new argument convention
-per test. Four questions above are pretty straightforward and aren’t the
-right test of that bet. Judge it on the harder one. If you wanna know
-what’s beyond testing the equality in the null hypothesis, there’s a
-dedicated <a href="./beyond-null.html">example</a> for that.</p>
+shape you can extend once, rather than learn a new argument (or a new
+type of syntax) convention per test. Four questions above are pretty
+straightforward and <a href="https://s7-stats.github.io/statim/">statim</a> has strong “flavor” for those
+questions that simple, so rather ubiquitously they aren’t the right test
+of that bet. You can make difference on the more complex ones. If you
+wanna know what’s beyond testing the equality in the null hypothesis,
+there’s a dedicated <a href="./beyond-null.html">example</a> for
+that.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
