@@ -244,16 +244,16 @@ Click here to open
 <span>        <span class="va">element_rect</span>, <span class="va">margin</span>, <span class="va">scale_fill_manual</span>, <span class="va">scale_colour_manual</span>,</span>
 <span>        <span class="va">coord_flip</span>, <span class="va">scale_y_continuous</span></span>
 <span>    <span class="op">]</span>,</span>
-<span>    <span class="va">ggdist</span><span class="op">[</span><span class="va">stat_halfeye</span>, <span class="va">stat_interval</span>, <span class="va">stat_dots</span><span class="op">]</span>,</span>
-<span>    <span class="va">patchwork</span><span class="op">[</span><span class="va">plot_annotation</span><span class="op">]</span>,</span>
+<span>    <span class="va">ggdist</span><span class="op">[</span><span class="va">stat_halfeye</span>, <span class="va">stat_dots</span><span class="op">]</span>,</span>
+<span>    <span class="co"># patchworks[plot_annotation], </span></span>
 <span>    <span class="va">sysfonts</span><span class="op">[</span>add_font <span class="op">=</span> <span class="va">font_add_google</span><span class="op">]</span>,</span>
 <span>    <span class="va">showtext</span><span class="op">[</span><span class="va">showtext_auto</span><span class="op">]</span>,</span>
-<span>    <span class="va">ggtext</span><span class="op">[</span><span class="va">element_markdown</span><span class="op">]</span></span>
+<span>    <span class="va">ggtext</span><span class="op">[</span><span class="va">element_markdown</span><span class="op">]</span>, </span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">bg_color</span> <span class="op">=</span> <span class="st">"grey97"</span></span>
 <span><span class="va">supp_colors</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>OJ <span class="op">=</span> <span class="st">"#B34A44"</span>, VC <span class="op">=</span> <span class="st">"#4E7C74"</span><span class="op">)</span></span>
-<span><span class="va">dodge_width</span> <span class="op">=</span> <span class="fl">0.9</span></span>
+<span><span class="co"># dodge_width = 0.9</span></span>
 <span></span>
 <span><span class="fu">add_font</span><span class="op">(</span><span class="st">"Lumanosimo"</span>, <span class="st">"Lumanosimo"</span><span class="op">)</span></span>
 <span><span class="fu">add_font</span><span class="op">(</span><span class="st">"Snowburst One"</span>, <span class="st">"Snowburst One"</span><span class="op">)</span></span>
@@ -346,6 +346,7 @@ Click here to open
 <span>        binwidth <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>        dotsize <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>        position <span class="op">=</span> <span class="st">"dodge"</span></span>
+<span>        <span class="co"># verbose = TRUE</span></span>
 <span>    <span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">scale_fill_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="va">supp_colors</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu">scale_colour_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="va">supp_colors</span>, guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -384,6 +385,16 @@ treatment of the dose effect itself, whether it’s a genuine effect, an
 interaction with <code>supp</code>, or well-modelled as a factor — is an
 ANOVA question, not a two-sample one; see
 <code>vignette("anova-mod", package = "statim")</code>.</p>
+<p>This isn’t free. Restricting to <code>dose == 1</code> drops
+<code>n</code> from 30 per arm (pooled across all three doses) to 10 per
+arm, and the Welch-Satterthwaite <code>df</code> in Showcases 1 and 3
+reflects that smaller sample: about 15 rather than the roughly 55 a
+pooled test would have. That’s the cost of testing at a dose where the
+effect is actually visible, rather than the cost of some cheaper
+alternative — the marginal test above shows pooling gets the wrong
+answer here, not a merely less precise one. Showcase 3’s non-rejection
+later on is partly this reduced power at work, not only a stricter
+bar.</p>
 </div>
 </div>
 <div class="section level2">
@@ -397,13 +408,16 @@ than 3 units (a practically relevant margin)?</p>
 all. A textbook question is sharper: is OJ’s advantage over VC big
 enough to matter, not just big enough to be non-zero. Stating
 <code>3</code> as the comparison value, rather than <code>0</code>, is
-what turns this into a genuine contrast rather than a relabeled equality
-test. The weights are still the default <span class="math inline">\pm
-1</span> split, so this stays on the base two-sample path (this is valid
-on <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code>, thus no <code>via("contrast")</code>
-needed, with an exemption of you wanted to do it).</p>
+what turns this into a genuine threshold test rather than a relabeled
+equality test. The weights are still the default <span class="math inline">\pm 1</span> split (already sum-to-zero, so this was
+a contrast either way), so this stays on the base two-sample path (this
+is valid on <code><a href="https://rdrr.io/r/stats/t.test.html" class="external-link">stats::t.test()</a></code>, and needs no
+<code>via("contrast")</code>, except you could still use it if you
+wanted to, since <span class="math inline">\pm 1</span> weights are
+valid there too).</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ToothGrowth</span> <span class="op">|&gt;</span></span>
+<span>    <span class="co"># filter(dose == 1)</span></span>
 <span>    <span class="fu">keep_when</span><span class="op">(</span><span class="va">dose</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/layout-define-base.html">define_model</a></span><span class="op">(</span><span class="fu"><a href="../../reference/x_by.html">x_by</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/prepare.html">prepare</a></span><span class="op">(</span><span class="va">T_TEST</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -481,6 +495,7 @@ only accepts a <code>-1</code>/<code>+1</code> split.</p>
 <span>        <span class="co"># If no coefficient</span></span>
 <span>        <span class="co"># it is hidden and </span></span>
 <span>        <span class="co"># it contains a coefficient of 1</span></span>
+<span>        <span class="co"># weight cannot be 0, after all</span></span>
 <span>        <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span> <span class="op">==</span> <span class="st">"OJ"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="../../reference/MU.html">MU</a></span><span class="op">(</span><span class="va">len</span>, <span class="va">supp</span> <span class="op">==</span> <span class="st">"VC"</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">0</span></span>
 <span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="../../reference/via.html">via</a></span><span class="op">(</span><span class="st">"contrast"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -525,7 +540,7 @@ nowhere near 0.</li>
 </ul>
 <p>A caveat worth stating plainly: weights of <code>2, -1</code> sum to
 <code>1</code>, not <code>0</code>, so this isn’t a contrast in the
-strict ANOVA sense — it isn’t location-invariant. Shift the origin of
+strict ANOVA sense (it isn’t location-invariant). Shift the origin of
 the measurement scale and <code>2 * MU(OJ) - MU(VC)</code> changes value
 even though the relationship between OJ and VC hasn’t.</p>
 <p>Tooth length has a genuine zero (<code>len = 0</code> means no
@@ -557,6 +572,15 @@ so, as in Showcase 1, this stays on the base path where no
 dataset, all three doses, not the <code>dose == 1</code> subset under
 test. It’s meant as an absolute benchmark on the tooth-length scale, not
 a property of this particular dose.</p>
+<p>Whether the margin is a fixed number like Showcase 1’s 3 units or a
+rule like this 20% threshold, it needs to come from domain knowledge and
+be fixed before the data are in view — not chosen once the estimate is
+already visible, at which point it stops being a real test.</p>
+<p><code>overall_avg</code> also depends on the dose composition of the
+experiment it’s computed from, separately from the
+estimation-uncertainty point below: a design that ran more high-dose
+animals would pull this benchmark down before any test ever ran, since
+the highest dose is where the OJ-VC gap collapses toward zero.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">overall_avg</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ToothGrowth</span><span class="op">$</span><span class="va">len</span><span class="op">)</span> <span class="co"># 18.8133</span></span>
 <span></span>
@@ -608,7 +632,7 @@ stricter value. At <span class="math inline">\alpha = 0.05</span>,
 that’s not quite enough to reject <span class="math inline">H_0</span>.</p></li>
 <li><p>Showcase 1 and Showcase 3 report the <em>same</em> confidence
 interval, <span class="math inline">(3.3562, \infty)</span>. That’s not
-a “copy-paste” dogma: the interval describes the plausible range for the
+a copy-paste error: the interval describes the plausible range for the
 gap itself, which doesn’t depend on which threshold you’re testing it
 against. What differs is where each threshold sits relative to that
 interval. 3 falls below the lower bound (so Showcase 1 rejects), 3.7627

@@ -147,16 +147,16 @@ box::use(
         element_rect, margin, scale_fill_manual, scale_colour_manual,
         coord_flip, scale_y_continuous
     ],
-    ggdist[stat_halfeye, stat_interval, stat_dots],
-    patchwork[plot_annotation],
+    ggdist[stat_halfeye, stat_dots],
+    # patchworks[plot_annotation], 
     sysfonts[add_font = font_add_google],
     showtext[showtext_auto],
-    ggtext[element_markdown]
+    ggtext[element_markdown], 
 )
 
 bg_color = "grey97"
 supp_colors = c(OJ = "#B34A44", VC = "#4E7C74")
-dodge_width = 0.9
+# dodge_width = 0.9
 
 add_font("Lumanosimo", "Lumanosimo")
 add_font("Snowburst One", "Snowburst One")
@@ -246,6 +246,7 @@ ggplot(ToothGrowth, aes(x = factor(dose), y = len, fill = supp, colour = supp)) 
         binwidth = NA,
         dotsize = 0.8,
         position = "dodge"
+        # verbose = TRUE
     ) +
     scale_fill_manual(values = supp_colors, guide = "none") +
     scale_colour_manual(values = supp_colors, guide = "none") +
@@ -283,6 +284,16 @@ effect itself, whether it’s a genuine effect, an interaction with
 `supp`, or well-modelled as a factor — is an ANOVA question, not a
 two-sample one; see `vignette("anova-mod", package = "statim")`.
 
+This isn’t free. Restricting to `dose == 1` drops `n` from 30 per arm
+(pooled across all three doses) to 10 per arm, and the
+Welch-Satterthwaite `df` in Showcases 1 and 3 reflects that smaller
+sample: about 15 rather than the roughly 55 a pooled test would have.
+That’s the cost of testing at a dose where the effect is actually
+visible, rather than the cost of some cheaper alternative — the marginal
+test above shows pooling gets the wrong answer here, not a merely less
+precise one. Showcase 3’s non-rejection later on is partly this reduced
+power at work, not only a stricter bar.
+
 ## Showcase 1: Clinically Meaningful Superiority
 
 **Question:** At 1 mg/day, does OJ outperform VC by more than 3 units (a
@@ -295,15 +306,17 @@ A plain two-sample test only asks whether the two means differ at all. A
 textbook question is sharper: is OJ’s advantage over VC big enough to
 matter, not just big enough to be non-zero. Stating `3` as the
 comparison value, rather than `0`, is what turns this into a genuine
-contrast rather than a relabeled equality test. The weights are still
-the default \pm 1 split, so this stays on the base two-sample path (this
-is valid on [`stats::t.test()`](https://rdrr.io/r/stats/t.test.html),
-thus no `via("contrast")` needed, with an exemption of you wanted to do
-it).
+threshold test rather than a relabeled equality test. The weights are
+still the default \pm 1 split (already sum-to-zero, so this was a
+contrast either way), so this stays on the base two-sample path (this is
+valid on [`stats::t.test()`](https://rdrr.io/r/stats/t.test.html), and
+needs no `via("contrast")`, except you could still use it if you wanted
+to, since \pm 1 weights are valid there too).
 
 ``` r
 
 ToothGrowth |>
+    # filter(dose == 1)
     keep_when(dose == 1) |>
     define_model(x_by(len, supp)) |>
     prepare(T_TEST) |>
@@ -386,6 +399,7 @@ ToothGrowth |>
         # If no coefficient
         # it is hidden and 
         # it contains a coefficient of 1
+        # weight cannot be 0, after all
         2 * MU(len, supp == "OJ") - MU(len, supp == "VC") <= 0
     ) |>
     via("contrast") |>
@@ -430,8 +444,8 @@ Interpretation:
   the same thing, since it sits nowhere near 0.
 
 A caveat worth stating plainly: weights of `2, -1` sum to `1`, not `0`,
-so this isn’t a contrast in the strict ANOVA sense — it isn’t
-location-invariant. Shift the origin of the measurement scale and
+so this isn’t a contrast in the strict ANOVA sense (it isn’t
+location-invariant). Shift the origin of the measurement scale and
 `2 * MU(OJ) - MU(VC)` changes value even though the relationship between
 OJ and VC hasn’t.
 
@@ -466,6 +480,17 @@ is needed.
 doses, not the `dose == 1` subset under test. It’s meant as an absolute
 benchmark on the tooth-length scale, not a property of this particular
 dose.
+
+Whether the margin is a fixed number like Showcase 1’s 3 units or a rule
+like this 20% threshold, it needs to come from domain knowledge and be
+fixed before the data are in view — not chosen once the estimate is
+already visible, at which point it stops being a real test.
+
+`overall_avg` also depends on the dose composition of the experiment
+it’s computed from, separately from the estimation-uncertainty point
+below: a design that ran more high-dose animals would pull this
+benchmark down before any test ever ran, since the highest dose is where
+the OJ-VC gap collapses toward zero.
 
 ``` r
 
@@ -523,7 +548,7 @@ Interpretation:
   quite enough to reject H_0.
 
 - Showcase 1 and Showcase 3 report the *same* confidence interval,
-  (3.3562, \infty). That’s not a “copy-paste” dogma: the interval
+  (3.3562, \infty). That’s not a copy-paste error: the interval
   describes the plausible range for the gap itself, which doesn’t depend
   on which threshold you’re testing it against. What differs is where
   each threshold sits relative to that interval. 3 falls below the lower
