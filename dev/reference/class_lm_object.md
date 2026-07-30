@@ -12,6 +12,12 @@ so it participates in
 directly. Downstream packages can use it as a `parent` in
 [`S7::new_class()`](https://rconsortium.github.io/S7/reference/new_class.html).
 
+## Value
+
+An S7 object of class `lm_object` holding the fitted model's terms,
+coefficients, residuals, and dispersion. Not constructed manually;
+populated internally by the linear regression pipeline.
+
 ## Details
 
 Constructor arguments (populated automatically by

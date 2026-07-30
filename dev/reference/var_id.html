@@ -84,6 +84,13 @@ of a statistical model to be passed into a pipeline.</p>
 
 
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>An S7 abstract class generator. <code>var_id</code> cannot be instantiated
+directly, so calling it raises an error. It exists only as a parent class
+for the concrete Variable Mapper subclasses (<code><a href="x_by.html">x_by()</a></code>, <code><a href="rel.html">rel()</a></code>,
+<code><a href="pairwise.html">pairwise()</a></code>, <code><a href="prop.html">prop()</a></code>).</p>
+    </div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Concrete subclasses include <code><a href="x_by.html">x_by()</a></code>, <code><a href="rel.html">rel()</a></code>, and <code><a href="pairwise.html">pairwise()</a></code>. You
 cannot instantiate <code>var_id</code> directly; use one of its subclasses.</p>

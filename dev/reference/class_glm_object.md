@@ -12,6 +12,13 @@ so it participates in
 directly. Downstream packages can use it as a `parent` in
 [`S7::new_class()`](https://rconsortium.github.io/S7/reference/new_class.html).
 
+## Value
+
+An S7 object of class `glm_object` holding the fitted GLM's terms,
+coefficients, dispersion, and family information. Not constructed
+manually; populated internally by
+[GLM](https://s7-stats.github.io/statim/dev/reference/GLM.md).
+
 ## Details
 
 Constructor arguments (populated automatically by

@@ -14,6 +14,13 @@ dispatches on it automatically. Downstream packages can use it as a
 `parent` in
 [`S7::new_class()`](https://rconsortium.github.io/S7/reference/new_class.html).
 
+## Value
+
+An S7 object of class `p_test`, with the properties listed in Details.
+Not constructed manually; returned by
+[P_TEST](https://s7-stats.github.io/statim/dev/reference/P_TEST.md)
+pipelines.
+
 ## Details
 
 Slots (populated automatically by

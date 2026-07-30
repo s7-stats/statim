@@ -7,3 +7,10 @@ All other properties default to empty / unknown values, which are filled
 in by registered
 [`var_id_info()`](https://s7-stats.github.io/statim/dev/reference/var_id_info.md)
 methods for known subclasses.
+
+## Value
+
+An S7 object of class `var_inform` holding the Variable Mapper's type,
+arguments, extracted variables, and registration status. Returned by
+[`var_id_info()`](https://s7-stats.github.io/statim/dev/reference/var_id_info.md),
+not constructed manually.

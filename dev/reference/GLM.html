@@ -147,7 +147,6 @@ is <code>family</code>, which controls the error distribution and link function
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># model comparison via anova()</span></span></span>
 <span class="r-in"><span><span class="va">mod1</span> <span class="op">=</span> <span class="va">mtcars</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="layout-define-base.html">define_model</a></span><span class="op">(</span><span class="va">am</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -166,7 +165,22 @@ is <code>family</code>, which controls the error distribution and link function
 <span class="r-in"><span>    <span class="fu"><a href="conclude.html">conclude</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="anova-mod.html">anova</a></span><span class="op">(</span><span class="va">mod1</span>, <span class="va">mod2</span>, <span class="va">mod3</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> F-test is only valid for Gaussian models.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Switching to LRT for family <span style="color: #0000BB;">"binomial"</span>.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> == ANOVA · LRT ================================================================= </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -- ANOVA Table -----------------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ───────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   model  res_df  deviance  df  dev_diff  chisq_value  p_value  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ───────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     1      31     43.230                              <span style="font-style: italic;">   </span>      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     2      30     19.176   1    24.054     24.054     <span style="font-weight: bold;">&lt;0.001</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     3      29     10.059   1    9.117       9.117     <span style="font-weight: bold;">&lt;0.001</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ───────────────────────────────────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

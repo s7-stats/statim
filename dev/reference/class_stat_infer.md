@@ -15,6 +15,13 @@ inherit from it.
 class_stat_infer()
 ```
 
+## Value
+
+An S7 abstract class generator. `class_stat_infer` cannot be
+instantiated directly, so calling it raises an error. It exists only as
+a parent class for the concrete result classes described in the Class
+hierarchy section above.
+
 ## Details
 
 Inheriting from `class_stat_infer` is the contract that enables
