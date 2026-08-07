@@ -8,13 +8,14 @@ two means different from each other. Every null hypothesis in that
 vignette reduces to `MU(a) == MU(b)` or its one-sample cousin
 `MU(a) == mu`.
 
-This vignette is about *using* weighted, non-zero-threshold claims, not
-about how
+Disclosure: This vignette is about *using* weighted, non-zero-threshold
+claims. No details about how
 [`state_null()`](https://s7-stats.github.io/statim/dev/reference/null-hyp.md)
-parses them. For the parsing mechanics, see
-`vignette("hypothesis-expressions", package = "statim")` — this explains
-how a coefficient and comparison value are pulled out of an expression
-like `2 * MU(x) - MU(y) <= 0`, and why group order in that expression
+parses them internally. For the parsing mechanics,
+[`vignette("pointers/hypothesis-expressions", package = "statim")`](https://s7-stats.github.io/statim/dev/articles/pointers/hypothesis-expressions.md)
+does explain. This is a vignette, a demonstration, which explains how a
+coefficient and comparison value are pulled out of an expression like
+`2 * MU(x) - MU(y) <= 0`, and why group order in that expression
 matters.
 
 Kutner, Nachtsheim, Neter, and Li’s *Applied Linear Statistical Models*
@@ -27,8 +28,9 @@ that question, and they don’t cost the same:
     base two-sample path already reads the comparison value straight out
     of
     [`state_null()`](https://s7-stats.github.io/statim/dev/reference/null-hyp.md)’s
-    claim. `MU(a) - MU(b) <= 3` runs on the ordinary two-sample path —
-    no extra steps are needed.
+    null hypothesis expression (called “claim” in some cases).
+    `MU(a) - MU(b) <= 3` can run on the ordinary two-sample path, and
+    you don’t need more extra steps.
 2.  `via(..., "contrast")` is the only path in `ttest-xby` from
     [statim](https://s7-stats.github.io/statim/) that accepts weights
     other than the implicit `+1`/`-1` split, computing the test

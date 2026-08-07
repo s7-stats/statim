@@ -126,13 +126,15 @@ example but a rudimentary case: is one mean different from a fixed
 value, and/or are two means different from each other. Every null
 hypothesis in that vignette reduces to <code>MU(a) == MU(b)</code> or
 its one-sample cousin <code>MU(a) == mu</code>.</p>
-<p>This vignette is about <em>using</em> weighted, non-zero-threshold
-claims, not about how <code><a href="../../reference/null-hyp.html">state_null()</a></code> parses them. For the
-parsing mechanics, see
-<code>vignette("hypothesis-expressions", package = "statim")</code> —
-this explains how a coefficient and comparison value are pulled out of
-an expression like <code>2 * MU(x) - MU(y) &lt;= 0</code>, and why group
-order in that expression matters.</p>
+<p>Disclosure: This vignette is about <em>using</em> weighted,
+non-zero-threshold claims. No details about how
+<code><a href="../../reference/null-hyp.html">state_null()</a></code> parses them internally. For the parsing
+mechanics,
+<code><a href="../../articles/pointers/hypothesis-expressions.html">vignette("pointers/hypothesis-expressions", package = "statim")</a></code>
+does explain. This is a vignette, a demonstration, which explains how a
+coefficient and comparison value are pulled out of an expression like
+<code>2 * MU(x) - MU(y) &lt;= 0</code>, and why group order in that
+expression matters.</p>
 <p>Kutner, Nachtsheim, Neter, and Li’s <em>Applied Linear Statistical
 Models</em> poses a different kind of question throughout its inference
 chapters: not “are these equal,” but “is a specific weighted combination
@@ -141,9 +143,10 @@ vary in that question, and they don’t cost the same:</p>
 <ol style="list-style-type: decimal">
 <li>
 <code><a href="../../reference/x_by.html">x_by()</a></code>’s base two-sample path already reads the
-comparison value straight out of <code><a href="../../reference/null-hyp.html">state_null()</a></code>’s claim.
-<code>MU(a) - MU(b) &lt;= 3</code> runs on the ordinary two-sample path
-— no extra steps are needed.</li>
+comparison value straight out of <code><a href="../../reference/null-hyp.html">state_null()</a></code>’s null
+hypothesis expression (called “claim” in some cases).
+<code>MU(a) - MU(b) &lt;= 3</code> can run on the ordinary two-sample
+path, and you don’t need more extra steps.</li>
 <li>
 <code>via(..., "contrast")</code> is the only path in
 <code>ttest-xby</code> from <a href="https://s7-stats.github.io/statim/">statim</a> that accepts weights
