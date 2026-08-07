@@ -7,11 +7,11 @@ output:
     rmarkdown::html_vignette:
         toc: true
 vignette: |
-    %\VignetteIndexEntry{Beyond equality: custom hypotheses with statim}
+    %\VignetteIndexEntry{Beyond Equality: Custom Hypotheses with {statim}}
     %\VignetteEngine{knitr::rmarkdown}
     \usepackage[utf8]{inputenc}
 ---
-
+    
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
     collapse = FALSE,
@@ -28,11 +28,11 @@ fansi::set_knit_hooks(knitr::knit_hooks)
 
 `vignette("htest", package = "statim")` covers the t-test example but a rudimentary case: is one mean different from a fixed value, and/or are two means different from each other. Every null hypothesis in that vignette reduces to `MU(a) == MU(b)` or its one-sample cousin `MU(a) == mu`.
 
-This vignette is about *using* weighted, non-zero-threshold claims, not about how `state_null()` parses them. For the parsing mechanics, see `vignette("hypothesis-expressions", package = "statim")` — this explains how a coefficient and comparison value are pulled out of an expression like `2 * MU(x) - MU(y) <= 0`, and why group order in that expression matters.
+Disclosure: This vignette is about *using* weighted, non-zero-threshold claims. No details about how `state_null()` parses them internally. For the parsing mechanics, `vignette("pointers/hypothesis-expressions", package = "statim")` does explain. This is a vignette, a demonstration, which explains how a coefficient and comparison value are pulled out of an expression like `2 * MU(x) - MU(y) <= 0`, and why group order in that expression matters.
 
 Kutner, Nachtsheim, Neter, and Li's *Applied Linear Statistical Models* poses a different kind of question throughout its inference chapters: not "are these equal," but "is a specific weighted combination of these parameters above, below, or at some threshold." Two things can vary in that question, and they don't cost the same:
 
-1.  `x_by()`'s base two-sample path already reads the comparison value straight out of `state_null()`'s claim. `MU(a) - MU(b) <= 3` runs on the ordinary two-sample path — no extra steps are needed.
+1.  `x_by()`'s base two-sample path already reads the comparison value straight out of `state_null()`'s null hypothesis expression (called "claim" in some cases). `MU(a) - MU(b) <= 3` can run on the ordinary two-sample path, and you don't need more extra steps.
 2.  `via(..., "contrast")` is the only path in `ttest-xby` from `{statim}` that accepts weights other than the implicit `+1`/`-1` split, computing the test statistic derived from Welch-Satterthwaite equation rather than a plain mean difference.
 
 Showcase 2 below is the one place in this vignette where the weights actually depart from $\pm 1$. That's the one place where `via("contrast")` is required. The rests, Showcases 1 and 3, stay on the default (base) path.

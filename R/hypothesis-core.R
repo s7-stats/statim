@@ -26,7 +26,7 @@ state_null = S7::new_generic("state_null", ".x")
 S7::method(state_null, test_lazy) = function(.x, expr, ...) {
     raw = rlang::enquo(expr)
     expr_val = rlang::quo_get_expr(raw)
-    env = rlang::caller_env()
+    env = rlang::quo_get_env(raw)
     claim = parse_null_claim(rlang::new_quosure(expr_val, env))
     # claim = if (rlang::is_call(expr_val, "more_h0")) {
     #     eval_more_h0(expr_val, env)

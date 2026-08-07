@@ -1,5 +1,15 @@
 # statim (development version)
 
+## Bug Fixes
+
+-  `state_null()` now resolves external variables referenced in a hypothesis
+   expression (e.g. `MU(x) <= 0.20 * some_var`) using the environment
+   captured by `rlang::enquo()` instead of `rlang::caller_env()`. The latter
+   depended on the exact shape of the call stack and silently failed to find
+   the variable whenever `state_null()` was invoked from inside a function,
+   `local()`, or a knitr chunk (i.e. any vignette render), even though it
+   happened to work when called at the top level of an interactive script.
+
 ## Minor Improvements
 
 -  "Installation" from `README` fixed its consistency
