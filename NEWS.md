@@ -1,5 +1,7 @@
 # statim (development version)
 
+* Updates for compatibility with S7 > 0.2.2.
+
 ## Bug Fixes
 
 -  `state_null()` now resolves external variables referenced in a hypothesis

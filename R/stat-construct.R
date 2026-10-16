@@ -145,8 +145,11 @@ stat_infer_spec = S7::new_class(
 )
 
 get_model_type = function(var_id) {
-    cls = S7::S7_class(var_id)
-    if (!is.null(cls)) cls@name else class(var_id)[[1]]
+    if (S7::S7_inherits(var_id)) {
+        S7::S7_class(var_id)@name
+    } else {
+        class(var_id)[[1]]
+    }
 }
 
 S7::method(print, stat_infer_spec) = function(x, ...) {
